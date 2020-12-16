@@ -1,0 +1,26 @@
+\documentclass[crop,tikz, border=2cm]{standalone}% 'crop' is the default for v1.0, before it was 'preview'
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usetikzlibrary{% tikz package already loaded by 'tikz' option
+	arrows,% arrow styles library
+	arrows.meta,% arrow styles library
+	positioning,% advanced positioning of nodes
+}
+\begin{document}
+\begin{tikzpicture}[x=1mm,y=-1mm]
+	\draw [very thin, lightgray] (0,0) grid[step=0.2] (52,70);
+	\draw [very thin, lightgray] (0,0) grid (52,70);
+
+\end{tikzpicture}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
