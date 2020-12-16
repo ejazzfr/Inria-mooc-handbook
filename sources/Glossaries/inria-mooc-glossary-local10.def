@@ -1,0 +1,90 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{semantic-web}{
+	type=local10,
+	name={Web sémantique},
+	description={%
+		Extension du Web --- à savoir syntaxique --- dans laquelle l'information se voit associée 
+		à un sens bien défini, améliorant la capacité des logiciels à traiter l'information 
+		disponible sur le Web. Le Web sémantique repose sur des standards du 
+		\href{https://www.w3c.fr/}{W3C} (organisme international de normalisation du Web) comme RDF 
+		(\href{https://fr.wikipedia.org/wiki/Resource_Description_Framework}{Resource Description Framework}). 
+		L'expression a été inventée par \href{https://fr.wikipedia.org/wiki/Tim_Berners-Lee}{Tim Berners-Lee}, 
+		inventeur du Web et directeur du W3C.},
+	localglossary={local-10}
+}
+\newglossaryentry{ontology}{
+	type=local10,
+	name={ontologie},
+	plural={ontologies},
+	description={%
+		Ensemble structuré de tous les termes et concepts de même que de leurs relations qui entrent 
+		dans la description d'un domaine de connaissance. Une ontologie a pour but de permettre 
+		l'automatisation de raisonnements à propos des objets du domaine concerné. 
+		« L'ontologie est aux données ce que la grammaire est au langage » 
+		(\href{https://fr.wikipedia.org/wiki/Ontologie_(informatique)}{\faWikipediaW}).},
+	localglossary={local-10}
+}
+\newglossaryentry{expert-system}{
+	type=local10,
+	name={système expert},
+	plural={systèmes experts},
+	description={%
+		De manière générale, c'est un outil capable de reproduire les mécanismes cognitifs d'un expert, 
+		dans un domaine particulier. Sur ce sujet voir aussi la vidéo de Nicolas P. \textsc{Rougier} : 
+		\href{./Videos/Chapter03/vidIII-01-ia-HD.mp4}{Enjeux et histoire de l'intelligence artificielle}.},
+	localglossary={local-10}
+}
+\newglossaryentry{data-modelling}{
+	type=local10,
+	name={modélisation des données},
+	description={%
+		Représentation abstraite, le modèle de données ne définit pas seulement la structure de données 
+		mais aussi ce que les données veulent vraiment signifier (sémantique).},
+	localglossary={local-10}
+}
+\newglossaryentry{logical-ai}{
+	type=local10,
+	name={intelligence artificielle logique},
+	description={%
+		Se référer aux explications sur ce courant de l'intelligence artificielle dans la vidéo 
+		de Nicolas P. \textsc{Rougier} : 
+		\href{./Videos/Chapter03/vidIII-01-ia-HD.mp4}{Enjeux et histoire de l'intelligence artificielle}.},
+	localglossary={local-10}
+}
+\newglossaryentry{preemptive-right}{
+	type=local10,
+	name={droit préemptif},
+	description={%
+		Sur ce sujet voir la vidéo de Daniel \textsc{Le Metayer} 
+		sur \href{./Videos/Chapter01/vidI-06-law-HD.mp4}{le numérique, le droit et la vie privée}.},
+	localglossary={local-10}
+}
+\newglossaryentry{discrete}{
+	type=local10,
+	name={discret},
+	plural={discrets},
+	description={%
+		Un objet est dit \emph{discret} lorsque ses points sont écartés les uns des autres, le contraire 
+		étant dénommé un objet continu. L'opposition du continu et du discret est un thème philosophique 
+		important déjà interrogé par la philosophie grecque.},
+	localglossary={local-10}
+}
+\newglossaryentry{digital}{
+	type=local10,
+	name={digital},
+	description={%
+		Anglicisme souvent employé comme synonyme de numérique. Pour en savoir plus sur le débat 
+		digital \textit{vs.} numérique : \url{http://www.blogdumoderateur.com/numerique-ou-digital}.},
+	localglossary={local-10}
+}
+

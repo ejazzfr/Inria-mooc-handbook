@@ -1,0 +1,48 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{bitcoin}{
+	type=local09,
+	name={\textit{bitcoin}},
+	plural={\textit{bitcoins}},
+	description={%
+		Le \href{https://fr.wikipedia.org/wiki/Bitcoin}{\textit{bitcoin}} est une monnaie 
+		\href{https://fr.wikipedia.org/wiki/Cryptographie}{cryptographique} 
+		associée à un système de transaction et de contrôle, nommé
+		la \href{https://fr.wikipedia.org/wiki/Blockchain}{\textit{blockchain}}.},
+	localglossary={local-9}
+}
+\newglossaryentry{blockchain}{
+	type=local09,
+	name={\textit{blockchain}},
+	plural={\textit{blockchains}},
+	description={%
+		Technologie de stockage et de partage d'information avec un protocole de gestion 
+		de données numériques, qui est :
+		\begin{itemize}\jazzitem
+		\item transparente, car chacun peut consulter l'ensemble des échanges, présents et passés ;
+		\item sans organe de contrôle, car établie sur des échanges de 
+		\href{https://fr.wikipedia.org/wiki/Pair_\%C3\%A0_pair}{pair-à-pair} 
+		--- \textit{peer-to-peer} en anglais ;
+		\item infalsifiable et sécurisée, car différents exemplaires existent simultanément 
+		à de nombreux endroits ce qui empêche d'en modifier un ou quelques-uns.
+		\end{itemize}},
+	localglossary={local-9}
+}
+\newglossaryentry{cryptographicmoney}{
+	type=local09,
+	name={monnaie cryptographique},
+	description={%
+		Monnaie électronique fondée sur les principes 
+		de la cryptographie mathématique pour valider les transactions et émettre la monnaie elle-même.},
+	localglossary={local-9}
+}
+

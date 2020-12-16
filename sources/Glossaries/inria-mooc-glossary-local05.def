@@ -1,0 +1,110 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{IoT}{
+	type=local05,
+	name={Internet des objects (\textsc{IoT})},
+	description={%
+		L'\href{https://fr.wikipedia.org/wiki/Internet_des_objets}{Internet des objets}
+		--- en anglais \textit{Internet of Things} ---,
+		représente l'extension d'Internet à des éléments et à des lieux du monde physique.},
+	localglossary={local-5}
+}
+\newglossaryentry{bigdata}{
+	type=local05,
+	name={\textit{big data}},
+	description={%
+		Parfois qualifié comme \emph{données massives}, le terme
+		\href{https://fr.wikipedia.org/wiki/Big_data}{\textit{big data}}
+		désigne des ensembles de données qui s'avèrent tellement volumineux
+		qu'ils en deviennent difficiles à traiter avec les outils traditionnels
+		de gestion de base de données ou de l'information.
+		Le \textit{big data} offre de nouvelles perspectives en matière d'analyse de données,
+		notamment à des fins prédictives, avec des retombées espérées dans de nombreux domaines :
+		santé, environnement, gestion des risques, etc.},
+	localglossary={local-5}
+}
+\newglossaryentry{TIC}{
+	type=local05,
+	name={technologies de l'information et de la communication},
+	description={%
+		Transcription de l'anglais ICT pour \textit{Information and Communication Technologies},
+		\textsc{Tic} est un acronyme essentiellement utilisé dans les mondes universitaires
+		et de l'administration pour désigner le domaine couvert
+		par la \href{https://fr.wikipedia.org/wiki/T\%C3\%A9l\%C3\%A9matique}{télématique}
+		--- informatique, audiovisuel, multimédias, Internet, télécommunications, etc. ---
+		qui permet aux utilisateurs d'accéder, produire, manipuler, communiquer des informations
+		sous toute forme : texte, son, image, vidéo, etc. (source
+		\href{https://fr.wikipedia.org/wiki/Technologies_de_l\%27information_et_de_la_communication}%
+		{\faWikipediaW}).},
+	localglossary={local-5}
+}
+\newglossaryentry{anonymization}{
+	type=local05,
+	name={technique d'anonymisation},
+	plural={techniques d'anonymisation},
+	description={%
+		Les techniques \href{https://fr.wikipedia.org/wiki/Anonymisation}{d'anonymisation}
+		se rap\-portent aux moyens de transformer des jeux de données ---
+		%concer\-nent les moyens de transformer des jeux de données ---
+		effacement de certains attributs, généralisation, bruitage et autres manipulations ---,
+		afin de rendre très difficile voire impossible la « ré-identification »
+		ou l'inférence de connaissances sur des personnes (physiques ou morales).},
+	localglossary={local-5}
+}
+\newglossaryentry{predictionalgorithm}{% Traduction littérale : y'a certainement mieux !
+	type=local05,
+	name={algorithme de prédiction},
+	plural={algorithmes de prédiction},
+	description={%
+		Algorithme qui permet de déterminer --- pour de nouvelles données ---, des caractéristiques
+		à partir de la connaissance de données d’apprentissage préalablement agrégées.
+		En quelque sorte, l’algorithme apprend des règles en se fondant sur les données d’apprentissage
+		et les applique à de nouvelles données.
+		Cela se réalise, entre autres, à l’aide de probabilités, de statistiques et de régressions.},
+	localglossary={local-5}
+}
+\newglossaryentry{decisionsupportalgorithm}{% Traduction littérale : y'a certainement mieux !
+	type=local05,
+	name={algorithme d'aide à la prise de décision},
+	plural={algorithmes d'aide à la prise de décision},
+	description={%
+		Algorithme dont l'objet est d'apporter des informations utiles pour la prise de décision
+		(par exemple en fournissant un classement pertinent, comme les algorithmes de recommandation
+		et les moteurs de recherche ou encore, en répertoriant des éléments dans des catégories).
+		Dans certains cas, ces algorithmes peuvent même être utilisés dans des processus
+		entièrement automatisés.},
+	localglossary={local-5}
+}
+\newglossaryentry{embeddedsoftware}{
+	type=local05,
+	name={logiciel embarqué},
+	description={%
+		Un \href{https://fr.wikipedia.org/wiki/Syst\%C3\%A8me_embarqu\%C3\%A9}{système embarqué}
+		--- ou logiciel embarqué --- est défini comme un système électronique
+		et informatique autonome, fonctionnant souvent en temps réel, spécialisé
+		dans une tâche bien précise et intégré au sein d'une entité ou d'un objet :
+		voiture, train, avion...},
+	localglossary={local-5}
+}
+\newglossaryentry{robotics}{
+	type=local05,
+	name={robotique},
+	description={%
+		La \href{https://fr.wikipedia.org/wiki/Robotique}{robotique}
+		regroupe l'ensemble des techniques permettant la conception et la réalisation
+		de machines automatiques --- ou robots --- à même de réaliser des tâches précises,
+		quelque soit leur champ d'application :
+		industrie, domotique, transport, médecine, sciences, etc.
+		(source \href{https://fr.wikipedia.org/wiki/Robotique}{\faWikipediaW}).},
+	localglossary={local-5}
+}
+

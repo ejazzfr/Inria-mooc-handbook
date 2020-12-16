@@ -1,0 +1,74 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{robotics-two}{% Déjà employé dans local-05
+	type=local13,
+	name={robotique},
+	%plural={},
+	description={%
+		Appareil effectuant, grâce à un système de commandes automatiques, une tâche précise 
+		pour laquelle il a été conçu dans le domaine industriel, scientifique ou domestique. 
+		Le mot « robot » a été créé (dans une 
+		\href{https://fr.wikipedia.org/wiki/Robot\#.C3.89tymologie}{œuvre de fiction}) 
+		à partir du mot tchèque « \textit{robota} » qui signifie « travail, besogne, corvée ».},
+	localglossary={local-13}
+}
+\newglossaryentry{scientific-lock}{
+	type=local13,
+	name={verrou scientifique},
+	plural={verrous scientifiques},
+	description={%
+		On parle de verrou scientifique pour un résultat pas encore obtenu mais dont dépendent 
+		d'autres résultats scientifiques ou techniques. Cela constitue une contrainte à lever 
+		pour qu'un domaine de recherche avance.},
+	localglossary={local-13}
+}
+\newglossaryentry{ethics}{
+	type=local13,
+	name={éthique},
+	plural={éthiques},
+	description={%
+		L'éthique est une réflexion de fond sur un sujet, qui permet ensuite de proposer des normes, 
+		limites et devoirs, dans le respect de certaines valeurs. 
+		La morale désigne l'ensemble de ces règles établies.},
+	localglossary={local-13}
+}
+\newglossaryentry{cobot}{
+	type=local13,
+	name={cobot},
+	plural={cobots},
+	description={%
+		S'emploie comme contraction de « robot collaboratif » et désigne un robot en interaction réelle, 
+		directe ou télé-opérée avec un opérateur ou un utilisateur humain.},
+	localglossary={local-13}
+}
+\newglossaryentry{anonymize}{
+	type=local13,
+	name={anonymiser},
+	%plural={},
+	description={%
+		 Garantir qu'un jeu de données contenant des informations personnelles ne permet pas 
+		 d'identifier des individus, donc évite d'accéder à des informations privées 
+		 et confidentielles les concernants.},
+	localglossary={local-13}
+}
+\newglossaryentry{encrypt}{
+	type=local13,
+	name={crypter},
+	%plural={},
+	description={%
+		 Anglicisme employé pour le mot \emph{chiffrer}, c'est-à-dire opération qui vise 
+		 à rendre secret un document 
+		 par \href{https://fr.wikipedia.org/wiki/Chiffrement}{chiffrement}, pour que sa compréhension 
+		 soit impossible à toute personne qui n'a pas la clé de (dé)chiffrement.},
+	localglossary={local-13}
+}
+

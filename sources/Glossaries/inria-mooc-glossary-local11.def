@@ -1,0 +1,57 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{principia-mathematica}{
+	type=local11,
+	name={\textit{Principia mathematica}},
+	description={%
+		Œuvre en trois volumes d'Alfred \textsc{North Whitehead} et Bertrand \textsc{Russell}, 
+		publiés en 1910-1913, \href{https://fr.wikipedia.org/wiki/Principia_Mathematica}{Principia mathematica} 
+		a pour sujet les fondements des mathématiques 
+		et est considérée comme un des livres les plus influents de l'histoire de la logique.},
+	localglossary={local-11}
+}
+\newglossaryentry{perceptron}{
+	type=local11,
+	name={perceptron},
+	plural={perceptrons},
+	description={%
+		Inventé en 1957 par \href{https://fr.wikipedia.org/wiki/Frank_Rosenblatt}{Frank \textsc{Rosenblatt}}
+		au laboratoire d'aéronautique 
+		de l'Université Cornell, le \href{https://fr.wikipedia.org/wiki/Perceptron}{perceptron} 
+		peut être vu comme le type de 
+		\href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau_de_neurones_artificiels}{réseau de neurones} 
+		le plus simple.},
+	localglossary={local-11}
+}
+\newglossaryentry{deep-blue}{
+	type=local11,
+	name={Deep Blue},
+	description={%
+		\href{https://fr.wikipedia.org/wiki/Deep_Blue}{\textit{Deep Blue}} est un superordinateur 
+		spécialisé dans le jeu d'échecs par adjonction 
+		de circuits spécifiques, développé par IBM au début des années 1990.},
+	localglossary={local-11}
+}
+\newglossaryentry{alan-turing}{
+	type=local11,
+	name={Alan \textsc{Turing}},
+	description={%
+		\href{https://fr.wikipedia.org/wiki/Alan_Turing}{Alan \textsc{Turing}} est un mathématicien 
+		et cryptologue britannique (1912-1954), auteur de travaux qui fondent scientifiquement 
+		l'informatique. Pour résoudre le problème fondamental de la décidabilité en arithmétique, 
+		il présente en 1936 une expérience de pensée que l'on nommera ensuite 
+		\href{https://fr.wikipedia.org/wiki/Machine_de_Turing}{machine de Turing} 
+		et des concepts de programmation et de programme, qui prendront tout leur sens 
+		avec la diffusion des ordinateurs dans la seconde moitié du XX\up{e} siècle.},
+	localglossary={local-11}
+}
+

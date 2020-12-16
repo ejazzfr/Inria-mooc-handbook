@@ -1,0 +1,70 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{learning-algorithm}{
+	type=local12,
+	name={algorithme d'apprentissage},
+	plural={algorithmes d'apprentissage},
+	description={%
+		Cela correspond à des algorithmes qui ajustent les paramètres de leurs calculs 
+		en fonction des exemples qui leur sont donnés ou des retours (positifs ou négatifs, 
+		comme des récompenses ou punitions) issus de calculs précédents. 
+		Cela permet d'adapter leur fonctionnement aux données fournies.},
+	localglossary={local-12}
+}
+\newglossaryentry{optimisation-algorithm}{
+	type=local12,
+	name={algorithme d'optimisation},
+	plural={algorithmes d'optimisation},
+	description={%
+		Cela correspond à une famille d'algorithmes qui résolvent un problème par améliorations successives : 
+		on part d'une solution initiale par défaut, on la modifie un peu dans un sens ou dans un autre 
+		et si une de ses modifications améliore la solution, on réitère le procédé. 
+		Un critère de gain à maximiser ou de coût à minimiser est donc à la base de ces méthodes.},
+	localglossary={local-12}
+}
+\newglossaryentry{trial-error}{
+	type=local12,
+	name={optimisation par essais/erreurs},
+	description={%
+		Cela correspond à un type d'algorithmes qui ajustent les paramètres par « renforcement », 
+		une solution est testée et en fonction du retour positif ou négatif, un ajustement se fait 
+		pour aller vers un meilleur comportement. Le fait que le retour se passe après l'action 
+		qui a pu en être la cause, parfois bien après, impose d'avoir une représentation interne 
+		de ce qui se passe au cours du temps.},
+	localglossary={local-12}
+}
+\newglossaryentry{modelling}{
+	type=local12,
+	name={modélisation},
+	plural={modélisations},
+	description={%
+		Représentation d'un objet réel ou abstrait, en éliminant les détails difficiles ou accessoires 
+		à reproduire, afin d’obtenir un résultat plus net à interpréter, un modèle est validé 
+		par son adéquation à des données (différentes de celles qui ont pu aider à le construire), 
+		donc à prédire des faits nouveaux ; il peut-être mathématique ou informatique, 
+		mais aussi être un objet tangible (une maquette, un animal modèle 
+		pour certains fonctionnements biologiques).},
+	localglossary={local-12}
+}
+\newglossaryentry{brain}{
+	type=local12,
+	name={cerveau},
+	plural={cerveaux},
+	description={%
+		 C'est l'organe principal du système nerveux des animaux, il régule les autres systèmes 
+		 d'organes du corps, en agissant sur les muscles ou les glandes, et constitue le siège 
+		 des fonctions cognitives (mémoire, apprentissage, planification, etc.) ; 
+		 cette cognition n'existe que parce le cerveau est incarné dans un corps 
+		 en interaction avec un environnement.},
+	localglossary={local-12}
+}
+

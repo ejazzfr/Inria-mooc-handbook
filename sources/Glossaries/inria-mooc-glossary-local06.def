@@ -1,0 +1,286 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{source}{
+	type=local06,
+	name={code source},
+	description={%
+		Le code source d'un programme est une suite d'instructions logiques écrite par
+		un informaticien --- aussi nommé programmeur ou développeur ---
+		dans un langage de programmation.
+		Autrement dit, c'est un fichier éditable, aux instructions lisibles et compréhensibles
+		par un être humain à condition qu'il en maîtrise la signification.},
+	localglossary={local-6}
+}
+\newglossaryentry{executable}{
+	type=local06,
+	name={exécutable},
+	description={%
+		Se dit de l'état dans lequel se trouve une tâche après son activation et avant qu'elle
+		ne soit finie.\\
+		Par extension, cela désigne également le nom du fichier d'un programme
+		--- dits de \textit{script} pour les langages interprétés (\textsc{Bash}, \textsc{Perl},
+		\textsc{Python}, etc. : traduction « à la volée » en langage machine)
+		ou comme résultat d'une \textit{phase de compilation}
+		(traduction du langage de programmation en langage machine) pour les langages
+		dits \textit{compilés} (\textsc{Fortran}, \textsc{Pascal}, \textsc{C/C++}, etc.) --- prêt
+		à être lancé pour réaliser les tâches qui lui incombent.},
+	localglossary={local-6}
+}
+\newglossaryentry{BSD}{
+	type=local06,
+	name={BSD},
+	description={%
+		BSD est l'acronyme de \textit{Berkeley Software Distribution},
+		\href{https://www.freebsd.org/doc/fr_FR.ISO8859-1/articles/explaining-bsd/article.html}%
+		{suite logicielle} provenant de l'Université de Californie située à Berkeley.
+		À l'\href{https://www.oreilly.com/openbook/opensources/book/kirkmck.html}{origine},
+		il s'agit d'extensions apportées au système d'exploitation \textsc{Unix AT\&T}.
+		Plusieurs systèmes \textit{Open Source} sont fondés sur cette base, en incluant
+		des éléments issus d'autres projets, y compris du projet \textsc{Gnu} : un noyau BSD,
+		la bibliothèque C BSD --- différente de celle du projet \textsc{Gnu} ---, des utilitaires
+		--- interpréteur de commandes, gestionnaire de fichiers, compilateurs et éditeurs de liens ---,
+		le système X Window pour l'affichage graphique --- BSD ne définit pas de « bureau graphique »
+		tels que \href{https://www.gnome.org/}{\textsc{Gnome}} ou
+		\href{https://kde.org/}{\textsc{Kde}} ---, etc.
+		D'abord principalement dévolus aux serveurs --- les couches réseaux des BSD ont été portées
+		dans bien d'autres systèmes ---, les BSD s'utilisent de nos jours
+		aussi bien comme station de travail. On distingue essentiellement les distributions
+		\href{https://www.freebsd.org/fr/}{\textsc{FreeBSD}},
+		\href{http://www.netbsd.org/}{\textsc{NetBSD}}
+		et \href{https://www.openbsd.org/}{\textsc{OpenBSD}}.},
+	localglossary={local-6}
+}
+\newglossaryentry{GNU/Linux}{
+	type=local06,
+	name={\textsc{GNU/Linux}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.5\linewidth]{./Images/Logotype/gnu-logo-1024px.png}%
+		%	%\includegraphics[width=0.75\linewidth]{./Images/Logotype/gnu-logo-1024px.png}\\[\baselineskip]
+		%	%\includegraphics[width=0.75\linewidth]{./Images/Logotype/tux-869-1024px.png}%
+		%}%
+		\textsc{GNU/Linux} ou bien, par raccourci innaproprié \textsc{Linux}, est un système
+		d'exploitation entièrement libre, produit d'un grand nom\-bre d'entreprises et de bénévoles
+		qui contribuent à son élaboration. Il est disponible sous la forme d'une myriade de
+		\href{https://fr.wikipedia.org/wiki/Distribution_Linux}{distributions} généralistes
+		ou spécialisées (assemblage cohérent de multiples logiciels libres --- noyau \textsc{Linux}
+		et outils \textsc{GNU} --- pour fournir un système d'exploitation opérationnel), telles que :
+		\textsc{Debian}, \textsc{Ubuntu}, \textsc{Linux Mint}, \textsc{Red Hat}, \textsc{Suse},
+		\textsc{Raspian}, etc.},
+	localglossary={local-6}
+}
+\newglossaryentry{Linux}{
+	type=local06,
+	name={\textsc{Linux}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.5\linewidth]{./Images/Logotype/tux-869-1024px.png}%
+		%}%
+		\textsc{Linux} est le noyau du système d'exploitation \textsc{GNU/Linux}. Le noyau est le cœur
+		du système, c'est lui qui s'occupe d'ordonnancer les tâches et de fournir
+		aux logiciels applicatifs une interface de programmation
+		pour utiliser le matériel au moyen de modules d'extensions spécifiques nommés
+		« \href{https://fr.wikipedia.org/wiki/Pilote_informatique}{pilotes} »
+		--- ou « \textit{drivers} » en anglais. \textsc{Linux}, contraction entre \emph{Linus}
+		et \textsc{Unix}, est initié par Linus \textsc{Torvalds} en août 1991.},
+	localglossary={local-6}
+}
+\newglossaryentry{GNU}{
+	type=local06,
+	name={GNU},
+	description={%
+		\textsc{Gnu} est l'acronyme récursif de \textit{\textsc{Gnu's Not Unix}}.
+		Cela quali\-fie un ensemble complémentaire de programmes utilitaires li\-bres rattachés
+		aux noyaux des systèmes d'exploitation de type \textsc{Unix}.
+		L'ambition initiale du projet était de développer un système d'exploitation complet
+		en y adjoignant son propre noyau connu sous le nom de
+		\href{https://fr.wikipedia.org/wiki/GNU_Hurd}{\textsc{Hurd}},
+		\href{https://www.gnu.org/software/hurd/hurd/what_is_the_gnu_hurd/origin_of_the_name.html}%
+		{double acronyme récursif} de \textit{Hird of Unix-Replacing Daemons}
+		(littéralement «~\textit{Multitude de démons%
+		\glssidenote{Les « \textit{daemons} » sont des programmes qui tournent en tâche de fond
+		et qui apportent des services de gestion spécifique au système
+		d'exploitation.} remplaçant Unix}~»)
+		puis \textsc{Hird}, autrement dit, «~\textit{Hurd of Interfaces Representing Depth}~» :
+		jeu	de mot avec «~\textit{herd}~», qui signifie
+		\emph{troupeau}\glssidenote{Bien sûr, sous entendu de gnou/\textit{gnu}.} en anglais.
+		Cependant, la montée en charge remarquable de l'opérationnalité de \textsc{Linux}
+		de 1991 à 1996, associée à sa licence de publication \textsc{GPL}	en 1992, l'a imposé
+		de fait comme noyau du projet \textsc{GNU} ; d'où la double affiliation de dénomination
+		ces systèmes en tant que \textsc{GNU/Linux}.},
+	localglossary={local-6}
+}
+\newglossaryentry{Unix}{
+	type=local06,
+	name={\textsc{Unix}},
+	description={%
+		\href{https://fr.wikipedia.org/wiki/Multit\%C3\%A2che}{Système d'exploitation multitâche}
+		et \href{https://fr.wikipedia.org/wiki/Multi-utilisateur}{multi-utilisateur},
+		\href{https://fr.wikipedia.org/wiki/Unix}{\textsc{Unix}} est créé en 1969
+		par \href{https://fr.wikipedia.org/wiki/Ken_Thompson}{Kenneth Thompson}.
+		Il repose sur un
+		\href{https://fr.wikipedia.org/wiki/Interpr\%C3\%A9teur_de_commandes}{interpréteur ou superviseur}
+		(le \href{https://fr.wikipedia.org/wiki/Shell_Unix}{shell})
+		et de nombreux petits utilitaires, accomplissant chacun une action spécifique,
+		commutables entre eux (mécanisme de « redirection ») et appelés depuis la
+		\href{https://fr.wikipedia.org/wiki/Interface_en_ligne_de_commande}{ligne de commande}.
+		\textsc{Linux} ou \textsc{BSD} --- «~\textit{Berkeley Software Distribution}~»  ---
+		sont des dérivés libres et ouverts de type \textsc{Unix}.},
+	localglossary={local-6}
+}
+\newglossaryentry{Apache}{
+	type=local06,
+	name={\textsc{Apache}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.75\linewidth]{./Images/Logotype/apache-foundation-logo.pdf}}%
+		%	          {\href{https://www.apache.org}{Apache Software Foundation}}%
+		\textsc{Apache} est un \href{http://www.apache.org}{serveur} Web sous licence libre
+		parmi les plus répandus sur Internet.
+		Il s'agit d'une application fonctionnant initialement sur les systèmes d'exploitation
+		de type \textsc{Unix}, mais désormais porté sur tous les OS majeurs du marché.},
+	localglossary={local-6}
+}
+\newglossaryentry{firefox}{
+	type=local06,
+	name={\textsc{Firefox}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.25\linewidth]{./Images/Logotype/firefox-logo-2017-2019-1024px.png}}%
+		\href{https://fr.wikipedia.org/wiki/Mozilla_Firefox}{Firefox},
+		développé par la \textit{\textsc{Mozilla Fundation}},
+		est un des logiciels libres multiplateformes les plus répandus
+		et des plus performants pour la navigation sur le Web.},
+	localglossary={local-6}
+}
+\newglossaryentry{LibreOffice}{
+	type=local06,
+	name={\textsc{LibreOffice}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.75\linewidth]{./Images/Logotype/libreoffice-logo-1024px.png}}%
+		\href{https://fr.wikipedia.org/wiki/LibreOffice}{\textsc{LibreOffice}}
+		est une suite bureautique libre complète, dérivée du projet
+		\href{https://fr.wikipedia.org/wiki/OpenOffice.org}{OpenOffice.org},
+		créée et gérée par
+		\href{https://fr.wikipedia.org/wiki/The_Document_Foundation}%
+		{\textit{\textsc{The Document Foundation}}} suite au rachat en 2010
+		de \textsc{Sun Microsystems} --- alors détenteur de la marque --- par \textsc{Oracle}.},
+	localglossary={local-6}
+}
+\newglossaryentry{MySQL}{
+	type=local06,
+	name={\textsc{MySQL}},
+	description={%
+		%\sideglossarygraphic{%
+		%	%\vspace*{-2.25\baselineskip}%
+		%	\includegraphics[width=0.75\linewidth]{./Images/Logotype/mysql-logo-1024px.png}}%
+		\href{https://fr.wikipedia.org/wiki/MySQL}{\textsc{MySQL}} est un
+		\href{https://fr.wikipedia.org/wiki/Syst\%C3\%A8me_de_gestion_de_base_de_donn\%C3\%A9es}%
+		{système de gestion de bases de données} relationnelles (SGBDR).
+		Il est distribué sous une double licence
+		\href{https://fr.wikipedia.org/wiki/Licence_publique_g\%C3\%A9n\%C3\%A9rale_GNU}{GPL}
+		et \href{https://fr.wikipedia.org/wiki/Logiciel_propri\%C3\%A9taire}{propriétaire}.
+		Il fait partie des logiciels de gestion de base de données les plus utilisés au monde.},
+	localglossary={local-6}
+}
+\newglossaryentry{VLC}{
+	type=local06,
+	name={VLC},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.25\linewidth]{./Images/Logotype/vlc-logo-1024px.png}}%
+		\href{https://www.videolan.org/vlc/index.fr.html}{\textsc{VLC media player}}
+		est un lecteur multimédia libre. Ce logiciel est multiplateforme
+		et distribué sous licence GNU GPL.
+		Il intègre les \href{https://fr.wikipedia.org/wiki/Codec}{codecs}
+		nécessaires à la lecture de la plupart des formats audio et vidéo.
+		De plus, le lecteur est capable de lire un grand nombre de flux
+		\href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau_informatique}{réseaux}.},
+	localglossary={local-6}
+}
+\newglossaryentry{PHP}{
+	type=local06,
+	name={\textsc{PHP}},
+	description={%
+		%\sideglossarygraphic{%
+		%	%\vspace*{-2.5\baselineskip}%
+		%	\includegraphics[width=0.75\linewidth]{./Images/Logotype/php-logo-1024px.png}}%
+		\href{https://fr.wikipedia.org/wiki/PHP}{\textsc{Php}} --- \textit{Hypertext Preprocessor},
+		acronyme
+		\href{https://fr.wikipedia.org/wiki/Sigles_auto-r\%C3\%A9f\%C3\%A9rentiels}{auto-référentiel} ---
+		est un langage de \textit{script} avant tout utilisé
+		pour produire des pages Web dynamiques \textit{via} serveur HTTP,
+		mais pouvant également fonctionner comme n'importe quel langage interprété de façon locale.
+		\textsc{Php} est un langage impératif orienté objet.},
+	localglossary={local-6}
+}
+\newglossaryentry{Stallman}{
+	type=local06,
+	name={Richard M. \textsc{Stallman}},
+	description={%
+		%\sideglossarygraphic%
+		%	[Richard \textsc{Stallman} lors d'une conférence à la Fête de l'Humanité en 2014.]{%
+		%	\includegraphics[width=\linewidth]{./Images/People/richard-stallman-2014-huma-1024px.jpg}}%
+		\href{https://fr.wikipedia.org/wiki/Richard_Stallman}{Richard \textsc{Stallman}}
+		est à l'origine un brillant programmeur issu du \textsc{MIT} (entre autres, l'éditeur
+		\textsc{Emacs}). Initiateur du mouvement du logiciel libre, il lance en 1983 le projet
+		\href{https://fr.wikipedia.org/wiki/GNU}{GNU, \textsc{\textit{Gnu is Not Unix}}}
+		--- acronyme récursif ---, en fondant les bases juridiques du projet sur
+		la Licence publique générale (\textit{General public licence} --- \textsc{GPL})
+		initialement prévue pour les codes de logiciels et la Licence publique générale restreinte
+		(\textit{Lesser general public licence} --- \textsc{LGPL}) pour les bibliothèques associées.
+		Bien que dévolues au domaine des logiciels, voire	des matériels informatiques, ces licences
+		peuvent tout aussi bien s'appliquer à toute œuvre relevant du droit d'auteur,
+		en parallèle ou à l'instar des licences \textit{Creative Commons}.},
+	localglossary={local-6}
+}
+\newglossaryentry{copyleft}{
+	type=local06,
+	name={copyleft},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.25\linewidth]{./Images/Logotype/copyleft-1024px.png}}%
+		Le concept de \textit{Copyleft} est une méthode générale pour ren\-dre
+		\href{https://www.gnu.org/philosophy/free-sw.html}{libre} un programme
+		--- ou toute œuvre relevant du droit d'auteur ---, imposant à toutes les versions
+		modifiées ou étendues de l'œuvre d'être libres également : en quelque sorte c'est une,
+		voire la première, « contagion virale positive », au sens du partage de connaissances.
+		Son invention est celle de
+		\href{https://fr.wikipedia.org/wiki/Don_Hopkins}{Don \textsc{Hopkins}},
+		largement popularisée par
+		\href{https://fr.wikipedia.org/wiki/Richard_Stallman}{Richard \textsc{Stallman}}
+		dans le cadre du projet \gls{GNU}.},
+	localglossary={local-6}
+}
+\newglossaryentry{Torvalds}{
+	type=local06,
+	name={Linus B. \textsc{Torvalds}},
+	description={%
+		%\sideglossarygraphic%
+		%	[Linus \textsc{Torvalds} lors de la conférence LinuxCon Europe en 2014 à Düsseldorf.]{%
+		%	\includegraphics[width=\linewidth]{./Images/People/linus-torvalds-linuxcon-europe-2014.jpg}}%
+		\href{https://fr.wikipedia.org/wiki/Linus_Torvalds}{Linus \textsc{Torvalds}}
+		est un informaticien d'origine finlandaise reconnu pour avoir créé en 1991
+		le \href{https://fr.wikipedia.org/wiki/Noyau_Linux}{noyau \textsc{Linux}}.
+		Depuis, il continue d'en diriger le
+		\href{https://fr.wikipedia.org/wiki/D\%C3\%A9veloppement_de_logiciel}{développement}
+		où, à l'instar
+		de \href{https://fr.wikipedia.org/wiki/Guido_van_Rossum}{Guido van Rossum} pour \textsc{Python},
+		de \href{https://fr.wikipedia.org/wiki/Larry_Wall}{Larry Wall} pour \textsc{Perl}
+		et de \href{https://fr.wikipedia.org/wiki/Mark_Shuttleworth}{Mark Shuttleworth}
+		pour \textsc{Ubuntu},
+		il en est considéré comme le
+		« \href{https://fr.wikipedia.org/wiki/Benevolent_Dictator_for_Life}{dictateur bienveillant} ».},
+	localglossary={local-6}
+}
+

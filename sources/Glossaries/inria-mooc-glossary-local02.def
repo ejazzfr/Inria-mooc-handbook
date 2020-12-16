@@ -1,0 +1,77 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{connector}{
+	type=local02,
+	name={connecteur},
+	plural={connecteurs},
+	description={%
+		Élément qui assure une connexion physique pour établir une liaison électrique
+		ou une transmission de données entre deux entités matérielles distinctes.
+		En informatique, ce terme est également employé pour désigner un port ---
+		même si le connecteur caractérise aussi la fiche mâle de la connectique qui lui est associée.},
+	localglossary={local-2}
+}
+\newglossaryentry{GPIO}{
+	type=local02,
+	name={GPIO},
+	description={%
+		GPIO, acronyme de \textit{General Purpose Input/Output}, est un port d'entrée-sortie qui permet
+		à une carte électronique
+		--- carte à \href{https://fr.wikipedia.org/wiki/Microcontr\%C3\%B4leur}{micro-contrô\-leur}
+		ou \href{https://fr.wikipedia.org/wiki/Carte_m\%C3\%A8re}{carte-mère} ---
+		de communiquer avec un périphérique quelconque. Ce type de port est programmable,
+		permettant de s'adapter à une vaste diversité de périphériques, sous condition d'écrire
+		un \href{https://fr.wikipedia.org/wiki/Pilote_informatique}{pilote} adéquat.},
+	localglossary={local-2}
+}
+\newglossaryentry{debianlinux}{
+	type=local02,
+	name={\textsc{Debian}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.35\linewidth]{./Images/Logotype/debian-official-logo-1024px.png}}%
+		\href{https://www.debian.org/}{\textsc{Debian}} est le nom d'une distribution non commerciale
+		qui repose \emph{exclusivement} sur des
+		\href{https://fr.wikipedia.org/wiki/Logiciel_libre}{logiciels libres}.
+		Elle est développée et maintenue par l'association \textsc{Debian},
+		dont une particularité est qu'elle suit un mode de gouvernance communautaire.
+		La version \textsc{Debian} pour \textsc{Raspberry Pi} peut se télécharger
+		sur le site de la \href{https://www.raspberrypi.org/}{fondation Raspberry},
+		soit \textit{via} un \href{https://www.raspberrypi.org/downloads/noobs/}{installateur (NOOBS)},
+		soit \textit{via} une \href{https://www.raspberrypi.org/downloads/raspbian/}%
+		{image de la distribution (\textsc{Raspbian})}.
+		Plus largement, la qualité et la stabilité reconnues de \textsc{Debian}
+		ont engendré de nombreuses distributions populaires la prenant comme fondement,
+		par exemple \href{https://ubuntu.com/}{\textsc{Ubuntu}}
+		ou \href{https://linuxmint.com/}{\textsc{Linux Mint}}.},
+	localglossary={local-2}
+}
+\newglossaryentry{SE}{
+	type=local02,
+	name={système d'exploitation},
+	plural={systèmes d'exploitation},
+	description={%
+		Un
+		« \href{https://fr.wikipedia.org/wiki/Syst\%C3\%A8me_d'exploitation}{système d'exploitation} »
+		--- \textit{Operating system} en anglais ---, est un ensemble de programmes qui gèrent
+		l'utilisation des ressources matérielles d'un ordinateur : stockage des
+		\href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_(informatique)}{mémoires} à accès rapide et
+		de masse des \href{https://fr.wikipedia.org/wiki/Disque_dur}{disques durs}, ordonnancement
+		des calculs du \href{https://fr.wikipedia.org/wiki/Processeur}{processeur}, communication	avec
+		les \href{https://fr.wikipedia.org/wiki/P\%C3\%A9riph\%C3\%A9rique_informatique}{périphériques}
+		ou administration du \href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau}{réseau}.
+		Le système accepte ou refuse ces demandes, puis réserve les ressources
+		en question pour éviter que leur utilisation n'interfère avec d'autres requêtes provenant
+		d'autres logiciels.},
+	localglossary={local-2}
+}
+

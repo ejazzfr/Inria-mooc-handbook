@@ -1,0 +1,1216 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{motherboard-main}{
+	name={carte mère},
+	plural={cartes mères},
+	%text={carte mère},
+	description={%
+		Circuit imprimé qui rassemble un ensemble diversifié de connecteurs et de ports (connectique
+		dédiée de certaines fonctionalités) permettant d'y agréger les différents composants
+		de l'ordinateur (processeur, cartes mémoire, carte graphique, dis\-ques durs
+		et tout autre périphérique) et d'assurer leur liaison à travers des circuits
+		imprimés dont le comportement est piloté
+		par le \href{https://fr.wikipedia.org/wiki/BIOS_(informatique)}{\textsc{BIOS}},
+		programme contenu dans la mémoire «~morte~» (ROM --- \textit{Read-Only Memory})
+		et lancé au démarrage pour notamment détecter et configurer tous les éléments connectés.},
+	localglossary={local-1}
+}
+\newglossaryentry{peripheral-main}{
+	name={périphérique},
+	sort={peripherique},
+	plural={périphériques},
+	description={%
+		Dispositif électronique connecté à un ordinateur, plus précisément sur un des ports dédiés
+		de la carte mère.},
+	localglossary={local-1}
+}
+\newglossaryentry{port-main}{
+	name={port},
+	plural={ports},
+	description={%
+		Prise/connecteur permettant de brancher un périphérique à un ordinateur. Les ports sont placés
+		sur la carte mère qui assure la liaison avec les autres périphériques et le processeur.},
+	localglossary={local-1}
+}
+\newglossaryentry{processor-main}{
+	name={processeur},
+	plural={processeurs},
+	description={%
+		Processeur ou CPU, pour \textit{Central Processing Unit}. Dispositif électronique de
+		calcul chargé d'exécuter les différentes instructions d'un programme. Ce faisant, les données
+		numériques sont traitées, manipulées et échangées avec les autres composants de l'ordinateur
+		--- \gls{RAM} (RAM ---  \textit{Random Access Memory}), disques durs et autres périphériques
+		--- \textit{via} la \gls{motherboard}. Quand le processeur est construit sur un unique
+		circuit intégré, on parle de microprocesseur.},
+	localglossary={local-1}
+}
+\newglossaryentry{RAM-main}{
+	name={mémoire vive},
+	description={%
+		La RAM, acronyme de \textit{Random Access Memory} en anglais --- littéralement « mémoire
+		à accès aléatoire » nommée en français « mémoire vive » ---, est un circuit imprimé
+		sur une carte qui permet de stocker les données et les instructions employées dans un programme
+		informatique. Contrairement à la mémoire dite «~morte~» en français
+		--- ROM, \textit{Read-Only Memory}, littéralement « mémoire uniquement en lecture » ---,
+		le contenu de la mémoire vive peut être modifié
+		et offre donc un espace temporaire de stockage dynamique pour le processeur.},
+	localglossary={local-1}
+}
+\newglossaryentry{connector-main}{
+	name={connecteur},
+	plural={connecteurs},
+	description={%
+		Élément qui assure une connexion physique pour établir une liaison électrique
+		ou une transmission de données entre deux entités matérielles distinctes.
+		En informatique, ce terme est également employé pour désigner un port ---
+		même si le connecteur caractérise aussi la fiche mâle de la connectique qui lui est associée.},
+	localglossary={local-2}
+}
+\newglossaryentry{GPIO-main}{
+	name={GPIO},
+	description={%
+		GPIO, acronyme de \textit{General Purpose Input/Output}, est un port d'entrée-sortie qui permet
+		à une carte électronique
+		--- carte à \href{https://fr.wikipedia.org/wiki/Microcontr\%C3\%B4leur}{micro-contrô\-leur}
+		ou \href{https://fr.wikipedia.org/wiki/Carte_m\%C3\%A8re}{carte-mère} ---
+		de communiquer avec un périphérique quelconque. Ce type de port est programmable,
+		permettant de s'adapter à une vaste diversité de périphériques, sous condition d'écrire
+		un \href{https://fr.wikipedia.org/wiki/Pilote_informatique}{pilote} adéquat.},
+	localglossary={local-2}
+}
+\newglossaryentry{debianlinux-main}{
+	name={\textsc{Debian}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.35\linewidth]{./Images/Logotype/debian-official-logo-1024px.png}}%
+		\href{https://www.debian.org/}{\textsc{Debian}} est le nom d'une distribution non commerciale
+		qui repose \emph{exclusivement} sur des
+		\href{https://fr.wikipedia.org/wiki/Logiciel_libre}{logiciels libres}.
+		Elle est développée et maintenue par l'association \textsc{Debian},
+		dont une particularité est qu'elle suit un mode de gouvernance communautaire.
+		La version \textsc{Debian} pour \textsc{Raspberry Pi} peut se télécharger
+		sur le site de la \href{https://www.raspberrypi.org/}{fondation Raspberry},
+		soit \textit{via} un \href{https://www.raspberrypi.org/downloads/noobs/}{installateur (NOOBS)},
+		soit \textit{via} une \href{https://www.raspberrypi.org/downloads/raspbian/}%
+		{image de la distribution (\textsc{Raspbian})}.
+		Plus largement, la qualité et la stabilité reconnues de \textsc{Debian}
+		ont engendré de nombreuses distributions populaires la prenant comme fondement,
+		par exemple \href{https://ubuntu.com/}{\textsc{Ubuntu}}
+		ou \href{https://linuxmint.com/}{\textsc{Linux Mint}}.},
+	localglossary={local-2}
+}
+\newglossaryentry{SE-main}{
+	name={système d'exploitation},
+	plural={systèmes d'exploitation},
+	description={%
+		Un
+		« \href{https://fr.wikipedia.org/wiki/Syst\%C3\%A8me_d'exploitation}{système d'exploitation} »
+		--- \textit{Operating system} en anglais ---, est un ensemble de programmes qui gèrent
+		l'utilisation des ressources matérielles d'un ordinateur : stockage des
+		\href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_(informatique)}{mémoires} à accès rapide et
+		de masse des \href{https://fr.wikipedia.org/wiki/Disque_dur}{disques durs}, ordonnancement
+		des calculs du \href{https://fr.wikipedia.org/wiki/Processeur}{processeur}, communication	avec
+		les \href{https://fr.wikipedia.org/wiki/P\%C3\%A9riph\%C3\%A9rique_informatique}{périphériques}
+		ou administration du \href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau}{réseau}.
+		Le système accepte ou refuse ces demandes, puis réserve les ressources
+		en question pour éviter que leur utilisation n'interfère avec d'autres requêtes provenant
+		d'autres logiciels.},
+	localglossary={local-2}
+}
+\newglossaryentry{OS-main}{
+	name={OS/système d'exploitation},
+	plural={systèmes d'exploitation},
+	description={%
+		OS, acronyme de \textit{Oprerating system}, est l'expression anglophone signifiant
+		« \href{https://fr.wikipedia.org/wiki/Syst\%C3\%A8me_d'exploitation}{système d'exploitation} ».
+		Il s'agit d'un ensemble de programmes qui gèrent l'utilisation des ressources matérielles
+		d'un ordinateur : stockage des
+		\href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_(informatique)}{mémoires} à accès rapide et
+		de masse des \href{https://fr.wikipedia.org/wiki/Disque_dur}{disques durs}, ordonnancement
+		des calculs du \href{https://fr.wikipedia.org/wiki/Processeur}{processeur}, communication	avec
+		les \href{https://fr.wikipedia.org/wiki/P\%C3\%A9riph\%C3\%A9rique_informatique}{périphériques}
+		ou administration du \href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau}{réseau}.
+		Le système d'exploitation accepte ou refuse ces demandes, puis réserve les ressources
+		en question pour éviter que leur utilisation n'interfère avec d'autres requêtes provenant
+		d'autres logiciels.},
+	localglossary={local-3}
+}
+\newglossaryentry{application-main}{
+	name={application},
+	plural={applications},
+	description={%
+		Une \textit{application} ou un \textit{applicatif} est, dans le domaine informatique,
+		un \href{https://fr.wikipedia.org/wiki/Programme_informatique}{programme}
+		--- ou un ensemble \href{https://fr.wikipedia.org/wiki/Logiciel}{logiciel} ---
+		directement manipulé par l'utilisateur pour réaliser une tâche ou un ensemble
+		de tâches élémentaires d'un même domaine formant un tout. Typiquement,
+		un \href{https://fr.wikipedia.org/wiki/\%C3\%89diteur_de_texte}{éditeur de texte},
+		un \href{https://fr.wikipedia.org/wiki/Navigateur_web}{navigateur Web},
+		un \href{https://fr.wikipedia.org/wiki/Client_de_messagerie}{client de messagerie},
+		une \href{https://fr.wikipedia.org/wiki/Visionneuse_d\%27images}{visionneuse d'images},
+		un \href{https://fr.wikipedia.org/wiki/Lecteur_multim\%C3\%A9dia}{lecteur multimédia},
+		un \href{https://fr.wikipedia.org/wiki/Jeu_vid\%C3\%A9o}{jeu vidéo}, sont des applications.},
+	localglossary={local-3}
+}
+\newglossaryentry{memory-main}{
+	name={mémoire},
+	description={%
+		Dispositif électronique qui sert à stocker des données (valeurs, instructions de programmes).
+		Dans un ordinateur, il existe trois grands types de mémoire externe au processeur:
+		la \href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_vive}{mémoire vive (RAM)}
+		(carte branchée sur la carte mère),
+		la \href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_morte}{mémoire morte (ROM)}
+		(circuit intégré à la carte mère)
+		et la \href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_de_masse}{mémoire de masse}
+		(disques durs, et autres supports de stockage périphérique).
+		Le processeur intègre aussi plusieurs niveaux de mémoire, notamment
+		de la \href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_cache}{mémoire cache}
+		(placée dans la puce qui contient le processeur)
+		et les \href{https://fr.wikipedia.org/wiki/Registre_de_processeur}{registres}
+		(internes au processeur).},
+	localglossary={local-3}
+}
+\newglossaryentry{virtualmemory-main}{
+	name={mémoire virtuelle},
+	description={%
+		Mécanisme qui permet de simuler la présence d'un type de mémoire en utilisant un autre
+		type (par exemple un disque dur). Il est utilisé par exemple pour simuler la présence
+		de mémoire vive en utilisant de la mémoire de masse. Sous \textsc{Linux}, ce type de mécanisme
+		est dénommé « \textit{swap} » où à l'installation du système d'expoitation,
+		une partition du disque dur est réservée à cet effet (on conseille souvent
+		une taille double de celle de la mémoire vive de l'ordinateur).},
+	localglossary={local-3}
+}
+\newglossaryentry{process-main}{
+	name={processus},
+	description={%
+		Forme que prend un programme quand il est exécuté au sein d'un système d'exploitation.
+		Une instance de processus comprend en général : un ensemble d'instructions
+		(souvent copiées dans la RAM depuis le disque dur), une place,
+		appelée \href{https://fr.wikipedia.org/wiki/Adressage_m\%C3\%A9moire}{espace d'adressage},
+		réservée en mémoire vive pour stocker les données qu'il manipule
+		et les ressources matérielles et logicielles que le programme utilise.},
+	localglossary={local-3}
+}
+\newglossaryentry{scheduler-main}{
+	name={ordonnanceur},
+	description={%
+		Composant logiciel du système d'exploitation qui est en charge d'allouer
+		du temps processeur aux processus. Le choix du processus élu pour s'exécuter
+		sur le processeur à un temps donné est fait par une
+		\href{https://fr.wikipedia.org/wiki/Ordonnancement_dans_les_syst\%C3\%A8mes_d'exploitation}%
+		{procédure d'ordonnancement}
+		et implique de gérer
+		les \href{https://fr.wikipedia.org/wiki/Commutation_de_contexte}{changements de contexte}.},
+	localglossary={local-3}
+}
+\newglossaryentry{IHM-main}{
+	name={Interface homme-machine},
+	description={%
+		Ensemble de moyens mis en œuvre pour qu'un humain puisse interagir avec une machine.
+		Par extension, l'\textsc{Ihm} est aussi le domaine de recherche qui conçoit
+		des systèmes informatiques et étudie les interactions entre êtres humains et machines.},
+	localglossary={local-4}
+}
+\newglossaryentry{cognitivesciences-main}{
+	name={sciences cognitives},
+	description={%
+		Sous un vocable commun, les \href{https://fr.wikipedia.org/wiki/Sciences_cognitives}{sciences
+		cognitives} regroupent l'ensemble des disciplines qui étudient les mécanismes
+		de la connaissance.},
+	localglossary={local-4}
+}
+\newglossaryentry{ergonomics-main}{
+	name={ergonomie},
+	description={%
+		Discipline qui étudie les interactions existantes entre les êtres humains
+		et les composantes d'un système. On y prend en compte les facteurs humains
+		pour concevoir et évaluer des tâches afin de les rendre compatibles
+		avec les besoins et les capacités des utilisateurs.},
+	localglossary={local-4}
+}
+\newglossaryentry{design-main}{
+	name={design},
+	description={%
+		Le \href{https://fr.wikipedia.org/wiki/Design}{design}
+		recouvre les notions de création et de conception d'un produit ou d'un système.},
+	localglossary={local-4}
+}
+\newglossaryentry{cognitivepsychology-main}{
+	name={psychologie cognitive},
+	description={%
+		Branche de la psychologie qui étudie spécifiquement le fonctionnement
+		de l'acquisition des connaissances chez l'être humain :
+		langage, mémoire, perception, concentration, etc.
+		La cognition --- du latin \textit{cognito} pour action de connaître ---,
+		est ainsi l'ensemble des activités mentales et mécanismes
+		qui se rapportent à la connaissance.},
+	localglossary={local-4}
+}
+\newglossaryentry{AI-main}{
+	name={intelligence artificielle},
+	description={%
+		L'\href{https://fr.wikipedia.org/wiki/Intelligence_artificielle}{intelligence artificielle}
+		--- IA --- est, selon
+		l'\href{https://www.larousse.fr/encyclopedie/divers/intelligence_artificielle/187257}
+		{Encyclopédie \textsc{Larousse}},
+		«~l'ensemble des théories et des techniques mises en œuvre en perspective de réaliser
+		des machines capables de simuler l'intelligence~».
+		Cela recouvre un ensemble de concepts et de technologies
+		plus qu'une discipline autonome cons\-tituée.
+		Au regard d'une définition peu précise, certains, à l'instar de la
+		\href{./Documents/Chapter01/cnil-rapport-garder-la-main-2017-12.pdf}{\textsc{Cnil}},
+		introduisent ce sujet comme « le grand mythe de notre temps »
+		(source \href{https://fr.wikipedia.org/wiki/Intelligence_artificielle}{\faWikipediaW}).},
+	localglossary={local-4}
+}
+\newglossaryentry{linguistics-main}{
+	name={linguistique},
+	description={%
+		Discipline qui étudie le langage et le fonctionnement des langues
+		par une approche descriptive.},
+	localglossary={local-4}
+}
+\newglossaryentry{accessibility-main}{
+	name={accessibilité},
+	description={%
+		Concept initialement issu du monde du handicap et désormais étendu à l'ensemble des citoyens
+		pour signifier la facilitation de l'accès dans différents domaines.
+		En informatique, on parle d'accessibilité pour désigner l'adaptation des systèmes numériques
+		et le développement d'outils spécifiques dans le cas de handicaps,
+		comme par exemple la malvoyance.},
+	localglossary={local-4}
+}
+\newglossaryentry{ubiquitoussystem-main}{
+	name={système ubiquitaire},
+	plural={systèmes ubiquitaires},
+	description={%
+		L'ubiquité ou l'omniprésence, est la capacité de se trouver en tout lieu
+		ou à plusieurs endroits en même temps.
+		En informatique, cela renvoie aux environnements dans lesquels ordinateurs
+		et réseaux sont intégrés au monde réel et où l'utilisateur est connecté en permanence
+		(cf. \href{https://fr.wikipedia.org/wiki/Informatique_ubiquitaire}{\faWikipediaW}).},
+	localglossary={local-4}
+}
+\newglossaryentry{usability-main}{
+	name={utilisabilité},
+	description={%
+		Conformément à la norme ISO 9241-11, il s'agit du «~degré selon lequel un produit peut être
+		utilisé, par des utilisateurs identifiés, pour atteindre des buts définis avec efficacité,
+		efficience et satisfaction, dans un contexte d’utilisation spécifié~».
+		L'utilisabilité possède plusieurs critères : l'\emph{\gls{effectiveness}},
+		l'\emph{\gls{efficiency}}	et la \emph{\gls{satisfaction}}.},
+	localglossary={local-4}
+}
+\newglossaryentry{ISO9241-2010-main}{
+	name={norme ISO 9241-2010},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.4\linewidth]{./Images/Logotype/iso-logo-red-square-1024px.png}}%
+		Cette norme ISO est directement liée aux \textsc{Ihm}.
+		«~L'ISO \href{https://www.iso.org/fr/standard/52075.html}{9241-210:2010} fournit des exigences
+		et des recommandations relatives aux principes et aux activités de conception centrée
+		sur l'opérateur humain, intervenant tout au long du cycle de vie des systèmes informatiques
+		interactifs. Elle est destinée à être utilisée par les responsables de la gestion
+		des processus de conception, et traite des manières dont les composants matériels
+		et les logiciels des systèmes interactifs permettent d'améliorer
+		l'interaction homme-système~».},
+	localglossary={local-4}
+}
+\newglossaryentry{effectiveness-main}{
+	name={efficacité},
+	description={%
+		Concept lié à l'atteinte du résultat prévu.},
+	localglossary={local-4}
+}
+\newglossaryentry{efficiency-main}{
+	name={efficience},
+	description={%
+		Terme signifiant l'atteinte d'un résultat avec le moindre effort ou le temps minimal.},
+	localglossary={local-4}
+}
+\newglossaryentry{satisfaction-main}{
+	name={satisfaction},
+	description={%
+		Évaluation subjective par l'utilisateur de l'interaction avec un système.},
+	localglossary={local-4}
+}
+\newglossaryentry{usercentereddesign-main}{
+	name={conception centrée utilisateur},
+	description={%
+		\href{https://fr.wikipedia.org/wiki/Conception_centr\%C3\%A9e_sur_l'utilisateur}{Démarche
+		de conception} où les besoins des utilisateurs sont pris en compte à chaque étape.},
+	localglossary={local-4}
+}
+\newglossaryentry{iterativedesign-main}{
+	name={conception itérative},
+	description={%
+		Approche de conception qui se réalise par bouclage de cycles répétés.
+		Chaque cycle permet de tester, d'adapter et d'améliorer le produit.},
+	localglossary={local-4}
+}
+\newglossaryentry{participativedesign-main}{
+	name={conception participative},
+	description={%
+		Démarche de conception qui fait participer les utilisateurs. Il s'agit d'une démarche centrée
+		utilisateur où est mis en avant le rôle actif de l'utilisateur.},
+	localglossary={local-4}
+}
+\newglossaryentry{codesign-main}{
+	name={co-conception},
+	description={%
+		Approche également appelée \emph{co-design}.
+		Il s'agit de développer un système en collaboration avec l'utilisateur final,
+		au-delà d'une simple validation d'étape de sa part.},
+	localglossary={local-4}
+}
+\newglossaryentry{virtualreality-main}{
+	name={réalité virtuelle},
+	description={%
+		L'expression «~réalité virtuelle~» --- multimédia immersif ou encore simulation ---
+		renvoie à une technologie numérique qui reproduit la présence d'un utilisateur
+		en environnement artificiel généré au moyen de logiciels.
+		Il s'agit donc d'un contexte dans lequel l'usager interagit pour vivre
+		une expérience sensorielle qui peut inclure
+		la vue, le toucher, l'ouïe et l'odorat : visuelle, haptique, sonore ou olfactive
+		(cf. \href{https://fr.wikipedia.org/wiki/R\%C3\%A9alit\%C3\%A9_virtuelle}{\faWikipediaW}).},
+	localglossary={local-4}
+}
+\newglossaryentry{augmentedreality-main}{
+	name={réalité augmentée},
+	description={%
+		La réalité augmentée se définit comme la superposition de l'observable physique
+		avec différents éléments (sons, ima\-ges, traitements de l'information, etc.) calculés
+		par un système informatique en temps réel.
+		Cela désigne souvent les méthodes qui incrustent de manière réaliste
+		des objets virtuels dans une séquence d'images.
+		Néanmoins, cela s'applique aussi bien à toutes les perceptions proprioceptives :
+		visuelles, comme tactiles ou auditives ---
+		(voir
+		\href{https://fr.wikipedia.org/wiki/R\%C3\%A9alit\%C3\%A9_augment\%C3\%A9e}{\faWikipediaW}).},
+	localglossary={local-4}
+}
+\newglossaryentry{IoT-main}{
+	name={Internet des objects (\textsc{IoT})},
+	description={%
+		L'\href{https://fr.wikipedia.org/wiki/Internet_des_objets}{Internet des objets}
+		--- en anglais \textit{Internet of Things} ---,
+		représente l'extension d'Internet à des éléments et à des lieux du monde physique.},
+	localglossary={local-5}
+}
+\newglossaryentry{bigdata-main}{
+	name={\textit{big data}},
+	description={%
+		Parfois qualifié comme \emph{données massives}, le terme
+		\href{https://fr.wikipedia.org/wiki/Big_data}{\textit{big data}}
+		désigne des ensembles de données qui s'avèrent tellement volumineux
+		qu'ils en deviennent difficiles à traiter avec les outils traditionnels
+		de gestion de base de données ou de l'information.
+		Le \textit{big data} offre de nouvelles perspectives en matière d'analyse de données,
+		notamment à des fins prédictives, avec des retombées espérées dans de nombreux domaines :
+		santé, environnement, gestion des risques, etc.},
+	localglossary={local-5}
+}
+\newglossaryentry{TIC-main}{
+	name={technologies de l'information et de la communication},
+	description={%
+		Issue de la transcription de l'anglais ICT pour \textit{Information and Communication Technologies},
+		\textsc{Tic} est une expression, essentiellement utilisée dans les mondes universitaires
+		et de l'administration pour désigner le domaine couvert
+		par la \href{https://fr.wikipedia.org/wiki/T\%C3\%A9l\%C3\%A9matique}{télématique}
+		--- informatique, audiovisuel, multimédias, Internet, télécommunications, etc. ---
+		qui permet aux utilisateurs d'accéder, produire, manipuler, communiquer des informations
+		sous toute forme : texte, son, image, vidéo, etc. (source
+		\href{https://fr.wikipedia.org/wiki/Technologies_de_l\%27information_et_de_la_communication}%
+		{\faWikipediaW}).},
+	localglossary={local-5}
+}
+\newglossaryentry{anonymization-main}{
+	name={technique d'anonymisation},
+	plural={techniques d'anonymisation},
+	description={%
+		Les techniques \href{https://fr.wikipedia.org/wiki/Anonymisation}{d'anonymisation}
+		se rap\-portent aux moyens de transformer des jeux de données ---
+		%concer\-nent les moyens de transformer des jeux de données ---
+		effacement de certains attributs, généralisation, bruitage et autres manipulations ---,
+		afin de rendre très difficile voire impossible la « ré-identification »
+		ou l'inférence de connaissances sur des personnes (physiques ou morales).},
+	localglossary={local-5}
+}
+\newglossaryentry{predictionalgorithm-main}{% Traduction littérale : y'a certainement mieux !
+	name={algorithme de prédiction},
+	plural={algorithmes de prédiction},
+	description={%
+		Algorithme qui permet de déterminer --- pour de nouvelles données ---, des caractéristiques
+		à partir de la connaissance de données d’apprentissage préalablement agrégées.
+		En quelque sorte, l’algorithme apprend des règles en se fondant sur les données d’apprentissage
+		et les applique à de nouvelles données.
+		Cela se réalise, entre autres, à l’aide de probabilités, de statistiques et de régressions.},
+	localglossary={local-5}
+}
+\newglossaryentry{decisionsupportalgorithm-main}{% Traduction littérale : y'a certainement mieux !
+	name={algorithme d'aide à la prise de décision},
+	plural={algorithmes d'aide à la prise de décision},
+	description={%
+		Algorithme dont l'objet est d'apporter des informations utiles pour la prise de décision
+		(par exemple en fournissant un classement pertinent, comme les algorithmes de recommandation
+		et les moteurs de recherche ou encore, en répertoriant des éléments dans des catégories).
+		Dans certains cas, ces algorithmes peuvent même être utilisés dans des processus
+		entièrement automatisés.},
+	localglossary={local-5}
+}
+\newglossaryentry{embeddedsoftware-main}{
+	name={logiciel embarqué},
+	description={%
+		Un \href{https://fr.wikipedia.org/wiki/Syst\%C3\%A8me_embarqu\%C3\%A9}{système embarqué}
+		--- ou logiciel embarqué --- est défini comme un système électronique
+		et informatique autonome, fonctionnant souvent en temps réel, spécialisé
+		dans une tâche bien précise et intégré au sein d'une entité ou d'un objet :
+		voiture, train, avion...},
+	localglossary={local-5}
+}
+\newglossaryentry{robotics-main}{
+	name={robotique},
+	description={%
+		La \href{https://fr.wikipedia.org/wiki/Robotique}{robotique}
+		regroupe l'ensemble des techniques permettant la conception et la réalisation
+		de machines automatiques --- ou robots --- à même de réaliser des tâches précises,
+		quelque soit leur champ d'application :
+		industrie, domotique, transport, médecine, sciences, etc.
+		(source \href{https://fr.wikipedia.org/wiki/Robotique}{\faWikipediaW}).},
+	localglossary={local-5}
+}
+\newglossaryentry{source-main}{
+	name={code source},
+	description={%
+		Le code source d'un programme est une suite d'instructions logiques écrite par
+		un informaticien --- aussi nommé programmeur ou développeur ---
+		dans un langage de programmation.
+		Autrement dit, c'est un fichier éditable, aux instructions lisibles et compréhensibles
+		par un être humain à condition qu'il en maîtrise la signification.},
+	localglossary={local-6}
+}
+\newglossaryentry{executable-main}{
+	name={exécutable},
+	description={%
+		Se dit de l'état dans lequel se trouve une tâche après son activation et avant qu'elle
+		ne soit finie.\\
+		Par extension, cela désigne également le nom du fichier d'un programme
+		--- dits de \textit{script} pour les langages interprétés (\textsc{Bash}, \textsc{Perl},
+		\textsc{Python}, etc. : traduction « à la volée » en langage machine)
+		ou comme résultat d'une \textit{phase de compilation}
+		(traduction du langage de programmation en langage machine) pour les langages
+		dits \textit{compilés} (\textsc{Fortran}, \textsc{Pascal}, \textsc{C/C++}, etc.) --- prêt
+		à être lancé pour réaliser les tâches qui lui incombent.},
+	localglossary={local-6}
+}
+\newglossaryentry{BSD-main}{
+	name={BSD},
+	description={%
+		BSD est l'acronyme de \textit{Berkeley Software Distribution},
+		\href{https://www.freebsd.org/doc/fr_FR.ISO8859-1/articles/explaining-bsd/article.html}%
+		{suite logicielle} provenant de l'Université de Californie située à Berkeley.
+		À l'\href{https://www.oreilly.com/openbook/opensources/book/kirkmck.html}{origine},
+		il s'agit d'extensions apportées au système d'exploitation \textsc{Unix AT\&T}.
+		Plusieurs systèmes \textit{Open Source} sont fondés sur cette base, en incluant
+		des éléments issus d'autres projets, y compris du projet \textsc{Gnu} : un noyau BSD,
+		la bibliothèque C BSD --- différente de celle du projet \textsc{Gnu} ---, des utilitaires
+		--- interpréteur de commandes, gestionnaire de fichiers, compilateurs et éditeurs de liens ---,
+		le système X Window pour l'affichage graphique --- BSD ne définit pas de « bureau graphique »
+		tels que \href{https://www.gnome.org/}{\textsc{Gnome}} ou
+		\href{https://kde.org/}{\textsc{Kde}} ---, etc.
+		D'abord principalement dévolus aux serveurs --- les couches réseaux des BSD ont été portées
+		dans bien d'autres systèmes ---, les BSD s'utilisent de nos jours
+		aussi bien comme station de travail. On distingue essentiellement les distributions
+		\href{https://www.freebsd.org/fr/}{\textsc{FreeBSD}},
+		\href{http://www.netbsd.org/}{\textsc{NetBSD}}
+		et \href{https://www.openbsd.org/}{\textsc{OpenBSD}}.},
+	localglossary={local-6}
+}
+\newglossaryentry{GNU/Linux-main}{
+	name={\textsc{GNU/Linux}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.5\linewidth]{./Images/Logotype/gnu-logo-1024px.png}%
+		%	%\includegraphics[width=0.75\linewidth]{./Images/Logotype/gnu-logo-1024px.png}\\[\baselineskip]
+		%	%\includegraphics[width=0.75\linewidth]{./Images/Logotype/tux-869-1024px.png}%
+		%}%
+		\textsc{GNU/Linux} ou bien, par raccourci innaproprié \textsc{Linux}, est un système
+		d'exploitation entièrement libre, produit d'un grand nom\-bre d'entreprises et de bénévoles
+		qui contribuent à son élaboration. Il est disponible sous la forme d'une myriade de
+		\href{https://fr.wikipedia.org/wiki/Distribution_Linux}{distributions} généralistes
+		ou spécialisées (assemblage cohérent de multiples logiciels libres --- noyau \textsc{Linux}
+		et outils \textsc{GNU} --- pour fournir un système d'exploitation opérationnel), telles que :
+		\textsc{Debian}, \textsc{Ubuntu}, \textsc{Linux Mint}, \textsc{Red Hat}, \textsc{Suse},
+		\textsc{Raspian}, etc.},
+	localglossary={local-6}
+}
+\newglossaryentry{Linux-main}{
+	name={\textsc{Linux}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.5\linewidth]{./Images/Logotype/tux-869-1024px.png}%
+		%}%
+		\textsc{Linux} est le noyau du système d'exploitation \textsc{GNU/Linux}. Le noyau est le cœur
+		du système, c'est lui qui s'occupe d'ordonnancer les tâches et de fournir
+		aux logiciels applicatifs une interface de programmation
+		pour utiliser le matériel au moyen de modules d'extensions spécifiques nommés
+		« \href{https://fr.wikipedia.org/wiki/Pilote_informatique}{pilotes} »
+		--- ou « \textit{drivers} » en anglais. \textsc{Linux}, contraction entre \emph{Linus}
+		et \textsc{Unix}, est initié par Linus \textsc{Torvalds} en août 1991.},
+	localglossary={local-6}
+}
+\newglossaryentry{GNU-main}{
+	name={GNU},
+	description={%
+		\textsc{GNU} est l'acronyme récursif de \textit{\textsc{Gnu's Not Unix}}.
+		Cela quali\-fie un ensemble complémentaire de programmes utilitaires li\-bres rattachés
+		aux noyaux des systèmes d'exploitation de type \textsc{Unix}.
+		L'ambition initiale du projet était de développer un système d'exploitation complet
+		en y adjoignant son propre noyau connu sous le nom de
+		\href{https://fr.wikipedia.org/wiki/GNU_Hurd}{\textsc{Hurd}},
+		\href{https://www.gnu.org/software/hurd/hurd/what_is_the_gnu_hurd/origin_of_the_name.html}%
+		{double acronyme récursif} de \textit{Hird of Unix-Replacing Daemons}
+		(littéralement «~\textit{Multitude de démons%
+		\glssidenote{Les « \textit{daemons} » sont des programmes qui tournent en tâche de fond
+		et qui apportent des services de gestion spécifique au système
+		d'exploitation.} pour remplacer Unix}~»)
+		puis \textsc{Hird}, autrement dit, «~\textit{Hurd of Interfaces Representing Depth}~» :
+		jeu	de mot avec «~\textit{herd}~», qui signifie
+		\emph{troupeau}\glssidenote{Bien sûr, sous entendu de gnou/\textit{gnu}.} en anglais.
+		Cependant, la montée en charge remarquable de l'opérationnalité de \textsc{Linux}
+		de 1991 à 1996, associée à sa licence de publication \textsc{GPL}	en 1992, l'a imposé
+		de fait comme noyau du projet \textsc{GNU} ; d'où la double affiliation de dénomination
+		ces systèmes en tant que \textsc{GNU/Linux}.},
+	localglossary={local-6}
+}
+\newglossaryentry{Unix-main}{
+	name={\textsc{Unix}},
+	description={%
+		\href{https://fr.wikipedia.org/wiki/Multit\%C3\%A2che}{Système d'exploitation multitâche}
+		et \href{https://fr.wikipedia.org/wiki/Multi-utilisateur}{multi-utilisateur},
+		\href{https://fr.wikipedia.org/wiki/Unix}{\textsc{Unix}} est créé en 1969
+		par \href{https://fr.wikipedia.org/wiki/Ken_Thompson}{Kenneth Thompson}.
+		Il repose sur un
+		\href{https://fr.wikipedia.org/wiki/Interpr\%C3\%A9teur_de_commandes}{interpréteur ou superviseur}
+		(le \href{https://fr.wikipedia.org/wiki/Shell_Unix}{shell})
+		et de nombreux petits utilitaires, accomplissant chacun une action spécifique,
+		commutables entre eux (mécanisme de « redirection ») et appelés depuis la
+		\href{https://fr.wikipedia.org/wiki/Interface_en_ligne_de_commande}{ligne de commande}.
+		\textsc{Linux} ou \textsc{BSD} --- «~\textit{Berkeley Software Distribution}~»  ---
+		sont des dérivés libres et ouverts de type \textsc{Unix}.},
+	localglossary={local-6}
+}
+\newglossaryentry{Apache-main}{
+	name={\textsc{Apache}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.75\linewidth]{./Images/Logotype/apache-foundation-logo.pdf}}%
+		%	          {\href{https://www.apache.org}{Apache Software Foundation}}%
+		\textsc{Apache} est un \href{http://www.apache.org}{serveur} Web sous licence libre
+		parmi les plus répandus sur Internet.
+		Il s'agit d'une application fonctionnant initialement sur les systèmes d'exploitation
+		de type \textsc{Unix}, mais désormais porté sur tous les OS majeurs du marché.},
+	localglossary={local-6}
+}
+\newglossaryentry{firefox-main}{
+	name={\textsc{Firefox}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.25\linewidth]{./Images/Logotype/firefox-logo-2017-2019-1024px.png}}%
+		\href{https://fr.wikipedia.org/wiki/Mozilla_Firefox}{Firefox},
+		développé par la \textit{\textsc{Mozilla Fundation}},
+		est un des logiciels libres multiplateformes les plus répandus
+		et des plus performants pour la navigation sur le Web.},
+	localglossary={local-6}
+}
+\newglossaryentry{LibreOffice-main}{
+	name={\textsc{LibreOffice}},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.75\linewidth]{./Images/Logotype/libreoffice-logo-1024px.png}}%
+		\href{https://fr.wikipedia.org/wiki/LibreOffice}{\textsc{LibreOffice}}
+		est une suite bureautique libre complète, dérivée du projet
+		\href{https://fr.wikipedia.org/wiki/OpenOffice.org}{OpenOffice.org},
+		créée et gérée par
+		\href{https://fr.wikipedia.org/wiki/The_Document_Foundation}%
+		{\textit{\textsc{The Document Foundation}}} suite au rachat en 2010
+		de \textsc{Sun Microsystems} --- alors détenteur de la marque --- par \textsc{Oracle}.},
+	localglossary={local-6}
+}
+\newglossaryentry{MySQL-main}{
+	name={\textsc{MySQL}},
+	description={%
+		%\sideglossarygraphic{%
+		%	%\vspace*{-2.25\baselineskip}%
+		%	\includegraphics[width=0.75\linewidth]{./Images/Logotype/mysql-logo-1024px.png}}%
+		\href{https://fr.wikipedia.org/wiki/MySQL}{\textsc{MySQL}} est un
+		\href{https://fr.wikipedia.org/wiki/Syst\%C3\%A8me_de_gestion_de_base_de_donn\%C3\%A9es}%
+		{système de gestion de bases de données} relationnelles (SGBDR).
+		Il est distribué sous une double licence
+		\href{https://fr.wikipedia.org/wiki/Licence_publique_g\%C3\%A9n\%C3\%A9rale_GNU}{GPL}
+		et \href{https://fr.wikipedia.org/wiki/Logiciel_propri\%C3\%A9taire}{propriétaire}.
+		Il fait partie des logiciels de gestion de base de données les plus utilisés au monde.},
+	localglossary={local-6}
+}
+\newglossaryentry{VLC-main}{
+	name={VLC},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.25\linewidth]{./Images/Logotype/vlc-logo-1024px.png}}%
+		\href{https://www.videolan.org/vlc/index.fr.html}{\textsc{VLC media player}}
+		est un lecteur multimédia libre. Ce logiciel est multiplateforme
+		et distribué sous licence GNU GPL.
+		Il intègre les \href{https://fr.wikipedia.org/wiki/Codec}{codecs}
+		nécessaires à la lecture de la plupart des formats audio et vidéo.
+		De plus, le lecteur est capable de lire un grand nombre de flux
+		\href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau_informatique}{réseaux}.},
+	localglossary={local-6}
+}
+\newglossaryentry{PHP-main}{
+	name={\textsc{PHP}},
+	description={%
+		%\sideglossarygraphic{%
+		%	%\vspace*{-2.5\baselineskip}%
+		%	\includegraphics[width=0.75\linewidth]{./Images/Logotype/php-logo-1024px.png}}%
+		\href{https://fr.wikipedia.org/wiki/PHP}{\textsc{Php}} --- \textit{Hypertext Preprocessor},
+		acronyme
+		\href{https://fr.wikipedia.org/wiki/Sigles_auto-r\%C3\%A9f\%C3\%A9rentiels}{auto-référentiel} ---
+		est un langage de \textit{script} avant tout utilisé
+		pour produire des pages Web dynamiques \textit{via} serveur HTTP,
+		mais pouvant également fonctionner comme n'importe quel langage interprété de façon locale.
+		\textsc{Php} est un langage impératif orienté objet.},
+	localglossary={local-6}
+}
+\newglossaryentry{Stallman-main}{
+	name={\textsc{Stallman} Richard M.},
+	description={%
+		%\sideglossarygraphic%
+		%	[Richard \textsc{Stallman} lors d'une conférence à la Fête de l'Humanité en 2014.]{%
+		%	\includegraphics[width=\linewidth]{./Images/People/richard-stallman-2014-huma-1024px.jpg}}%
+		\href{https://fr.wikipedia.org/wiki/Richard_Stallman}{Richard \textsc{Stallman}}
+		est à l'origine un brillant programmeur issu du \textsc{MIT} (entre autres, l'éditeur
+		\textsc{Emacs}). Initiateur du mouvement du logiciel libre, il lance en 1983 le projet
+		\href{https://fr.wikipedia.org/wiki/GNU}{GNU, \textsc{\textit{Gnu is Not Unix}}}
+		--- acronyme récursif ---, en fondant les bases juridiques du projet sur
+		la Licence publique générale (\textit{General public licence} --- \textsc{GPL})
+		initialement prévue pour les codes de logiciels et la Licence publique générale restreinte
+		(\textit{Lesser general public licence} --- \textsc{LGPL}) pour les bibliothèques associées.
+		Bien que dévolues au domaine des logiciels, voire	des matériels informatiques, ces licences
+		peuvent tout aussi bien s'appliquer à toute œuvre relevant du droit d'auteur,
+		en parallèle ou à l'instar des licences \textit{Creative Commons}.},
+	localglossary={local-6}
+}
+\newglossaryentry{copyleft-main}{
+	name={copyleft},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.25\linewidth]{./Images/Logotype/copyleft-1024px.png}}%
+		Le concept de \textit{Copyleft} est une méthode générale pour ren\-dre
+		\href{https://www.gnu.org/philosophy/free-sw.html}{libre} un programme
+		--- ou toute œuvre relevant du droit d'auteur ---, imposant à toutes les versions
+		modifiées ou étendues de l'œuvre d'être libres également : en quelque sorte c'est une,
+		voire la première, « contagion virale positive », au sens du partage de connaissances.
+		Son invention est celle de
+		\href{https://fr.wikipedia.org/wiki/Don_Hopkins}{Don \textsc{Hopkins}},
+		largement popularisée par
+		\href{https://fr.wikipedia.org/wiki/Richard_Stallman}{Richard \textsc{Stallman}}
+		dans le cadre du projet \gls{GNU}.},
+	localglossary={local-6}
+}
+\newglossaryentry{Torvalds-main}{
+	name={\textsc{Torvalds} Linus B.},
+	description={%
+		%\sideglossarygraphic%
+		%	[Linus \textsc{Torvalds} lors de la conférence LinuxCon Europe en 2014 à Düsseldorf.]{%
+		%	\includegraphics[width=\linewidth]{./Images/People/linus-torvalds-linuxcon-europe-2014.jpg}}%
+		\href{https://fr.wikipedia.org/wiki/Linus_Torvalds}{Linus \textsc{Torvalds}}
+		est un informaticien d'origine finlandaise reconnu pour avoir créé en 1991
+		le \href{https://fr.wikipedia.org/wiki/Noyau_Linux}{noyau \textsc{Linux}}.
+		Depuis, il continue d'en diriger le
+		\href{https://fr.wikipedia.org/wiki/D\%C3\%A9veloppement_de_logiciel}{développement}
+		où, à l'instar
+		de \href{https://fr.wikipedia.org/wiki/Guido_van_Rossum}{Guido van Rossum} pour \textsc{Python},
+		de \href{https://fr.wikipedia.org/wiki/Larry_Wall}{Larry Wall} pour \textsc{Perl}
+		et de \href{https://fr.wikipedia.org/wiki/Mark_Shuttleworth}{Mark Shuttleworth}
+		pour \textsc{Ubuntu},
+		il en est considéré comme le
+		« \href{https://fr.wikipedia.org/wiki/Benevolent_Dictator_for_Life}{dictateur bienveillant} ».},
+	localglossary={local-6}
+}
+\newglossaryentry{internet-main}{
+	name={Internet},
+	description={%
+		L'\href{https://fr.wikipedia.org/wiki/Internet}{Internet} 
+		est un ensemble de standards et de technologies qui permettent de relier 
+		les ordinateurs et les réseaux entre eux.},
+	localglossary={local-7}
+}
+\newglossaryentry{web-main}{
+	name={Web},
+	description={%
+		Le \href{https://fr.wikipedia.org/wiki/World_Wide_Web}{\textit{World Wide Web}}, 
+		parfois aussi appelé la \emph{Toile}, est une des applications d'Internet 
+		qui permet de lier et consulter à distance des documents (par ex. un journal), des interfaces 
+		d'applications (par ex. un service de réservation), des données (par ex. la météo d'une ville), 
+		etc.},
+	localglossary={local-7}
+}
+\newglossaryentry{social-network-main}{
+	name={réseau social},
+	plural={réseaux sociaux},
+	description={%
+		Un \href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau_social}{réseau social} 
+		associé au Web est relatif à une application qui utilise les sciences 
+		et technologies de l'information et de la communication pour mettre en relation des personnes. 
+		Hors monde numérique, un réseau social est un groupement de personnes qui a un sens.},
+	localglossary={local-7}
+}
+\newglossaryentry{social-web-main}{
+	name={Web social},
+	description={%
+		Le \href{https://fr.wikipedia.org/wiki/Web_social}{Web social} est une évolution particulière 
+		du Web caractérisée par l'interaction entre les utilisateurs 
+		et la production de contenus par ces derniers.},
+	localglossary={local-7}
+}
+\newglossaryentry{link-main}{
+	name={lien},
+	plural={liens},
+	description={%
+		Un lien est un élément qui établit des liaisons. Lorsqu'on parle de graphes, les liens 
+		sont ce qui relie les différents sommets ou nœuds.},
+	localglossary={local-7}
+}
+\newglossaryentry{graph-main}{
+	name={graphe},
+	plural={graphes},
+	description={%
+		Un \href{https://fr.wikipedia.org/wiki/Th\%C3\%A9orie_des_graphes}{graphe} 
+		est un type de structure de données composé de sommets (aussi appelés points, noeuds) 
+		reliés par des liens (aussi appelés arrêtes ou arcs).},
+	localglossary={local-7}
+}
+\newglossaryentry{oriented-graph-main}{
+	name={graphe orienté},
+	plural={graphes orientés},
+	description={%
+		Si les liens d'un graphe sont orientés (l'orientation est matérialisée par des flèches), 
+		cela signifie que la relation va dans un seul sens, elle est asymétrique.
+		Le graphe est donc orienté.},
+	localglossary={local-7}
+}
+\newglossaryentry{labeled-graph-main}{
+	name={graphe étiqueté},
+	plural={graphes étiquetés},
+	description={%
+		Il s'agit d'un graphe dont les liens sont étiquetés par un chiffre, un symbole, une lettre, etc.},
+	localglossary={local-7}
+}
+\newglossaryentry{adjacency-matrix-main}{
+	name={matrice d'adjascence},
+	plural={matrices d'adjascence},
+	description={%
+		Une \href{https://fr.wikipedia.org/wiki/Matrice_d'adjacence}{matrice d'adjacence} 
+		est un outil mathématique qui permet de modéliser sous forme d'un tableau (ou matrice) 
+		les liens d'un graphe et donc, dans le conexte présent, les relations d'un réseau.},
+	localglossary={local-7}
+}
+\newglossaryentry{intermediation-main}{
+	name={centralité d'intermédiarité},
+	description={%
+		La \href{https://fr.wikipedia.org/wiki/Centralit\%C3\%A9\#Centralit.C3.A9_d.27interm.C3.A9diarit.C3.A9}{centralité d'intermédiarité} 
+		est, parmi d'autres, un moyen de mesure de la centralité du sommet 
+		d'un graphe. Elle capture le nombre de fois où un noeud agit, dans un graphe, 
+		comme un point de passage le long du plus court chemin entre deux autres nœuds.},
+	localglossary={local-7}
+}
+\newglossaryentry{cloud-main}{
+	name={\textit{cloud}},
+	description={%
+		Le \textit{cloud} signifie, qu'au lieu de stocker ses données et d'effectuer ses calculs 
+		sur son propre ordinateur, les deux sont confiés à un centre de données se trouvant 
+		sur Internet.},
+	localglossary={local-8}
+}
+\newglossaryentry{datacenter-main}{
+	name={\textit{Data center}},
+	description={%
+		Un \href{https://fr.wikipedia.org/wiki/Centre_de_donn\%C3\%A9es}{\textit{Data center}} 
+		ou centre de données en français est un site physique sur lequel se trouvent regroupés des équipements 
+		constituants des systèmes d’information : ordinateurs, baies de stockage, équipements réseaux 
+		et de télécommunications, etc.},
+	localglossary={local-8}
+}
+\newglossaryentry{cloudsafety-main}{
+	name={sûreté},
+	description={%
+		La sûreté de fonctionnement d’un système informatique est son aptitude à remplir 
+		ses fonctions en dépit de pannes matérielles ou logicielles.},
+	localglossary={local-8}
+}
+\newglossaryentry{system-engineer-main}{
+	name={ingénieur système},
+	description={%
+		Métier de l'informatique qui prend en charge tout ce qui relève de l'exploitation 
+		des infrastructures informatiques matérielles et logicielles.},
+	localglossary={local-8}
+}
+\newglossaryentry{externalizing-main}{
+	name={externaliser},
+	description={%
+		Désigne le fait qu'une entreprise fasse appel à un prestataire extérieur pour certains pans 
+		de son fonctionnement plutôt que d'embaucher en interne un employé ayant la compétence 
+		requise (par exemple pour le ménage, la comptabilité ou l'accueil téléphonique). 
+		Avec le numérique, il devient plus facile et plus rentable d'externaliser 
+		beaucoup de services.},
+	localglossary={local-8}
+}
+\newglossaryentry{bitcoin-main}{
+	name={\textit{bitcoin}},
+	plural={\textit{bitcoins}},
+	description={%
+		Le \href{https://fr.wikipedia.org/wiki/Bitcoin}{\textit{bitcoin}} est une monnaie planétaire, 
+		\href{https://fr.wikipedia.org/wiki/Cryptographie}{cryptographique}, 
+		fondée sur un système de transaction et contrôle, 
+		la \href{https://fr.wikipedia.org/wiki/Blockchain}{\textit{blockchain}}.},
+	localglossary={local-9}
+}
+\newglossaryentry{blockchain-main}{
+	name={\textit{blockchain}},
+	plural={\textit{blockchains}},
+	description={%
+		Technologie de stockage et partage d'information avec un protocole de gestion 
+		de données numériques, qui est :
+		\begin{itemize}\jazzitem
+		\item transparente, car chacun peut consulter l'ensemble des échan\-ges, présents et passés ;
+		\item sans organe de contrôle, car établie sur des échanges de 
+		\href{https://fr.wikipedia.org/wiki/Pair_\%C3\%A0_pair}{pair-à-pair} 
+		--- \textit{peer-to-peer} en anglais ;
+		\item infalsifiable et sécurisée, car différents exemplaires existent simultanément 
+		à de nombreux endroits ce qui empêche d'en modifier un ou quelques-uns.
+		\end{itemize}},
+	localglossary={local-9}
+}
+\newglossaryentry{cryptographicmoney-main}{
+	name={monnaie cryptographique},
+	description={%
+		Monnaie électronique associée aux principes 
+		de la cryptographie mathématique pour valider les transactions et émettre la monnaie elle-même.},
+	localglossary={local-9}
+}
+\newglossaryentry{semantic-web-main}{
+	name={Web sémantique},
+	description={%
+		Extension du Web --- à savoir syntaxique --- dans laquelle l'information se voit associée 
+		à un sens bien défini, améliorant la capacité des logiciels à traiter l'information 
+		disponible sur le Web. Le Web sémantique repose sur des standards du 
+		\href{https://www.w3c.fr/}{W3C} (organisme international de normalisation du Web) comme RDF 
+		(\href{https://fr.wikipedia.org/wiki/Resource_Description_Framework}{Resource Description Framework}). 
+		L'expression a été inventée par \href{https://fr.wikipedia.org/wiki/Tim_Berners-Lee}{Tim Berners-Lee}, 
+		inventeur du Web et directeur du W3C.},
+	localglossary={local-10}
+}
+\newglossaryentry{ontology-main}{
+	name={ontologie},
+	plural={ontologies},
+	description={%
+		Ensemble structuré de tous les termes et concepts de même que de leurs relations qui entrent 
+		dans la description d'un domaine de connaissance. Une ontologie a pour but de permettre 
+		l'automatisation de raisonnements à propos des objets du domaine concerné. 
+		« L'ontologie est aux données ce que la grammaire est au langage » 
+		(\href{https://fr.wikipedia.org/wiki/Ontologie_(informatique)}{\faWikipediaW}).},
+	localglossary={local-10}
+}
+\newglossaryentry{expert-system-main}{
+	name={système expert},
+	plural={systèmes experts},
+	description={%
+		De manière générale, c'est un outil capable de reproduire les mécanismes cognitifs d'un expert, 
+		dans un domaine particulier. Sur ce sujet voir aussi la vidéo de Nicolas P. \textsc{Rougier} : 
+		\href{./Videos/Chapter03/vidIII-01-ia-HD.mp4}{Enjeux et histoire de l'intelligence artificielle}.},
+	localglossary={local-10}
+}
+\newglossaryentry{data-modelling-main}{
+	name={modélisation des données},
+	description={%
+		Représentation abstraite, le modèle de données ne définit pas seulement la structure de données 
+		mais aussi ce que les données veulent vraiment signifier (sémantique).},
+	localglossary={local-10}
+}
+\newglossaryentry{logical-ai-main}{
+	name={intelligence artificielle logique},
+	description={%
+		Se référer aux explications sur ce courant de l'intelligence artificielle dans la vidéo 
+		de Nicolas P. \textsc{Rougier} : 
+		\href{./Videos/Chapter03/vidIII-01-ia-HD.mp4}{Enjeux et histoire de l'intelligence artificielle}.},
+	localglossary={local-10}
+}
+\newglossaryentry{preemptive-right-main}{
+	name={droit préemptif},
+	description={%
+		Sur ce sujet voir la vidéo de Daniel \textsc{Le Metayer} 
+		sur \href{./Videos/Chapter01/vidI-06-law-HD.mp4}{le numérique, le droit et la vie privée}.},
+	localglossary={local-10}
+}
+\newglossaryentry{discrete-main}{
+	name={discret},
+	plural={discrets},
+	description={%
+		Un objet est dit \emph{discret} lorsque ses points sont écartés les uns des autres, le contraire 
+		étant dénommé un objet continu. L'opposition du continu et du discret est un thème philosophique 
+		important déjà interrogé par la philosophie grecque.},
+	localglossary={local-10}
+}
+\newglossaryentry{digital-main}{
+	name={digital},
+	description={%
+		Anglicisme souvent employé comme synonyme de numérique. Pour en savoir plus sur le débat 
+		digital \textit{vs.} numérique : \url{http://www.blogdumoderateur.com/numerique-ou-digital}.},
+	localglossary={local-10}
+}
+\newglossaryentry{principia-mathematica-main}{
+	name={\textit{Principia mathematica}},
+	description={%
+		Œuvre en trois volumes d'Alfred \textsc{North Whitehead} et Bertrand \textsc{Russell}, 
+		publiés en 1910-1913, \href{https://fr.wikipedia.org/wiki/Principia_Mathematica}{Principia mathematica} 
+		a pour sujet les fondements des mathématiques 
+		et est considérée comme un des livres les plus influents de l'histoire de la logique.},
+	localglossary={local-11}
+}
+\newglossaryentry{perceptron-main}{
+	name={perceptron},
+	plural={perceptrons},
+	description={%
+		Inventé en 1957 par \href{https://fr.wikipedia.org/wiki/Frank_Rosenblatt}{Frank \textsc{Rosenblatt}}
+		au laboratoire d'aéronautique 
+		de l'Université Cornell, le \href{https://fr.wikipedia.org/wiki/Perceptron}{perceptron} 
+		peut être vu comme le type de 
+		\href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau_de_neurones_artificiels}{réseau de neurones} 
+		le plus simple.},
+	localglossary={local-11}
+}
+\newglossaryentry{deep-blue-main}{
+	name={Deep Blue},
+	description={%
+		\href{https://fr.wikipedia.org/wiki/Deep_Blue}{\textit{Deep Blue}} est un superordinateur 
+		spécialisé dans le jeu d'échecs par adjonction 
+		de circuits spécifiques, développé par IBM au début des années 1990.},
+	localglossary={local-11}
+}
+\newglossaryentry{alan-turing-main}{
+	name={Alan \textsc{Turing}},
+	description={%
+		\href{https://fr.wikipedia.org/wiki/Alan_Turing}{Alan \textsc{Turing}} est un mathématicien 
+		et cryptologue britannique (1912-1954), auteur de travaux qui fondent scientifiquement 
+		l'informatique. Pour résoudre le problème fondamental de la décidabilité en arithmétique, 
+		il présente en 1936 une expérience de pensée que l'on nommera ensuite 
+		\href{https://fr.wikipedia.org/wiki/Machine_de_Turing}{machine de Turing} 
+		et des concepts de programmation et de programme, qui prendront tout leur sens 
+		avec la diffusion des ordinateurs dans la seconde moitié du XX\up{e} siècle.},
+	localglossary={local-11}
+}
+\newglossaryentry{learning-algorithm-main}{
+	name={algorithme d'apprentissage},
+	plural={algorithmes d'apprentissage},
+	description={%
+		Cela correspond à des algorithmes qui ajustent les paramètres de leurs calculs 
+		en fonction des exemples qui leur sont donnés ou des retours (positifs ou négatifs, 
+		comme des récompenses ou punitions) issus de calculs précédents. 
+		Cela permet d'adapter leur fonctionnement aux données fournies.},
+	localglossary={local-12}
+}
+\newglossaryentry{optimisation-algorithm-main}{
+	name={algorithme d'optimisation},
+	plural={algorithmes d'optimisation},
+	description={%
+		Famille d'algorithmes qui résolvent un problème par améliorations successives : 
+		on part d'une solution initiale par défaut, on la modifie un peu dans un sens ou dans un autre 
+		et si une de ses modifications améliore la solution, on réitère le procédé. 
+		Un critère de gain à maximiser ou de coût à minimiser est donc à la base de ces méthodes.},
+	localglossary={local-12}
+}
+\newglossaryentry{trial-error-main}{
+	name={optimisation par essais/erreurs},
+	description={%
+		Cela correspond à un type d'algorithmes qui ajustent les paramètres par « renforcement », 
+		une solution est testée et en fonction du retour positif ou négatif, un ajustement se fait 
+		pour aller vers un meilleur comportement. Le fait que le retour se passe après l'action 
+		qui a pu en être la cause, parfois bien après, impose d'avoir une représentation interne 
+		de ce qui se passe au cours du temps.},
+	localglossary={local-12}
+}
+\newglossaryentry{modelling-main}{
+	name={modélisation},
+	plural={modélisations},
+	description={%
+		Représentation d'un objet réel ou abstrait, en éliminant les détails difficiles ou accessoires 
+		à reproduire, afin d’obtenir un résultat plus net à interpréter, un modèle est validé 
+		par son adéquation à des données (différentes de celles qui ont pu aider à le construire), 
+		donc à prédire des faits nouveaux ; il peut-être mathématique ou informatique, 
+		mais aussi être un objet tangible (une maquette, un animal modèle 
+		pour certains fonctionnements biologiques).},
+	localglossary={local-12}
+}
+\newglossaryentry{brain-main}{
+	name={cerveau},
+	plural={cerveaux},
+	description={%
+		 C'est l'organe principal du système nerveux des animaux, il régule les autres systèmes 
+		 d'organes du corps, en agissant sur les muscles ou les glandes, et constitue le siège 
+		 des fonctions cognitives (mémoire, apprentissage, planification, etc.) ; 
+		 cette cognition n'existe que parce le cerveau est incarné dans un corps 
+		 en interaction avec un environnement.},
+	localglossary={local-12}
+}
+\newglossaryentry{robotics-two-main}{% Déjà employé dans local-05
+	name={robotique},
+	%plural={},
+	description={%
+		Appareil effectuant, grâce à un système de commandes automatiques, une tâche précise 
+		pour laquelle il a été conçu dans le domaine industriel, scientifique ou domestique. 
+		Le mot « robot » a été créé (dans une 
+		\href{https://fr.wikipedia.org/wiki/Robot\#.C3.89tymologie}{œuvre de fiction}) 
+		à partir du mot tchèque « \textit{robota} » qui signifie « travail, besogne, corvée ».},
+	localglossary={local-13}
+}
+\newglossaryentry{scientific-lock-main}{
+	name={verrou scientifique},
+	plural={verrous scientifiques},
+	description={%
+		On parle de verrou scientifique pour un résultat pas encore obtenu mais dont dépendent 
+		d'autres résultats scientifiques ou techniques. Cela constitue une contrainte à lever 
+		pour qu'un domaine de recherche avance.},
+	localglossary={local-13}
+}
+\newglossaryentry{ethics-main}{
+	name={éthique},
+	plural={éthiques},
+	description={%
+		L'éthique est une réflexion de fond sur un sujet, qui permet ensuite de proposer des normes, 
+		limites et devoirs, dans le respect de certaines valeurs. 
+		La morale désigne l'ensemble de ces règles établies.},
+	localglossary={local-13}
+}
+\newglossaryentry{cobot-main}{
+	name={cobot},
+	plural={cobots},
+	description={%
+		S'emploie comme contraction de « robot collaboratif » et désigne un robot en interaction réelle, 
+		directe ou télé-opérée avec un opérateur ou un utilisateur humain.},
+	localglossary={local-13}
+}
+\newglossaryentry{anonymize-main}{
+	name={anonymiser},
+	%plural={},
+	description={%
+		 Garantir qu'un jeu de données contenant des informations personnelles ne permet pas 
+		 d'identifier des individus, donc évite d'accéder à des informations privées 
+		 et confidentielles les concernants.},
+	localglossary={local-13}
+}
+\newglossaryentry{encrypt-main}{
+	name={crypter},
+	%plural={},
+	description={%
+		 Anglicisme employé pour le mot \emph{chiffrer}, c'est-à-dire opération qui vise 
+		 à rendre secret un document 
+		 par \href{https://fr.wikipedia.org/wiki/Chiffrement}{chiffrement}, pour que sa compréhension 
+		 soit impossible à toute personne qui n'a pas la clé de (dé)chiffrement.},
+	localglossary={local-13}
+}
+\newglossaryentry{machine-learning-main}{
+	name={\textit{machine learning}},
+	%plural={},
+	description={%
+		L'apprentissage automatique ou \textit{machine learning} correspond à des algorithmes 
+		qui ajustent les paramètres de leurs calculs en fonction des exemples qui leur sont donnés. 
+		Cela permet d'adapter leur fonctionnement aux données fournies en entrée d'algorithme.},
+	localglossary={local-14}
+}
+\newglossaryentry{deap-learning-main}{
+	name={\textit{deap learning}},
+	description={%
+		L'apprentissage profond ou \textit{deep learning} est une architecture qui associe 
+		en cascade plusieurs couches d'algorithmes de ce type pour hiérarchiser le problème 
+		et obtenir des performances bien plus importantes.},
+	localglossary={local-14}
+}
+\newglossaryentry{artificial-neuron-main}{
+	name={neurone artificiel},
+	plural={neurones artificiels},
+	description={%
+		Un neurone artificiel est une fonction qui combine des entrées pour calculer si la valeur 
+		de la sortie est plutôt élevée ou basse au regard d'un seuil défini, 
+		son calcul étant ajusté par des paramètres.},
+	localglossary={local-14}
+}
+\newglossaryentry{neuron-network-main}{
+	name={réseau de neurones artificiels},
+	plural={réseaux de neurones artificiels},
+	description={%
+		Un réseau de neurones fait référence à l'assemblage d'un grand nombre 
+		de neurones (sous-entendu artificiels) pour permettre de faire 
+		un calcul entrée/sortie très sophistiqué.},
+	localglossary={local-14}
+}
+\newglossaryentry{GPU-main}{
+	name={GPU (\textit{Graphical Processing Unit})},
+	%plural={},
+	description={%
+		 Un GPU est un processeur supplémentaire dans nos ordinateurs dans lequel tous les calculs 
+		 liés aux opérations graphiques d'affichage sont pré-cablés pour accélérer le traitement.},
+	localglossary={local-14}
+}
+\newglossaryentry{computer-vision-main}{
+	name={vision par ordinateur},
+	%plural={},
+	description={%
+		 Un ensemble d'algorithmes qui partent des valeurs 
+		 des \href{https://fr.wikipedia.org/wiki/Pixel}{pixels} des images pour en extraire 
+		 des caractéristiques, localiser les objets qui y sont vus et les étiqueter.},
+	localglossary={local-14}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

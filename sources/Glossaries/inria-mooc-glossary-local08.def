@@ -1,0 +1,58 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{cloud}{
+	type=local08,
+	name={\textit{cloud}},
+	description={%
+		Le \textit{cloud} signifie, qu'au lieu de stocker ses données et d'effectuer ses calculs 
+		sur son propre ordinateur, les deux sont confiés à un centre de données se trouvant 
+		sur Internet.},
+	localglossary={local-8}
+}
+\newglossaryentry{datacenter}{
+	type=local08,
+	name={\textit{Data center}},
+	description={%
+		Un \href{https://fr.wikipedia.org/wiki/Centre_de_donn\%C3\%A9es}{\textit{Data center}} 
+		ou centre de données en français est un site physique sur lequel se trouvent regroupés des équipements 
+		constituants des systèmes d’information : ordinateurs, baies de stockage, équipements réseaux 
+		et de télécommunications, etc.},
+	localglossary={local-8}
+}
+\newglossaryentry{cloudsafety}{
+	type=local08,
+	name={sûreté},
+	description={%
+		La sûreté de fonctionnement d’un système informatique est son aptitude à remplir 
+		ses fonctions en dépit de pannes matérielles ou logicielles.},
+	localglossary={local-8}
+}
+\newglossaryentry{system-engineer}{
+	type=local08,
+	name={ingénieur système},
+	description={%
+		Métier de l'informatique qui prend en charge tout ce qui relève de l'exploitation 
+		des infrastructures informatiques matérielles et logicielles.},
+	localglossary={local-8}
+}
+\newglossaryentry{externalizing}{
+	type=local08,
+	name={externaliser},
+	description={%
+		Désigne le fait qu'une entreprise fasse appel à un prestataire extérieur pour certains pans 
+		de son fonctionnement plutôt que d'embaucher en interne un employé ayant la compétence 
+		requise (par exemple pour le ménage, la comptabilité ou l'accueil téléphonique). 
+		Avec le numérique, il devient plus facile et plus rentable d'externaliser 
+		beaucoup de services.},
+	localglossary={local-8}
+}
+

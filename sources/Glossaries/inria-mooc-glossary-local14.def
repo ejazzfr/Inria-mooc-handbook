@@ -1,0 +1,70 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{machine-learning}{
+	type=local14,
+	name={\textit{machine learning}},
+	%plural={},
+	description={%
+		L'apprentissage automatique ou \textit{machine learning} correspond à des algorithmes 
+		qui ajustent les paramètres de leurs calculs en fonction des exemples qui leur sont donnés. 
+		Cela permet d'adapter leur fonctionnement aux données fournies en entrée d'algorithme.},
+	localglossary={local-14}
+}
+\newglossaryentry{deap-learning}{
+	type=local14,
+	name={\textit{deap learning}},
+	description={%
+		L'apprentissage profond ou \textit{deep learning} est une architecture qui associe 
+		en cascade plusieurs couches d'algorithmes de ce type pour hiérarchiser le problème 
+		et obtenir des performances bien plus importantes.},
+	localglossary={local-14}
+}
+\newglossaryentry{artificial-neuron}{
+	type=local14,
+	name={neurone artificiel},
+	plural={neurones artificiels},
+	description={%
+		Un neurone artificiel est une fonction qui combine des entrées pour calculer si la valeur 
+		de la sortie est plutôt élevée ou basse au regard d'un seuil défini, 
+		son calcul étant ajusté par des paramètres.},
+	localglossary={local-14}
+}
+\newglossaryentry{neuron-network}{
+	type=local14,
+	name={réseau de neurones artificiels},
+	plural={réseaux de neurones artificiels},
+	description={%
+		Un réseau de neurones fait référence à l'assemblage d'un grand nombre 
+		de neurones (sous-entendu artificiels) pour permettre de faire 
+		un calcul entrée/sortie très sophistiqué.},
+	localglossary={local-14}
+}
+\newglossaryentry{GPU}{
+	type=local14,
+	name={GPU (\textit{Graphical Processing Unit})},
+	%plural={},
+	description={%
+		 Un GPU est un processeur supplémentaire dans nos ordinateurs dans lequel tous les calculs 
+		 liés aux opérations graphiques d'affichage sont pré-cablés pour accélérer le traitement.},
+	localglossary={local-14}
+}
+\newglossaryentry{computer-vision}{
+	type=local14,
+	name={vision par ordinateur},
+	%plural={},
+	description={%
+		 Un ensemble d'algorithmes qui partent des valeurs 
+		 des \href{https://fr.wikipedia.org/wiki/Pixel}{pixels} des images pour en extraire 
+		 des caractéristiques, localiser les objets qui y sont vus et les étiqueter.},
+	localglossary={local-14}
+}
+

@@ -1,0 +1,109 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{internet}{
+	type=local07,
+	name={Internet},
+	description={%
+		L'\href{https://fr.wikipedia.org/wiki/Internet}{Internet} 
+		est un ensemble de standards et de technologies qui permettent de relier 
+		les ordinateurs et les réseaux entre eux.},
+	localglossary={local-7}
+}
+\newglossaryentry{web}{
+	type=local07,
+	name={Web},
+	description={%
+		Le \href{https://fr.wikipedia.org/wiki/World_Wide_Web}{\textit{World Wide Web}}, 
+		parfois aussi appelé la \emph{Toile}, est une des applications d'Internet 
+		qui permet de lier et consulter à distance des documents (par ex. un journal), des interfaces 
+		d'applications (par ex. un service de réservation), des données (par ex. la météo d'une ville), 
+		etc.},
+	localglossary={local-7}
+}
+\newglossaryentry{social-network}{
+	type=local07,
+	name={réseau social},
+	plural={réseaux sociaux},
+	description={%
+		Un \href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau_social}{réseau social} 
+		associé au Web est relatif à une application qui utilise les sciences 
+		et technologies de l'information et de la communication pour mettre en relation des personnes. 
+		Hors monde numérique, un réseau social est un groupement de personnes qui a un sens.},
+	localglossary={local-7}
+}
+\newglossaryentry{social-web}{
+	type=local07,
+	name={Web social},
+	description={%
+		Le \href{https://fr.wikipedia.org/wiki/Web_social}{Web social} est une évolution particulière 
+		du Web caractérisée par l'interaction entre les utilisateurs 
+		et la production de contenus par ces derniers.},
+	localglossary={local-7}
+}
+\newglossaryentry{link}{
+	type=local07,
+	name={lien},
+	plural={liens},
+	description={%
+		Un lien est un élément qui établit des liaisons. Lorsqu'on parle de graphes, les liens 
+		sont ce qui relie les différents sommets ou nœuds.},
+	localglossary={local-7}
+}
+\newglossaryentry{graph}{
+	type=local07,
+	name={graphe},
+	plural={graphes},
+	description={%
+		Un \href{https://fr.wikipedia.org/wiki/Th\%C3\%A9orie_des_graphes}{graphe} 
+		est un type de structure de données composé de sommets (aussi appelés points, noeuds) 
+		reliés par des liens (aussi appelés arrêtes ou arcs).},
+	localglossary={local-7}
+}
+\newglossaryentry{oriented-graph}{
+	type=local07,
+	name={graphe orienté},
+	plural={graphes orientés},
+	description={%
+		Si les liens d'un graphe sont orientés (l'orientation est matérialisée par des flèches), 
+		cela signifie que la relation va dans un seul sens, elle est asymétrique.
+		Le graphe est donc orienté.},
+	localglossary={local-7}
+}
+\newglossaryentry{labeled-graph}{
+	type=local07,
+	name={graphe étiqueté},
+	plural={graphes étiquetés},
+	description={%
+		Il s'agit d'un graphe dont les liens sont étiquetés par un chiffre, un symbole, une lettre, etc.},
+	localglossary={local-7}
+}
+\newglossaryentry{adjacency-matrix}{
+	type=local07,
+	name={matrice d'adjascence},
+	plural={matrices d'adjascence},
+	description={%
+		Une \href{https://fr.wikipedia.org/wiki/Matrice_d'adjacence}{matrice d'adjacence} 
+		est un outil mathématique qui permet de modéliser sous forme d'un tableau (ou matrice) 
+		les liens d'un graphe et donc, dans le conexte présent, les relations d'un réseau.},
+	localglossary={local-7}
+}
+\newglossaryentry{intermediation}{
+	type=local07,
+	name={centralité d'intermédiarité},
+	description={%
+		La \href{https://fr.wikipedia.org/wiki/Centralit\%C3\%A9\#Centralit.C3.A9_d.27interm.C3.A9diarit.C3.A9}{centralité d'intermédiarité} 
+		est un moyen de mesure, parmi d'autres, de la centralité du sommet 
+		d'un graphe. Elle capture le nombre de fois où un noeud agit, dans un graphe, 
+		comme un point de passage le long du plus court chemin entre deux autres nœuds.},
+	localglossary={local-7}
+}
+

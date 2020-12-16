@@ -1,0 +1,105 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{OS}{
+	type=local03,
+	name={OS/système d'exploitation},
+	plural={systèmes d'exploitation},
+	description={%
+		OS, acronyme de \textit{Oprerating system}, est l'expression anglophone signifiant
+		« \href{https://fr.wikipedia.org/wiki/Syst\%C3\%A8me_d'exploitation}{système d'exploitation} ».
+		Il s'agit d'un ensemble de programmes qui gèrent l'utilisation des ressources matérielles
+		d'un ordinateur : stockage des
+		\href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_(informatique)}{mémoires} à accès rapide et
+		de masse des \href{https://fr.wikipedia.org/wiki/Disque_dur}{disques durs}, ordonnancement
+		des calculs du \href{https://fr.wikipedia.org/wiki/Processeur}{processeur}, communication	avec
+		les \href{https://fr.wikipedia.org/wiki/P\%C3\%A9riph\%C3\%A9rique_informatique}{périphériques}
+		ou administration du \href{https://fr.wikipedia.org/wiki/R\%C3\%A9seau}{réseau}.
+		Le système d'exploitation accepte ou refuse ces demandes, puis réserve les ressources
+		en question pour éviter que leur utilisation n'interfère avec d'autres requêtes provenant
+		d'autres logiciels.},
+	localglossary={local-3}
+}
+\newglossaryentry{application}{
+	type=local03,
+	name={application},
+	plural={applications},
+	description={%
+		Une \textit{application} ou un \textit{applicatif} est, dans le domaine informatique,
+		un \href{https://fr.wikipedia.org/wiki/Programme_informatique}{programme}
+		--- ou un ensemble \href{https://fr.wikipedia.org/wiki/Logiciel}{logiciel} ---
+		directement manipulé par l'utilisateur pour réaliser une tâche ou un ensemble
+		de tâches élémentaires d'un même domaine formant un tout. Typiquement,
+		un \href{https://fr.wikipedia.org/wiki/\%C3\%89diteur_de_texte}{éditeur de texte},
+		un \href{https://fr.wikipedia.org/wiki/Navigateur_web}{navigateur Web},
+		un \href{https://fr.wikipedia.org/wiki/Client_de_messagerie}{client de messagerie},
+		une \href{https://fr.wikipedia.org/wiki/Visionneuse_d\%27images}{visionneuse d'images},
+		un \href{https://fr.wikipedia.org/wiki/Lecteur_multim\%C3\%A9dia}{lecteur multimédia},
+		un \href{https://fr.wikipedia.org/wiki/Jeu_vid\%C3\%A9o}{jeu vidéo}, sont des applications.},
+	localglossary={local-3}
+}
+\newglossaryentry{memory}{
+	type=local03,
+	name={mémoire},
+	description={%
+		Dispositif électronique qui sert à stocker des données (valeurs, instructions de programmes).
+		Dans un ordinateur, il existe trois grands types de mémoire externe au processeur:
+		la \href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_vive}{mémoire vive (RAM)}
+		(carte branchée sur la carte mère),
+		la \href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_morte}{mémoire morte (ROM)}
+		(circuit intégré à la carte mère)
+		et la \href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_de_masse}{mémoire de masse}
+		(disques durs, et autres supports de stockage périphérique).
+		Le processeur intègre aussi plusieurs niveaux de mémoire, notamment
+		de la \href{https://fr.wikipedia.org/wiki/M\%C3\%A9moire_cache}{mémoire cache}
+		(placée dans la puce qui contient le processeur)
+		et les \href{https://fr.wikipedia.org/wiki/Registre_de_processeur}{registres}
+		(internes au processeur).},
+	localglossary={local-3}
+}
+\newglossaryentry{virtualmemory}{
+	type=local03,
+	name={mémoire virtuelle},
+	description={%
+		Mécanisme qui permet de simuler la présence d'un type de mémoire en utilisant un autre
+		type (par exemple un disque dur). Il est utilisé par exemple pour simuler la présence
+		de mémoire vive en utilisant de la mémoire de masse. Sous \textsc{Linux}, ce type de mécanisme
+		est dénommé « \textit{swap} » où à l'installation du système d'expoitation,
+		une partition du disque dur est réservée à cet effet (on conseille souvent
+		une taille double de celle de la mémoire vive de l'ordinateur).},
+	localglossary={local-3}
+}
+\newglossaryentry{process}{
+	type=local03,
+	name={processus},
+	description={%
+		Forme que prend un programme quand il est exécuté au sein d'un système d'exploitation.
+		Une instance de processus comprend en général : un ensemble d'instructions
+		(souvent copiées dans la RAM depuis le disque dur), une place,
+		appelée \href{https://fr.wikipedia.org/wiki/Adressage_m\%C3\%A9moire}{espace d'adressage},
+		réservée en mémoire vive pour stocker les données qu'il manipule
+		et les ressources matérielles et logicielles que le programme utilise.},
+	localglossary={local-3}
+}
+\newglossaryentry{scheduler}{
+	type=local03,
+	name={ordonnanceur},
+	description={%
+		Composant logiciel du système d'exploitation qui est en charge d'allouer
+		du temps processeur aux processus. Le choix du processus élu pour s'exécuter
+		sur le processeur à un temps donné est fait par une
+		\href{https://fr.wikipedia.org/wiki/Ordonnancement_dans_les_syst\%C3\%A8mes_d'exploitation}%
+		{procédure d'ordonnancement}
+		et implique de gérer
+		les \href{https://fr.wikipedia.org/wiki/Commutation_de_contexte}{changements de contexte}.},
+	localglossary={local-3}
+}
+

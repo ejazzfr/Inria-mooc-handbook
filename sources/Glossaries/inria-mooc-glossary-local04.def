@@ -1,0 +1,218 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{IHM}{
+	type=local04,
+	name={Interface homme-machine},
+	description={%
+		Ensemble de moyens mis en œuvre pour qu'un humain puisse interagir avec une machine.
+		Par extension, l'\textsc{Ihm} est aussi le domaine de recherche qui conçoit
+		des systèmes informatiques et étudie les interactions entre êtres humains et machines.},
+	localglossary={local-4}
+}
+\newglossaryentry{cognitivesciences}{
+	type=local04,
+	name={sciences cognitives},
+	description={%
+		Sous un vocable commun, les \href{https://fr.wikipedia.org/wiki/Sciences_cognitives}{sciences
+		cognitives} regroupent l'ensemble des disciplines qui étudient les mécanismes
+		de la connaissance.},
+	localglossary={local-4}
+}
+\newglossaryentry{ergonomics}{
+	type=local04,
+	name={ergonomie},
+	description={%
+		Discipline qui étudie les interactions existantes entre les êtres humains
+		et les composantes d'un système. On y prend en compte les facteurs humains
+		pour concevoir et évaluer des tâches afin de les rendre compatibles
+		avec les besoins et les capacités des utilisateurs.},
+	localglossary={local-4}
+}
+\newglossaryentry{design}{
+	type=local04,
+	name={design},
+	description={%
+		Le \href{https://fr.wikipedia.org/wiki/Design}{design}
+		recouvre les notions de création et de conception d'un produit ou d'un système.},
+	localglossary={local-4}
+}
+\newglossaryentry{cognitivepsychology}{
+	type=local04,
+	name={psychologie cognitive},
+	description={%
+		Branche de la psychologie qui étudie spécifiquement le fonctionnement
+		de l'acquisition des connaissances chez l'être humain :
+		langage, mémoire, perception, concentration, etc.
+		La cognition --- du latin \textit{cognito} pour action de connaître ---,
+		est ainsi l'ensemble des activités mentales et mécanismes
+		qui se rapportent à la connaissance.},
+	localglossary={local-4}
+}
+\newglossaryentry{AI}{
+	type=local04,
+	name={intelligence artificielle},
+	description={%
+		L'\href{https://fr.wikipedia.org/wiki/Intelligence_artificielle}{intelligence artificielle}
+		--- IA --- est, selon
+		l'\href{https://www.larousse.fr/encyclopedie/divers/intelligence_artificielle/187257}
+		{Encyclopédie \textsc{Larousse}},
+		«~l'ensemble des théories et des techniques mises en œuvre en perspective de réaliser
+		des machines capables de simuler l'intelligence~».
+		Cela recouvre un ensemble de concepts et de technologies
+		plus qu'une discipline autonome cons\-tituée.
+		Au regard d'une définition peu précise, certains, à l'instar de la
+		\href{./Documents/Chapter01/cnil-rapport-garder-la-main-2017-12.pdf}{\textsc{Cnil}},
+		introduisent ce sujet comme « le grand mythe de notre temps »
+		(source \href{https://fr.wikipedia.org/wiki/Intelligence_artificielle}{\faWikipediaW}).},
+	localglossary={local-4}
+}
+\newglossaryentry{linguistics}{
+	type=local04,
+	name={linguistique},
+	description={%
+		Discipline qui étudie le langage et le fonctionnement des langues
+		par une approche descriptive.},
+	localglossary={local-4}
+}
+\newglossaryentry{accessibility}{
+	type=local04,
+	name={accessibilité},
+	description={%
+		Concept initialement issu du monde du handicap et désormais étendu à l'ensemble des citoyens
+		pour signifier la facilitation de l'accès dans différents domaines.
+		En informatique, on parle d'accessibilité pour désigner l'adaptation des systèmes numériques
+		et le développement d'outils spécifiques dans le cas de handicaps,
+		comme par exemple la malvoyance.},
+	localglossary={local-4}
+}
+\newglossaryentry{ubiquitoussystem}{
+	type=local04,
+	name={système ubiquitaire},
+	plural={systèmes ubiquitaires},
+	description={%
+		L'ubiquité ou l'omniprésence, est la capacité de se trouver en tout lieu
+		ou à plusieurs endroits en même temps.
+		En informatique, cela renvoie aux environnements dans lesquels ordinateurs
+		et réseaux sont intégrés au monde réel et où l'utilisateur est connecté en permanence
+		(cf. \href{https://fr.wikipedia.org/wiki/Informatique_ubiquitaire}{\faWikipediaW}).},
+	localglossary={local-4}
+}
+\newglossaryentry{usability}{
+	type=local04,
+	name={utilisabilité},
+	description={%
+		Conformément à la norme ISO 9241-11, il s'agit du «~degré selon lequel un produit peut être
+		utilisé, par des utilisateurs identifiés, pour atteindre des buts définis avec efficacité,
+		efficience et satisfaction, dans un contexte d’utilisation spécifié~».
+		L'utilisabilité possède plusieurs critères : l'\emph{\gls{effectiveness}},
+		l'\emph{\gls{efficiency}}	et la \emph{\gls{satisfaction}}.},
+	localglossary={local-4}
+}
+\newglossaryentry{ISO9241-2010}{
+	type=local04,
+	name={norme ISO 9241-2010},
+	description={%
+		%\sideglossarygraphic{%
+		%	\includegraphics[width=0.4\linewidth]{./Images/Logotype/iso-logo-red-square-1024px.png}}%
+		Cette norme ISO est directement liée aux \textsc{Ihm}.
+		«~L'ISO \href{https://www.iso.org/fr/standard/52075.html}{9241-210:2010} fournit des exigences
+		et des recommandations relatives aux principes et aux activités de conception centrée
+		sur l'opérateur humain, intervenant tout au long du cycle de vie des systèmes informatiques
+		interactifs. Elle est destinée à être utilisée par les responsables de la gestion
+		des processus de conception, et traite des manières dont les composants matériels
+		et les logiciels des systèmes interactifs permettent d'améliorer
+		l'interaction homme-système~».},
+	localglossary={local-4}
+}
+\newglossaryentry{effectiveness}{
+	type=local04,
+	name={efficacité},
+	description={%
+		Concept lié à l'atteinte du résultat prévu.},
+	localglossary={local-4}
+}
+\newglossaryentry{efficiency}{
+	type=local04,
+	name={efficience},
+	description={%
+		Terme signifiant l'atteinte d'un résultat avec le moindre effort ou le temps minimal.},
+	localglossary={local-4}
+}
+\newglossaryentry{satisfaction}{
+	type=local04,
+	name={satisfaction},
+	description={%
+		Évaluation subjective par l'utilisateur de l'interaction avec un système.},
+	localglossary={local-4}
+}
+\newglossaryentry{usercentereddesign}{
+	type=local04,
+	name={conception centrée utilisateur},
+	description={%
+		\href{https://fr.wikipedia.org/wiki/Conception_centr\%C3\%A9e_sur_l'utilisateur}{Démarche
+		de conception} où les besoins des utilisateurs sont pris en compte à chaque étape.},
+	localglossary={local-4}
+}
+\newglossaryentry{iterativedesign}{
+	type=local04,
+	name={conception itérative},
+	description={%
+		Approche de conception qui se réalise par bouclage de cycles répétés.
+		Chaque cycle permet de tester, d'adapter et d'améliorer le produit.},
+	localglossary={local-4}
+}
+\newglossaryentry{participativedesign}{
+	type=local04,
+	name={conception participative},
+	description={%
+		Démarche de conception qui fait participer les utilisateurs. Il s'agit d'une démarche centrée
+		utilisateur où est mis en avant le rôle actif de l'utilisateur.},
+	localglossary={local-4}
+}
+\newglossaryentry{codesign}{
+	type=local04,
+	name={co-conception},
+	description={%
+		Approche également appelée \emph{co-design}.
+		Il s'agit de développer un système en collaboration avec l'utilisateur final,
+		au-delà d'une simple validation d'étape de sa part.},
+	localglossary={local-4}
+}
+\newglossaryentry{virtualreality}{
+	type=local04,
+	name={réalité virtuelle},
+	description={%
+		L'expression «~réalité virtuelle~» --- multimédia immersif ou encore simulation ---
+		renvoie à une technologie numérique qui reproduit la présence d'un utilisateur
+		en environnement artificiel généré au moyen de logiciels.
+		Il s'agit donc d'un contexte dans lequel l'usager interagit pour vivre
+		une expérience sensorielle qui peut inclure
+		la vue, le toucher, l'ouïe et l'odorat : visuelle, haptique, sonore ou olfactive
+		(cf. \href{https://fr.wikipedia.org/wiki/R\%C3\%A9alit\%C3\%A9_virtuelle}{\faWikipediaW}).},
+	localglossary={local-4}
+}
+\newglossaryentry{augmentedreality}{
+	type=local04,
+	name={réalité augmentée},
+	description={%
+		La réalité augmentée se définit comme la superposition de l'observable physique
+		avec différents éléments (sons, ima\-ges, traitements de l'information, etc.) calculés
+		par un système informatique en temps réel.
+		Cela désigne souvent les méthodes qui incrustent de manière réaliste
+		des objets virtuels dans une séquence d'images.
+		Néanmoins, cela s'applique aussi bien à toutes les perceptions proprioceptives :
+		visuelles, comme tactiles ou auditives ---
+		(voir
+		\href{https://fr.wikipedia.org/wiki/R\%C3\%A9alit\%C3\%A9_augment\%C3\%A9e}{\faWikipediaW}).},
+	localglossary={local-4}
+}
+

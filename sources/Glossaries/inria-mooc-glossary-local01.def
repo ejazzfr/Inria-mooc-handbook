@@ -1,0 +1,72 @@
+% Glossary / Glossaire
+%---------------------------------------------------------------------------------------------------
+%
+% TO AVOID SPURIOUS SPACE AT THE END OF THE DESCRIPTION FIELD,
+% PLEASE ADD A % SIGN IF NOT IMMEDIATLY FOLLOWED BY A CLOSING PARENTHESIS!
+%
+% THE ORDER OF TERMS IN THIS FILE IS DONE RELATIVE TO THE ORDER
+% OF THE LOCAL/CONTEXTUAL GLOSSARIES CALLING AND DISPLAYING
+%
+% THE ENTRY LABELS ARE DEFINED IN ENGLISH TO AVOID FRENCH ISSUES WITH ACCENTS
+%
+\newglossaryentry{motherboard}{
+	type=local01,
+	name={carte mère},
+	plural={cartes mères},
+	%text={carte mère},
+	description={%
+		Circuit imprimé qui rassemble un ensemble diversifié de connecteurs et de ports (connectique
+		dédiée de certaines fonctionalités) permettant d'y agréger les différents composants
+		de l'ordinateur (processeur, cartes mémoire, carte graphique, dis\-ques durs
+		et tout autre périphérique) et d'assurer leur liaison à travers des circuits
+		imprimés dont le comportement est piloté
+		par le \href{https://fr.wikipedia.org/wiki/BIOS_(informatique)}{\textsc{BIOS}},
+		programme contenu dans la mémoire «~morte~» (ROM --- \textit{Read-Only Memory})
+		et lancé au démarrage pour notamment détecter et configurer tous les éléments connectés.},
+	localglossary={local-1}
+}
+\newglossaryentry{peripheral}{
+	type=local01,
+	name={périphérique},
+	sort={peripherique},
+	plural={périphériques},
+	description={%
+		Dispositif électronique connecté à un ordinateur, plus précisément sur un des ports dédiés
+		de la carte mère.},
+	localglossary={local-1}
+}
+\newglossaryentry{port}{
+	type=local01,
+	name={port},
+	plural={ports},
+	description={%
+		Prise/connecteur permettant de brancher un périphérique à un ordinateur. Les ports sont placés
+		sur la carte mère qui assure la liaison avec les autres périphériques et le processeur.},
+	localglossary={local-1}
+}
+\newglossaryentry{processor}{
+	type=local01,
+	name={processeur},
+	plural={processeurs},
+	description={%
+		Processeur ou CPU, pour \textit{Central Processing Unit}. Dispositif électronique de
+		calcul chargé d'exécuter les différentes instructions d'un programme. Ce faisant, les données
+		numériques sont traitées, manipulées et échangées avec les autres composants de l'ordinateur
+		--- \gls{RAM} (RAM ---  \textit{Random Access Memory}), disques durs et autres périphériques
+		--- \textit{via} la \gls{motherboard}. Quand le processeur est construit sur un unique
+		circuit intégré, on parle de microprocesseur.},
+	localglossary={local-1}
+}
+\newglossaryentry{RAM}{
+	type=local01,
+	name={mémoire vive},
+	description={%
+		La RAM, acronyme de \textit{Random Access Memory} en anglais --- littéralement « mémoire
+		à accès aléatoire » nommée en français « mémoire vive » ---, est un circuit imprimé
+		sur une carte qui permet de stocker les données et les instructions employées dans un programme
+		informatique. Contrairement à la mémoire dite «~morte~» en français
+		--- ROM, \textit{Read-Only Memory}, littéralement « mémoire uniquement en lecture » ---,
+		le contenu de la mémoire vive peut être modifié
+		et offre donc un espace temporaire de stockage dynamique pour le processeur.},
+	localglossary={local-1}
+}
