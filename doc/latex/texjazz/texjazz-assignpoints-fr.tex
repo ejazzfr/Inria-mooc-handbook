@@ -1,0 +1,1518 @@
+% use KOMA article in twocolumn layout
+\documentclass[
+  twocolumn,%
+  fontsize=9pt,%        this gives roughly 80 characters per line in twocolumns
+  DIV=calc,%            calculate typearea
+  numbers=noendperiod%  don't print periods at end of numbers
+]{scrartcl}
+
+%- I'm neither familiar nor aware about the Koma-Script bundle... But no time to dig more in deep
+%\documentclass[
+%	a4paper,
+%  twocolumn,%
+%  fontsize=9pt,%        this gives roughly 80 characters per line in twocolumns
+%]{article}
+
+%- Utilities
+
+\usepackage{ifluatex}% I'm using LuaLaTeX (UTF-8 + listings UTF-8 for the accents)
+\usepackage{calc}%
+
+%- Font selection and set up
+
+\ifluatex
+	\usepackage{fontspec}% Codage et gestion des fontes UTF-8 en natif
+	\usepackage[activate,final]{microtype}
+	\DeclareMicrotypeSet*{smallcapsi}{
+		encoding = {OT1,T1,T2A,LY1,OT4,QX,T5,TS1,EU1,EU2},
+		shape    = {sc*,si,scit}
+	}
+	\setmainfont{Charter}[Ligatures=TeX]
+	\setsansfont{Linux Biolinum O}[Ligatures=TeX]
+	\setmonofont{Bitstream Vera Sans Mono}[Scale=MatchLowercase]%[Scale=0.95]%%
+	\usepackage{amsmath}% Must be loaded before `unicode-math' which redefines some commands
+	\usepackage[math-style=upright, bold-style=upright]{unicode-math}
+	\setmathfont{Libertinus Math}% EulerVM fonts not available in OTF/TTF
+	%\setmathfont[Scale=MatchLowercase]{Neo Euler}% this project is abandoned
+\else%
+	\usepackage{charter} % Charter as serif font (main text)
+	\usepackage{biolinum} % Linux Biolinum as sans serif font (headings)
+	\usepackage[scaled=0.85]{beramono} % Bera Mono as monospace font (code listings)
+	\usepackage{eulervm} % Euler virtual math fonts
+	\usepackage[T1]{fontenc} % T1 fontenc
+	\usepackage[final]{microtype}
+	\usepackage{amsmath,amssymb}%- Math examples
+\fi
+
+\setkomafont{captionlabel}{\sffamily\small\bfseries}
+\setkomafont{caption}{\sffamily\small}
+
+\renewcommand{\thefootnote}{\alph{footnote}}
+
+%- Language conventions and layout
+
+%\usepackage[english]{babel}
+\usepackage[english, french]{babel}%
+\selectlanguage{french}
+
+%\parskip=1pt \advance\parskip by 0pt plus 0.5pt minus 0.5pt
+%\parskip=0pt
+
+\newenvironment{itemizefr}%
+	{\itemizeFB}%
+	{\enditemizeFB}
+
+%- Loading the exercisepoints vs assignpoints package
+
+%\usepackage{exercisepoints} 
+%\usepackage[noverbose, french]{assignpoints}
+\usepackage[french]{texjazz-assignpoints}
+
+%- Loading xcolor for colors in code listings
+
+%\usepackage{xcolor}% See doc. for clashes (already loaded by assignpoints)
+%\usepackage[dvipsnames*,svgnames]{xcolor}
+
+%- (Re)defining colors not to be dependent to the "dvipanames" or "svgnames" options
+
+\definecolor{texcscolor}{RGB}{119, 41, 83}% From Radiant-MATE theme: #772953 or other : RGB(172,53,53) #ac3535
+\definecolor{emphcolor}{RGB}{38, 107, 189}% approximative Crayola NavyBlue -> #266BBD, the real one is #0066CC
+%\definecolor{commentcolor}{RGB}{59, 125, 37}% #3B7D25 Kind of green
+%\definecolor{commentcolor}{RGB}{118, 111, 100}% "Bis" kind of brown #766f64
+\definecolor{commentcolor}{RGB}{118, 94, 47}% "Café au lait" / #785e2f
+\definecolor{keywordcolor}{RGB}{128, 128, 0}% #808000 Olive #c0be51 espèce de jaune-vert
+
+%- For LaTeX keywords colored with backslash, see: 
+%-   https://tex.stackexchange.com/questions/84867/highlighting-double-backslash-using-listings-with-texcsstyle
+%-   https://tex.stackexchange.com/questions/267481/lstlisting-color-latex-commands-like-or
+
+% Setting up code listings
+% - highlight standard LaTeX keywords/commands in “purple-radiant-MATE”
+% - highlight standard and new LaTeX environment in a kind of "dark yellow-green"
+% - highlight exercisepoints/assignpoints keywords in bold navy blue
+
+\usepackage{listings}
+\usepackage{listingsutf8}
+
+\lstset{%
+	language=[LaTeX]TeX,
+	tabsize=2,
+	aboveskip={\dimexpr\parskip+2pt\relax},
+	belowskip=0pt,
+	%belowskip=\parskip,
+	lineskip=0.25pt,
+	showstringspaces=false,
+	breaklines=true,%
+	backgroundcolor=\color{black!5},
+	numbers=none,
+	xleftmargin=1ex,
+	xrightmargin=1ex,
+	frame=lines,
+	rulesep=0pt,
+	framesep=2pt,
+	framerule=0.0pt,
+	framexleftmargin=1pt,
+	framexrightmargin=1pt,
+	framextopmargin=1pt,
+	framexbottommargin=0pt,
+	numbersep=1ex,
+	numberstyle=\small\ttfamily, 
+	basicstyle=\small\ttfamily,
+	texcsstyle=*\color{texcscolor}\bfseries,
+	keywordstyle=\color{keywordcolor}\bfseries,
+	identifierstyle=\color{black}\normalfont\ttfamily,
+	commentstyle=\itshape\color{commentcolor},%
+	stringstyle=,%\color{magenta},
+	emphstyle=\color{emphcolor}\bfseries,%\emphstyle,
+	keywords={% Mainly the environment names in use (within parenthesis)
+		equal,
+ 		tabular,
+ 		enumerate,
+		itemize,
+		table,
+		figure,
+		assignpoints,
+		exercisepoints,
+		exercise,
+		quiz,
+		subexercise,
+		quizquestion,
+		cleveref,
+		caption,
+		tcolorbox
+	},%
+	alsoletter={*},
+	moretexcs={
+		newcommand*,
+		newcommand*,
+		renewcommand,
+		renewcommand*,
+		providecommand,
+		section,
+		subsection,
+		texorpdfstring,
+		iftoggle,
+		if@assignpoints@usefrenchlanguage,
+	},
+	literate=*%
+		{-}{{\textcolor{texcscolor}{-}}}{1}
+		{<}{{\textcolor{texcscolor}{<}}}{1}
+		{>}{{\textcolor{texcscolor}{>}}}{1}
+		{/}{{\textcolor{texcscolor}{/}}}{1}
+		{\&}{{\textcolor{texcscolor}{\&}}}{1}
+		{\{}{{\textcolor{texcscolor}{\{}}}{1}
+		{\}}{{\textcolor{texcscolor}{\}}}}{1}
+		{[}{{\textcolor{texcscolor}{[}}}{1}
+		{]}{{\textcolor{texcscolor}{]}}}{1}
+		{\\\\}{{\textcolor{texcscolor}{\textbackslash{}\textbackslash{}}}}{1},
+	emph={% Mainly the new command names with a preceeding backslash
+		AtBeginExercise,
+		AtEndExercise,
+		AtBeginSubexercise,
+		AtEndSubexercise,
+		AtBeginQuiz,
+		AtEndQuiz,
+		AtBeginQuizquestion,
+		AtEndQuizquestion,
+		assignpointsdecimalsep,
+		assignpointsunitsingular,
+		assignpointsunitplural,
+		points,
+		displaypoints,
+		itempoints,
+		itempoints*,
+		getpoints,
+		getpoints*,
+		getbonuspoints,
+		getbounuspoints*,
+		numberofexercises,
+		exercisetotalpoints,
+		exercisetotalpoints*,
+		numberofquizzes,
+		quiztotalpoints,
+		quiztotalpoints*,
+		%currentexercisepoints,
+		%currentsubexercisepoints,
+		currentexercisenumber,
+		currentexercisetitle,
+		currentsubexercisenumber,
+		currentsubexercisetitle,
+		currentquiznumber,
+		currentquiztitle,
+		currentquizquestionnumber,
+		currentquizquestiontitle,
+		bonuspoints,
+		getbonuspoints,
+		getbonuspoints*,
+		customlayout,
+		%totalpointswithbonus,
+		exercisetotalpointswithbonus,
+		exercisetotalpointswithbonus*,
+		quiztotalpointswithbonus,
+		quiztotalpointswithbonus*,
+		exercisename,
+		quizname,
+		totalpointsname,
+		showcaseexercise,
+		showcasequiz,
+		showcaseexercise*,
+		showcasequiz*,
+		setitempointsunit
+	}
+}
+
+%- "Re-hook" literate char table
+
+\makeatletter
+\lst@AddToHook{SelectCharTable}
+    {\ifx\lst@literate\@empty\else
+         \expandafter\lst@Literate\lst@literate{}\relax\z@
+     \fi}
+\makeatother
+
+%- Defining some shortcuts
+
+\newcommand*{\cs}[1]{\texttt{\textbackslash#1}}
+\newcommand*{\dir}[1]{\texttt{\textbackslash#1}}
+
+\newcommand{\lstltx}[1]{% emph fout le bouzin avec texcs ! (cf. doc.)
+	\lstinline[%
+		language={[LaTeX]{TeX}},
+		numberstyle=\small\ttfamily, 
+		basicstyle=\ttfamily,
+		%texcsstyle=\color{texcscolor}\bfseries\textbackslash{},
+		keywordstyle=\color{keywordcolor}\bfseries,
+		identifierstyle=\color{black}\normalfont\ttfamily,
+		%stringstyle=,%\color{magenta},
+		emphstyle=\color{texcscolor}\bfseries\textbackslash{},
+		alsoletter={*},
+		literate=*%
+			{-}{{\textcolor{texcscolor}{-}}}{1}
+			{<}{{\textcolor{texcscolor}{<}}}{1}
+			{>}{{\textcolor{texcscolor}{>}}}{1}
+			{/}{{\textcolor{texcscolor}{/}}}{1}
+			{\&}{{\textcolor{texcscolor}{\&}}}{1}
+			{\{}{{\textcolor{texcscolor}{\{}}}{1}
+			{\}}{{\textcolor{texcscolor}{\}}}}{1}
+			{[}{{\textcolor{texcscolor}{[}}}{1}
+			{]}{{\textcolor{texcscolor}{]}}}{1},
+		keywords={% Mainly the environment names in use (within parenthesis)
+			tabular,
+			enumerate,
+			itemize,
+			assignpoints,
+			exercisepoints,
+			exercise,
+			quiz,
+			subexercise,
+			quizquestion,
+			cleveref,
+			caption,
+			},
+		emph={% Mainly the new command names with a preceeding backslash
+			usepackage,
+			newcommand
+		}
+	]!#1!
+}
+
+\newcommand{\lstcs}[1]{%
+	\lstinline[%
+		language={[LaTeX]{TeX}},%
+		numberstyle=\small\ttfamily, 
+		basicstyle=\ttfamily,
+		texcsstyle=*\color{texcscolor}\bfseries,
+		keywordstyle=\color{keywordcolor}\bfseries,
+		identifierstyle=\color{black}\normalfont\ttfamily,
+		commentstyle=\color{commentcolor}\itshape,%
+		stringstyle=,%\color{magenta},
+		emphstyle=\color{emphcolor}\bfseries\textbackslash{},
+		alsoletter={*},%
+		literate=*%
+			{-}{{\textcolor{texcscolor}{-}}}{1}
+			{<}{{\textcolor{texcscolor}{<}}}{1}
+			{>}{{\textcolor{texcscolor}{>}}}{1}
+			{/}{{\textcolor{texcscolor}{/}}}{1}
+			{\&}{{\textcolor{texcscolor}{\&}}}{1}
+			{\{}{{\textcolor{texcscolor}{\{}}}{1}
+			{\}}{{\textcolor{texcscolor}{\}}}}{1}
+			{[}{{\textcolor{texcscolor}{[}}}{1}
+			{]}{{\textcolor{texcscolor}{]}}}{1},
+		keywords={% Mainly the environment names in use (within parenthesis)
+			equal,
+			tabular,
+			enumerate,
+			itemize,
+			assignpoints,
+			exercisepoints,
+			exercise,
+			quiz,
+			subexercise,
+			quizquestion,
+			cleveref,
+			caption,
+		},%
+		emph={% Mainly the new command names with a preceeding backslash
+			AtBeginExercise,
+			AtEndExercise,
+			AtBeginSubexercise,
+			AtEndSubexercise,
+			AtBeginQuiz,
+			AtEndQuiz,
+			AtBeginQuizquestion,
+			AtQuizquestion,
+			AtEndQuizquestion,
+			assignpointsdecimalsep,
+			assignpointsunitsingular,
+			assignpointsunitplural,
+			points,
+			displaypoints,
+			itempoints,
+			itempoints*,
+			getpoints,
+			getpoints*,
+			getbonuspoints,
+			getbounuspoints*,
+			numberofexercises,
+			exercisetotalpoints,
+			exercisetotalpoints*,
+			numberofquizzes,
+			quiztotalpoints,
+			quiztotalpoints*,
+			currentexercisenumber,
+			currentexercisetitle,
+			currentsubexercisenumber,
+			currentsubexercisetitle,
+			currentquiznumber,
+			currentquiztitle,
+			currentquizquestionnumber,
+			currentquizquestiontitle,
+			bonuspoints,
+			getbonuspoints,
+			getbonuspoints*,
+			customlayout,
+			totalpointswithbonus,
+			exercisetotalpointswithbonus,
+			exercisetotalpointswithbonus*,
+			quiztotalpointswithbonus,
+			quiztotalpointswithbonus*,
+			exercisename,
+			quizname,
+			totalpointsname,
+			setitempointsunit,
+			currentexercisepoints,
+			showcaseexercise,
+			showcasequiz,
+			showcaseexercise*,
+			showcasequiz*
+		}
+	]!#1!%
+}
+\newcommand{\lstenv}[1]{%
+	\lstinline[%
+		basicstyle=\ttfamily,%
+		texcsstyle=*\color{texcscolor}\bfseries,
+		keywordstyle=\color{keywordcolor}\bfseries,%
+		identifierstyle=\color{black}\normalfont\ttfamily,%
+		alsoletter={*},
+		literate=*%
+			{/}{{\textcolor{keywordcolor}{/}}}{1},
+		keywords={% Mainly the environment names in use (within parenthesis)
+			equal,
+			tabular,
+			enumerate,
+			itemize,
+			assignpoints,
+			exercisepoints,
+			exercise,
+			quiz,
+			subexercise,
+			quizquestion,
+			cleveref,
+			caption,
+			TikZ,
+			PGF,
+			tcolorbox,
+			breakable,
+			etoolbox
+		},%
+	]!#1!%
+}
+
+%- Obtaining package version using xstring package to obtain 17 leftmost characters in the internal package version string
+
+\makeatletter% ejazz: I am not aware of this package
+\usepackage{xstring}
+%\newcommand{\packageversion}{\StrBefore[2]{\expandafter\csname ver@exercisepoints.sty\endcsname}{ }}
+%\newcommand{\packageversion}{2020/03/20 v1.2.4 (or 0.1a?)}% Cannot use the above stuff
+\newcommand{\packageversion}{2020/03/20 0.1a}% Cannot use the above stuff
+\makeatother
+
+
+%- Using `forloop' package to automatically loop through all exercises
+
+%\usepackage{forloop}% Not needed a \showcaseexercise and a \showcasequiz have been implemented
+
+
+%- Using gitinfo2 package for displaying git commit information in footer
+
+%\usepackage[mark]{gitinfo2}
+
+
+%- Setting up metadata
+
+\author{ejazz/Henning Kerstan\thanks{\href{mailto:ejazz.fr@gmail.com}{\texttt{<ejazz.fr@gmail.com>}, \url{https://github.com/henningkerstan}.}}}
+\title{%
+  Extension de style « \TeX{}jazz-assignpoints »
+}
+\subtitle{\packageversion}
+%\date{\packageversion}
+\date{}
+
+%- Using enumitem package and setting up enumerate/itemize layout
+
+\usepackage{enumitem}
+
+\setlist[itemize]{%
+  leftmargin=*,%
+  itemsep=1pt,%
+  topsep=1pt,%
+  parsep=0pt,%
+  partopsep=0pt,%
+  label=\textcolor{black}{$\triangleright$}%
+}%
+\setlist[enumerate]{%
+  leftmargin=*,%
+  itemsep=1pt,%
+  topsep=0pt,%
+  parsep=0pt,%
+  partopsep=0pt,%
+  label=\textcolor{black}{\arabic*.},%
+  ref=\arabic*%
+}%
+
+
+%- Using hyperref for hyperlinks
+
+\usepackage[
+  unicode=true,%
+  pdfa,%
+  colorlinks=true,%
+  allcolors=black!65,
+  linktoc=page,
+  pdfauthor={Henning Kerstan},
+  pdftitle={The exercisepoints Package}
+]{hyperref}
+
+
+%- Designing the ToC with tcolorbox
+
+%\usepackage[most]{tcolorbox}% Don't know Koma-Script: does not work "out of the box"
+\usepackage{tcolorbox}% No need of all libraies
+
+%\newcommand{\tcbtableofcontents}{%
+%	\noindent
+%	\begin{tcolorbox}[
+%		%width=\columnwidth,
+%		%width=0.9\columnwidth,
+%		%width=0.9\hsize,
+%		enhanced,
+%		nobeforeafter,
+%		arc=0pt, outer arc=0pt,
+%		boxsep=0pt,
+%		left=4pt, right=4pt,
+%		top=4pt, bottom=4pt,
+%		boxrule=0pt,
+%		colback=black!10, %colframe=black!40,
+%		%toptitle=4pt, bottomtitle=4pt,
+%		%colbacktitle=black!10, coltitle=black,
+%		%titlerule=1pt,
+%   ]
+%	\tableofcontents
+%	\end{tcolorbox}%
+%}
+
+
+%- For tabular other pages
+
+%\usepackage{supertabular}% Because `longtable' does not work in two columns mode
+\usepackage{xtab}% Because `supertabular' has "special" behaviour
+
+% See: https://tex.stackexchange.com/questions/269428/too-large-bottom-margin-with-xtab-or-supertabular
+\makeatletter
+	%\patchcmd{\estimate@lineht}{1\p@}{-1.5\p@}{}{}% Original
+	\patchcmd{\estimate@lineht}{1\p@}{-1.5\p@}{}{}
+\makeatother
+
+%- Generating automatic revision numbering tabular
+
+%- From: https://tex.stackexchange.com/questions/184635/
+%        https://tex.stackexchange.com/questions/175568/build-tabular-content-via-foreach
+\newcommand*{\assignpointsrevtabtokens}{}%
+\makeatletter
+	\newtoks\@tabtoks
+	%%% assignments to \@tabtoks must be global, because they are done in \foreach
+	\newcommand\addtotabletokens[1]{\global\@tabtoks\expandafter{\the\@tabtoks#1}}
+	\newcommand\xaddtotabletokens[1]{%
+		\protected@edef\assignpointsrevtabtokens{#1}%
+		\expandafter\addtotabletokens\expandafter{\assignpointsrevtabtokens}%
+	}
+	%%% variable should always be operated on always locally or always globally
+	\newcommand*\assignpointsresettabletokens{\global\@tabtoks{}}
+	\newcommand*\assignpointsprinttabletokens{\the\@tabtoks}
+\makeatother
+
+\newcounter{assignpointsrevcounter}
+\newcommand{\assignpointsaddrevision}[3]{%
+	\stepcounter{assignpointsrevcounter}%
+	\xaddtotabletokens{%
+		\textbf{\sffamily#1} & \textbf{\sffamily#2} \\
+		~~ & #3 \\[2pt]}%
+}%
+
+%https://tex.stackexchange.com/questions/79990/
+\newlength{\revision}
+\settowidth{\revision}{\normalsize 9999/99/99~}
+\newcommand{\showcaserevisions}{%
+	% some stuff
+	%\small
+	\begin{tabular}{@{}l@{~}p{\linewidth-\revision}@{}}
+		\assignpointsprinttabletokens    
+	\end{tabular}%
+}
+
+%-- Revision history
+
+\assignpointsaddrevision{2020/03/20}{\textemdash\space v1.2.4 or v0.1a?}%
+	{‘\texttt{assignpoints.sty}’: Proposed modifications and new functionalities. Only the \lstcs{setitempointsunit} command (changing “unit” mid-document) has not been yet implemented. New name not to clash with `\texttt{exercisepoints}'.}
+\assignpointsaddrevision{2019/01/03}{\textemdash\space v1.2.3}%
+	{Revised README.md.}
+\assignpointsaddrevision{2019/01/02}{\textemdash\space v1.2.2}%
+	{Slight revision of documentation.}
+\assignpointsaddrevision{2018/08/15}{\textemdash\space v1.2.1}%
+	{Renamed the package to comply with \href{https://ctan.org/file/help/ctan/CTAN-upload-addendum}{CTAN rules}, from `\texttt{hkexercise}' to `\texttt{exercisepoints}'.}
+\assignpointsaddrevision{2017/02/27}{\textemdash\space v1.2.0}%
+	{Added \lstcs{setitempointsunit} command.}
+\assignpointsaddrevision{2017/07/02}{\textemdash\space v1.1.0}%
+	{This version introduces subexercises. Moreover several checks were added to avoid use of commands like \lstcs{currentexercisepoints} outside of exercise environments and to prevent nesting of exercises. New option customlayout disables built in exercise layout. Added \lstcs{bonuspoints} commands.}
+\assignpointsaddrevision{2017/06/26}{\textemdash\space v1.0.1}%
+	{Redefined \lstcs{currentexercisepoints} so it can be used within section command.}
+\assignpointsaddrevision{2017/06/26}{\textemdash\space v1.0}%
+	{Initial version published on GitHub.}
+
+%- Starting of the actual document
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}\itshape
+L'extension de style \LaTeX\ « \lstenv{assignpoints} » fournit un système simple et polyvalent de comptage de points pour des exercices ou des questionnaires à choix multiples --- QCM. Il peut s'utiliser dans tout type de document et s'avère extensible à d'autres environnements qui nécessitent l'attribution de points. Bien que des environnements d'exercices et de quiz soient proposés par défaut, leur conception et composition effectives sont laissées à la discrétion de l'utilisateur.
+\end{abstract}
+
+%\tcbtableofcontents% Don't know Koma-script class...
+%\tableofcontents
+
+%==========
+\section{Introduction et usage élémentaire}
+\label{sec:1}
+
+Cette extension \LaTeX\ peut s'employer pour faciliter la numérotation et la comptabilisation de points au sein d'un document. Prenant appui sur les exercices, cela permet de dénombrer leur nombre au sein d'un document (ce document contient \emph{\numberofexercises\ exercices}) et d'additionner l'ensemble des points attribués à chaque exercice proposé (les exercices ont ici un total de \emph{\exercisetotalpoints*}).
+
+En particulier pour les contrôles de connaissance, il est courant et pratique d'avoir recours à une vue d'ensemble des exercices avec leur notation maximale. Ceci est également une fonctionnalité de l'extension qui fournit une macro permettant de récupérer le nombre de points de chaque exercice. À titre d'exemple, une vue globale de la répartition des points dans ce document est offerte en table \ref{tab:ex-overview} ci-dessous.
+
+%\newcounter{exercisenumber}
+%\newcounter{exercisedisplaynumber}
+%\setcounter{exercisedisplaynumber}{0}%
+
+%- Original
+%\begin{figure}[h]\centering
+%  \begin{tabular}{l|p{1cm}|r}
+%    \textbf{Exercise} & \textbf{Points} & \textbf{Max. Points}\\
+%    \hline
+%    \forloop{exercisenumber}{1}{\value{exercisenumber} < \numberofexercises}{%
+%      \stepcounter{exercisedisplaynumber}%
+%      \theexercisedisplaynumber & & \getpoints{\theexercisenumber} \\%
+%    }%
+%    Somme & & \exercisetotalpoints \\\hline%
+%    Bonus & & \getbonuspoints \\ \hline%
+%    Somme avec bonus & & \exercisetotalpointswithbonus %
+%  \end{tabular}
+%  \label{fig:exercise-overview}
+%  \caption{Overview of all exercises}
+%\end{figure}
+
+\vspace{-\baselineskip}
+\begin{table}[h]\centering
+  \caption{Vue d'ensemble des exercices.}
+  \vspace{4pt}
+  \showcaseexercise*
+  \label{tab:ex-overview}
+\end{table}
+\vspace{-.5\baselineskip}
+
+Exactement les mêmes fonctionnalités sont disponibles pour les questionnaires à choix multiples (quiz). Les commandes qui attribuent les points au sein d'un environnement détectent automatiquement leur contexte, de sorte qu'elles sont utilisables indifféremment dans un exercice comme dans un quiz (voir \lstcs{points} et \lstcs{itempoints}, respectivement en \S\,\ref{sub:1.2} et \S\,\ref{sub:2.1}).
+
+Par ailleurs, les commandes qui sont vouées à la récupération et l'affichage des points enregistrés doivent explicitement indiquer si elles se rattachent aux questionnaires\footnote{En effet, ces commandes concernent par défaut l'environnement d'exercice, comme avec le style « \lstenv{exercisepoints} » à l'origine du présent paquet --- duquel l'extension « \lstenv{assignpoints} » peut se voir comme un élargissement des fonctionnalités aux questionnaires à choix multiples avec, en agrément, quelques autres facilités.} (voir \lstcs{getpoints} \S\,\ref{sub:2.2} et \lstcs{getbonuspoints} \S\,\ref{sub:2.3}). 
+
+Cependant, il doit être noté que ce paquet ne fournit que des outils pour compter et additionner des points. La réelle composition et l'esthétique d'un environnement d'exercice ou de quiz est entièrement laissée à l'imagination et aux talents de l'utilisateur.
+
+
+%----------
+\subsection{Chargement de l'extension}
+\label{sub:1.1}
+
+Pour charger l'extension, il suffit de saisir
+
+\begin{lstlisting}
+\usepackage{assignpoints}
+\end{lstlisting}
+n'importe où en préambule de document. Si cela ne fonctionne pas car ce paquet n'est pas disponible dans votre distribution \LaTeX, une simple copie du fichier « \texttt{assignpoints.sty} » dans le même répertoire que votre document devrait faire l'affaire. Le cas échéant, si toutefois vous envisagez une utilisation dépassant l'occasionnel, considérez comme bien acquis de copier ce fichier dans votre arborescence locale au sein du répertoire \dir{texmf}.
+
+%----------
+\subsection{Composition d'un premier exercice/quiz}
+\label{sub:1.2}
+
+Désormais, nous pouvons composer un premier exercice en utilisant le code suivant.
+
+\begin{lstlisting}
+\begin{exercise}[Addition simple]
+  Que donne 1+1 ? \points{0.5}
+\end{exercise}
+\end{lstlisting}
+
+Après saisie, cela donne le résultat qui suit.
+
+\begin{exercise}[Addition simple]
+\noindent  Que donne $1+1$? \points{0.5}
+\end{exercise}
+
+Il a ainsi été fait appel à la macro \lstcs{points\{0.5\}} pour attribuer \getpoints{1} point à cet exercice. Ces points sont affichés à droite de l'entête d'exercice, correspondant à la présentation par défaut.
+
+Un résultat équivalent est obtenu pour un questionnaire.
+
+\begin{lstlisting}
+\begin{quiz}[Formats de couleur]
+  Quelles composantes de couleur forment une image RGB ? \\ 
+  Plusieurs assertions possibles. \points{1.5}
+\end{quiz}
+\end{lstlisting}
+
+\begin{quiz}[Formats de couleur]
+	Quelles composantes de couleur forment une image RGB ? \\ 
+  Plusieurs assertions possibles. \points{1.5}
+\end{quiz}
+
+On peut alors remarquer que « l'unité » de point(s) est présentée au singulier si la valeur est inférieure à \texttt{1.0} et au pluriel en cas contraire. De plus, le document a été composé en français, le marqueur des décimales se trouve alors être une virgule --- en anglais cela aurait été un point (le support des langues est abordé plus précisément en \S\,\ref{sub:3.2}).
+
+Il est aussi à mentionner que, même avec les environnements simplistes d'exercice et de quiz proposées par défaut, un titre peut être fourni de manière optionnelle. Bien entendu, tous ces détails sont modifiables aux convenances de l'utilisateur (cf. \S\,\ref{sec:3}).
+
+
+
+%==========
+\section{Attribution et récupération de points}
+\label{sec:2}
+
+
+%----------
+\subsection{Points d'item : environnements \textit{enumerate}/\textit{itemize}}
+\label{sub:2.1}
+
+En faisant appel plusieurs fois à la macro \lstcs{points\{<nb-pts>\}} dans un environnement d'exercice ou de quiz, les points s'additionnent. Considérons alors le code qui suit.
+
+\begin{lstlisting}
+\begin{exercise}[Équation simple]
+  Déterminer un nombre $x$ tel que $3 \cdot x = 15$
+  \points{0.5} et expliquer la démarche adoptée 
+  pour obtenir ce résultat. \points{1.5}
+\end{exercise} 
+\end{lstlisting}
+
+Ce code apporte la composition subséquente.
+
+\begin{exercise}[Équation simple]
+\noindent Déterminer un nombre $x$ tel que $3 \cdot x = 15$ \points{0.5} et expliquer la démarche pour obtenir ce résultat. \points{1.5}
+\end{exercise}
+
+Comme prévu, les points sont additionnés pour obtenir le total des points (0,5+1,5 =\getpoints*{2}) qui, de même, s'affiche à droite de l'entête de l'exercice. On peut ici noter que si la valeur des points est un entier, son affichage est également un entier (la partie décimale « \verb!<int>.0! » du nombre de points est tronquée).
+
+Cette accumulation est pratique si un exercice comprend plusieurs items. Dans ce cas, la macro \lstcs{itempoints\{<nb-pts>\}} peut s’avérer utile. Elle réalise la même affectation de points que la macro \lstcs{points\{<nb-pts>\}}, mais affiche immédiatement en bout de ligne les points\footnote{En interne, la macro \lstcs{itempoints} appelle d'abord \lstcs{points} puis s'occupe de l'affichage des points. En revanche, elle n'opère aucun enregistrement de données. C'est la macro \lstcs{points} qui s'en charge après comptabilisation.} attribués. L'exercice précédent est repris en introduisant un environnement de numération «\,\lstenv{enumerate}\,».
+
+\begin{lstlisting}
+\begin{exercise}[Équation simple]
+  \begin{enumerate}
+    \item Déterminer un nombre 
+          $x$ tel que $3 \cdot x = 15$. \itempoints{0.5}
+    \item Expliquer la démarche adoptée
+          pour obtenir ce résultat. \itempoints{1.5}
+  \end{enumerate}
+\end{exercise} 
+\end{lstlisting}
+Ce code produit la sortie ci-dessous.
+
+\begin{exercise}[Équation simple]
+  \begin{enumerate}
+    \item Déterminer un nombre $x$ tel que $3 \cdot x = 15$. \itempoints{0.5}
+    \item Expliquer la démarche adoptée pour obtenir ce résultat. \itempoints{1.5}
+  \end{enumerate}
+\end{exercise}
+
+Une approche en tout point (\textit{sic} !) identique peut s'appliquer aux questionnaires. Admettons la saisie de code qui suit.
+
+\begin{lstlisting}
+\begin{quiz}[Formats de couleur]
+  \begin{itemize}
+    \item Quelles composantes de couleur 
+          forment une image RGB ? \\ 
+          Plusieurs assertions possibles. \itempoints{1.5}
+    \item Quelles composantes de couleur 
+          forment une image CYMK ? \\
+          Plusieurs assertions possibles. \itempoints{2}
+  \end{itemize}
+\end{quiz}
+\end{lstlisting}
+Cela mène au résultat ci-après.
+
+\begin{quiz}[Formats de couleur]
+  \begin{itemize}
+    \item Quelles composantes de couleur 
+          forment une image RGB ? \\ 
+          Plusieurs assertions possibles. \itempoints{1.5}
+    \item Quelles composantes de couleur 
+          forment une image CYMK ? \\
+          Plusieurs assertions possibles. \itempoints{2}
+  \end{itemize}
+\end{quiz}
+
+Par défaut, cela affiche le nombre de points entre parenthèses. Si on souhaite toutefois y rattacher une « unité » de comptabilisation, c.-à-d. « point » et « points » pour respectivement le singulier et le pluriel, il faut employer la forme étoilée de la macro \lstcs{itempoints}, à savoir \lstcs{itempoints*\{<nb-pts>\}}.
+
+%--- Note (ejazz)
+%- For the time being, the possibility to change the points “unit” name has not been yet implemented: further work...
+%\begin{lstlisting}
+%\setitempointsunit{pt}{pts}
+%\end{lstlisting}
+%which sets \emph{pt} (singular form) and \emph{pts} (plural form) as units for the item points. 
+%Afterwards, all itempoints will display this unit right of the number.
+%\setitempointsunit{pt}{pts}
+%In fact, if we do this and assign the first part of the above exercise just one point instead of 1.5 
+%(replacing \texttt{\textbackslash\keyword{itempoints}\{1.5\}} by \texttt{\textbackslash \keyword{itempoints}\{1\}}), 
+%it will be displayed as follows.
+%\begin{exercise}[Simple equation]
+%  \begin{enumerate}
+%    \item Determine $x$ such that $3 \cdot x = 15$.\itempoints{0.5}
+%    \item Explain how you arrived at your solution in the previous part.\itempoints{1.5}
+%  \end{enumerate}
+%\end{exercise}
+%-----
+
+En reprenant de nouveau l'exemple précédent, on doit saisir :
+\begin{lstlisting}
+\begin{exercise}[Équation simple]
+  \begin{enumerate}
+    \item Déterminer un nombre 
+          $x$ tel que $3 \cdot x = 15$. \itempoints*{0.5}
+    \item Expliquer la démarche 
+          menant au résultat. \itempoints*{1.5}
+  \end{enumerate}
+\end{exercise} 
+\end{lstlisting}
+pour obtenir l'affichage à suivre.
+
+\begin{exercise}[Équation simple]
+  \begin{enumerate}
+    \item Déterminer un nombre $x$ tel que $3 \cdot x = 15$. \itempoints*{0.5}
+    \item Expliquer la démarche menant au résultat. \itempoints*{1.5}
+  \end{enumerate}
+\end{exercise}
+
+Pour une discussion plus approfondie des commandes étoilées, renvoi est fait au \S\,\ref{sub:2.4}.
+
+%----------
+\subsection{Recouvrement et synthèse des points}
+\label{sub:2.2}
+
+Une fois la rédaction des exercices réalisée avec leur attribution de points (resp. des quiz), quelques commandes sont à disposition pour récupérer le nombre total de points du document ou bien leur répartition par exercice :
+\begin{itemizefr}
+  \item \lstcs{numberofexercises} donne le nombre d'exercices du document dans sa globalité ;
+  \item \lstcs{exercisetotalpoints} apporte alors la somme de tous les points sur l'ensemble des exercices ;
+  \item \lstcs{getpoints\{i\}} ou \lstcs{getpoints[exercise]\{i\}} de manière explicite conduit au total des points du « i\textsuperscript{ième} » exercice numéroté (en partant de 1). Si le numéro d'exercice « i » est plus grand que \lstcs{numberofexercises}, une erreur de l'extension est signalée.
+\end{itemizefr}
+
+En contrepartie, les questionnaires possèdent  les mêmes macros de comptabilisation des points. Néanmoins, l'environnement de questionnaire n'étant pas celui par défaut, il faut impérativement passer l'argument optionnel « \lstenv{quiz} » aux macros comme \lstcs{getpoints} pour produire le résultat attendu. Ainsi :
+\begin{itemizefr}
+  \item \lstcs{numberofquizzes} retourne le nombre de questionnaires dans tout le document ;
+  \item \lstcs{quiztotalpoints} récupère la somme des points sur l'ensemble des questionnaires du document ;
+  \item \lstcs{getpoints[quiz]\{i\}}, à l'instar des exercices, fournit le total des points du « i\textsuperscript{ième} » questionnaire.
+\end{itemizefr}
+
+À noter que l'information nécessaire à ces macros est retrouvée à partir des valeurs enregistrées dans le fichier auxiliaire (extension « \texttt{.aux} ») lors de la première compilation \LaTeX. Par conséquent, pour avoir des nombres corrects, il faut compiler\footnote{Une compilation à l'issue de laquelle des points d'interrogation s'affichent en italique --- \textit{??} --- signifie qu'il faut la réitérer. En revanche, un affichage en caractères gras --- \textbf{??} --- indique une erreur de recouvrement dans les valeurs de points.} le docu\-ment au moins une seconde fois.
+
+De manière plus générale, si d'obscures erreurs de compilation apparaissent, il ne faut pas hésiter à supprimer les fichiers auxiliaires pour relancer une compilation à partir d'une configuration propre et vierge. En effet, certaines erreurs d'écriture dans ces fichiers peuvent parfois corrompre et bloquer le processus, même si les erreurs ont été corrigées dans le fichier source.
+
+Ainsi, à titre d'illustration applicative de ces macros, on considère le code ci-dessous (la table \ref{tab:ex-overview} a de même été conçue au moyen de ces macros).
+
+\begin{lstlisting}[emph={numberofexercises,exercisetotalpoints,numberofquizzes,quiztotalpoints,getpoints}]
+L'exercice 1 a \getpoints{1} point, il y a  
+\numberofexercises\ exercices avec un total 
+de \exercisetotalpoints\ points.
+En contrepartie, le questionnaire 1 a 
+à son actif \getpoints[quiz]{1} points
+et il y a \numberofquizzes\ questionnaires 
+pour un total de \quiztotalpoints\ points.
+\end{lstlisting}
+Après compilation cela produit la phrase suivante :\\
+« \textit{L'exercise 1 a \getpoints{1} point, il y a \numberofexercises\ exercices avec un total de \exercisetotalpoints\ points.
+En contrepartie, le questionnaire 1 a à son actif \getpoints[quiz]{1} points et il y a \numberofquizzes\ questionnaires pour un total 
+de \quiztotalpoints\ points} ».
+
+
+%----------
+\subsection{Utilisation des points de bonus}
+\label{sub:2.3}
+
+À l'issue de certains cours, les contrôles de connaissances introduisent parfois des points supplémentaires dits de bonus. L'extension de style « \lstenv{assignpoints} » apporte cette fonctionnalité au moyen de la commande \lstcs{bonuspoints\{<nb-pts>\}}.
+
+\begin{lstlisting}
+\bonuspoints{<nb-pts>} % Default = exercise
+\bonuspoints[exercise]{<nb-pts>}
+\bonuspoints[quiz]{<nb-pts>}
+\end{lstlisting}
+
+Cette macro définit la quantité de points (\lstenv{<nb-pts>}) de bonus affectée aux exercices ou aux questionnaires. Dans ce document, \lstenv{<nb-pts>}=10 \bonuspoints{10} pour ce qui concerne les exercices et \lstenv{<nb-pts>}=4 \bonuspoints[quiz]{4} pour les questionnaires --- son utilité est peut-être moins pertinente et justifiée pour ces derniers...
+
+Pour retrouver les valeurs attribuées aux points de bonus, de manière similaire aux autres macros, on dispose de la commande qui leur est dédiée : \lstcs{getbonuspoints}.
+
+\begin{lstlisting}
+\getbonuspoints % Default = exercise
+\getbonuspoints[exercise]
+\getbonuspoints[quiz]
+\end{lstlisting}
+
+%La macro \lstcs{getbonuspoints} recouvre les points courants de bonus.
+
+Pour ce document, un nombre de \getbonuspoints* de bonus est donné aux exercices et de \getbonuspoints*[quiz] aux questionnaires. Il faut bien apprécier que l'attribution de points avec \lstcs{bonuspoints} est différente de celle avec \lstcs{points} selon deux aspects :
+\begin{itemizefr} 
+\item les points de bonus \emph{ne sont pas cumulés}, autrement dit, sur plusieurs appels à \lstcs{bonuspoints}, seul le dernier est retenu ;
+\item ces points \emph{ne sont pas englobés} au total des exercices comme des QCM. Les macros \lstcs{exercisetotalpointswithbonus} et \lstcs{quiztotalpointswithbonus} s'en chargent. Elles différencient les comptabilisations en tant que résultat de l'agrégation de \lstcs{getbonuspoints[exercise/quiz]} avec respectivement \lstcs{exercisetotalpoints} et \lstcs{quiztotalpoints}. Au sein de ce document, cette accumulation donne les totaux avec bonus de \exercisetotalpointswithbonus\ pour les exercices et \quiztotalpointswithbonus\ pour les questionnaires à choix multiples.
+\end{itemizefr}
+
+
+%----------
+\subsection{Qu'en est-il des commandes optionnelles étoilées ?}
+\label{sub:2.4}
+
+Comme précédemment évoqué, certaines commandes de récupération des points attribués possèdent une version optionnelle étoilée. Jusqu'à présent, ce sont essentiellement les versions par défaut qui ont été présentée et utilisée, autrement dit \emph{sans} étoile.
+Elles donnent les points \emph{sans} « unité » et, par suite, demandent à l'utilisateur de les rajouter « manuellement », si besoin est.
+
+Cependant, en coulisses, il faut savoir et être attentif au fait que « l'astuce » est d'utiliser des longueurs pour manipuler les points --- évidemment, comme unité de longueur. Par conséquent, les points --- comme unité de comptabilisation ---, peuvent se récupérer comme des nombres décimaux (sans unité) ou comme des longueurs (en unité de points, \texttt{1}\,pt=\texttt{0,351459}\,mm).
+
+Ainsi, l'extension « \lstenv{assignpoints} » propose deux affichages possibles : en nombres décimaux ou en points, auquel cas est rajouté « point » au singulier si la valeur est comprise entre \texttt{0.0} et \texttt{1.0} et, « points » au pluriel si la valeur est supérieure à \texttt{1.0}. Les versions étoilées des commandes s'occupent de gérer ce dernier cas de figure. L'avantage est de ne pas se soucier des conjugaisons entre le singulier et le pluriel.
+En pratique si la valeur est nulle, rien n'est affiché. Le critère de basculement du singulier au pluriel est fixé pour une valeur\footnote{Tout en permettant des quarts de points, on considère que les notations peu\-vent se définir au dixième mais pas au centième ! Sinon, alerte rouge à la galère...} de \texttt{1.01}\,pt.
+
+Somme toute, les versions étoilées des commandes ne s'avèrent qu'un outil pratique pour calculer et afficher automatiquement les points --- une fois encore de comptabilisation. C'est aussi l'occasion d'introduire les conventions d'impression des nombres décimaux selon la langue de composition du document, à savoir : un point --- \textit{period} --- en anglais et une virgule --- \textit{comma} --- en allemand ou en français (voir \S\,\ref{sub:3.2}). Avec les commandes étoilées, l'utilisateur n'a plus à se préoccuper de tous ces détails : il se concentre sur la rédaction de son texte.
+
+Les macros pour lesquelles une version étoilée est implémentée sont les suivantes :
+\begin{itemizefr}
+	\item \lstcs{itempoints*\{<nb-pts>\}}, ;
+	\item \lstcs{getpoints*\{<nb-ex>\}}, \\
+				\lstcs{getpoints*[exercise]\{<nb-ex>\}}, \\
+				\lstcs{getpoints*[quiz]\{<nb-qz>\}} ;
+	\item \lstcs{getbonuspoints*}, \\
+				\lstcs{getbonuspoints*[exercise]}, \\
+				\lstcs{getbonuspoints*[quiz]} ;
+	\item \lstcs{exercisetotalpoints*} ;
+	\item \lstcs{quiztotalpoints*} ;
+	\item \lstcs{exercisetotalpointswithbonus*} ;
+	\item \lstcs{quiztotalpointswithbonus*}.
+\end{itemizefr}
+
+En prenant de nouveau la phrase de test déjà employée mais sans la saisie des accords du mot point \textit{via} l'utilisation des versions étoilées des macros, on a en entrée,
+
+\begin{lstlisting}[emph={numberofexercises,exercisetotalpoints,exercisetotalpoints*,
+	numberofquizzes,quiztotalpoints,quiztotalpoints*,getpoints,getpoints*,
+	exercisetotalpointswithbonus,exercisetotalpointswithbonus*,
+	quiztotalpointswithbonus,quiztotalpointswithbonus*}]
+L'exercice 1 a \getpoints*{1}, il y a  
+\numberofexercises\ exercices avec un total 
+de \exercisetotalpoints*. En contrepartie, 
+le questionnaire 1 a à son actif
+getpoints*[quiz]{1} et il y a 
+\numberofquizzes\ questionnaires 
+pour un total de \quiztotalpoints*.
+Au final, cela conduit à avoir
+\exercisetotalpointswithbonus* avec les bonus 
+pour les exercices et \quiztotalpointswithbonus* 
+pour les questionnaires.
+\end{lstlisting}
+qui donne en sortie :\\
+« \textit{L'exercise 1 a \getpoints*{1}, il y a \numberofexercises\ exercices avec un total de \exercisetotalpoints*.
+En contrepartie, le questionnaire 1 a à son actif \getpoints*[quiz]{1} et il y a \numberofquizzes\ questionnaires pour un total 
+de \quiztotalpoints*. Au final, cela conduit à avoir \exercisetotalpointswithbonus* avec les bonus pour les exercices et \quiztotalpointswithbonus* pour les questionnaires} ».
+
+%Pour être complet à ce sujet, signalons qu'il existe une dernière commande d'affichage, utilisée en interne pour la présentation des entêtes des exercices et questionnaires, mais également accessible à l'utilisateur : \lstcs{displaypoints[<env-name]\{<nb-env>\}}. Son comportement est inverse des autres macros d'affichage ; elle ne dispose pas de version étoilée et expose directement les points avec leur « unité », pour tout type d'environnement de structuration, exercice, questionnaire, mais également, sous-exercice --- \lstenv{subexercise} --- et question --- \lstenv{quizquestion} (voir \S\,\ref{sub:3.1}).
+
+%La commande \lstcs{displaypoints[<env-name]\{<nb-env>\}} peut se voir comme une cousine et un raccourci de \lstcs{getpoints*[<env-name]\{<nb-env>\}}. Elle n'est définie que par convenance.
+
+
+
+%==========
+\section{Ajustements et options}
+\label{sec:3}
+
+
+%----------
+\subsection{Structuration : « \textit{subexercise} » et « \textit{quizquestion} »}
+\label{sub:3.1}
+
+À l'occasion, si un exercice (resp. un questionnaire) amène à se présenter avec des sous-parties (par exemple, un sujet général qui se décompose en de multiples domaines spécifiques), l'extension « \lstenv{assignpoints} » offre la possibilité de segmenter la formulation d'un énoncé en sous-exercices (\lstenv{subexercise}) et questions (\lstenv{quizquestion}) pour structurer le document.
+
+Ainsi, ces environnements intriqués fonctionnent à l'identique de leurs homologues de rang supérieur, néanmoins ils ne peuvent uniquement s'utiliser qu'au sein de ceux-ci. Un « \lstenv{subexercise} » est alors contenu dans un « \lstenv{exercise} » et une « \lstenv{quizquestion} » est inclue à un « \lstenv{quiz} ».
+
+Ce qui suit résulte d'un exemple de structuration d'un exercice en deux sous-parties.
+
+\begin{exercise}[Calcul analytique]
+  \begin{subexercise}[Dérivées]
+    Déterminer les dérivées des fonctions suivantes.
+    \begin{enumerate}
+      \item $f\colon \mathbb{R} \to \mathbb{R}$, $f(x) = x^2+2x+3$ \itempoints*{1}
+      \item $g\colon \mathbb{R} \to \mathbb{R}$, $g(x) = \exp(x^2)$ \itempoints*{3}
+  \end{enumerate}
+  \end{subexercise}
+  \begin{subexercise}[Maxima and Minima]
+    Caractériser le maximum ou le minimum local de la fonction \\
+    $f\colon \mathbb{R} \to \mathbb{R}, f(x) = x^2+2x+3$. \points{3}
+  \end{subexercise}
+\end{exercise}
+
+Cela correspond au code subséquent.
+
+\begin{lstlisting}
+\begin{exercise}[Calcul analytique]
+  \begin{subexercise}[Dérivées]
+    Déterminer les dérivées des fonctions suivantes.
+    \begin{enumerate}
+      \item $f\colon \mathbb{R} \to \mathbb{R}$, 
+            $f(x) = x^2+2x+3$ \itempoints*{1}
+      \item $g\colon \mathbb{R} \to \mathbb{R}$, 
+            $g(x) = \exp(x^2)$ \itempoints*{3}
+    \end{enumerate}
+  \end{subexercise}
+  \begin{subexercise}[Maxima and Minima]
+    Caractériser le maximum ou le minimum local 
+    de la fonction \\ 
+    $f\colon \mathbb{R} \to \mathbb{R}, f(x) = x^2+2x+3$.
+    \points{3}
+  \end{subexercise}
+\end{exercise}
+\end{lstlisting}
+
+On vérifie qu'un « \lstenv{subexercise} » est uniquement inclu au sein d'un exercice et qu'il n'est pas permis d'imbriquer des environnements « \lstenv{subexercise} » entre eux.
+
+En tant qu'illustration, la même approche s'applique au tandem d'environnements « \lstenv{quiz} » et « \lstenv{quizquestion} ».
+Il suffit pour cela d'apprécier le code qui suit.
+\begin{lstlisting}
+\begin{quiz}[Formats de couleur]
+  \begin{quizquestion}
+    Quelles sont les composantes d'une image RGB/RVB ? \\
+    Plusieurs assertions possibles.
+    \begin{itemize}
+      \item Rouge \itempoints*{0.5}
+      \item Jaune
+      \item Vert \itempoints*{0.5}
+      \item Bleu \itempoints*{0.5}
+      \item Cyan
+      \item Magenta
+    \end{itemize}
+  \end{quizquestion}
+  \begin{quizquestion}
+    Quelles sont les composantes d'une image CYMK ? \\
+    Plusieurs assertions possibles.
+    \begin{itemize}
+      \item Rouge
+      \item Jaune \itempoints*{0.5}
+      \item Vert
+      \item Noir \itempoints*{0.5}
+      \item Cyan \itempoints*{0.5}
+      \item Magenta \itempoints*{0.5}
+      \item Violet
+    \end{itemize}
+  \end{quizquestion}
+\end{quiz}
+\end{lstlisting}
+
+Les résultats sont similaires à ceux des exercices. L'avantage est de pouvoir attribuer des points à chaque réponse correcte et non à celles qui sont mauvaises.
+
+Bien entendu, un tel affichage n'est utile qu'aux documents de solutions et de corrections. Pour fournir un réel sujet d'examen, il suffit de remplacer les macros telles que \lstcs{itempoints} par des attributions cachées de points en utilisant la commande \lstcs{points}.
+
+\begin{quiz}[Formats de couleur]
+  \begin{quizquestion}
+    Quelles sont les composantes d'une image RGB/RVB ? \\
+    Plusieurs assertions possibles.
+    \begin{itemize}
+      \item Rouge \itempoints*{0.5}
+      \item Jaune
+      \item Vert \itempoints*{0.5}
+      \item Bleu \itempoints*{0.5}
+      \item Cyan
+      \item Magenta
+    \end{itemize}
+  \end{quizquestion}
+  \begin{quizquestion}
+    Quelles sont les composantes d'une image CYMK ? \\
+    Plusieurs assertions possibles.
+    \begin{itemize}
+      \item Rouge
+      \item Jaune \itempoints*{0.5}
+      \item Vert
+      \item Noir \itempoints*{0.5}
+      \item Cyan \itempoints*{0.5}
+      \item Magenta \itempoints*{0.5}
+      \item Violet
+    \end{itemize}
+  \end{quizquestion}
+\end{quiz}
+
+
+%----------
+\subsection{Particularités linguistiques}
+\label{sub:3.2}
+
+Les conventions de langue varient. Évidemment, les mots qui désignent les points sont différents d'un langage à l'autre, mais également les séparateurs de décimales des nombres.
+
+Pour plus d'information sur ces thématiques, chacun peut avec bénéfice se référer aux documentations et implémentations des extensions \LaTeX\ « \href{https://www.ctan.org/pkg/numprint}{\texttt{numprint}} » et « \href{https://www.ctan.org/pkg/siunitx}{\texttt{siunitx}} ». La présente extension « \lstenv{assignpoints} » se contente humblement, dans une perspective pratique, d'apporter des fonctionnalités élémentaires.
+
+Pour le moment, « \lstenv{assignpoints} » n'a été testée qu'avec le système \href{https://www.ctan.org/pkg/babel}{\texttt{Babel}} et seulement pour l'allemand, l'anglais et le \href{https://www.ctan.org/pkg/babel-french}{français}.
+
+Néanmoins, pour d'autres langues, il est relativement facile de rajouter un code adéquat en préambule de document. Ces définitions sont explicites : l'anglais insère une majuscule aux mots «~\textit{Point(s)} » et le séparateur de décimale est un point --- \textit{period} ---, l'allemand a bien sûr une majuscule à «~\textit{Punkt(e)} » et une virgule --- \textit{comma} en anglais --- comme signe distinctif des décimales et, enfin, c'est pareil pour le français, excepté qu'il n'y a pas de première lettre en capitales pour les mots « \emph{point(s)} ».
+
+%(ou au sein des classes ou extensions de style propre à votre utilisation, le cas échéant)
+
+\begin{lstlisting}
+% These are the English settings, tweak them to your needs
+\renewcommand*{\assignpointsdecimalsep}{{.}}
+\assignpointsunitsingular{Point}
+\assignpointsunitplural{Points}
+% These are the French settings, tweak them to your needs
+\renewcommand*{\assignpointsdecimalsep}{{,}}
+\assignpointsunitsingular{point}
+\assignpointsunitplural{points}
+% These are the German settings, tweak them to your needs
+\renewcommand*{\assignpointsdecimalsep}{{,}}
+\assignpointsunitsingular{Punkt}
+\assignpointsunitplural{Punkte}
+\end{lstlisting}
+
+Par ailleurs, « \lstenv{assignpoints} » fournit quelques traductions élémentaires de mots employés dans divers affichages, comme \lstcs{exercisename}, \lstcs{quizname} et \lstcs{totalpointsname}. Ces macros peuvent être facilement supprimées ou reprises par d'autres extensions de style ou de classe, telles « \href{https://www.ctan.org/pkg/caption}{\texttt{caption}} » ou « \href{https://www.ctan.org/pkg/cleveref}{\texttt{cleveref}}~».
+
+\begin{lstlisting}
+% These are the English settings, tweak them to your needs
+\providecommand{\exercisename}{Exercise}
+\providecommand{\quizname}{Quiz}
+\providecommand{\totalpointsname}{Total}
+% These are the French settings, tweak them to your needs
+\providecommand{\exercisename}{Exercice}
+\providecommand{\quizname}{Questionnaire}
+\providecommand{\totalpointsname}{Total}
+% These are the German settings, tweak them to your needs
+\providecommand{\exercisename}{Ausübung}
+\providecommand{\quizname}{Quiz}
+\providecommand{\totalpointsname}{Gesamtzahl}
+\end{lstlisting}
+
+
+%----------
+\subsection{Options de l'extension « \textcolor{keywordcolor}{\normalsize\texttt{assignpoints}} »}
+\label{sub:3.3}
+
+L'extension de style « \lstenv{assignpoints} » ne dispose que de trois types d'options qui sont  relatifs :
+\begin{itemizefr}
+\item à la présentation des environnements d'exercice et de questionnaire (option abordée en détail en section \ref{sec:4}) ;
+\item au choix linguistique du document ;
+\item et au mode de compilation « bavard » ou « silencieux ».
+\end{itemizefr}
+
+L'option linguistique est assez logiquement activée par le nom de la langue de composition du document :
+\begin{itemizefr}
+\item \lstltx{usepackage\{assignpoints\}}$\rightarrow$ anglais par défaut ;
+\item \lstltx{usepackage[french]\{assignpoints\}}$\rightarrow$ français ;
+\item \lstltx{usepackage[german]\{assignpoints\}}$\rightarrow$ allemand.
+\end{itemizefr}
+
+Le mode de compilation « bavard/\textit{verbose} » (par défaut) est associé aux messages affichés lors de la première compilation. Il s'agit d'un message en marge de document appliqué à chaque début d'environnement d'exercice et de questionnaire qui ne s'active que si la largeur de la marge le permet (36\,mm minimum). Cette option est totalement accessoire et n'a pour but que d'alerter l'utilisateur qu'il doit recompiler son document.
+
+
+
+%==========
+\section{Conception et présentation des environnements}
+\label{sec:4}
+
+L'extension « \lstenv{assignpoints} » offre des environnements d'exercice et de questionnaire simplistes, \emph{qui n'ont pas pour vocation d'être réellement utilisés}. Ils sont juste proposés pour tester les fonctionnalités du paquet.
+
+%----------
+\subsection{Désactivation de la présentation intégrée}
+\label{sub:4.1}
+
+Si l'objectif est de définir une propre mise en page des exercices et/ou des questionnaires et de leur sous-environnements associés, l'extension peut être chargée avec l'option « \verb!customlayout! » : \lstltx{usepackage[customlayout]\{assignpoints\}}\hspace*{-1ex}.% WHY? FROM WHERE THIS SPACE COMES?
+
+Cela n'est toutefois pas forcément nécessaire, car la présentation des environnements peut se redéfinir directement avec les commandes \lstcs{AtBeginExercise}, \lstcs{AtBeginQuiz}, etc. (cf. \S\,\ref{sub:4.2}).
+
+L'option « \verb!customlayout! » empêche la présentation par défaut des exercices et des questionnaires. Il faut néanmoins mentionner que si elle est activée, il faut \emph{obligatoirement} avoir redéfini \emph{tous} les environnements ou implémenté leur mise en page à l'aide des commandes du type \lstcs{AtBeginExercise}, \lstcs{AtEndExercise} exposées en \S\,\ref{sub:4.2}, sinon une erreur de l'extension arrêtera la compilation : énervant quand on a mal compris ! Pour faire simple, cette option ne semble pas très utile ou sa motivation inconnue : c'est un artefact du paquet « \lstenv{exercisepoints}~», conservé pour ne pas perturber ses utilisateurs qui souhaiteraient migrer vers «~\lstenv{assignpoints} ». Selon les évènements à venir, sa durée de vie peut être comptée.
+
+
+%----------
+\subsection{Définition d'une mise en page personnalisée}
+\label{sub:4.2}
+
+De manière à concevoir l'aspect des environnements d'exercice et de quiz selon les goûts de chacun, l'extension propose plusieurs commandes de mise en forme dont les noms sont assez explicites.
+
+\begin{lstlisting}
+\AtBeginExercise{%
+  % Customised code
+}
+\AtEndExercise{%
+  % Customised code
+}
+\AtBeginSubexercise{%
+  % Customised code
+}
+\AtEndSubexercise{%
+  % Customised code
+}
+\AtBeginQuiz{%
+  % Customised code
+}
+\AtEndQuiz{%
+  % Customised code
+}
+\AtBeginQuizquestion{%
+  % Customised code
+}
+\AtEndQuizquestion{%
+  % Customised code
+}
+\end{lstlisting}
+
+Par exemple, le code minimaliste implémenté par défaut qui correspond aux exercices est donné ci-après (pour les questionnaires, il est similaire) --- une bascule (paquet « \href{https://www.ctan.org/pkg/etoolbox}{\texttt{etoolbox}} ») est juste définie pour vérifier la présence d'un titre ou non et ajuster la présentation en conséquence ; de même un test est effectué sur la langue du document pour les mêmes raisons.
+
+%\footnote{une bascule (paquet « \lstenv{etoolbox} ») est juste définie pour vérifier la présence d'un titre ou non et ajuster la présentation en conséquence ; de même un test est effectué sur la langue du document pour les mêmes raisons.}
+
+\begin{lstlisting}[tabsize=1]
+\AtBeginExercise{%
+	\parindent=0pt
+	\vspace{.5\baselineskip}\hrule%
+	\begingroup
+		\sffamily\par\vspace{4pt}%
+		% Empty versus non-empty exercise title
+		\iftoggle{assignpoints@checkemptystring}% 
+			{\textbf{\exercisename~\currentexercisenumber}}%
+			{\textbf{\exercisename~\currentexercisenumber}%
+				\if@assignpoints@usefrenchlanguage%
+					\enspace\textemdash\enspace\currentexercisetitle%
+				\else%
+					\enspace\textendash\enspace\currentexercisetitle%
+				\fi%
+			}%
+		\hfill\textbf{%
+			\getpoints*[exercise]{\currentexercisenumber}}%
+		\vskip 4pt\hrule\vskip 4pt%
+	\endgroup
+}
+\AtEndExercise{%
+	\vspace{4pt}\hrule\vspace{.5\baselineskip}%
+}
+\AtBeginSubexercise{%
+	\begingroup
+		\vspace{2pt}\sffamily%
+		% Empty versus non-empty subexercise title
+		\iftoggle{assignpoints@checkemptystring}% 
+			{\emph{\exercisename~%
+				\currentexercisenumber.\currentsubexercisenumber}}%
+			{\emph{\exercisename~%
+				\currentexercisenumber.\currentsubexercisenumber}%
+				\if@assignpoints@usefrenchlanguage%
+					\enspace\textemdash\enspace%
+						\emph{\currentsubexercisetitle}%
+				\else%
+					\enspace\textendash\enspace%
+						\emph{\currentsubexercisetitle}%
+				\fi%
+			}%
+		\dotfill(\emph{%
+			\getpoints*[exercise]{%
+				\currentexercisenumber.\currentsubexercisenumber}})%
+	\endgroup
+	\par
+}
+\AtEndSubexercise{\vspace{1pt}\par}
+\end{lstlisting}
+
+Au regard du code exposé, on s'aperçoit que quatre macros supplémentaires sont utiles si l'on souhaite reprendre la définition des environnements qui comportent des points : 
+\begin{itemizefr}
+  \item \lstcs{currentexercisetitle} et \lstcs{currentsubexercisetitle}, qui donnent l'accès aux arguments optionnels de titre des exercices et sous-exercices ;
+  \item \lstcs{currentexercisenumber}, qui fournit le numéro courant d'exercice (comptabilisé à partir de 1) ;
+  \item \lstcs{currentsubexercisenumber}, analogue du précédent dédié aux sous-parties d'exercice.
+\end{itemizefr}
+
+Pour la définition des environnements de quiz et de leurs questions, des macros jumelles sont disponibles : \lstcs{currentquiztitle} ainsi que \lstcs{currentquizquestiontitle} , \lstcs{currentquiznumber} et \lstcs{currentquizquestionnumber}.
+
+
+%----------
+\subsection{Exemples d'application}
+\label{sub:4.3}
+
+Les seules limites possibles sont ici relatives à l'imagination et aux compétences de l'utilisateur. 
+
+Une première tentative serait de rester classique et raisonnable en employant les commandes \LaTeX\ traditionnelles de structuration d'un document, à savoir les sections et sous-sections.
+
+Cela peut se réaliser avec le code ci-après.
+
+%\usepackage[customlayout]{exercisepoints}
+%[...]
+
+\begin{lstlisting}
+\AtBeginExercise{%
+  \section{\texorpdfstring{%
+    \currentexercisetitle\hfill%
+    (\currentexercisepoints~Points)}%
+    {\currentexercisetitle\space%
+      (\currentexercisepoints~Points)}%
+  }
+}
+\AtEndExercise{\clearpage}
+\AtBeginSubexercise{%
+  \subsection{\texorpdfstring{%
+    \currentsubexercisetitle\hfill%
+    (\currentsubexercisepoints~Points)}%
+    {\currentsubexercisetitle\space%
+      (\currentsubexercisepoints~Points)}%
+  }
+}
+\AtEndSubexercise{}
+\end{lstlisting}
+
+Néanmoins, pour être plus ambitieux, on peut faire appel à des extensions graphiques plus élaborées qui font de \LaTeX\ une plateforme de composition typographique inégalée, notamment l'incroyable outil « \href{https://www.ctan.org/pkg/pgf}{\texttt{TikZ/PGF}} » et, dans une perspective pratique, un de ses dérivés remarquables, l'extension « \href{https://www.ctan.org/pkg/tcolorbox}{\texttt{tcolorbox}} ».
+
+En restant simple --- les possibilités sont quasiment infinies ---, le code proposé construit une boîte avec son titre selon les canons graphiques par défaut de « \href{https://www.ctan.org/pkg/tcolorbox}{\texttt{tcolorbox}} ».
+
+\begin{lstlisting}
+\AtBeginExercise{%
+	\begin{tcolorbox}[
+		title={\exercisename~\currentexercisenumber%
+			\space\textemdash\space\currentexercisetitle%
+			\hfill\getpoints*[exercise]{\currentexercisenumber}}
+	]
+}
+\AtEndExercise{\end{tcolorbox}}
+\end{lstlisting}
+
+\AtBeginExercise{%
+	\begin{tcolorbox}[
+		title={\exercisename~\currentexercisenumber%
+			\space\textemdash\space\currentexercisetitle%
+			\hfill\getpoints*[exercise]{\currentexercisenumber}},
+		fonttitle=\sffamily\bfseries
+	]
+}
+\AtEndExercise{\end{tcolorbox}}
+
+Appliqué à l'exercice moult fois utilisé, cela produit le résultat à suivre dans la foulée.
+
+\begin{lstlisting}
+\begin{exercise}[Équation simple]
+  \begin{enumerate}
+    \item Déterminer un nombre $x$ 
+          tel que $3 \cdot x = 15$. \itempoints*{0.5}
+    \item Expliquer la démarche menant au résultat. 
+          \itempoints*{1.5}
+  \end{enumerate}
+\end{exercise}
+\end{lstlisting}
+
+\begin{exercise}[Équation simple]
+  \begin{enumerate}
+    \item Déterminer un nombre $x$ tel que $3 \cdot x = 15$. \itempoints*{0.5}
+    \item Expliquer la démarche menant au résultat. \itempoints*{1.5}
+  \end{enumerate}
+\end{exercise}
+
+De ce dernier exemple, on peut apprécier la qualité du rendu pour un effort d'écriture du code des plus minimaux.
+
+Si l'extension « \href{https://www.ctan.org/pkg/tcolorbox}{\texttt{tcolorbox}} » est ici mentionnée, c'est qu'elle dispose de nombreuses fonctionnalités associées à la présentation et l'enregistrement des exercices et de leur solution. Comme spécifié en introduction, le paquet « \lstenv{assignpoints} » apporte juste en complément un système de comptabilisation des points.
+
+Un des autres grand intérêt de l'extension « \href{https://www.ctan.org/pkg/tcolorbox}{\texttt{tcolorbox}} » est, en chargeant sa bibliothèque « \lstenv{breakable} », de permettre d'avoir des environnements qui résistent aux sauts de page. 
+Cependant, avertissement est apporté que seul l'environnement de premier niveau construit avec « \href{https://www.ctan.org/pkg/tcolorbox}{\texttt{tcolorbox}} » possède la propriété de s'étendre automatiquement sur plusieurs pages. Par conséquent, si tous les environnement sont construits à l'aide de cette extension, les sous-exercices ou les questions de quiz ne pourront pas être extensibles d'une page à l'autre. Une des solutions possibles est alors de revenir à un environnement de premier niveau élaboré avec « \href{https://www.ctan.org/pkg/pgf}{\texttt{TikZ}} ». Cela dépasse largement le cadre du présent exposé et renvoi est fait à l'encyclopédie \LaTeX\ en ligne que constitue le site \href{https://tex.stackexchange.com/}{\TeX.SE}.
+
+\vfill
+
+%==========
+\section{Récapitulation}
+\label{sec:5}
+
+Avant de conduire une synthèse de l'ensemble des macros proposées, il est enfin fait état de deux commandes d'agrément qui répertorient l'ensemble des points d'exercice et de questionnaire d'un document : \lstcs{showcaseexercise[*]} et \lstcs{showcasequiz[*]}. Les tables \ref{tab:ex-overview-final} et \ref{tab:qz-overview} qui suivent sont élaborées au moyen de celles-ci.
+
+\begin{lstlisting}
+\begin{table}[h]\centering
+  \caption{Vue d'ensemble des exercices.}
+  \label{tab:ex-overview-final}
+  \vspace{4pt}
+  \showcaseexercise*
+\end{table}
+\begin{table}[h]\centering
+  \caption{Vue d'ensemble des questionnaires.}
+  \label{tab:qz-overview}
+  \vspace{4pt}
+  \showcasequiz*
+\end{table}
+\end{lstlisting}
+
+\vspace{-1.0\baselineskip}
+\begin{table}[h]\centering
+  \caption{Vue d'ensemble des exercices.}
+  \label{tab:ex-overview-final}
+  \vspace{4pt}
+  \showcaseexercise*
+\end{table}
+\vspace{-.5\baselineskip}
+
+
+\vspace{-1.75\baselineskip}
+\begin{table}[h]\centering
+  \caption{Vue d'ensemble des questionnaires.}
+  \label{tab:qz-overview}
+  \vspace{4pt}
+  \showcasequiz*
+\end{table}
+\vspace{-.5\baselineskip}
+
+Au terme de ce guide d'utilisation, l'ensemble des commandes de l'extension « \lstenv{assignpoints} » sont répertoriées dans des tables correspondant à chaque type d'usage.
+
+\parindent=0pt
+
+\begin{center}
+	\vspace{-.25\baselineskip}
+	\begin{xtabular}{p{0.7\linewidth}}
+			\multicolumn{1}{c}{\sffamily Macros d'attribution des points}  \\[2pt]
+		\toprule
+			\lstcs{points\{<nb-pts>\}} 
+			\vspace{1pt} \\ \midrule
+			\lstcs{itempoints\{<nb-pts>\}}
+			\vspace{1pt} \\ \midrule
+			\lstcs{bonuspoints\{<nb-pts>\}} \\
+			\lstcs{bonuspoints[exercise]\{<nb-pts>\}} \\
+			\lstcs{bonuspoints[quiz]\{<nb-pts>\}} 
+			\vspace{1pt} \\
+		\bottomrule \\
+	\end{xtabular}
+	\vspace{-.5\baselineskip}
+\end{center}
+
+\xentrystretch{0}
+\begin{center}
+	\vspace{-0.75\baselineskip}
+	\begin{xtabular}{p{0.7\linewidth}}
+			\multicolumn{1}{c}{\sffamily Macros de récupération des points} \\[2pt] \shrinkheight{-\normalbaselineskip} 
+		\toprule
+				\lstcs{getpoints\{<nb-env>\}} \\
+				\lstcs{getpoints*\{<nb-env>\}} \\ 
+				\lstcs{getpoints[exercise]\{<nb-env>\}} \\
+				\lstcs{getpoints*[exercise]\{<nb-env>\}} \\
+				\lstcs{getpoints[quiz]\{<nb-env>\}} \\
+				\lstcs{getpoints*[quiz]\{<nb-env>\}} 
+				\vspace{1pt} \\ \midrule
+				\lstcs{getbonuspoints\{<nb-env>\}} \\
+				\lstcs{getbonuspoints*\{<nb-env>\}} \\
+				\lstcs{getbonuspoints[exercise]\{<nb-env>\}} \\ 
+				\lstcs{getbonuspoints*[exercise]\{<nb-env>\}} \\
+				\lstcs{getbonuspoints[quiz]\{<nb-env>\}} \\ 
+				\lstcs{getbonuspoints*[quiz]\{<nb-env>\}} 
+				\vspace{1pt} \\ \midrule 
+				\lstcs{exercisetotalpoints} \\
+				\lstcs{exercisetotalpoints*} \\
+				\lstcs{quiztotalpoints} \\
+				\lstcs{quiztotalpoints*} 
+				\vspace{1pt} \\ \midrule
+				\lstcs{exercisetotalpointswithbonus} \\
+				\lstcs{exercisetotalpointswithbonus*} \\
+				\lstcs{quiztotalpointswithbonus} \\
+				\lstcs{quiztotalpointswithbonus*} 
+				\vspace{1pt} \\
+		\bottomrule
+	\end{xtabular}
+	%\vspace{-.5\baselineskip}
+\end{center}
+
+\begin{center}
+	\vspace{-.25\baselineskip}
+	\begin{xtabular}{c}
+			\multicolumn{1}{c}{\sffamily Macros de comptabilisation des environnements} \\[2pt]
+		\toprule
+			\begin{minipage}[t]{0.7\linewidth}
+				\lstcs{currentexercisenumber} \\
+				\lstcs{currentsubexercisenumber} \\
+				\lstcs{currentquiznumber} \\
+				\lstcs{currentquizquestionnumber} 
+				\vspace{2pt}
+			\end{minipage} \\ 
+		\bottomrule
+	\end{xtabular}
+	%\vspace{-.5\baselineskip}
+\end{center}
+
+\begin{center}
+	\vspace{-.25\baselineskip}
+	\begin{xtabular}{c}
+			\multicolumn{1}{c}{\sffamily Macros de mise en page et de récapitulation} \\[2pt]
+		\toprule
+			\begin{minipage}[t]{0.7\linewidth}
+				\lstcs{AtBeginExercise} \\
+				\lstcs{AtEndExercise} \\
+				\lstcs{AtBeginSubexercise} \\
+				\lstcs{AtEndSubexercise} 
+				\vspace{2pt}
+			\end{minipage} \\ \midrule
+			\begin{minipage}[t]{0.7\linewidth}
+				\lstcs{AtBeginQuiz} \\
+				\lstcs{AtEndQuiz} \\
+				\lstcs{AtBeginQuizquestion} \\
+				\lstcs{AtEndQuizquestion} 
+				\vspace{2pt}
+			\end{minipage} \\ \midrule
+			\begin{minipage}[t]{0.7\linewidth}
+				\lstcs{currentexercisetitle} \\
+				\lstcs{currentsubexercisetitle} 
+				\lstcs{currentquiztitle} \\
+				\lstcs{currentquizquestiontitle} 
+				\vspace{2pt}
+			\end{minipage} \\ \midrule
+			\begin{minipage}[t]{0.7\linewidth}
+				\lstcs{showcaseexercise} \\
+				\lstcs{showcaseexercise*} \\
+				\lstcs{showcasequiz} \\
+				\lstcs{showcasequiz*} 
+				\vspace{2pt}
+			\end{minipage} \\
+		\bottomrule
+	\end{xtabular}
+	%\vspace{-.5\baselineskip}
+\end{center}
+
+Pour finir, quelques exemples d'application :
+\begin{itemizefr}
+	\item \lstcs{getpoints*\{5\}} $\rightarrow$ \getpoints*{5} ;
+	\item \lstcs{getpoints*\{5.1\}} $\rightarrow$ \getpoints*{5.1} ;
+	\item \lstcs{getpoints*\{5.2\}} $\rightarrow$ \getpoints*{5.2} ;
+	\item \lstcs{getpoints*[quiz]\{3\}} $\rightarrow$ \getpoints*[quiz]{3} ;
+	\item \lstcs{getpoints*[quiz]\{3.1\}} $\rightarrow$ \getpoints*[quiz]{3.1} ;
+	\item \lstcs{getpoints*[quiz]\{3.2\}} $\rightarrow$ \getpoints*[quiz]{3.2} ;
+	\item \lstcs{getbonuspoints*} $\rightarrow$ \getbonuspoints* ;
+	\item \lstcs{getbonuspoints*[quiz]} $\rightarrow$ \getbonuspoints*[quiz] ;
+	\item \lstcs{exercisetotalpoints*} $\rightarrow$ \exercisetotalpoints* ;
+	\item \lstcs{quiztotalpoints*} $\rightarrow$ \quiztotalpoints* ;	
+	\item \lstcs{exercisetotalpointswithbonus*} $\rightarrow$ \exercisetotalpointswithbonus* ;
+	\item \lstcs{quiztotalpointswithbonus*} $\rightarrow$ \quiztotalpointswithbonus* ;	
+\end{itemizefr}
+
+
+
+%==========
+%\section{Références bibliographiques}
+%\label{sec:6}
+
+
+
+%==========
+\section{Copyright et licence}
+\label{sec:7}
+
+\parindent=0pt
+
+Copyright \copyright\ 2017--2020 ejazz.\smallskip
+
+This work may be distributed and/or modified under the conditions of the LaTeX Project Public License, either version 1.3 of this license or (at your option) any later version. The latest version of this license is available at:\newline\hspace{2pt} %\\[2pt]
+\centerline{\url{http://www.latex-project.org/lppl.txt}}\newline\hspace{2pt}  %\\[2pt]
+and version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or later.\smallskip
+
+This work has the LPPL maintenance status `maintained'.\smallskip
+
+The Current Maintainer of this work is ejazz.\smallskip
+
+This work consists of the files:\newline\hspace{2pt} %\\[2pt]
+\centerline{`\texttt{assignpoints.sty}' and `\texttt{assignpoints[-fr].tex}'}
+
+\vfill
+
+
+
+%==========
+\section{Historique des versions}
+\label{sec:8}
+
+\showcaserevisions
+
+%\showcaseexerciseatend
+%\showcasequizatend
+
+\end{document}
+%
+% That's all folks!
+%
