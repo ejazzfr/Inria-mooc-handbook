@@ -22,7 +22,7 @@
 %\documentclass[showframe]{texjazz-handbook}
 %\documentclass[showframe]{texjazz-handbook}
 %\documentclass[printfiles, showframe]{texjazz-handbook}% COMPILATION ERROR! WHY? FIX ME!
-\documentclass{texjazz-handbook}
+\documentclass[assignpoints,askreply]{texjazz-handbook}
 
 %--------------------------------------------------------------------------------------------------
 %---- Commandes spécifiques / Particular command sequences (cf. TeX prefix \cs[...])
@@ -65,7 +65,25 @@
 %-                  → http://www.xm1math.net/texmaker/index_fr.html
 %-  New tool: previous name LaTeXila, « jeu de mots ! », now Gnome-LaTeX (C and Gtk3+ GUI)
 %-            → https://wiki.gnome.org/Apps/GNOME-LaTeX
-%-  /opt/texlive/2019/texmf-dist/scripts/pythontex/pythontex.py $shortname
+%-
+%--------------------------------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------------------------------
+%---- Note about TeXLive 2020 "autumn" (winter leads to OLDFASHION!!! 2020-12-19, see sources)
+%- Since the new version of `menukeys` (2020-12-19) all is fine :-) The package does not load 
+%- anymore the `catoptions` package (really good solution! Its author Ahmed Musa seems to have
+%- "pris le chou" as we say in French! − see all his posts and comments on TeX.SX)
+%---- NO MORE NEEDED!!! (for the record)
+%- After an update of TeXLive 2020 around the first of October, the `menukeys` package breaks
+%- the compilation flow. The reason comes from the use of `catoptions` package, which redefines
+%- a lot of LaTeX code and does not work at all in the current release (see David Carlisle
+%- answer to our question: https://tex.stackexchange.com/questions/565937/). The author of
+% `menukey` has been informed (see GitHub) but has no time to solve the issue. Nevertheless,
+%- a workaround is to update TeXlive distribution and then downgrade to the previous LaTeX kernel
+%- with TeXLive manager: 
+%-   $ tlmgr restore latex
+%-   Available backups for latex: 53958 (2020-10-08 13:20)
+%-   $ tlmgr restore latex 53958
 %--------------------------------------------------------------------------------------------------
 
 %--------------------------------------------------------------------------------------------------
@@ -147,7 +165,7 @@
 %\subtitle{\subtitlefont\Huge Formation ICN--SNT--Python --- Manuel des participants}
 \subtitle{\textsc{Formation ICN--SNT--Python --- Manuel des participants}}
 \author{Fun--MOOC 2019-2021}
-\date{2019-2020}
+\date{2019-2021}
 %\date{\DTMfetchmonth{now} \DTMfetchyear{now}}% extension `datetime2' TODO!
 \doclogo[0.7]{./Images/Chapter00/inria-logo-white-nosign.pdf}% [<scale factor>]
 \docaddlogo[0.25]{./Images/Chapter00/python-logo-white.png}%
