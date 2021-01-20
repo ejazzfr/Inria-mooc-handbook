@@ -1225,6 +1225,7 @@ La présentation des quiz du document\linebreak suit plus ou moins celle de la p
 \vspace{6pt}
 
 \begin{quiz}[title={Décomposition en tâches}]
+\vspace{-\baselineskip}
 \begin{quizquestion*}[b]{2}{1,3,4}{Tâches élémentaires}
 <L'ordinateur étant bête, il ne sait faire que des tâches très simples. C'est donc à nous, humains intelligents, de faire le travail de découpage.>
 Pourquoi doit-on découper une tâche en tâches élémentaires ?
@@ -1235,7 +1236,12 @@ Pourquoi doit-on découper une tâche en tâches élémentaires ?
 	\mcqproposal{Parce que l'ordinateur qui comprend tout veut vérifier qu'on sait le faire aussi.}
 \end{quizquestion*}
 
-\sidegraphic{\includegraphics[width=\linewidth]{arbre-genealogique.png}}%
+\vfill\pagebreak
+
+%\sidegraphic{\includegraphics[width=\linewidth]{arbre-genealogique.png}}% WORKS NO MORE! WHY?
+%\afterpage{
+\marginnote{\includegraphics[width=\linewidth]{arbre-genealogique.png}}
+%}%
 \begin{quizquestion*}<tooltip>[b]{4}{1,2,3,5,6,7}{Arbre généalogique}
 <Les flèches vont du parent à l'enfant. Il y a donc une flèche de mon grand-père à mon parent, puis de mon parent à moi-même. Je dois donc suivre (descendre) deux flèches pour aller de mon grand-père à moi-même.>
 \points{1}
@@ -1252,6 +1258,7 @@ Prenons un graphe bien connu : l'arbre généalogique. Les nœuds sont les perso
 
 
 \begin{quiz}[title={Notion de variable}]
+\vspace{-\baselineskip}
 \begin{quizquestion}[b]{1,2,4}{3}{Utilité des variables}
 <Les variables sont faites pour stocker tous types de valeurs : des entiers pour compter ou des valeurs plus complexes. Elles peuvent aussi permettre d'accéder à des endroits dans la mémoire. Elles permettent de stocker un morceau de musique (dans un certain format), mais pas directement de le faire jouer à un ordinateur.>
 À quoi peut servir une variable ?
@@ -1265,6 +1272,7 @@ Prenons un graphe bien connu : l'arbre généalogique. Les nœuds sont les perso
 
 
 \begin{quiz}[title={Instructions élémentaires}]
+\vspace{-\baselineskip}
 \begin{quizquestion*}[b]{4}{1,2,3}{Algorithme simple (I)}
 <La valeur de \texttt{i} est initialisée à \texttt{2}. Elle n'est donc pas strictement négative. Il faut donc entrer dans la partie « sinon » du test. On soustrait donc \texttt{1} à \texttt{i} qui vaut au final \texttt{1}.>
 Voici un algorithme simple à exécuter. Quelle est la valeur de \texttt{i} ?
@@ -1283,6 +1291,8 @@ FinSi
 	\mcqproposal{\texttt{i} vaut \texttt{1}.}
 %	\mcqproposal{\texttt{i} vaut \texttt{0}.}
 \end{quizquestion*}
+
+\vfill\pagebreak
 
 \begin{quizquestion*}[b]{4}{1,2,3,5}{Algorithme simple (II)}
 <La boucle « \texttt{Pour} » va s'exécuter 6 fois (\texttt{i=0}, \texttt{i=1}, ... , \texttt{i=5}). À chaque tour de boucle, on ajoute \texttt{1} à \texttt{x}, donc \texttt{x} vaudra \texttt{6}.
@@ -1323,6 +1333,7 @@ Sélectionnez les affirmations vraies. Il peut y en avoir plusieurs !
 \end{quiz}
 
 \begin{quiz}[title={Culture algoritmique}]
+\vspace{-\baselineskip}
 \begin{quizquestion}<tooltip>[b]{1,3,4}{2,5}{Algorithmes}
 <Les algorithmes sont une des fondations de l'informatique. De nombreux livres et sites Internet les décrivent. Des gens en inventent et vous pouvez aussi en inventer (soit pour faire de nouvelles choses, soit pour faire des choses connues plus rapidement).>
 \points{1}
@@ -1336,6 +1347,7 @@ Sélectionnez les affirmations vraies. Il peut y en avoir plusieurs !
 \end{quiz}
 
 \begin{quiz}[title={Langage machine}]
+\vspace{-\baselineskip}
 \begin{quizquestion*}[b]{1}{2}{Écriture}
 <L'assembleur est un langage de très bas niveau. Il peut bien sûr être écrit directement (comme les premiers compilateurs), mais c'est assez rébarbatif et sujet à erreurs.>
 \points{1}
@@ -1354,6 +1366,7 @@ C'est pratique et simple d'écrire l'assembleur directement à la main.
 \end{quiz}
 
 \begin{quiz}[title={Compilation}]
+\vspace{-\baselineskip}
 \begin{quizquestion}[b]{1}{2}{Compilateurs}
 <Les compilateurs peuvent détecter certaines erreurs (syntaxe, parfois type), mais pas toutes...
 Ils transforment ce qu'écrivent les programmeurs en exécutable machine ou en assembleur. Ils ont ansi en valeur d'entrée le texte d'un autre programme.>
@@ -1367,6 +1380,7 @@ Ils transforment ce qu'écrivent les programmeurs en exécutable machine ou en a
 \end{quiz}
 
 \begin{quiz}[title={{\itshape Bugs} et bogues}]
+\vspace{-\baselineskip}
 %\begin{quizquestion}[b]{2,3,5,7}{1,4,6}{Occurence des {\upshape bugs}}
 \begin{quizquestion}[b]{2,3,5,6}{1,4}{Occurence des {\upshape bugs}}
 <Beaucoup de possibilités de \textit{bugs} ! Personne n'est bête dans cette histoire, mais le manque de communication ou l'étourderie sont souvent responsables.>
@@ -1430,6 +1444,7 @@ Les questions à suivre concernent les ordres de grandeurs de taille de code. Qu
 \end{quiz}
 
 \begin{quiz}[title={Langage de programmation}]
+\vspace{-\baselineskip}
 \begin{quizquestion}[b]{1,3,5}{2,4}{Choix des langages}
 <Les langages de programmation pren\-nent naissance et se développent suivant les besoins et l'apparition de nouvelles idées pour programmer mieux ou plus facilement. Ils sont plus ou moins adaptés à l'application voulue, même si on peut toujours tout faire.>
 Pourquoi y-a-t-il plusieurs langages de programmation ?
@@ -1472,8 +1487,6 @@ On suppose avoir un tableau \texttt{t} de taille \texttt{N}. On peut alors écri
 
 
 \vfill\pagebreak\thispagestyle{empty}
-
-
 
 
 

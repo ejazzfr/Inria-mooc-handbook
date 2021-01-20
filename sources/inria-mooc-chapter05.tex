@@ -2157,6 +2157,7 @@ La présentation des quiz du document\linebreak suit plus ou moins celle de la p
 \vspace{6pt}
 
 \begin{quiz}[title={Représentation de l'information}]
+\vspace{-.5\baselineskip}
 \begin{quizquestion*}[c]{2}{1,3}{Notion de bit}
 <Bien entendu, les informations naturel\-les prennent beaucoup plus que deux valeurs différentes et même une infini\-té continue. Une distance peut valoir par exemple n'importe quel nombre entre zéro et l'infini. Le codage de ces informations dans l'ordinateur ont une précision limitée, par exemple $2^{32}$ égale quatre milliards de valeurs pour un entier codé sur 32 bits, impossible donc de stocker toutes les valeurs réelles.\\
 La tension électrique se mesure précisément (-10V, ... 0V, ... 10V), mais distinguer ces valeurs est difficile et coûteux en électronique. On choisit de n'utiliser que deux niveaux (par exemple 0V et +5V) car cela s'implémente aisément. Par assemblage de bits, on élabore ensuite des nombres de diverses valeurs.>
@@ -2190,6 +2191,7 @@ Quels sont les avantages du codage ASCII des lettres ?
 
 
 \begin{quiz}[title={Infographie et audionumérique}]
+\vspace{-\baselineskip}
 \begin{quizquestion*}[b]{2}{1,3}{Couleurs et pixels}
 <Les technologies actuelles affichent les couleurs en additionnant des nuances de trois composantes. En alternant des petits points rouges, verts et bleus très proches, on fait croire à l’œil humain qu'il s'agit d'un seul élément dont la couleur est l'addition de la quantité de rouge, de vert et de bleu. Par exemple, la quantité de rouge d'un pixel est affichée en plus ou moins lumineux avant qu'un filtre vienne le convertir en rouge plus ou moins sombre.
 C'est de la synthèse additive qui ajoute ces nuances ; contrairement à la synthèse soustractive (rouge, jaune, bleu) utilisée pour l'impression, la peinture, etc.>
@@ -2223,6 +2225,7 @@ Quand l'ordinateur décode un son :
 
 
 \begin{quiz}[title={Compression de données}]
+\vspace{-1\baselineskip}
 \begin{quizquestion*}<tooltip>[b]{2}{1,3,4}{Taille d'image}
 <Un pixel de couleur est habituellement codé sur 24\,bits, 8\,bits pour le rouge, le vert et le bleu. Donc 3 octets par pixel, donc 30\,Mo en tout.>
 Quel espace occuperait une photo prise par votre smartphone avec un capteur à 10 millions de pixels en couleur si on ne la compressait pas ? Chaque couleur est codée sur 8 bits.
@@ -2233,8 +2236,14 @@ Quel espace occuperait une photo prise par votre smartphone avec un capteur à 1
 	\mcqproposal{3 gigaoctets.}
 \end{quizquestion*}
 
-\sidegraphic{\includegraphics[width=\linewidth]{quiz03-chap05.jpg}}
-\vspace{-\baselineskip}
+
+%\sidegraphic{\includegraphics[width=\linewidth]{quiz03-chap05.jpg}}% LOST FLOAT! NEW ERROR WHY?
+%\marginnote{\includegraphics[width=\linewidth]{quiz03-chap05.jpg}}
+%\afterpage{\marginnote{\includegraphics[width=\linewidth]{quiz03-chap05.jpg}}}
+%\vspace{-\baselineskip}
+
+\vfill\pagebreak
+
 \begin{quizquestion}[b]{1,2,4}{3}{Compression d'image}
 <La compression d'image peut se réaliser « avec perte » dans le cas de formats d'image comme le JPEG ou le PNG. On peut par exemple remplacer des pixels similaires par un bloc de pixels identiques. La quantité d'informations à stocker peut ainsi diminuer drastiquement mais, en conséquence, la qualité de l'image aussi.
 Selon le facteur de compression demandé par l'utilisateur lors de l'enregistrement, l'image pourra prendre à peu près n'importe quelle taille. L'utilisateur doit donc choisir la compression selon la taille du fichier et la qualité de l'image voulue.>
@@ -2261,6 +2270,7 @@ Comment l'ordinateur sait-il comment décompresser une vidéo ?
 
 
 \begin{quiz}[title={Organisation des données}]
+\vspace{-.5\baselineskip}
 \begin{quizquestion*}<tooltip>[b]{1}{2,3}{Codage de la taille d'une personne}
 <Le type des données stockées dans la mémoire de l'ordinateur ou dans un fichier est choisi par convention par le programmeur. Il faut respecter ce type quand on donne de l'information à l'ordinateur pour qu'il la manipule de manière adaptée. Et en sortie, il faut interprêter le résultat donné par l'ordinateur selon cette convention.\\
 L'espace mémoire peut aussi jouer sur le choix, mais en pratique il varie souvent entre 1 octet (8 bits) et 8 octets (64 bits) pour stocker un nombre, donc c'est négligeable (tant qu'on ne stocke pas des millions de nombres).\\
@@ -2299,6 +2309,7 @@ Un logiciel (spécialisé) ouvre le fichier image qui est au format JPEG et...
 
 
 \begin{quiz}[title={Bases de données}]
+\vspace{-\baselineskip}
 \begin{quizquestion}<tooltip>[t]{1,2,3}{}{Système de gestion multi-serveur}
 <Les données stockées en mémoire ou dans un fichier sont compréhensibles par l'ordinateur. En revanche, un humain ne peut pas les lire facilement car il faudrait interpréter les bonnes suites de bits comme les bons types de nombres, etc. Le SGBD permet de rendre cette consultation facile pour un humain via un langage relativement compréhensible.
 Par ailleurs, le SGBD peut être répliqué, cela permet d'accéder de manière transparente à un autre serveur de stockage quand le principal est inaccessible ou en panne.>

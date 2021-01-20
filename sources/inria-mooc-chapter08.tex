@@ -1050,6 +1050,7 @@ La présentation des quiz du document\linebreak suit plus ou moins celle de la p
 \vspace{6pt}
 
 \begin{quiz}[title={Données et traitements}]
+\vspace{-\baselineskip}
 \begin{quizquestion}[b]{1}{2}{Bien rivaux}
 <Le disque vinyle est un bien rival parce que c'est un objet qu'on ne peut recopier, à l'inverse une vidéo numérique est un bien non rival puisque la copier ne coûte quasiment rien et n'affecte pas le bien initial.>
 Parmi ces exemples, le/lesquels est/sont des biens rivaux ?
@@ -1118,6 +1119,7 @@ Pourquoi l’ordinateur a-t-il besoin de connaître le type des variables que l�
 \end{quiz}
 
 \begin{quiz}[title={Photographie numérique}]
+\vspace{-\baselineskip}
 \begin{quizquestion*}[b]{1}{2,3,4,5}{CCD ({\upshape Charge Coupled Devices})}
 <C'est en 1969 qu'ont été inventés les capteurs CCD (\textit{Charge Coupled Devices}), circuits à semi-conducteur utilisés dans les premiers caméscopes numériques. En 1972, la première photographie numérique couleur publiée a été produite à l'aide de la technologie de capteur CCD.>
 En quelle année les capteurs CCD ont-ils été inventés ?
@@ -1160,8 +1162,8 @@ Ci-dessous on expose quatre courbes de valeurs et quatre propositions d’effets
 Associer la courbe à l'effet qu'elle produit sur l'image en sélectionnant la réponse adéquate. Chaque courbe correspond à un et un seul effet, et \textit{vice-versa}.
 \endgroup
 
-\vspace{-\baselineskip}
-\sidegraphic[Contraste {\upshape vs} luminosité, courbe A.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-A.png}}%
+%\sidegraphic[Contraste {\upshape vs} luminosité, courbe A.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-A.png}}
+\sideimage[Contraste {\upshape vs} luminosité, courbe A.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-A.png}}%
 \begin{quizquestion*}<tooltip>[b]{2}{1,3,4}{Contraste {\upshape versus} luminosité --- courbe A}
 <La première courbe reste linéaire et ne change donc pas le rapport entre les valeurs de deux pixels de l'image. En revanche, la valeur maximale passe de 255 à 128 : l'image est donc plus sombre et l'effet est une \emph{baisse de luminosité}.>
 Quel est l'effet de la courbe A ci-contre ?
@@ -1172,10 +1174,13 @@ Quel est l'effet de la courbe A ci-contre ?
 	\mcqproposal{Meilleur contraste sur les tons sombres.}
 \end{quizquestion*}
 
-%\vspace{-\baselineskip}
-\afterpage{%
-\sidegraphic[Contraste {\upshape vs} luminosité, courbe B.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-B.png}}%
-}%
+\pagebreak
+
+%\afterpage{%
+%\sidegraphic[Contraste {\upshape vs} luminosité, courbe B.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-B.png}}%
+\sideimage[Contraste {\upshape vs} luminosité, courbe B.]%
+{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-B.png}}%
+%}%
 \begin{quizquestion*}<tooltip>[b]{4}{1,2,3}{Contraste {\upshape versus} luminosité --- courbe B}
 <La deuxième courbe est une courbe dite « gamma » qui se retrouve fréquemment dans les logiciels d'édition d'image. On voit que la pente est forte pour les tons sombres (faibles valeurs de niveau de gris) et plus faible pour les valeurs hautes. On a donc une plus grande dynamique sur les tons sombres, au détriment de la dynamique sur les tons clairs : l'effet est un \emph{meilleur contraste sur les tons sombres}. On pourrait obtenir un meilleur contraste sur les tons clairs (au détriment des tons sombres) en dessinant une courbe concave.>
 Quel est l'effet de la courbe B ci-contre ?
@@ -1187,8 +1192,10 @@ Quel est l'effet de la courbe B ci-contre ?
 \end{quizquestion*}
 
 
-\vspace{-\baselineskip}
-\sidegraphic[Contraste {\upshape vs} luminosité, courbe C.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-C.png}}%
+\vspace{-.5\baselineskip}
+%\sidegraphic[Contraste {\upshape vs} luminosité, courbe C.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-C.png}}%
+\sideimage[Contraste {\upshape vs} luminosité, courbe C.]%
+  {\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-C.png}}[6pt]%
 \begin{quizquestion*}<tooltip>[b]{1}{2,3,4}{Contraste {\upshape versus} luminosité --- courbe C}
 <Pour la troisième courbe, la transformation est ce qu'on appelle l'identité : les valeurs restent comprises entre 0 et 255 et la droite est de pente 1. La valeur de chaque pixel reste donc inchangé et cette courbe n'a \emph{aucun effet}.>
 Quel est l'effet de la courbe C ci-contre ?
@@ -1199,8 +1206,9 @@ Quel est l'effet de la courbe C ci-contre ?
 	\mcqproposal{Meilleur contraste sur les tons sombres.}
 \end{quizquestion*}
 
-\vspace{-\baselineskip}
-\sidegraphic[Contraste {\upshape vs} luminosité, courbe D.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-D.png}}%
+\vspace{-.5\baselineskip}
+%\sidegraphic[Contraste {\upshape vs} luminosité, courbe D.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-D.png}}%
+\sideimage[Contraste {\upshape vs} luminosité, courbe D.]{\includegraphics[width=\linewidth]{./Images/Chapter08/quizzVIII-02-D.png}}[6pt]%
 \begin{quizquestion*}<tooltip>[b]{3}{1,2,4}{Contraste {\upshape versus} luminosité --- courbe D}
 <Pour la dernière courbe, tous les pixels plus sombres qu'une certaine valeur sont rendus noirs (les valeurs faibles sont toutes mises à 0) et tous les pixels plus clairs qu'une certaine valeur sont rendus blancs (les valeurs fortes sont toutes mises à 255). Entre les deux, on trouve une transformation linéaire mais avec une pente supérieure à 1 : l'écart entre deux valeurs de niveau de gris est donc amplifié, ce qui fait qu'on a une \emph{augmentation du contraste} sur ces valeurs intermédiaires (au détriment des pixels sombres et clairs qui sont saturés). On pourrait argumenter sur le fait que la courbe 2 produit aussi une augmentation de contraste. Mais ce genre de courbe ne peut amplifier le contraste que sur les tons sombres ou clairs. La dernière courbe est plus générique en termes d'augmentation de contraste, y compris sur les valeurs intermédiaires.>
 Quel est l'effet de la courbe D ci-contre ?
@@ -1210,9 +1218,11 @@ Quel est l'effet de la courbe D ci-contre ?
 	\mcqproposal{Augmentation du contraste.}
 	\mcqproposal{Meilleur contraste sur les tons sombres.}
 \end{quizquestion*}
+\vspace{-.5\baselineskip}
 \end{quiz}
 
 \begin{quiz}[title={Informatique embarquée et objets connectés}]
+\vspace{-\baselineskip}
 \begin{quizquestion*}<tooltip>[b]{2}{1,3,4}{Internet des objets --- IdO/IoT}
 <Un \emph{objet connecté} est appelé ainsi \emph{car il est connecté à Internet et, avec les autres objets, constitue un sous-ensemble de ce réseau Internet} appelé \emph{Internet des Objets}.
 Est-ce à dire pour autant que ces objets communiquent tous directement les uns avec les autres ? Non, en pratique, chacun a un ensemble de rôles bien précis (et limité en général) et n’interagit qu’avec un nombre très limité d’autres objets, applications pour smartphones ou serveurs de constructeurs.
@@ -1276,6 +1286,7 @@ Vrai ou faux?
 \end{quiz}
 
 \begin{quiz}[title={Localisation, cartographie et mobilité}]
+\vspace{-\baselineskip}
 \begin{quizquestion}<tooltip>[b]{1,3}{2,4}{Horloge GPS}
 <Le système GPS est unidirectionnel et les communications se font uniquement à destination des récepteurs. Les satellites émettent donc leurs messages de façon périodique.
 Chaque message est autonome puisqu’il comporte une localisation (celle du satellite au moment de l’envoi du message) et le temps où il a été transmis.
@@ -1336,8 +1347,6 @@ L’algorithme qui calcule un plus court chemin utilise des vecteurs portant des
 	\mcqproposal{Si un attribut est --- entre autres --- le volume du trafic en temps réel cela permet de détecter les bouchons.}
 \end{quizquestion}
 \end{quiz}
-
-
 
 
 

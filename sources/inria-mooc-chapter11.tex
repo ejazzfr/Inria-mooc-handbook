@@ -2540,13 +2540,13 @@ Un principe fondateur de la programmation est ce qu'on appelle la \emph{factoris
 \subsubsection[Boucle {\normalfont\texttt{for}}]{Boucle {\normalfont\texttt{for}}}
 \label{subsub:XI.3.2.1}
 
-\begin{marginvideo}
-	[\label{vid:XI.7}Boucle \texttt{for}.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter11/vidXI-06-boucle-for-fonctions-HD.mp4}%
-	\launchvideo{./Videos/Chapter11/vidXI-06-boucle-for-fonctions-HD.mp4}
-\end{marginvideo}
+%\begin{marginvideo}
+%	[\label{vid:XI.7}Boucle \texttt{for}.]%
+%	\movie[width=\marginparwidth,showcontrols]%
+%		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+%		{./Videos/Chapter11/vidXI-06-boucle-for-fonctions-HD.mp4}%
+%	\launchvideo{./Videos/Chapter11/vidXI-06-boucle-for-fonctions-HD.mp4}
+%\end{marginvideo}
 
 Supposons que l'on veuille afficher à l'écran les carrés des nombres allant de 0 à 9. On peut écrire \texttt{print(1**2)}, \texttt{print(2**2)}, \texttt{print(3**2)} et ainsi de suite... En continuant de cette manière, on se rend compte rapidement que c'est une tâche très fastidieuse. On peut alors automatiser cette tâche au moyen d'une boucle \texttt{for}.
 
@@ -3101,7 +3101,9 @@ Elle devra retourner une chaîne de caractères selon que la note est :
 \end{exercise}
 
 \begin{exercise}[title={Séquences et {\itshape slicing}}, level=basic]
-Commençons par créer une chaîne de caractères. Ne pas s'inquiéter en cas d'incompréhension du code d'initialisation\sidenote{Pour les plus curieux, l'instruction \texttt{import} permet de charger dans un programme une boîte à outils que l'on appelle un module. \textsc{Python} vient avec de nombreux modules qui forment la bibliothèque standard. Le plus difficile avec les modules de la bibliothèque standard est de savoir qu'ils existent. En effet, il y en a un grand nombre et bien souvent il existe un module pour réaliser la tâche souhaitée. Ici en particulier nous utilisons le module \textsc{string}.} utilisé ci-dessous. 
+Commençons par créer une chaîne de caractères. Ne pas s'inquiéter en cas d'incompréhension du code d'initialisation\caution[c]<firstcolor>{%
+Pour les plus curieux, l'instruction \texttt{import} permet de charger dans un programme une boîte à outils que l'on appelle un module. \textsc{Python} vient avec de nombreux modules qui forment la bibliothèque standard. Le plus difficile avec les modules de la bibliothèque standard est de savoir qu'ils existent. En effet, il y en a un grand nombre et bien souvent il existe un module pour réaliser la tâche souhaitée. Ici en particulier nous utilisons le module \textsc{string}.}{Compléments}
+ employé ci-dessous. 
 
 %Pour les plus curieux, l'instruction \texttt{import} permet de charger dans un programme une boîte à outils que l'on appelle un module. \textsc{Python} vient avec de nombreux modules qui forment la bibliothèque standard. Le plus difficile avec les modules de la bibliothèque standard est de savoir qu'ils existent. En effet, il y en a un grand nombre et bien souvent il existe un module pour réaliser la tâche souhaitée. Ici en particulier nous utilisons le module \textsc{string}.
 
@@ -3125,7 +3127,7 @@ En cas de difficulté pour répondre à ces questions, consulter \cref{subsub:XI
 \end{exercise}
 
 \begin{exercise}[title={Séquences et longueur}, level=intermediate]
-On donne une chaîne composite dont on sait qu'elle a été calculée à partir de deux chaînes \texttt{inconnue} et \texttt{connue} comme ceci : \texttt{composite = connue + inconnue + connue}
+On donne une chaîne composite dont on sait qu'elle a été calculée à partir de deux chaînes \texttt{inconnue} et \texttt{connue} comme ceci : \texttt{composite=connue\,+\,inconnue\,+\,connue}.
 On fournit également la chaîne \texttt{connue}. Si par exemple, \texttt{connue = '0bf1'} et \texttt{composite = '0bf1a9730e150bf1'} alors \texttt{inconnue = 'a9730e15'}.
 
 L'exercice consiste à écrire une fonction qui retourne la valeur de \texttt{inconnue} à partir de celles de \texttt{composite} et \texttt{connue}. On peut admettre que \texttt{connue} n'est pas vide, c'est-à-dire qu'elle contient au moins un caractère.
@@ -3175,6 +3177,7 @@ L'exercice consiste à écrire une fonction nommée \texttt{wc} qui prend en arg
 \noindent Indice : la boucle \texttt{for} a été rapidement exposée, il faut toutefois savoir qu'on peut tout à fait résoudre l'exercice en utilisant uniquement la bibliothèque standard.
 
 \noindent Remarque : usuellement, ce genre de fonctions retourne plutôt un tuple qu'une liste, mais ceux-ci n'ont pas encore été présentés.
+%\vspace{-0.25\baselineskip}
 \end{exercise}
 
 \begin{solution}
@@ -3225,6 +3228,7 @@ def label_ter(prenom, note):
 
 %\vspace{-0.5\baselineskip}
 \begin{solution}
+\vspace{-\baselineskip}
 \begin{idleconsole}
 \begin{pyconsole}
 chaine[-5:-2] == "vwx"
@@ -3251,7 +3255,10 @@ def inconnue_bis(composite, connue):
 \end{listingbox}
 \end{solution}
 
+\vspace{6pt}
+
 \begin{solution}
+\vspace{-\baselineskip}
 \begin{idleconsole}
 \begin{pyconsole}
 def laccess(liste):
@@ -3309,6 +3316,8 @@ laccess("abcde")
 \end{idleconsole}
 \end{solution}
 
+\vspace{2pt}
+
 \begin{solution}
 Là encore, il y a deux formalisations possibles.
 
@@ -3364,6 +3373,7 @@ divisible(-30, -10)
 %divisible_bis(-30, 10)
 %divisible_bis(-30, -10)
 
+\vspace{2pt}
 
 \begin{solution}
 Ici, trois formulations sont possibles.
@@ -3405,7 +3415,7 @@ morceaux(20)
 \end{idleconsole}
 
 En référence à la fonction \texttt{morceaux}, on veut visualiser le résultat. Autrement dit, en partant du code de la fonction, on veut produire sa courbe en utilisant\caution[t]<firstcolor>{%
-Par rapport à l'interactivité d'un \textit{notebook} \textsc{Jupyter}, nous sommes contraints d'enregistrer la figure, puis de l'insérer au document. En effet, l'affichage écran n'a lieu qu'au moment de la compilation \LaTeX\ avec l’extension \textsc{Python}\TeX{}. L'affichage interactif est ainsi introduit en commentaire.}{Note de la rédaction}
+Par rapport à l'interactivité d'un \textit{notebook} \textsc{Jupyter}, nous sommes contraints d'enregistrer la figure, puis de l'insérer au document. En effet, l'affichage écran n'a lieu qu'au moment de la compilation \LaTeX\ avec l’extension \textsc{Python}\TeX{}. L'affichage interactif est ainsi introduit en commentaire : \texttt{plt.show()}.}{Note de la rédaction}
  \textsc{numpy} et \textsc{matplotlib}. 
 
 \begin{idleconsole}
@@ -3436,16 +3446,18 @@ plt.close()
 %#plt.ylim(0, 5)
 
 \begin{center}
-\vspace{-.75\baselineskip}
+\vspace{-\baselineskip}
 \IfFileExists{./PythonTeX/morceaux.png}%
   {\includegraphics[width=\linewidth]{./PythonTeX/morceaux.png}}%
   {\textbf{!! Missing matplotlib graphics !!}}%
 \end{center}
-\vspace{-.75\baselineskip}
+\vspace{-.5\baselineskip}
 \end{solution}
 
+\vspace{2pt}
+
 \begin{solution}
-\vspace{-.25\baselineskip}
+\vspace{-\baselineskip}
 \begin{idleconsole}
 \begin{pyconsole}
 def wc(string):
@@ -3477,7 +3489,10 @@ Sparse is better than dense.
 
 \end{pyconsole}
 \end{idleconsole}
+\vspace{.5\baselineskip}
 \end{solution}
+
+\vfill\pagebreak
 
 
 %----------
@@ -3576,6 +3591,7 @@ On demande à présent d'écrire une fonction dans le même esprit que la foncti
 
 
 \begin{solution}
+\vspace{-\baselineskip}
 \begin{idleconsole}
 \begin{pyconsole}
 def P(x):
@@ -3641,8 +3657,10 @@ plt.close()
 \vspace{-.75\baselineskip}
 \end{solution}
 
+\vspace{2pt}
 
 \begin{solution}
+\vspace{-\baselineskip}
 \begin{idleconsole}
 \begin{pyconsole}
 def carre(line):
@@ -3744,12 +3762,7 @@ Mentionnons quelques opérations possibles et réalisables au moyen de la biblio
 
 Outre la bibliothèque standard, \textsc{Python} peut intégrer des centaines de milliers de modules écrits par des groupes de développement ou des individus pour répondre à des usages spécifiques. Il suffit de les installer et de les charger pour en bénéficier, par exemple \textsc{Numpy} et \textsc{Pandas} en \textit{data-science} ou \textsc{Matplotlib} en visualisation de données.
 
-
-
-
-\vfill\pagebreak
-
-
+%\vfill\pagebreak
 
 
 
@@ -3767,6 +3780,7 @@ La présentation des quiz du document\linebreak suit plus ou moins celle de la p
 \vspace{6pt}
 
 \begin{quiz}[title={Codage et Unicode}]
+\vspace{-\baselineskip}
 \begin{quizquestion}[b]{3}{1,2}{Encodage}
 <Le décodage sert à définir un découpage des bits en bloc pour obtenir un code que l'on utilisera pour trouver un caractère dans un jeux de caractères.> 
 À quoi sert le décodage d'un flux de bits en informatique ?
@@ -3787,7 +3801,10 @@ Cocher la ou les affirmations qui sont vraies.
 \end{quizquestion}
 \end{quiz}
 
+\vspace{2pt}
+
 \begin{quiz}[title={Chaînes de caractères}]
+\vspace{-\baselineskip}
 \begin{quizquestion*}[b]{2}{1}{Mutabilité}
 <Faux, les chaînes de caractères sont immuables, ça veut dire qu'une fois l'objet créé on ne peut plus le modifier.> 
 Les chaînes de caractères en \textsc{Python} sont mutables.
@@ -3830,8 +3847,7 @@ Quelle(s) affirmation(s) est(sont) vraie(s) ?
 \end{quiz}
 
 \begin{quiz}[title={Séquences}]
-\small
-
+\vspace{-\baselineskip}
 \begin{quizquestion}[b]{2}{1}{Longueur}
 <En effet, \texttt{chaine.index(x)} renvoie un index valide dans \texttt{chaine}, ça ne peut donc pas être la longueur de \texttt{chaine}; le dernier index valide dans une chaine non vide est toujours un de moins que la longueur de la chaîne.> 
 On se donne la variable suivante : \texttt{chaine="douarnenez"}. Parmi les expressions suivantes, quelles sont celles qui s'évaluent à \texttt{True} ?
@@ -3860,6 +3876,7 @@ On se donne la variable suivante : \texttt{chaine="douarnenez"}. Parmi les expre
 \end{quiz}
 
 \begin{quiz}[title={Listes}]
+\vspace{-\baselineskip}
 \begin{quizquestion}[b]{3,5}{1,2,4}{Insertion}
 <La première formule remplace \texttt{2} par \texttt{4}, liste conserve quatre éléments et devient \texttt{[0, 1, 4, 3]}.
 La seconde, idem mais liste devient \texttt{[0, 1, [4], 3]}.
@@ -3867,7 +3884,7 @@ La troisième est correcte.
 La quatrième est équivalente à la première, elle remplace \texttt{2} par \texttt{4}.
 La cinquième est correcte également.> 
 On a \texttt{liste = [0, 1, 2, 3]}. On veut modifier l'objet \texttt{liste} pour que sa valeur devienne \texttt{[0, 1, 4, 2, 3]}
-Que faut-il faire ? Plusieurs réponses sont possibles.
+Que faut-il faire ? %Plusieurs réponses sont possibles.
 \points{1}
 	\mcqproposal{\texttt{liste[2] = 4}}
 	\mcqproposal{\texttt{liste[2] = [4]}}
@@ -3879,7 +3896,7 @@ Que faut-il faire ? Plusieurs réponses sont possibles.
 \begin{quizquestion}[b]{2,4}{1,3,5}{Extraction}
 <La première formule retourne bien \texttt{0} mais ne modifie pas liste. La seconde est correcte. La troisième enlève bien \texttt{0} de liste mais ne retourne rien. La quatrième version fonctionne --- quoi qu'assez peu « pythonique ». La dernière formule est syntaxiquement incorrecte; \texttt{del} est une instruction et ne peut pas être utilisée comme résultat d'une affectation.> 
 On a de nouveau \texttt{liste = [0, 1, 2, 3]}. On souhaite extraire et retourner le premier élément \texttt{0}, tout en la retirant de la liste. Plus précisément on veut affecter à la variable suivant la valeur \texttt{0} de telle sorte qu'après l'exécution, liste ne contienne plus que \texttt{[1, 2, 3]}.
-Que faut-il faire ? Plusieurs réponses sont possibles.
+Que faut-il faire ?% Plusieurs réponses sont possibles.
 \points{1}
 	\mcqproposal{\texttt{suivant = liste[0]}}
 	\mcqproposal{\texttt{suivant = liste.pop(0)}}
@@ -3890,7 +3907,7 @@ Que faut-il faire ? Plusieurs réponses sont possibles.
 
 \begin{quizquestion}[b]{1,4}{2,3}{Tri}
 <Il faut bien préciser \texttt{reverse=True} pour obtenir un tri décroissant. On ne veut pas dupliquer la liste initiale, ce n'est donc pas une bonne idée d'utiliser \texttt{sorted}. La dernière formule s'avère très bien fonctionner également.> 
-On a cette fois \texttt{liste = [1, 0, 3, 2]}. On veut trier la liste en ordre décroissant et \emph{en place}, c'est-à-dire \emph{sans dupliquer} la liste ni ses éléments. Que faut-il faire ? Plusieurs réponses sont possibles.
+Cette fois \texttt{liste = [1, 0, 3, 2]}. On veut trier la liste en ordre décroissant et \emph{en place}, c.-à-d. \emph{sans dupliquer} la liste. Que faut-il faire ?% Plusieurs réponses sont possibles. ni ses éléments
 \points{1}
 	\mcqproposal{\texttt{liste.sort(reverse=True)}}
 	\mcqproposal{\texttt{liste.sort()}}
@@ -3899,7 +3916,10 @@ On a cette fois \texttt{liste = [1, 0, 3, 2]}. On veut trier la liste en ordre d
 \end{quizquestion}
 \end{quiz}
 
+%\vspace{12pt}
+
 \begin{quiz}[title={Conditionnelles et syntaxe}]
+\vspace{-\baselineskip}
 \begin{quizquestion*}[b]{1}{2,3}{Test}
 <Il manque le « {\ttfamily :} » en fin de ligne du {\ttfamily if} pour que la syntaxe soit correcte.> 
 Que peut-on dire du code suivant ?
@@ -3927,6 +3947,7 @@ Quelle(s) affirmation(s) est(sont) vraie(s) ?
 \end{quiz}
 
 \begin{quiz}[title={Boucle et fonctions}]
+\vspace{-\baselineskip}
 \begin{quizquestion}[b]{3}{1,2,4}{Boucle}
 <La boucle parcourt la liste, convertit chaque élément en chaîne de caractères et met le résultat dans une nouvelle liste. On affiche ensuite le résultat du \texttt{",".join(a)} qui produit une chaîne de caractères qui contient chaque élément de la nouvelle liste séparé par une virgule.> 
 Voici une boucle \texttt{for}, que va afficher cette boucle.
@@ -3969,6 +3990,7 @@ Quel(s) appel(s) va(vont) produire le retour suivant : \texttt{'1 2 3'}.
 \end{quiz}
 
 \begin{quiz}[title={Compréhension de liste}]
+\vspace{-\baselineskip}
 \begin{quizquestion}[b]{2,5}{1,3,4}{Listes de carrés}
 <Les compréhensions ne contiennent jamais de « \texttt{:} » qui est réservé aux \emph{instructions} (les compréhensions sont toujours des \emph{expressions}).> 
 On suppose avoir la liste : \texttt{entree = [1,2,3,4,5,6,7,8,9]}. Parmi les fragments suivants, lesquels sont valides en \textsc{Python} ? 
@@ -3980,7 +4002,6 @@ On suppose avoir la liste : \texttt{entree = [1,2,3,4,5,6,7,8,9]}. Parmi les fra
 	\mcqproposal{\texttt{carres = [x**2 for x in entree if x \% 3 == 0]}}
 \end{quizquestion}
 \end{quiz}
-
 
 
 

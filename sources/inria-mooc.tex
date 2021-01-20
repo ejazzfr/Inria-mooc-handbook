@@ -22,7 +22,9 @@
 %\documentclass[showframe]{texjazz-handbook}
 %\documentclass[showframe]{texjazz-handbook}
 %\documentclass[printfiles, showframe]{texjazz-handbook}% COMPILATION ERROR! WHY? FIX ME!
-\documentclass[assignpoints,askreply]{texjazz-handbook}
+%\documentclass[assignpoints, askreply, showframe]{texjazz-handbook}
+\documentclass[showframe]{texjazz-handbook}
+
 
 %--------------------------------------------------------------------------------------------------
 %---- Commandes spécifiques / Particular command sequences (cf. TeX prefix \cs[...])
@@ -65,25 +67,7 @@
 %-                  → http://www.xm1math.net/texmaker/index_fr.html
 %-  New tool: previous name LaTeXila, « jeu de mots ! », now Gnome-LaTeX (C and Gtk3+ GUI)
 %-            → https://wiki.gnome.org/Apps/GNOME-LaTeX
-%-
-%--------------------------------------------------------------------------------------------------
-
-%--------------------------------------------------------------------------------------------------
-%---- Note about TeXLive 2020 "autumn" (winter leads to OLDFASHION!!! 2020-12-19, see sources)
-%- Since the new version of `menukeys` (2020-12-19) all is fine :-) The package does not load 
-%- anymore the `catoptions` package (really good solution! Its author Ahmed Musa seems to have
-%- "pris le chou" as we say in French! − see all his posts and comments on TeX.SX)
-%---- NO MORE NEEDED!!! (for the record)
-%- After an update of TeXLive 2020 around the first of October, the `menukeys` package breaks
-%- the compilation flow. The reason comes from the use of `catoptions` package, which redefines
-%- a lot of LaTeX code and does not work at all in the current release (see David Carlisle
-%- answer to our question: https://tex.stackexchange.com/questions/565937/). The author of
-% `menukey` has been informed (see GitHub) but has no time to solve the issue. Nevertheless,
-%- a workaround is to update TeXlive distribution and then downgrade to the previous LaTeX kernel
-%- with TeXLive manager: 
-%-   $ tlmgr restore latex
-%-   Available backups for latex: 53958 (2020-10-08 13:20)
-%-   $ tlmgr restore latex 53958
+%-  /opt/texlive/2019/texmf-dist/scripts/pythontex/pythontex.py $shortname
 %--------------------------------------------------------------------------------------------------
 
 %--------------------------------------------------------------------------------------------------
@@ -165,7 +149,7 @@
 %\subtitle{\subtitlefont\Huge Formation ICN--SNT--Python --- Manuel des participants}
 \subtitle{\textsc{Formation ICN--SNT--Python --- Manuel des participants}}
 \author{Fun--MOOC 2019-2021}
-\date{2019-2021}
+\date{2019-2020}
 %\date{\DTMfetchmonth{now} \DTMfetchyear{now}}% extension `datetime2' TODO!
 \doclogo[0.7]{./Images/Chapter00/inria-logo-white-nosign.pdf}% [<scale factor>]
 \docaddlogo[0.25]{./Images/Chapter00/python-logo-white.png}%
@@ -191,7 +175,8 @@
 }
 \copyrightname{--- \textsc{Inria}}
 \versiondate{2019-2021}
-\versiondoc{v.0.1a}
+\docversion{v.0.1a}
+%\renewcommand{\version}{v.0.1a}
 %---- ejazz data
 %\copyrightsymbol{\ccbyncsaeu}
 %\copyrightsymbol{\copyright}
@@ -369,11 +354,11 @@
 inria-mooc-authors,% Auteurs
 inria-mooc-chapter00-forewords,% Avant-propos / Propos liminaires
 inria-mooc-chapter00-reading-guide,% Guide de lecture
-%inria-mooc-chapter00-writing-guide,% Guide de rédaction (seulement en version complète)
+%inria-mooc-chapter00-writing-guide,% Seulement en version complète, à rejeter en annexe
 inria-mooc-chapter00-introductory,% Présentation/Introduction
 inria-mooc-chapter01,% Numérique et sciences du réel
 inria-mooc-chapter02,% Web et usages sociétaux
-inria-mooc-chapter03,% Robotique et intelligence artificielle
+%nria-mooc-chapter03,% Robotique et intelligence artificielle
 %inria-mooc-chapter04,% Informatique exogène
 inria-mooc-chapter05,% Codage binaire
 inria-mooc-chapter06,% Langages de l'informatique (Algorithmique + Programmation)
@@ -385,7 +370,7 @@ inria-mooc-chapter11,% Concepts élémentaires (semaine 2)
 %inria-mooc-chapter12,% Références partagées (semaine 3)
 %inria-mooc-chapter13,% Fonctions, tests et boucles (semaine 4)
 %inria-mooc-chapter14,% Itération, importation de module et espace de nommage (semaine 5)
-%inria-mooc-chapter15,% Programmation orientée objet (semaine 6)
+%inria-mooc-chapter15,%
 %inria-mooc-chapter16,%
 %inria-mooc-chapter17,%
 %inria-mooc-chapter18,%
@@ -400,7 +385,24 @@ inria-mooc-chapter11,% Concepts élémentaires (semaine 2)
 %inria-mooc-appendixZ,% Guide d'écriture (utilisation de TeXjazz bundle)
 }
 
-\listfiles
+%\listfiles
+
+%- https://tex.stackexchange.com/questions/79185/how-to-find-the-lost-text-part-when-having-floats-lost-error
+%\makeatletter
+%\let\old@error\@latexerr
+%\def\zzfl@error{Float(s) lost}
+
+%\def\@latexerr#1{%
+%\def\tmp{#1}%
+%\ifx\tmp\zzfl@error
+%  \def\@elt##1{{%
+%   \let \protect\noexpand
+%    \shipout\vbox{\hbox{LOST FLOAT}\hbox{\fbox{\box##1}}}}}%
+%  \@currlist\@dbltoplist 
+%  \let\@elt\relax
+%\fi
+%\old@error{#1}}
+%\makeatother
 
 
 %==================================================================================================
@@ -650,6 +652,8 @@ inria-mooc-chapter11,% Concepts élémentaires (semaine 2)
 \include{inria-mooc-chapter11}% Concepts élémentaires (semaine 2)
 
 %\setcounter{chapter}{11}
+%\setcounter{exercise}{6}
+%\setcounter{solution}{6}
 \include{inria-mooc-chapter12}% Références partagées (semaine 3)
 
 %\setcounter{chapter}{12}
@@ -673,13 +677,13 @@ inria-mooc-chapter11,% Concepts élémentaires (semaine 2)
 \asymmetricalpage
 
 %\setcounter{chapter}{15}
-%\include{inria-mooc-chapter16}% Écosystème Data Science (semaine 7)
+\include{inria-mooc-chapter16}% Écosystème Data Science (semaine 7)
 
 %\setcounter{chapter}{16}
-%\include{inria-mooc-chapter17}% Programmation asynchrone − asynchio (semaine 8)
+\include{inria-mooc-chapter17}% Programmation asynchrone − asynchio (semaine 8)
 
 %\setcounter{chapter}{17}
-%\include{inria-mooc-chapter18}% Compléments avancés (semaine 9)
+\include{inria-mooc-chapter18}% Compléments avancés (semaine 9)
 
 
 %--------------------------------------------------------------------------------------------------
@@ -733,20 +737,20 @@ inria-mooc-chapter11,% Concepts élémentaires (semaine 2)
 
 \raggedbottom
 
-%\include{inria-mooc-appendixA}
+\include{inria-mooc-appendixA}
 % Ajustements manuels :
 % Liste des documents → rajout pagebreak après document A.1
 
-%\include{inria-mooc-appendixB}
+\include{inria-mooc-appendixB}
 % Ajustements manuels :
 % Liste des vidéos → rajout pagebreak après vidéo B.2
 
-%\include{inria-mooc-appendixC}
+\include{inria-mooc-appendixC}
 % Ajustements manuels :
 % Liste des figures → rajout pagebreak après figure C.1 
 % (plus respirant mais ligne orpheline) ou C.2 (label : figC-01a, figC-01b)
 
-%\include{inria-mooc-appendixD}
+\include{inria-mooc-appendixD}
 % Ajustements manuels :
 % Toutes les listes → rajout vfill en fin ci-dessous
 %\addtocontents{lof}{\protect\vfill}
@@ -755,11 +759,11 @@ inria-mooc-chapter11,% Concepts élémentaires (semaine 2)
 %\addtocontents{lov}{\protect\vfill}
 %\addtocontents{lod}{\protect\vfill}
 
-%\include{inria-mooc-appendixX}
+\include{inria-mooc-appendixX}
 
-%\include{inria-mooc-appendixY}
+\include{inria-mooc-appendixY}
 
-%\include{inria-mooc-appendixZ}
+\include{inria-mooc-appendixZ}
 
 
 %--------------------------------------------------------------------------------------------------
