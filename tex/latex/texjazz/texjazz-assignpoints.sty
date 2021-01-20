@@ -4,10 +4,9 @@
 %%
 %% A LaTeX package to assign points within exercises and quizzes.
 %%
-%% Copyright (c) 2020 ejazz.
+%% Copyright (c) 2020-2021 ejazz.
 %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+%----------
 % This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
 % of this license or (at your option) any later version.
@@ -18,245 +17,40 @@
 %
 % The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
 %
-% This work consists of the files `texjazz-assignpoints.sty' and `texjazz-assignpoints.tex'.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%---------------------------------------------------------------------------------------------------
-%----- Note of using − licenses dues Henning Kerstan (LPPL)
-%---------------------------------------------------------------------------------------------------
-%- In order to be distributed with other style extensions in a tested version known to work, this
-%- file is a copy of the `exercisespoints' package by Henning Kerstan.  Nevertheless, for
-%- convenience and completeness, minor modifications have been made to improve its use.
-%- In particular, the same points numbering system has been extended to quiz and quizquestion
-%- environments (as direct copy). The user is invited to look after the updates carried out
-%- by the original author of this package and to check their compatibility with other style
-%- extensions. Other additions and/or specific configurations made to this package can be done
-%- in the core body of the different LaTeX classes and document sources.
-%---------------------------------------------------------------------------------------------------
-%----- Disclaimer (ejazz − <ejazz.fr@gmail.com>):
-%- All the following modifications have been done in the "spirit" of the "Free Software" (FSF), but
-%- the "modifier" is not really aware about the LaTeX Project Public License (LPPL) implications.
-%- All parts of borrowed codes duly mention their respective authors and/or references (packages
-%- or TeX.SX answers); the package name has been changed accordingly.
-%- This work is mainly a generalised copy of some existing solutions. Thus, it is proposed in the
-%- perspective of being useful and modifications which have been made can be used as you like fit
-%- under a free and open source license (including with "copyleft") or in that of the LPPL v1.3c.
-%- If this work conflicts with someone's copyright, please report it to bring it into compliance.
-%---------------------------------------------------------------------------------------------------
-%----- Changes and motivations (ejazz, first shy attempt to extend features of an official package):
-%-  * Modifying the package name for compatibility reasons as "assignpoints" but it could as well be
-%-    "addpoints". It seems also that this new name is more accurate, because its coverage is larger
-%-    than just exercise environments. Maybe in the future, a further work could be to internally
-%-    and automatically detect which kind of environment is involved to have the same set of
-%-    commands (\points, \itempoints, \getpoints, etc.) whatever the considered environment is.
-%-    !− Half of this latter feature is done: only for exercise and quiz --> extend to new env.? −!
-%-  * Setting explicitly long internal macros names, in order not to clash with other packages
-%-    and also for readability. Adding a prefix to separate and easily manage targets macros while
-%-    allowing to factorise storage and display functions. TODO: To be improved...
-%-  * Using the `etoolbox' package instead of the `ifthen' package. Nethertheless, the `ifthen'
-%     package is still useful for other functionalities like \showcase macro (using \whiledo).
-%-  * As a consequence, simplifying and having a better control of singular/plural forms
-%-    for the display of "point" (less than 1.0 pt) versus "points" (greater than 1.01 pts).
-%-    See the definition of the \getpoints command.
-%-  * According to some languages, printing the points (internally lengths) with a comma or period
-%-    decimal separator (after having borrowed ideas to `printlen' Peter Wilson's or `xprintlen'
-%-    Liam Huang's packages, some approaches have been taken from the `numprint' Harald Harders'
-%-    package). Essentially, some amazing and clever solutions have been "stolen" to A. Ellett
-%-    and E. Gregorio from their answers on TeX.SX.
-%-  * Using the `xparse' package to enlarge possibilities in definitions of commands/environments.
-%-    In that respect, defining "star" macros to display points with "unit", i.e. the point(s):
-%-    the bias being that nowadays, like for the `etoolbox' package, most style extensions use
-%-    this interface, so this package is often already loaded and ready to use.
-%-    TODO − To deal with safety, coherence and completeness, use the `xparse' interface
-%-    for *all* macros: conditionals, commands, environments, etc. LaTeX3 translation? No skills :-(
-%-  * Changing the \newenvironment definition into \ProvideDocumentEnvironment (`xparse' feature),
-%-    not to impose the package set-up, but let the user free to define her/his own environments.
-%-    Not yet implemented.
-%-  * Checking if the environment titles are empty strings or not for later use (`etoolbox' toggle).
-%-  * Verifying the numbering counter of each environments (also for sub exercise and quiz question)
-%-    in order to get their value in the core body of the document via a generalised polyvalent
-%-    \getpoints command and adequate storage.
-%-  * Starting the counting of exercise/subexercise and quiz/quizquestion from one and not zero.
-%-  * Applying all the stuff to quizzes.
-%-  * Trying to take into account French/English indentations (not sure nor stable... French = OK).
-%-  * Tiny cosmetic addings (like exercise/quizzes name translation English/French/German, source
-%-    file line width up to 100 characters, or log file and printed messages) and over-commenting
-%-    the code because I have no brain and a solely neuron...
-%---------------------------------------------------------------------------------------------------
-%----- Nota Bene
-%- All the commands from the `exercisepoints' package keep the same signification: by default and
-%- without optional argument, the commands are applied to the exercise environment, i.e.: \points,
-%- \itempoints, \getpoints, \bonuspoints, \getbonuspoints, etc.
-%- The commands which assign points to an environment − exercise or quiz − are automatically
-%- detected, that is to say \points and \itempoints commands can be indifferently used within
-%- an exercise or in a quiz.
-%- On the other hand, commands that read and display the recorded points, for quizzes, must
-%- explicitly indicate that this applies to quizzes. Indeed, the exercise environment is the
-%- default but not the quiz environment.
-%- The only feature which is lacking from the `exercisepoints' package is the \setitempointsunit
-%- command: modifying the "point(s) unit" word mid-document.
-%---------------------------------------------------------------------------------------------------
-
+% This work consists of the files:
+%     `texjazz-assignpoints.sty' and `texjazz-assignpoints[-fr].tex' (not yet fully available).
+%----------
 
 %-- Package identification
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{texjazz-assignpoints}%
-  [2020/12/08 v0.1a − Counting points within exercises and quizzes environments]
+  [2021/01/14 v0.1g
+  − Accounting and display numeration assignments within exercises and quizzes environments]
 
 %-- Utilities
 
-%- Helper packages
-
 \RequirePackage{xparse}% LaTeX3 syntax parser for LaTeX2e to define advanced commands/environments
 \RequirePackage{etoolbox}% Swiss knife!
-\RequirePackage{pgfkeys}% Key-value options management
-\RequirePackage{ifthen}% An additional swiss knife!
+\RequirePackage{pgfkeys}% Key-value options management for commands and environments
+%\RequirePackage{pgfopts}% Key-value options for packages and classes
+\RequirePackage{ifthen}% An additional swiss knife! (for \whiledo command)
 \RequirePackage{metalogox}% Cosmetics: to be tweaked with used font(s), not done
-\RequirePackage{framed}% Cosmetics too: for adding a leftbar to first run message
-\RequirePackage{xcolor}% Cosmetics again: for having a coloured leftbar for the first run message
+\RequirePackage{framed}% Cosmetics too: for adding a leftbar at first run message
+\RequirePackage{xcolor}% Cosmetics again: for having a coloured leftbar at first run message
 \RequirePackage{booktabs}% Cosmetics stil: for having elegant tabular simple layout
-
 %- Booktabs settings
 \setlength{\abovetopsep}{0pt}
 \setlength{\aboverulesep}{0pt}
 \setlength{\belowrulesep}{1pt}
 \setlength{\belowbottomsep}{1pt}
 
-%-- Printing lengths/points. No further search, but one can use a sledgehammer to crack a nut...
+%-- Printing lengths/points: spliting integer and decimal parts of a number/length
 
-%\RequirePackage{printlen}% Converting unit length (pt, mm, cm, etc.) and printing (basic)
-%\RequirePackage{xprintlen}% Converting and printing length/points (basic, but with `fp' package)
-%\RequirePackage{lengthconvert}%
-%\RequirePackage{numprint}% To change decimal point separator to comma (German, French...)
-%\RequirePackage{siunitx}% Also printing according to languages usage
-
-%-- Searching for a simpler way to split a number (integer part vs. decimal part)
-
-%- Solutions given by egreg with `pgfplots':
-%-   https://tex.stackexchange.com/questions/141722/[...]
-%-       [...]separating-a-decimal-number-into-whole-and-fractional-parts-with-only-the-digits
-%-   https://tex.stackexchange.com/questions/142320/
-%-   https://tex.stackexchange.com/questions/142320/[...]
-%-       [...]separating-a-decimal-in-any-format-into-integer-and-fractional-parts-in-basic-la
-%- See also the solution given by Steven B. Segletes:
-%-   https://tex.stackexchange.com/questions/211713/parser-for-decimal-numbers-in-plain-tex
-
-%- After digging more in deep in TeX.SE, the more direct way to split the different parts of a
-%- length seems to be given by A. Ellet or E. Gregorio:
-%-   https://tex.stackexchange.com/questions/142139/still-having-difficulty-with-use-of-expandafter
-%- How it works in details remains a great mystery for the time being...
-%- To start with, one can see (this link is interesing also for other things):
-%-   https://tex.stackexchange.com/questions/19746/cunning-latex-tricks (egreg)
-%- TODO: REALLY understand ALL this stuff! What is the egreg's roman numeral trick?
-%- Below, we test these two short solutions (but far surpassing our skills). It works fine!
-
-%- Warning − We let all the tested solutions for the record (to be deleted if not used)
-
-%-- Splitting integer and decimal parts of a number
-
-%-- IMPORTANT COMMENT ABOUT TESTING REAL EMPTY/BLANK STRINGS OR STUFF (just references to TeX.SE)
-%------------------------------------------------------------------------------------------------
-%- https://tex.stackexchange.com/questions/42280/expand-away-empty-macros-within-ifthenelse
-%- https://tex.stackexchange.com/questions/23100/looking-for-an-ignorespacesandpars
-%- https://tex.stackexchange.com/questions/44919/proper-way-to-detect-empty-blank-text
-%- https://tex.stackexchange.com/questions/279652/macro-like-ignorespaces-for-ignoring-pars
-%- https://tex.stackexchange.com/questions/179016/ignore-spaces-and-pars-after-an-environment
-
-%- A. Ellet solution − a test must be done to detect the decimal part if blank/empty
-%- Unfortunately, we failed in a way to detect an empty value --> This is an issue here
-
-%\def\assignpointsgetlengthparts#1{%
-%  \edef\set@stripped@length{\strip@pt#1}%
-%  \expandafter\assignpoints@int@frac\set@stripped@length..\@nil
-%}
-%\def\assignpoints@int@frac#1.#2.#3\@nil{%
-%  \def\assignpointsinteger{#1}%%
-%  \def\assignpointsdecimal{#2}%%
-%}
-%%- Tweaked to get the parts of a number − Application: detecting the counter of an environment
-%\def\assignpointsgetnumberparts#1{%
-%  \edef\set@number{#1}%
-%  %\expandafter\assignpointsnumeberparts@int@frac\set@number..\@nil
-%  \expandafter\assignpointsnumeberparts@int@frac\set@number..\@nil
-%}
-%\def\assignpointsnumeberparts@int@frac#1.#2.#3\@nil{%
-%  \def\assignpointsintegerpart{#1}%
-%  \def\assignpointsdecimalpart{#2}%
-%}
-%%- Debug displaying
-%\def\showparts{%%
-%  \begin{tabular}{ll}\hline
-%  Length   & \the\aelength\\
-%  Integer  & \assignpointsinteger \\
-%  Fraction & \assignpointsdecimal \\\hline
-%  \end{tabular}}
-%\def\aenumber{5.6}
-%\def\shownumberparts{%%
-%  \begin{tabular}{ll}\hline
-%  Number   & \aenumber\\
-%  Integer  & \assignpointsintegerpart \\
-%  Fraction & \assignpointsdecimalpart \\\hline
-%  \end{tabular}}
-
-%- E. Gregorio solution − works in all cases (see reference): number, macro, length
-%- Once again, we failed in a way to detect an empty value --> This is an issue here
-
-%\def\printplainbefore#1{\expandafter\@printplainbefore\romannumeral-`Q#1..\@nil}
-%\def\@printplainbefore#1.#2.#3\@nil{#1}
-%\def\printplainafter#1{\expandafter\@printplainafter\romannumeral-`Q#1..\@nil}
-%\def\@printplainafter#1.#2.#3\@nil{#2}
-%\begingroup\catcode`P=12 \catcode`T=12
-%\lowercase{\endgroup\def\simplerem@pt#1PT{#1}}
-%\def\simplestrip@pt{\expandafter\simplerem@pt\the}
-%\newcommand*{\assignpointsgetlength}[1]{\simplestrip@pt#1}
-%\newcommand*{\assignpointsinteger}[1]{\printplainbefore{\assignpointsgetlength{#1}}}% #1 = a length
-%\newcommand*{\assignpointsdecimal}[1]{\printplainafter{\assignpointsgetlength{#1}}}% #1 = a length
-%\newcommand*{\assignpointssplitinteger}[1]{\printplainbefore{#1}}% #1 = a number
-%\newcommand*{\assignpointssplitdecimal}[1]{\printplainafter{#1}}% #1 = a number
-
-%- D. Carlisle solution (it works and can be the solution for splitting number into counters):
-%-   https://tex.stackexchange.com/questions/211713/parser-for-decimal-numbers-in-plain-tex
-
-%\newcount\ca
-%\newcount\cb
-%\def\p#1{%
-%  \def\digitone{}%
-%  \ifx+#1\def\sign{#1}\else
-%    \ifx-#1\def\sign{#1}\else
-%      \def\sign{}\def\digitone{#1}\fi\fi
-%  \afterassignment\n\ca=1\digitone%
-%}
-%\def\n#1{%
-%  \def\digitone{}%
-%  \ifx,#1\def\point{#1}\else
-%    \ifx.#1\def\point{.}\else
-%      \def\point{}\def\digitone{#1}\fi\fi
-%  \afterassignment\nn\cb=1\digitone%
-%}
-%\def\gobble#1{}
-%\def\nn{\par
-%  [sign=\sign]
-%  [n1=\expandafter\gobble\the\ca]
-%  [point=\point]
-%  [n2=\expandafter\gobble\the\cb]
-%  \par%
-%}
-%\def\carlisle{\p 123 hello \p456,99 hafa \p ggg \p-12,88}
-
-%- E. Gregorio second solution − works but as stipulate in a comment, it is impossible to
-%- distinguish the case where the integer or fractional part is empty: the values are set to zero.
-%- So \assignpointssplitbefore{.1} and \assignpointssplitbefore{0.1} will give the same result
-%- We adopt it because if a value is empty it gives zero, thus we can test it easily with
-%- conditionals, such a feature that the other solutions are not able to propose (but really
-%- efficient to display splitted numbers and lengths in the core body of a document).
+%- E. Gregorio solution to split integer and decimal part of a TeX length (used here in points):
 %-   https://tex.stackexchange.com/questions/142320/[...]
 %-      [...]separating-a-decimal-in-any-format-into-integer-and-fractional-parts-in-basic
-%- That's it! Although we do not understand the subtleties, we are now able to check for a zero
-%- value and therefore apply a condition! Cool...
-
-\begingroup%
+\begingroup
   \catcode`P=12 \catcode`T=12 \lowercase{\endgroup
   \def\assignpointssplitbefore#1{%
     \expandafter\apts@strip@pt\expandafter\@assignpointssplitbefore\the\dimexpr#1PT\relax\@nil
@@ -267,31 +61,21 @@
   \def\@assignpointssplitbefore#1.#2.#3PT\@nil{#1}
   \def\@assignpointssplitafter#1.#2.#3PT\@nil{#2}
   \def\apts@strip@pt#1#2PT#3\@nil{#1#2..PT\@nil}
-} % balance the open brace after \lowercase
+}% Balance the open brace after \lowercase
 
-%- Helping commands for displaying points depending on the language and singular/plural forms
+%-- Helping commands for displaying points depending on the language and singular/plural forms
 
 \newcommand*{\assignpointsdecimalsep}{{.}}
 \newcommand{\assignpointsunitspace}{\,}% Small space between number and point "unit"
 \newcommand{\assignpointsunitsingular}[1]{\def\assignpoints@unitsingular{{#1}}}
 \newcommand{\assignpointsunitplural}[1]{\def\assignpoints@unitplural{{#1}}}
 
-%- Setting itempoints units
-
-%\newcommand{\assignpointsitemunitsingular}{}%
-%\newcommand{\assignpointsitemunitplural}{}%
-%\newcommand{\setitempointsunit}[2]{% singular, plural
-%  \renewcommand{\assignpoints@unitsingular}{{#1}}}%
-%  \renewcommand{\assignpoints@unitplural}{{#2}}}%
-  %\renewcommand{\assignpointsitemunitsingular}{#1}%
-  %\renewcommand{\assignpointsitemunitplural}{#2}%
-%}
-
 %-- Checking tools
 
 \newtoggle{assignpoints@checkemptystring}
 
-% Useful? https://tex.stackexchange.com/questions/47237/
+%- OLD FASHION: to test first run for displaying a message in the margin. Useful? Humm... Cosmetics!
+%- See: https://tex.stackexchange.com/questions/47237/
 
 \newif\if@assignpoints@firstrun% <-- Testing for the first LaTeX run (certainly to be improved)
 \AtBeginDocument{%                   Cf. https://tex.stackexchange.com/questions/167799/
@@ -304,11 +88,10 @@
 }
 
 \newenvironment{assignpointsleftbar}{% Used to add a left bar to the first run message (see below)
-  \def\FrameCommand{% Borrowed to Gonzalo Medina
+  \def\assingpointsframecommand{% Borrowed to Gonzalo Medina
     {\color{red!60!black}\vrule width 2pt depth 0pt}\hspace{4pt}%
   }%
-  %\MakeFramed {\advance\hsize-\width \FrameRestore}%\vskip2pt
-  \MakeFramed{\parshape 1 0cm \dimexpr\linewidth-4pt\relax\FrameRestore}%\vskip2pt%
+  \MakeFramed{\parshape 1 0cm \dimexpr\linewidth-4pt\relax\FrameRestore}%
 }{\endMakeFramed}
 
 \newcommand{\assignpoints@runmessage}{% Message in the margin at first run (cf. \displaypoints)
@@ -316,72 +99,44 @@
   \parbox[t]{102.5pt}{% It works for minimum margin of 36 mm, only printed if \marginparwidth > 36mm
     \begin{assignpointsleftbar}% Add a coloured vertical line to the message
       \footnotesize\itshape%
-      \textbf{First \LaTeX{} run:} Exercise/quiz points numbering has been defined.
+      \textbf{First \LaTeX{} run:} Exercises/quizzes point assignment has been done.
         Please rerun \LaTeX{} to get cross-references right.
     \end{assignpointsleftbar}
   }%
 }
 
-%-- Defining switches for the layout and language of the environments
+%-- Defining switches for environments layout and language (\newbool instead of \newif)
 
-\newif\if@assignpoints@usecustomlayout
-\@assignpoints@usecustomlayoutfalse
+\newbool{assignpoints@usecustomlayout}
+\newbool{assignpoints@exercise@layoutdefined}
+\newbool{assignpoints@subexercise@layoutdefined}
+\newbool{assignpoints@quiz@layoutdefined}
+\newbool{assignpoints@quizquestion@layoutdefined}
+\newbool{assignpoints@solution@layoutdefined}
+\newbool{assignpoints@subsolution@layoutdefined}
+\newbool{assignpoints@usefrenchlanguage}% To be extended for compliance with language packages
+\newbool{assignpoints@usegermanlanguage}
+\newbool{assignpoints@usenoverbose}
 
-\newif\if@assignpoints@exercise@layoutdefined
-\@assignpoints@exercise@layoutdefinedfalse
-
-\newif\if@assignpoints@subexercise@layoutdefined
-\@assignpoints@subexercise@layoutdefinedfalse
-
-\newif\if@assignpoints@quiz@layoutdefined
-\@assignpoints@quiz@layoutdefinedfalse
-
-\newif\if@assignpoints@quizquestion@layoutdefined
-\@assignpoints@quizquestion@layoutdefinedfalse
-
-\newif\if@assignpoints@solution@layoutdefined
-\@assignpoints@solution@layoutdefinedfalse
-
-\newif\if@assignpoints@subsolution@layoutdefined
-\@assignpoints@subsolution@layoutdefinedfalse
-
-\newif\if@assignpoints@usefrenchlanguage% To be extended for compliance with language packages
-\@assignpoints@usefrenchlanguagefalse
-
-\newif\if@assignpoints@usegermanlanguage
-\@assignpoints@usegermanlanguagefalse
-
-\newif\if@assignpoints@usenoverbose
-\@assignpoints@usenoverbosefalse
-
-%-- Options
-
-% key management
-\pgfkeys{/apts/.is family}
-
-
-%- Setting the default values
+%- Setting the default values (English set-up)
 
 \renewcommand*{\assignpointsdecimalsep}{{.}}
 \assignpointsunitsingular{Point}
 \assignpointsunitplural{Points}
 
-\let\parskiporiginal\parskip
-\let\parindentoriginal\parindent
-
 %- Applying options setup
 
-\DeclareOption{customlayout}{\@assignpoints@usecustomlayouttrue}% Motivations? Don't understand...
-\DeclareOption{noverbose}{\@assignpoints@usenoverbosetrue}% Accessory option: it was to test bugs.
+\DeclareOption{customlayout}{\booltrue{assignpoints@usecustomlayout}}% Motivations? Don't understand
+\DeclareOption{noverbose}{\booltrue{assignpoints@usenoverbose}}% Deprecated (no more used)
 \DeclareOption{french}{%
-  \@assignpoints@usefrenchlanguagetrue%
-  \renewcommand*{\assignpointsdecimalsep}{{,}}
+  \booltrue{assignpoints@usefrenchlanguage}%
+  \renewcommand*{\assignpointsdecimalsep}{{,}}%
   \assignpointsunitsingular{point}% No capital first letter in French
   \assignpointsunitplural{points}% No capital first letter in French
 }
 \DeclareOption{german}{% German conventions seem to be close to French ones
-  \@assignpoints@usegermanlanguagetrue%
-  \renewcommand*{\assignpointsdecimalsep}{{,}}
+  \booltrue{assignpoints@usegermanlanguage}%
+  \renewcommand*{\assignpointsdecimalsep}{{,}}%
   \assignpointsunitsingular{Punkt}% Correct?
   \assignpointsunitplural{Punkte}% Correct?
 }
@@ -393,9 +148,9 @@
 
 %-- Customising exercise/quiz name (easily overwritten or deleted by main class or other packages)
 
-\if@assignpoints@usefrenchlanguage
+\ifbool{assignpoints@usefrenchlanguage}{%
   \providecommand{\exercisename}{Exercice}
-  \providecommand{\exercisenamenocap}{exercice}
+  %\providecommand{\exercisenamenocap}{exercice}
   %\providecommand{\quizname}{Quiz}
   \providecommand{\quizname}{Questionnaire}% Maybe better, but Quiz is now current, mostly with MCQ
   \providecommand{\solutionname}{Solution}
@@ -404,10 +159,10 @@
   \providecommand{\totalwithbonuspointsname}{Total avec bonus}
   \providecommand{\showcaseheaderpointsname}{Points}
   \providecommand{\showcaseheadermaxpointsname}{Points max.}
-\else
-  \if@assignpoints@usegermanlanguage
+}{%
+  \ifbool{assignpoints@usegermanlanguage}{%
     \providecommand{\exercisename}{Ausübung}% Correct?
-    \providecommand{\exercisenamenocap}{Ausübung}
+    %\providecommand{\exercisenamenocap}{Ausübung}
     \providecommand{\quizname}{Quiz}% Correct?
     \providecommand{\solutionname}{Lösung}% Correct?
     \providecommand{\totalpointsname}{Gesamtzahl}% Correct?
@@ -415,37 +170,34 @@
     \providecommand{\totalwithbonuspointsname}{Gesamtzahl mit bonus}% Correct?
     \providecommand{\showcaseheaderpointsname}{Punkte}% Correct?
     \providecommand{\showcaseheadermaxpointsname}{Max. Punkte}% Correct?
-  \else
-    \providecommand{\exercisename}{Exercise}
-    \providecommand{\exercisenamenocap}{exercise}
+  }{\providecommand{\exercisename}{Exercise}
+    %\providecommand{\exercisenamenocap}{exercise}
     \providecommand{\quizname}{Quiz}
     \providecommand{\solutionname}{Solution}
     \providecommand{\totalpointsname}{Total}
     \providecommand{\bonuspointsname}{Bonus}
     \providecommand{\totalwithbonuspointsname}{Total with bonus}
     \providecommand{\showcaseheaderpointsname}{Points}
-    \providecommand{\showcaseheadermaxpointsname}{Max. points}
-  \fi
-\fi
+    \providecommand{\showcaseheadermaxpointsname}{Max. Points}
+  }
+}
 
 %-- Avoiding nested environments (i.e. putting exercises in exercises, quizzes in quizzes, etc.)
 
-\newif\if@assignpoints@inexercise%
-\global\@assignpoints@inexercisefalse%
-\newif\if@assignpoints@insubexercise%
-\global\@assignpoints@insubexercisefalse%
+\newbool{assignpoints@inexercise}
+\newbool{assignpoints@insubexercise}
+\newbool{assignpoints@inquiz}
+\newbool{assignpoints@inquizquestion}
+\newbool{assignpoints@insolution}
+\newbool{assignpoints@insubsolution}
 
 \newif\if@assignpoints@inquiz%
 \global\@assignpoints@inquizfalse%
 \newif\if@assignpoints@inquizquestion%
 \global\@assignpoints@inquizquestionfalse%
 
-\newif\if@assignpoints@insolution%
-\global\@assignpoints@insolutionfalse%
-\newif\if@assignpoints@insubsolution% subsolution is the equivalent of a solution for subexercise
-\global\@assignpoints@insubsolutionfalse%
 
-%-- Defining a prefix to be applied to storage and reading functions of the different environments
+%-- Defining a prefix to be applied to storage and read functions of the different environments
 
 \newcommand*{\assignpointsprefix}[1]{#1}% #1 = exercise/quiz/other environment?
 
@@ -459,10 +211,10 @@
 \newcounter{assignpoints@quizquestioncount}[assignpoints@quizcount]
 
 \newcounter{assignpoints@exercisenumber}% To display a synopsis of exercises and their points
-\newcounter{assignpoints@totalexercisecount}% To have AT END DOCUMENT the number of exercises
+\newcounter{assignpoints@totalexercisecount}% To have the number of exercises AT END DOCUMENT
 
 \newcounter{assignpoints@quiznumber}% To display a synopsis of quizzes and their points
-\newcounter{assignpoints@totalquizcount}% To have immediatly AT END DOCUMENT the number of quizzes
+\newcounter{assignpoints@totalquizcount}% To have immediatly the number of quizzes AT END DOCUMENT
 
 \newcounter{assignpoints@solutioncount}
 \newcounter{assignpoints@subsolutioncount}[assignpoints@solutioncount]
@@ -498,9 +250,7 @@
     {\if@assignpoints@firstrun\textit{??}\fi}%
 }
 \ProvideDocumentCommand{\numberofexercises}{ }{0}
-
-\ProvideDocumentCommand{\numberofsubexercises}{ }{0}% Added because useful sometimes (e.g. TikZ design)
-
+\ProvideDocumentCommand{\numberofsubexercises}{ }{0}% Sometimes useful (e.g. TikZ design)
 \ProvideDocumentCommand{\quiztotalpoints}{ s }{%
   %- At the first run, no value available in the "aux" file --> wait for the second run
   \IfBooleanTF{#1}%
@@ -508,7 +258,6 @@
     {\if@assignpoints@firstrun\textit{??}\fi}%
 }
 \ProvideDocumentCommand{\numberofquizzes}{ }{0}
-
 \ProvideDocumentCommand{\numberofexercisesorquizzes}{ }{0}
 
 %-- Getting info about current environments: to be used i.e. in AtBeginExercise/AtEndExercise hooks
@@ -519,30 +268,15 @@
 \providecommand{\currentquiztitle}{}
 \providecommand{\currentquizquestiontitle}{}
 
-%\providecommand{\currentexercisepoints}{% No more used --> \getpoints
-%}
-
-%\providecommand{\currentsubexercisepoints}{% No more used --> \getpoints
-%}
-
-%\providecommand{\currentquizpoints}{% No more used --> \getpoints
-%}
-
-%\providecommand{\currentquizquestionpoints}{% No more used --> \getpoints
-%}
-
 \providecommand{\currentexercisenumber}{%
   \theassignpoints@exercisecount%
 }
-
 \providecommand{\currentsubexercisenumber}{%
   \theassignpoints@subexercisecount%
 }
-
 \providecommand{\currentquiznumber}{%
   \theassignpoints@quizcount%
 }
-
 \providecommand{\currentquizquestionnumber}{%
   \theassignpoints@quizquestioncount%
 }
@@ -552,7 +286,7 @@
 %- For exercises
 \providecommand{\AtBeginExercise}[1]{
   \renewcommand{\exercisepoints@begin}{#1}%
-  \@assignpoints@exercise@layoutdefinedtrue%
+  \booltrue{assignpoints@exercise@layoutdefined}%
 }
 \providecommand{\AtEndExercise}[1]{
   \renewcommand{\exercisepoints@end}{#1}
@@ -561,7 +295,7 @@
 %- For subexercises
 \providecommand{\AtBeginSubexercise}[1]{
   \renewcommand{\exercisepoints@sub@begin}{#1}
-  \@assignpoints@subexercise@layoutdefinedtrue%
+  \booltrue{assignpoints@subexercise@layoutdefined}%
 }
 \providecommand{\AtEndSubexercise}[1]{
   \renewcommand{\exercisepoints@sub@end}{#1}
@@ -570,7 +304,7 @@
 %- For quizzes
 \providecommand{\AtBeginQuiz}[1]{
   \renewcommand{\quizpoints@begin}{#1}%
-  \@assignpoints@quiz@layoutdefinedtrue%
+  \booltrue{assignpoints@quiz@layoutdefined}
 }
 \providecommand{\AtEndQuiz}[1]{
   \renewcommand{\quizpoints@end}{#1}
@@ -578,8 +312,8 @@
 
 %- For quizquestions
 \providecommand{\AtBeginQuizquestion}[1]{
-  \renewcommand{\quizpoints@question@begin}{#1}
-  \@assignpoints@quizquestion@layoutdefinedtrue%
+  \renewcommand{\quizpoints@question@begin}{#1}%
+  \booltrue{assignpoints@quizquestion@layoutdefined}%
 }
 \providecommand{\AtEndQuizquestion}[1]{
   \renewcommand{\quizpoints@question@end}{#1}
@@ -588,16 +322,16 @@
 %- For solutions
 \providecommand{\AtBeginSolution}[1]{%
   \renewcommand{\solutionpoints@begin}{#1}%
-  \@assignpoints@solution@layoutdefinedtrue%
+  \booltrue{assignpoints@solution@layoutdefined}%
 }
 \providecommand{\AtEndSolution}[1]{
   \renewcommand{\solutionpoints@end}{#1}
 }
 
 %- For subsolutions
-\providecommand{\AtBeginSubsolution}[1]{
+\providecommand{\AtBeginSubsolution}[1]{%
   \renewcommand{\solutionpoints@subsolution@begin}{#1}%
-  \@assignpoints@subsolution@layoutdefinedtrue%
+  \booltrue{assignpoints@subsolution@layoutdefined}%
 }
 \providecommand{\AtEndSubsolution}[1]{
   \renewcommand{\solutionpoints@subsolution@end}{#1}
@@ -607,28 +341,24 @@
 
 \newcommand{\exercisepoints@begin}{}
 \newcommand{\exercisepoints@end}{}
-
 \newcommand{\exercisepoints@sub@begin}{}
 \newcommand{\exercisepoints@sub@end}{}
 
 \newcommand{\quizpoints@begin}{}
 \newcommand{\quizpoints@end}{}
-
 \newcommand{\quizpoints@question@begin}{}
 \newcommand{\quizpoints@question@end}{}
 
 \newcommand{\solutionpoints@begin}{}
 \newcommand{\solutionpoints@end}{}
-
 \newcommand{\solutionpoints@subsolution@begin}{}
 \newcommand{\solutionpoints@subsolution@end}{}
 
 %-- A very simple default style for exercise/subexercise environments
 
-\if@assignpoints@usecustomlayout\else%
+\ifbool{assignpoints@usecustomlayout}{}{%
   \AtBeginExercise{%
     \parindent=0pt
-    \let\oldparskip\parskip
     \parskip=0pt
     \vspace{.5\baselineskip}\par\hrule%
     \begingroup
@@ -637,17 +367,17 @@
       \iftoggle{assignpoints@checkemptystring}%
         {\textbf{\exercisename~\currentexercisenumber}}%
         {\textbf{\exercisename~\currentexercisenumber}%
-          \if@assignpoints@usefrenchlanguage%
+          \ifbool{assignpoints@usefrenchlanguage}{%
             \enspace\textemdash\enspace\currentexercisetitle%
-          \else%
+          }{%
             \enspace\textendash\enspace\currentexercisetitle%
-          \fi%
+          }%
         }%
       \hfill\textbf{(\getpoints*[exercise]{\currentexercisenumber})}%
       \vskip 4pt\hrule\vskip 4pt%
     \endgroup
   }
-  \AtEndExercise{\vspace{4pt}\hrule\par\vspace*{.5\baselineskip}\let\parskip\oldparskip}
+  \AtEndExercise{\vspace{4pt}\hrule\par\vspace{.5\baselineskip}}
   \AtBeginSubexercise{%
     \begingroup
       \par\vspace{2pt}\sffamily%
@@ -655,25 +385,24 @@
       \iftoggle{assignpoints@checkemptystring}%
         {\emph{\exercisename~\currentexercisenumber.\currentsubexercisenumber}}%
         {\emph{\exercisename~\currentexercisenumber.\currentsubexercisenumber}%
-          \if@assignpoints@usefrenchlanguage%
+          \ifbool{assignpoints@usefrenchlanguage}{%
             \enspace\textemdash\enspace\emph{\currentsubexercisetitle}%
-          \else%
+          }{%
             \enspace\textendash\enspace\emph{\currentsubexercisetitle}%
-          \fi%
+          }%
         }%
       \dotfill(\emph{\getpoints*[exercise]{\currentexercisenumber.\currentsubexercisenumber}})%
     \endgroup
     \par
   }
-  \AtEndSubexercise{\vspace{1pt}\par\let\parindent\parindentoriginal}
-\fi
+  \AtEndSubexercise{\vspace{1pt}\par}
+}
 
 %-- A very simple default style for quiz/quizquestion environments
 
-\if@assignpoints@usecustomlayout\else%
+\ifbool{assignpoints@usecustomlayout}{}{%
   \AtBeginQuiz{%
     \parindent=0pt
-    \let\oldparskip\parskip
     \parskip=0pt
     \vspace{.5\baselineskip}\par\hrule%
     \begingroup
@@ -681,42 +410,41 @@
       \iftoggle{assignpoints@checkemptystring}% Empty versus non-empty quiz title
         {\textbf{\quizname~\currentquiznumber}}%
         {\textbf{\quizname~\currentquiznumber}%
-          \if@assignpoints@usefrenchlanguage%
+          \ifbool{assignpoints@usefrenchlanguage}{%
             \enspace\textemdash\enspace\currentquiztitle%
-          \else%
+          }{%
             \enspace\textendash\enspace\currentquiztitle%
-          \fi%
+          }%
         }%
       \hfill\textbf{(\getpoints*[quiz]{\currentquiznumber})}%
       \vskip 4pt\hrule\vskip 4pt%
     \endgroup
   }
-  \AtEndQuiz{\vspace*{4pt}\hrule\par\vspace*{.5\baselineskip}\let\parskip\oldparskip}
+  \AtEndQuiz{\vspace{4pt}\hrule\par\vspace{.5\baselineskip}}
   \AtBeginQuizquestion{%
     \begingroup
       \par\vspace{2pt}\sffamily%
       \iftoggle{assignpoints@checkemptystring}% Empty versus non-empty subexercise title
         {\emph{\quizname~\currentquiznumber.\currentquizquestionnumber}}%
         {\emph{\quizname~\currentquiznumber.\currentquizquestionnumber}%
-          \if@assignpoints@usefrenchlanguage%
+          \ifbool{assignpoints@usefrenchlanguage}{%
             \enspace\textemdash\enspace\emph{\currentquizquestiontitle}%
-          \else%
+          }{%
             \enspace\textendash\enspace\emph{\currentquizquestiontitle}%
-          \fi%
+          }%
         }%
       \dotfill(\emph{\getpoints*[quiz]{\currentquiznumber.\currentquizquestionnumber}})%
     \endgroup
     \par
   }
-  \AtEndQuizquestion{\vspace{1pt}\par\let\parindent\parindentoriginal}
-\fi
+  \AtEndQuizquestion{\vspace{1pt}\par}
+}
 
 %-- A very simple default style for solution/subsolution environments
 
-\if@assignpoints@usecustomlayout\else%
+\ifbool{assignpoints@usecustomlayout}{}{%
   \AtBeginSolution{%
     \parindent=0pt
-    \let\oldparskip\parskip
     \parskip=0pt
     \vspace{.5\baselineskip}\par\hrule%
     \begingroup
@@ -726,69 +454,65 @@
         {\strut\textbf{\solutionname\space\theassignpoints@solutioncount\space%
           (page\space\pageref{exercise:\theassignpoints@solutioncount})}%
         }%
-        {\strut\textbf{\solutionname\space\theassignpoints@solutioncount\space%
-          \if@assignpoints@usefrenchlanguage%
-            \enspace\textemdash\enspace\currentexercisetitle%
-          \else%
-            \enspace\textendash\enspace\currentexercisetitle%
-          \fi\space%
-          (page\space\pageref{exercise:\theassignpoints@solutioncount})%
-          \hfill{\small\getpoints*[exercise]{\theassignpoints@solutioncount}}%
+        {\strut\textbf{\solutionname\space\theassignpoints@solutioncount}\space%
+          \ifbool{assignpoints@usefrenchlanguage}%
+            {\enspace\textemdash\enspace\currentexercisetitle}%
+            {\enspace\textendash\enspace\currentexercisetitle}%
+          \space(page\space\pageref{exercise:\theassignpoints@solutioncount})%
+          \hfill\textbf{(\getpoints*[exercise]{\theassignpoints@solutioncount})}%
         }%
-      }%
       \vskip 4pt\hrule\vskip 4pt%
     \endgroup
   }
-  \AtEndSolution{\vspace{4pt}\hrule\par\vspace*{.5\baselineskip}\let\parskip\oldparskip}
+  \AtEndSolution{\vspace{4pt}\hrule\par\vspace{.5\baselineskip}}
   \AtBeginSubsolution{%
     \begingroup
       \par\vspace{2pt}\sffamily%
       % Empty versus non-empty subexercise title
       \iftoggle{assignpoints@checkemptystring}%
-        {\emph{\solutionname~\currentexercisenumber.\currentsubexercisenumber}}%
-        {\emph{\solutionname~\currentexercisenumber.\currentsubexercisenumber}%
-          \if@assignpoints@usefrenchlanguage%
+        {\emph{\solutionname~\theassignpoints@solutioncount.\theassignpoints@subsolutioncount}}%
+        {\emph{\solutionname~\theassignpoints@solutioncount.\theassignpoints@subsolutioncount}%
+          \ifbool{assignpoints@usefrenchlanguage}{%
             \enspace\textemdash\enspace\emph{\currentsubexercisetitle}%
-          \else%
+          }{%
             \enspace\textendash\enspace\emph{\currentsubexercisetitle}%
-          \fi%
+          }%
         }%
-      \dotfill(\emph{\getpoints*[exercise]{\currentexercisenumber.\currentsubexercisenumber}})%
+      \dotfill(\emph{\getpoints*[exercise]{\theassignpoints@solutioncount.\theassignpoints@subsolutioncount}})%
     \endgroup
     \par
   }
-  \AtEndSubsolution{\vspace{1pt}\par\let\parindent\parindentoriginal}
-\fi
-
+  \AtEndSubsolution{\vspace{1pt}\par}
+}
 
 %-- Setting points (additive within an exercise or a quiz environment)
 
 \newcommand{\points}[1]{%
-  \if@assignpoints@inexercise%
+  \ifbool{assignpoints@inexercise}{%
     \addtolength{\assignpoints@currentexercisepoints}{#1 pt}%
     \global\assignpoints@currentexercisepoints=\assignpoints@currentexercisepoints%
     \addtolength{\assignpoints@exercise@totalpoints}{#1 pt}%
     \global\assignpoints@exercise@totalpoints=\assignpoints@exercise@totalpoints%
-    \if@assignpoints@insubexercise%
+    \ifbool{assignpoints@insubexercise}{%
       \addtolength{\assignpoints@currentsubexercisepoints}{#1 pt}%
       \global\assignpoints@currentsubexercisepoints=\assignpoints@currentsubexercisepoints%
-    \fi
-  \else
-    \if@assignpoints@inquiz%
+    }{}%
+  }{%
+    \ifbool{assignpoints@inquiz}{%
       \addtolength{\assignpoints@currentquizpoints}{#1 pt}%
       \global\assignpoints@currentquizpoints=\assignpoints@currentquizpoints%
       \addtolength{\assignpoints@quiz@totalpoints}{#1 pt}%
       \global\assignpoints@quiz@totalpoints=\assignpoints@quiz@totalpoints%
-      \if@assignpoints@inquizquestion%
+      \ifbool{assignpoints@inquizquestion}{%
         \addtolength{\assignpoints@currentquizquestionpoints}{#1 pt}%
         \global\assignpoints@currentquizquestionpoints=\assignpoints@currentquizquestionpoints%
-      \fi
-    \else
+      }{}%
+    }{%
       \PackageError{assignpoints}%
         {\string\points{...} can only be used within exercise/subexercise
-          or quiz/questionquiz environments.}%
-    \fi
-  \fi
+          or quiz/quizquestion environments.}%
+    }
+  }
 }
 
 %-- Calling and displaying points flush right for use in itemize/enumerate environments
@@ -798,7 +522,7 @@
   %         {#2}: set points never mind the environment is (which is detected in the \points macro)
   \points{#2}% This macro adds and stores points, the following only display things
   \IfBooleanTF{#1}{%
-    %- Checking if #1 is less or greater than 1 point (see \displaypoints macro)
+    %- Checking if #2 is lesser or greater than 1 point (see \displaypoints macro)
     \setlength{\assignedcurrentitempoints}{#2pt}%
     \hfill%
     \ifdimequal{\assignedcurrentitempoints}{0.0pt}{}{% <-- If 0.0pt: no display
@@ -808,10 +532,6 @@
           \begingroup\small(%
             \assignpointssplitbefore{\assignedcurrentitempoints}%
             \ifnumequal{\assignpointssplitafter{\assignedcurrentitempoints}}{0}%
-              %{\space\assignpoints@itempointsunitsingular}%
-              %{\assignpointsdecimalsep%
-              %  \assignpointssplitafter{\assignedcurrentitempoints}%
-              %    \space\assignpoints@itempointsunitsingular}%
               {\space\assignpoints@unitsingular}%
               {\assignpointsdecimalsep%
                 \assignpointssplitafter{\assignedcurrentitempoints}%
@@ -821,75 +541,19 @@
           \begingroup\small(%
             \assignpointssplitbefore{\assignedcurrentitempoints}%
             \ifnumequal{\assignpointssplitafter{\assignedcurrentitempoints}}{0}%
-              %{\space\assignpoints@itempointsunitplural}
-              %{\assignpointsdecimalsep%
-              %  \assignpointssplitafter{\assignedcurrentitempoints}%
-              %    \space\assignpoints@itempointsunitplural}%
-              {\space\assignpoints@unitplural}
+              {\space\assignpoints@unitplural}%
               {\assignpointsdecimalsep%
                 \assignpointssplitafter{\assignedcurrentitempoints}%
                   \space\assignpoints@unitplural}%
           )\endgroup%
         }%
     }%
-    %\hspace{\askreplyboxmargins}
   }{%
     \ifnumequal{\assignpointssplitafter{#2}}{0}%
       {\hfill{\small(\assignpointssplitbefore{#2})}}%
       {\hfill{\small(\assignpointssplitbefore{#2}%
         \assignpointsdecimalsep\assignpointssplitafter{#2})}}%
   }%
-}
-
-%- Defining a traditional LaTeX2e starred command
-\newcommand{\itempointsltx}{%
-  % Usage − star: display points "unit",
-  %         {#2}: set points never mind the environment is (which is detected in the \points macro)
-  \@ifstar{\itempointsltx@star}{\itempointsltx@nostar}%
-}
-\newcommand{\itempointsltx@star}[1]{%
-    %- Checking if #1 is less or greater than 1 point (see \displaypoints macro)
-    \points{#1}% This macro adds and stores points, the following only display things
-    \setlength{\assignedcurrentitempoints}{#1pt}%
-    \hfill%
-    \ifdimequal{\assignedcurrentitempoints}{0.0pt}{}{% <-- If 0.0pt: no display
-      % If <length> pt <= 1.0pt displays "point", else "points"
-      \ifdimless{\assignedcurrentitempoints}{1.01pt}%
-        {%
-          \begingroup\small(%
-            \assignpointssplitbefore{\assignedcurrentitempoints}%
-            \ifnumequal{\assignpointssplitafter{\assignedcurrentitempoints}}{0}%
-              %{\space\assignpoints@itempointsunitsingular}%
-              %{\assignpointsdecimalsep%
-              %  \assignpointssplitafter{\assignedcurrentitempoints}%
-              %    \space\assignpoints@itempointsunitsingular}%
-              {\space\assignpoints@unitsingular}%
-              {\assignpointsdecimalsep%
-                \assignpointssplitafter{\assignedcurrentitempoints}%
-                  \space\assignpoints@unitsingular}%
-          )\endgroup%
-        }{%
-          \begingroup\small(%
-            \assignpointssplitbefore{\assignedcurrentitempoints}%
-            \ifnumequal{\assignpointssplitafter{\assignedcurrentitempoints}}{0}%
-              %{\space\assignpoints@itempointsunitplural}
-              %{\assignpointsdecimalsep%
-              %  \assignpointssplitafter{\assignedcurrentitempoints}%
-              %    \space\assignpoints@itempointsunitplural}%
-              {\space\assignpoints@unitplural}
-              {\assignpointsdecimalsep%
-                \assignpointssplitafter{\assignedcurrentitempoints}%
-                  \space\assignpoints@unitplural}%
-          )\endgroup%
-        }%
-    }%
-}
-\newcommand{\itempointsltx@nostar}[1]{%
-    \points{#1}% This macro adds and stores points, the following only display things
-    \ifnumequal{\assignpointssplitafter{#1}}{0}%
-      {\hfill{\small(\assignpointssplitbefore{#1})}}%
-      {\hfill{\small(\assignpointssplitbefore{#1}%
-        \assignpointsdecimalsep\assignpointssplitafter{#1})}}%
 }
 
 %-- Retrieving points for a specific exercise/quiz number as well as subexercise/quizquestion
@@ -911,7 +575,7 @@
         {\PackageError{assignpoints}{The environment (exercise/quiz...) number cannot be zero}}%
         {\ifnumgreater{\assignpointssplitbefore{#3}}{\numberofexercisesorquizzes}%
           {\PackageWarning{assignpoints}{It seems that you have typed in an exercise/quiz number
-            greater than the total number of exercise/quizzes}\textbf{??}}%
+            greater than the total number of exercises/quizzes}\textbf{??}}%
           {\setlength{\assignedcurrentpoints}{%
             \assignpoints@readvaluefromaux{\assignpointsprefix{#2}@points}{\currentenvnumber}pt}%
            \global\assignedcurrentpoints=\assignedcurrentpoints%
@@ -935,7 +599,7 @@
         {\PackageError{assignpoints}{The environment (exercise/quiz...) number cannot be zero}}%
         {\ifnumgreater{\assignpointssplitbefore{#3}}{\numberofexercisesorquizzes}%
           {\PackageWarning{assignpoints}{It seems that you have typed in an exercise/quiz number
-            greater than the total number of exercise/quizzes}\textbf{??}}%
+            greater than the total number of exercises/quizzes}\textbf{??}}%
           {\def\currentenvpointsnumber{%
             \assignpoints@readvaluefromaux{\assignpointsprefix{#2}@points}{\currentenvnumber}}%
            \ifnumequal{\assignpointssplitafter{\currentenvpointsnumber}}{0}%
@@ -976,7 +640,7 @@
         {\PackageError{assignpoints}{The environment (exercise/quiz...) number cannot be zero}}%
         {\ifnumgreater{\assignpointssplitbefore{#3}}{\numberofexercisesorquizzes}%
           {\PackageWarning{assignpoints}{It seems that you have typed in an exercise/quiz number
-            greater than the total number of exercise/quizzes}\textbf{??}}%
+            greater than the total number of exercises/quizzes}\textbf{??}}%
           {\setlength{\assignedcurrentpoints}{%
             \assignpoints@readvaluefromaux{\assignpointsprefix{#2}@points}{\currentenvnumber}pt}%
            \global\assignedcurrentpoints=\assignedcurrentpoints%
@@ -1004,7 +668,7 @@
         {\PackageError{assignpoints}{The environment (exercise/quiz...) number cannot be zero}}%
         {\ifnumgreater{\assignpointssplitbefore{#3}}{\numberofexercisesorquizzes}%
           {\PackageWarning{assignpoints}{It seems that you have typed in an exercise/quiz number
-            greater than the total number of exercise/quizzes}\textbf{??}}%
+            greater than the total number of exercises/quizzes}\textbf{??}}%
           {\def\currentenvpointsnumber{%
             \assignpoints@readvaluefromaux{\assignpointsprefix{#2}@points}{\currentenvnumber}}%
            \ifnumequal{\assignpointssplitafter{\currentenvpointsnumber}}{0}%
@@ -1075,31 +739,51 @@
   \fi%
 }
 
+%-- Options environments (see `teXjazz-askreply' package): here only an optional title
+
+\pgfkeys{%
+  /assignpoints/.is family, /assignpoints/.cd,
+  title/.store in=\assignpoints@title,
+  title=,
+  %subtitle/.store in=\assignpoints@subtitle,
+  %subtitle=,
+  ID/.store in=\assignpoints@ID,
+  ID=,
+}
+
 %-- Setting the skeleton of an exercise environment with an optional title
 
 %- Use \ProvideDocumentEnvironment with \IfValueTF?
 \NewDocumentEnvironment{exercise}{ O{} }{% Lets the design to "hooks" AtBeginExercise/AtEndExercise
-  \if@assignpoints@inexercise%
+  \pgfkeys{/assignpoints/.cd, #1}%
+  \ifbool{assignpoints@inexercise}{%
     \PackageError{assignpoints}{You cannot nest exercise environments}%
-  \fi%
-  \if@assignpoints@exercise@layoutdefined\else%
+  }{}%
+  \ifbool{assignpoints@exercise@layoutdefined}{}{%
     \PackageError{assignpoints}%
       {Option `customlayout' requires you to define an exercise layout using
       at least `\string\AtBeginExercise{...}'}%
-  \fi%
-  \global\@assignpoints@inexercisetrue%
+  }%
+  \global\booltrue{assignpoints@inexercise}%
   \setlength{\assignpoints@currentexercisepoints}{0pt}%
   \global\assignpoints@currentexercisepoints=\assignpoints@currentexercisepoints%
-  \renewcommand{\currentexercisetitle}{#1}%
-  \ifstrempty{#1}%
-    {\toggletrue{assignpoints@checkemptystring}}%
-    {\togglefalse{assignpoints@checkemptystring}}%
+  \ifx\assignpoints@title\@empty% WORKS!
+    \toggletrue{assignpoints@checkemptystring}%
+  \else
+    \togglefalse{assignpoints@checkemptystring}%
+    \renewcommand{\currentexercisetitle}{\assignpoints@title}%
+  \fi
+  %\renewcommand{\currentexercisetitle}{#1}%
+  %\ifstrempty{#1}%
+  %  {\toggletrue{assignpoints@checkemptystring}}%
+  %  {\togglefalse{assignpoints@checkemptystring}}%
   \stepcounter{assignpoints@exercisecount}% Starting the numbering from "1"
   \stepcounter{assignpoints@totalexercisecount}%
   \ifcsname assignpoints@exercise@numberofsubexercises@\currentexercisenumber\endcsname%
     \renewcommand{\numberofsubexercises}{%
       \assignpoints@readvaluefromaux{exercise}{numberofsubexercises@\currentexercisenumber}}%
   \fi
+  \phantomsection\label{exercise:\currentexercisenumber}% For correct \pageref link (TeX.SX/49061)
   \exercisepoints@begin%
 }{%
   \exercisepoints@end%
@@ -1116,28 +800,34 @@
     {\assignpointsprefix{exercise}@points}%
     {\theassignpoints@exercisecount}%
     {\strip@pt\assignpoints@currentexercisepoints}% https://tex.stackexchange.com/questions/2810/
-  \global\@assignpoints@inexercisefalse%
+  \global\boolfalse{assignpoints@inexercise}%
   \togglefalse{assignpoints@checkemptystring}%
 }
 
 %-- Setting the skeleton of a subexercise environment with an optional title
 
-%- Use \ProvideDocumentEnvironment with \IfValueTF?
 \NewDocumentEnvironment{subexercise}{ O{} }{% Lets the design to "hooks" AtBeginExercise/AtEndExercise
-  \if@assignpoints@insubexercise%
-  \PackageError{assignpoints}{You cannot nest subexercise environments}%
-  \fi%
-  \if@assignpoints@subexercise@layoutdefined\else%
-  \PackageError{assignpoints}{Option `customlayout' requires you to define a subexercise
-                              layout using at least `\string\AtBeginSubexercise{...}'}
-  \fi%
-  \global\@assignpoints@insubexercisetrue%
+  \pgfkeys{/assignpoints/.cd, #1}%
+  \ifbool{assignpoints@insubexercise}{%
+    \PackageError{assignpoints}{You cannot nest subexercise environments}%
+  }{}%
+  \ifbool{assignpoints@subexercise@layoutdefined}{}{%
+    \PackageError{assignpoints}{Option `customlayout' requires you to define a subexercise
+                                layout using at least `\string\AtBeginSubexercise{...}'}
+  }%
+  \global\booltrue{assignpoints@insubexercise}%
   \setlength{\assignpoints@currentsubexercisepoints}{0pt}%
   \global\assignpoints@currentsubexercisepoints=\assignpoints@currentsubexercisepoints%
-  \renewcommand{\currentsubexercisetitle}{#1}%
-  \ifstrempty{#1}%
-    {\toggletrue{assignpoints@checkemptystring}}%
-    {\togglefalse{assignpoints@checkemptystring}}%
+  \ifx\assignpoints@title\@empty
+    \toggletrue{assignpoints@checkemptystring}%
+  \else
+    \togglefalse{assignpoints@checkemptystring}%
+    \renewcommand{\currentsubexercisetitle}{\assignpoints@title}%
+  \fi
+  %\renewcommand{\currentsubexercisetitle}{#1}%
+  %\ifstrempty{#1}%
+  %  {\toggletrue{assignpoints@checkemptystring}}%
+  %  {\togglefalse{assignpoints@checkemptystring}}%
   \stepcounter{assignpoints@subexercisecount}% Starting the numbering from "1"
   \exercisepoints@sub@begin%
 }{%
@@ -1150,29 +840,35 @@
     {\assignpointsprefix{exercise}@points}%
     {\theassignpoints@exercisecount.\theassignpoints@subexercisecount}%
     {\strip@pt\assignpoints@currentsubexercisepoints}% https://tex.stackexchange.com/questions/2810/
-  \global\@assignpoints@insubexercisefalse%
+  \global\boolfalse{assignpoints@insubexercise}%
   \togglefalse{assignpoints@checkemptystring}%
 }
 
 %-- Setting the skeleton of a quiz environment with an optional title
 
-%- Use \ProvideDocumentEnvironment with \IfValueTF ?
 \newenvironment{quiz}[1][]{% Lets the design to "hooks" AtBeginEQuiz/AtEndQuiz
-  \if@assignpoints@inquiz%
-    \PackageError{assignpoints}{You cannot nest exercise environments}%
-  \fi
-  \if@assignpoints@quiz@layoutdefined\else%
+  \pgfkeys{/assignpoints/.cd, #1}%
+  \ifbool{assignpoints@inquiz}{%
+    \PackageError{assignpoints}{You cannot nest quiz environments}%
+  }{}%
+  \ifbool{assignpoints@quiz@layoutdefined}{}{%
     \PackageError{assignpoints}%
       {Option `customlayout' requires you to define an quiz layout using
       at least `\string\AtBeginQuiz{...}'}
-  \fi
-  \global\@assignpoints@inquiztrue%
+  }%
+  \global\booltrue{assignpoints@inquiz}%
   \setlength{\assignpoints@currentquizpoints}{0pt}%
   \global\assignpoints@currentquizpoints=\assignpoints@currentquizpoints%
-  \renewcommand{\currentquiztitle}{#1}%
-  \ifstrempty{#1}%
-    {\toggletrue{assignpoints@checkemptystring}}%
-    {\togglefalse{assignpoints@checkemptystring}}%
+  \ifx\assignpoints@title\@empty% WORKS!
+    \toggletrue{assignpoints@checkemptystring}%
+  \else
+    \togglefalse{assignpoints@checkemptystring}%
+    \renewcommand{\currentquiztitle}{\assignpoints@title}%
+  \fi%
+  %\renewcommand{\currentquiztitle}{#1}%
+  %\ifstrempty{#1}%
+  %  {\toggletrue{assignpoints@checkemptystring}}%
+  %  {\togglefalse{assignpoints@checkemptystring}}%
   \stepcounter{assignpoints@quizcount}%
   \stepcounter{assignpoints@totalquizcount}%
   \quizpoints@begin%
@@ -1182,28 +878,34 @@
     {\assignpointsprefix{quiz}@points}%
     {\theassignpoints@quizcount}%
     {\strip@pt\assignpoints@currentquizpoints}%
-  \global\@assignpoints@inquizfalse%
-  \togglefalse{assignpoints@checkemptystring}%
+  \global\boolfalse{assignpoints@inquiz}
+  \togglefalse{assignpoints@checkemptystring}
 }
 
 %-- Setting the skeleton of a quizquestion environment with an optional title
 
-%- Use \ProvideDocumentEnvironment with \IfValueTF ?
 \newenvironment{quizquestion}[1][]{% Lets the design to "hooks" AtBeginQuiquestion/AtEndQuizquestion
-  \if@assignpoints@inquizquestion%
-  \PackageError{assignpoints}{You cannot nest quizquestion environments}%
-  \fi%
-  \if@assignpoints@quizquestion@layoutdefined\else%
-  \PackageError{assignpoints}{Option `customlayout' requires you to define a quizquestion
-                              layout using at least `\string\AtBeginQuizquestion{...}'}
-  \fi%
-  \global\@assignpoints@inquizquestiontrue%
+  \pgfkeys{/assignpoints/.cd, #1}%
+  \ifbool{assignpoints@inquizquestion}{%
+    \PackageError{assignpoints}{You cannot nest quizquestion environments}%
+  }{}%
+  \ifbool{assignpoints@quizquestion@layoutdefined}{}{%
+    \PackageError{assignpoints}{Option `customlayout' requires you to define a quizquestion
+                                layout using at least `\string\AtBeginQuizquestion{...}'}
+  }%
+  \global\booltrue{assignpoints@inquizquestion}%
   \setlength{\assignpoints@currentquizquestionpoints}{0pt}%
   \global\assignpoints@currentquizquestionpoints=\assignpoints@currentquizquestionpoints%
-  \renewcommand{\currentquizquestiontitle}{#1}%
-  \ifstrempty{#1}%
-    {\toggletrue{assignpoints@checkemptystring}}%
-    {\togglefalse{assignpoints@checkemptystring}}%
+  \ifx\assignpoints@title\@empty% WORKS!
+    \toggletrue{assignpoints@checkemptystring}%
+  \else
+    \togglefalse{assignpoints@checkemptystring}%
+    \renewcommand{\currentquizquestiontitle}{\assignpoints@title}%
+  \fi
+  %\renewcommand{\currentquizquestiontitle}{#1}%
+  %\ifstrempty{#1}%
+  %  {\toggletrue{assignpoints@checkemptystring}}%
+  %  {\togglefalse{assignpoints@checkemptystring}}%
   \stepcounter{assignpoints@quizquestioncount}%
   \quizpoints@question@begin%
 }{%
@@ -1212,27 +914,28 @@
     {\assignpointsprefix{quiz}@points}%
     {\theassignpoints@quizcount.\theassignpoints@quizquestioncount}%
     {\strip@pt\assignpoints@currentquizquestionpoints}%
-  \global\@assignpoints@inquizquestionfalse%
+  \global\boolfalse{assignpoints@inquizquestion}%
   \togglefalse{assignpoints@checkemptystring}%
 }
 
 %-- Setting the skeleton of a solution environment
 
-\NewDocumentEnvironment{solution}{ G{} }{% Lets the design to "hooks" AtBeginSolution/AtEndSolution
-  \if@assignpoints@insolution%
+\NewDocumentEnvironment{solution}{ O{} }{% Lets the design to "hooks" AtBeginSolution/AtEndSolution
+  \pgfkeys{/assignpoints/.cd, #1}%
+  \ifbool{assignpoints@insolution}{%
     \PackageError{assignpoints}{You cannot nest solution environments}%
-  \fi%
-  \if@assignpoints@solution@layoutdefined\else%
+  }{}%
+  \ifbool{assignpoints@solution@layoutdefined}{}{%
     \PackageError{assignpoints}%
       {Option `customlayout' requires you to define an solution layout using
       at least `\string\AtBeginSolution{...}'}%
-  \fi%
-  \global\@assignpoints@insolutiontrue%
-  \if@assignpoints@inexercise
-    \setcounter{assignpoints@solutioncount}{\theassignpoints@exercisecount}%
-  \else
+  }%
+  \global\booltrue{assignpoints@insolution}
+  \ifx\assignpoints@ID\@empty%
     \stepcounter{assignpoints@solutioncount}%
-  \fi%
+  \else
+    \setcounter{assignpoints@solutioncount}{\assignpoints@ID}%
+  \fi
   %- Adding a "hard" solution reference (not a label but having the same functionality)
   %- The aim is to have control on the display if there is no reference
   \assignpoints@storevaluetoaux%
@@ -1242,35 +945,33 @@
   \gettitle[exercise]{\theassignpoints@solutioncount}%
   \solutionpoints@begin%
 }{%
-  \solutionpoints@end%
-  \global\@assignpoints@insolutionfalse%
+  \solutionpoints@end
+  \global\boolfalse{assignpoints@insolution}
 }
 
 %-- Setting the skeleton of a subsolution environment
 
 \NewDocumentEnvironment{subsolution}{ G{} }{% Lets the design to "hooks" AtBeginSubsolution...
-  \if@assignpoints@insubsolution%
+  \ifbool{assignpoints@insubsolution}{%
     \PackageError{assignpoints}{You cannot nest `subsolution' environments}%
-  \fi%
-  \if@assignpoints@subsolution@layoutdefined\else%
+  }{}%
+  \ifbool{assignpoints@subsolution@layoutdefined}{}{%
     \PackageError{assignpoints}%
       {Option `customlayout' requires you to define an `subsolution' layout using
       at least `\string\AtBeginSubsolution{...}'}%
-  \fi%
-  \global\@assignpoints@insubsolutiontrue%
+  }%
+  \global\booltrue{assignpoints@insubsolution}
   \stepcounter{assignpoints@subsolutioncount}%
   \gettitle[subexercise]{\theassignpoints@solutioncount.\theassignpoints@subsolutioncount}%
   \solutionpoints@subsolution@begin%
 }{%
   \solutionpoints@subsolution@end%
-  \global\@assignpoints@insubsolutionfalse%
+  \global\boolfalse{assignpoints@insubsolution}
 }
 
 %-- Managing the bonus points (maybe no bonus for quizzes?)
 
 \NewDocumentCommand{\bonuspoints}{ O{exercise} m }{% #1 = <prefix-name> − #2 = <bonus-length-value>
-  % Remark (ejazz): Due to a lack of skills, it was not possible to find a more direct (and best)
-  %                 way to introduce the application environments scope in this command
   \ifstrequal{#1}{exercise}{%
     \setlength{\assignpoints@exercise@bonuspoints}{#2 pt}%
     \global\assignpoints@exercise@bonuspoints=\assignpoints@exercise@bonuspoints%
@@ -1604,8 +1305,7 @@
     {totalwithbonus}{\strip@pt\assignpoints@quiz@totalpointswithbonus}%
 }
 
-%%%%%
 %-- End of the `assignpoints` package
-%%%%%
+
 
 

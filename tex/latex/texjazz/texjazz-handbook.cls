@@ -4,7 +4,7 @@
 %%
 %% A LaTeX package Typesetting French/English handbook/workbook
 %%
-%% Copyright (c) 2020 ejazz.
+%% Copyright (c) 2020-2021 ejazz.
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -28,12 +28,16 @@
 %   − textjazz-forest.sty based on the `forest' package for tree directories and icons
 %   − textjazz-modelling.sty for UML and Merise diagrams
 %   − textjazz-piechart.sty which extends a little bit `the pgf-pie.sty' package
-%   − textjazz-tikzpagelayers.sty from Martin Charrer idea to manage TikZ background and foreground
 %   − xfontawesome.sty witch extends `fontawesome' with some glyphs from `fontmfizz'
 %
 % Its companion file for Pygments Python module (`minted' and `PythonTeX' packages) is:
 %   − jazzcode.py which must be copied in the Pygments styles directory. For Linux box:
 %     /lib/python3/dist-packages/pygments/styles/.
+%
+% A few ideas have been borrowed to and originally inspired by Yves Zumbach's YLaTeX bundle (2015)
+% − now maintained by Harvey Sheppard (2017+) on GitHub: https://github.com/HarveySheppard/yLaTeX/
+% For distribution reasons, some packages have been partly integrated in this class. This is 
+% the case of the `needspace` and `sidenote` packages.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -44,7 +48,7 @@
 %-  Although the code snippets which have been borrowed are mainly under the LPPL license − LaTeX
 %   Project Public Licence −, the licenses dues have not yet been fine verified.
 %   Moreother, please consider that this class and associated packages are still *experimental*
-%   and may certainly have side effects and be buggy.
+%   and may certainly have side effects and be buggy (this is the case of the `workbook` option).
 %   Use it for personal needs: (re)compilation of a document or inspiration for some commands.
 %   A amazing amount of things has been resolved thanks to the incredible and awesome mutual aid
 %   Web site TeX.SX: https://tex.stackexchange.com/
@@ -53,7 +57,8 @@
 %
 % Known bugs:
 %    * Overfull\hbox (0.4pt too wide) with \part or \partoclayout or whatever sectionning command
-%      --> Comming from the `geometry' package and `showframe' option.
+%      --> Comming from the `geometry' package and `showframe' option. 
+%-     Why? It works for other documents.
 %    * "list of figure" order may contain mistakes for `marginfigure' and `sidefigure'.
 %    * Make the hyperanchor at the begining of the figure environment and not at the caption command
 %      when only using \captionsetup + \caption (because the caption is *after* the display).
@@ -86,7 +91,7 @@
 %---- Class identification
 %---------------------------------------------------------------------------------------------------
 
-\ProvidesClass{texjazz-handbook}[2020/12/10 v0.1a − Typesetting French/English handbook/workbook]
+\ProvidesClass{texjazz-handbook}[2020/12/22 v0.1b − Typesetting French/English handbook/workbook]
 \NeedsTeXFormat{LaTeX2e}
 
 %---------------------------------------------------------------------------------------------------
@@ -171,6 +176,9 @@
 
 %- Implements (using Lua) some pdfTeX primitives that are not defined by LuaTeX
 \RequirePackage{pdftexcmds}
+
+%- Key-value options management for packages and classes
+\RequirePackage{pgfopts}
 
 %- Checking if "-shell-escape" option is enabled, see:
 %-   https://tex.stackexchange.com/questions/88614/how-do-you-detect-restricted-write18-support/
@@ -295,6 +303,25 @@
 %-- Options (prospectives TODO → key-value system − PGFOpts/PGFkeys? With a \jazzsetup?)
 %---------------------------------------------------------------------------------------
 
+%\newbool{doc@article}
+\newbool{doc@english}
+\newbool{doc@showframe}
+\newbool{doc@askreply}
+\newbool{doc@assignpoints}
+
+%- Document type: workbook or handbook
+%- See: https://tex.stackexchange.com/questions/36274/defining-a-wrapper-class-for-a-set-of-document-classes
+\newif\ifdoc@article\doc@articlefalse
+\DeclareOption{workbook}{
+  \doc@articletrue
+  %\def\jazz@class{article}
+  \def\jazz@class{extarticle}
+}
+\DeclareOption{handbook}{
+  \doc@articlefalse
+  \def\jazz@class{book}
+}
+
 %- Language: French or English
 \newif\ifdoc@english\doc@englishfalse
 \DeclareOption{english}{
@@ -308,16 +335,9 @@
 }
 
 %- Document licence
-
 \newif\ifdoc@licence\doc@licencefalse
 \DeclareOption{licence}{
   \doc@licencetrue
-}
-
-%- Document type: workbook or handbook
-\newif\ifdoc@article\doc@articlefalse
-\DeclareOption{workbook}{
-  \doc@articletrue
 }
 
 %- Layout: invisible or visible
@@ -356,6 +376,18 @@
   \doc@modellingtrue
 }
 
+%- Assignpoints package: exercises/quizzes environments
+%\newif\ifdoc@assignpoints\doc@assignpointsfalse
+%\DeclareOption{assignpoints}{
+%  \doc@assignpointstrue
+%}
+
+%- Askreply package: exercises/quizzes environments
+%\newif\ifdoc@askreply\doc@askreplyfalse
+%\DeclareOption{askreply}{
+%  \doc@askreplytrue
+%}
+
 %- Embedding files into the PDF: references (.bib), sources (.tex) or images, etc.
 \newif\ifdoc@embedding\doc@embeddingfalse
 \DeclareOption{embedding}{
@@ -367,6 +399,29 @@
 \DeclareOption{glossnowarn}{
   \doc@glossnowarntrue
 }
+
+%\pgfkeys{
+%  texjazz-handbook/.cd,
+%  showframe/.is if = doc@showframe,% Layout control
+%  assignpoints/.is choice,
+%  assignpoints/true/.code = \booltrue{doc@assignpoints},
+%  assignpoints/false/.code = \boolfalse{doc@assignpoints},
+%  assignpoints/.initial = true,
+%  askreply/.is choice,
+%  askreply/true/.code = \booltrue{doc@askreply},
+%  askreply/false/.code = \boolfalse{doc@askreply},
+%  askreply/.initial = true,
+%}
+
+%\ProcessPgfOptions*
+%\ProcessPgfOptions{/texjazz-handbook}
+
+%\newrobustcmd\setjazzhandbook[1]{\pgfqkeys{/texjazz-handbook}{#1}}
+
+%\DeclareOption{9pt}{\renewcommand\@ptsize{9}}
+%\DeclareOption{10pt}{\def\@@ptsize{10pt}}
+%\DeclareOption{11pt}{\def\@@ptsize{11pt}}
+%\DeclareOption{12pt}{\def\@@ptsize{12pt}}
 
 %--- TODO → Avoid option doc@article by defining \chapter even with the article class
 
@@ -389,16 +444,21 @@
 %-- Derived from the `article' (workbook) or `book' (hanbook) classes
 %--------------------------------------------------------------------
 
+%- See: https://tex.stackexchange.com/questions/36274/defining-a-wrapper-class-for-a-set-of-document-classes
 \ifdoc@article
-  \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
-  \ExecuteOptions{a4paper,10pt}
+  \DeclareOption*{\PassOptionsToClass{\CurrentOption}{\jazz@class}}
+  %\ExecuteOptions{a4paper,10pt}
+  \ExecuteOptions{workbook,a4paper,twoside}
   \ProcessOptions\relax
-  \LoadClass{article}
+  %\LoadClass{article}
+  %\LoadClass[a4paper,9pt,twoside]{\jazz@class}
+  \LoadClass{\jazz@class}
 \else
-  \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
-  \ExecuteOptions{a4paper,10pt,twoside,openright}
+  \DeclareOption*{\PassOptionsToClass{\CurrentOption}{\jazz@class}}
+  \ExecuteOptions{handbook,a4paper,twoside,openright}
   \ProcessOptions\relax
-  \LoadClass{book}
+  %\LoadClass{book}
+  \LoadClass{\jazz@class}
 \fi
 
 %-- Tools and facilities
@@ -471,14 +531,19 @@
 }
 \copyrightname{}
 
-\newcommand{\versiondoc}[1]{%
-  \def\@versiondoc{#1}%
-    \if\relax\detokenize{#1}\relax\else
-      \doc@Reftrue
-    \fi
+%- Setting a new author reference field
+\newcommand{\@authorref}{}
+\newcommand{\authorref}[1]{%
+  \renewcommand{\@authorref}{#1}%
 }
-\versiondoc{}
-\newcommand{\version}{\@versiondoc}
+
+%- Setting a new version document field
+\newcommand{\@docversion}{}
+\newcommand{\docversion}[1]{%
+  \renewcommand{\@docversion}{#1}%
+}
+\docversion{}
+\newcommand{\version}{\@docversion}
 
 \newcommand{\versiondate}[1]{%
   \def\@versiondate{#1}%
@@ -499,7 +564,7 @@
 \newcommand{\licenseinfo}{%
   \footnotesize%
   \textsc{\@doctitle} --- \textsc{\@subtitle}\\%
-  \textsc{\@author} --- \@copyrightsymbol\space{}\@copyrightname, \@versiondate, \@versiondoc
+  \textsc{\@author} --- \@copyrightsymbol\space{}\@copyrightname, \@versiondate, \@docversion
 }
 
 %-- Referencing commands
@@ -564,89 +629,6 @@
     }
   }
 }
-
-
-%---------------------------------------------------------------------------------------------------
-%---- Document layout / Agencement du document
-%---------------------------------------------------------------------------------------------------
-
-%-- Setting general layout
-%-------------------------
-
-%- Overall layout
-\RequirePackage{geometry}
-
-%- Provides commands/environment according to the page `side' (odd/even)
-\RequirePackage[strict]{changepage}
-
-%- Adds commands to put contents according to the current page `side'
-\RequirePackage{ifoddpage}% Must be loaded *after* the `changepage' package
-
-%- An analogue of minipage whose width is the natural width of its contents
-\RequirePackage{varwidth}
-
-%- Alignement du texte avec césures correctes
-\RequirePackage{ragged2e}
-
-%- Arranges marginpars "intelligently" / Automatically adjust the side material nicely
-\RequirePackage{marginfix}
-
-%- LaTex3 implementation of sidenotes, for compatibility (clashes because we use same names commands)
-%\RequirePackage{sidenotes}
-
-%-- Effective layout application
-%-------------------------------
-
-%--- For the record:
-%- inner/outer margins = 20mm, marginparwidth = 52mm, marginparsep=8mm,
-%- textwidth = 110mm, fullwidth = 170mm
-%---
-
-\ifdoc@showframe
-  \geometry{%
-    a4paper, twoside,
-    top=27mm, bottom=27mm, inner=20mm, outer=20mm,
-    ignorehead, ignorefoot, includemp,
-    marginparwidth=52mm, marginparsep=8mm,
-    headsep=7mm, headheight=12.2pt, footskip=14mm, showframe
-  }
-\else
-  \geometry{%
-    a4paper, twoside,
-    top=27mm, bottom=27mm, inner=20mm, outer=20mm,
-    ignorehead, ignorefoot, includemp,
-    marginparwidth=52mm, marginparsep=8mm,
-    headsep=7mm, headheight=12.2pt, footskip=14mm
-  }
-\fi
-
-%- Layout utility commands: changing the page layout mid-document
-\newcommand{\symmetricalpage}{
-  \newgeometry{%
-    top=27mm, bottom=27mm, inner=20mm, outer=20mm,
-    ignorehead, ignorefoot, includemp, nomarginpar,
-    headsep=7mm, headheight=12.2pt, footskip=14mm,
-  }
-}
-\newcommand{\appendixpage}{
-  \newgeometry{%
-    twoside,
-    top=27mm, bottom=27mm, inner=20mm, outer=10mm,
-    ignorehead, ignorefoot, includemp,
-    marginparwidth=36mm, marginparsep=4mm,
-    headsep=7mm, headheight=12.2pt, footskip=14mm
-  }
-}
-\newcommand{\referencepage}{
-  \newgeometry{%
-    twoside,
-    top=27mm, bottom=27mm, inner=20mm, outer=20mm,
-    ignorehead, ignorefoot, includemp,
-    marginparwidth=24mm, marginparsep=8mm,
-    headsep=7mm, headheight=12.2pt, footskip=14mm
-  }
-}
-\newcommand{\asymmetricalpage}{\restoregeometry}
 
 
 %---------------------------------------------------------------------------------------------------
@@ -977,58 +959,87 @@
 %- ALTHOUGHT THIS IS THE DEFAULT SETTING FOR \setmainfont AND \setsansfont, WE SET IT EXPLICITLY...
 %-----
 
-%- Main font
-\setmainfont{Fira Sans Light}[% all small caps (historically the Mozilla OS fonts)
-%\setmainfont{FiraGO Light}[% New Fira-Sans fonts development
-  %Scale = 0.98,
-  Ligatures=TeX,
-  Numbers=OldStyle,
-  BoldFont=Fira Sans Medium,
-  ItalicFont=Fira Sans Light Italic,
-  BoldItalicFont=Fira Sans Medium Italic
-  ]
-
-%- Sans serif font
-\setsansfont{Fira Sans Light}[
-%\setsansfont{FiraGO Light}[% New Fira-Sans fonts development
-  Numbers=OldStyle,
-  Ligatures=TeX,
-  BoldFont=Fira Sans Medium,
-  ItalicFont=Fira Sans Light Italic,
-  BoldItalicFont=Fira Sans Medium Italic
-  ]
-
-%- Monotype font
-%\setmonofont{Fira Mono}[% Regular, Medium, Bold FIXME: too large! Scale it or use Incosolata?
-% Scale=0.925,
-%  LetterSpace=0.7,
-%  BoldFont=Fira Mono Medium,
-%  AutoFakeSlant,
-%  BoldItalicFeatures={FakeSlant},
-%  ]
-%\setmonofont{Inconsolatazi4}[% only Regular and Bold, FakeSlant (false Italic) with `fontspec'
-  %Scale=1.075,% PAS DE LETTRES GRÈQUES :-(
-%  AutoFakeSlant,
-%  BoldItalicFeatures={FakeSlant},
-  % Allows \ttfamily hyphenation: https://tex.stackexchange.com/questions/290731/
-  % https://tex.stackexchange.com/questions/87073/scope-of-addfontfeature/87076#87076
-  % This is set globaly and not modifiable → Solution: newfont declaration sightly scaled
-  %HyphenChar={-}% OK but annoying warnings at complilation time
-%  ]
-
-%\setmonofont{Ubuntu Mono}[% FakeSlant (false Italic) with `fontspec' if needed
-%  %Scale=0.95,
-%  ItalicFont={Ubuntu Mono Italic},
-%  BoldFont={Ubuntu Mono Bold},
-%  BoldItalicFont={Ubuntu Mono Bold Italic},
-%  ]
-%- Personal Ubuntu Mono : extended with some glyphs from Fira Code / Fira Mono Regular ←↑↓→
-\setmonofont{UbuntuXMono-R.ttf}[%
-  %Scale=0.95,
-  ItalicFont={UbuntuMono-RI.ttf},
-  BoldFont={UbuntuMono-B.ttf},
-  BoldItalicFont={UbuntuMono-BI.ttf},
-  ]
+\ifdoc@article
+  %- Main font
+  \setmainfont{Fira Sans Light}[% all small caps (historically the Mozilla OS fonts)
+  %\setmainfont{FiraGO Light}[% New Fira-Sans fonts development
+    Scale = 0.9,
+    Ligatures=TeX,
+    Numbers=OldStyle,
+    BoldFont=Fira Sans Medium,
+    ItalicFont=Fira Sans Light Italic,
+    BoldItalicFont=Fira Sans Medium Italic
+    ]
+  %- Sans serif font
+  \setsansfont{Fira Sans Light}[
+  %\setsansfont{FiraGO Light}[% New Fira-Sans fonts development
+    Scale = 0.9,
+    Numbers=OldStyle,
+    Ligatures=TeX,
+    BoldFont=Fira Sans Medium,
+    ItalicFont=Fira Sans Light Italic,
+    BoldItalicFont=Fira Sans Medium Italic
+    ]
+  %- Monotype font
+  %- Personal Ubuntu Mono : extended with some glyphs from Fira Code / Fira Mono Regular ←↑↓→
+  \setmonofont{UbuntuXMono-R.ttf}[%
+    Scale=MatchLowercase,
+    ItalicFont={UbuntuMono-RI.ttf},
+    BoldFont={UbuntuMono-B.ttf},
+    BoldItalicFont={UbuntuMono-BI.ttf},
+    ]
+  %\input{texjazz-size9.clo}
+\else
+  %- Main font
+  \setmainfont{Fira Sans Light}[% all small caps (historically the Mozilla OS fonts)
+  %\setmainfont{FiraGO Light}[% New Fira-Sans fonts development
+    %Scale = 0.98,
+    Ligatures=TeX,
+    Numbers=OldStyle,
+    BoldFont=Fira Sans Medium,
+    ItalicFont=Fira Sans Light Italic,
+    BoldItalicFont=Fira Sans Medium Italic
+    ]
+  %- Sans serif font
+  \setsansfont{Fira Sans Light}[
+  %\setsansfont{FiraGO Light}[% New Fira-Sans fonts development
+    Numbers=OldStyle,
+    Ligatures=TeX,
+    BoldFont=Fira Sans Medium,
+    ItalicFont=Fira Sans Light Italic,
+    BoldItalicFont=Fira Sans Medium Italic
+    ]
+  %- Monotype font
+  %\setmonofont{Fira Mono}[% Regular, Medium, Bold FIXME: too large! Scale it or use Incosolata?
+  % Scale=0.925,
+  %  LetterSpace=0.7,
+  %  BoldFont=Fira Mono Medium,
+  %  AutoFakeSlant,
+  %  BoldItalicFeatures={FakeSlant},
+  %  ]
+  %\setmonofont{Inconsolatazi4}[% only Regular and Bold, FakeSlant (false Italic) with `fontspec'
+    %Scale=1.075,% PAS DE LETTRES GRÈQUES :-(
+  %  AutoFakeSlant,
+  %  BoldItalicFeatures={FakeSlant},
+    % Allows \ttfamily hyphenation: https://tex.stackexchange.com/questions/290731/
+    % https://tex.stackexchange.com/questions/87073/scope-of-addfontfeature/87076#87076
+    % This is set globaly and not modifiable → Solution: newfont declaration sightly scaled
+    %HyphenChar={-}% OK but annoying warnings at complilation time
+  %  ]
+  %\setmonofont{Ubuntu Mono}[% FakeSlant (false Italic) with `fontspec' if needed
+  %  %Scale=0.95,
+  %  ItalicFont={Ubuntu Mono Italic},
+  %  BoldFont={Ubuntu Mono Bold},
+  %  BoldItalicFont={Ubuntu Mono Bold Italic},
+  %  ]
+  %- Personal Ubuntu Mono : extended with some glyphs from Fira Code / Fira Mono Regular ←↑↓→
+  \setmonofont{UbuntuXMono-R.ttf}[%
+    %Scale=0.95,
+    ItalicFont={UbuntuMono-RI.ttf},
+    BoldFont={UbuntuMono-B.ttf},
+    BoldItalicFont={UbuntuMono-BI.ttf},
+    ]
+\fi
 
 %\RequirePackage{newunicodechar}%
 
@@ -1238,13 +1249,15 @@
 % \belowdisplayshortskip=0pt plus 1pt minus 1pt
 %}{}{}
 %- 4. With the help of the `xpatch' package: IT WORKS TOO!
-\RequirePackage{xpatch}
-\xapptocmd\normalsize{% Solution with xpatch.sty (Marco Daniel)
- \abovedisplayskip=4pt plus 1pt minus 1pt
- \abovedisplayshortskip=0pt plus 1pt minus 1pt
- \belowdisplayskip=4pt plus 1pt minus 1pt
- \belowdisplayshortskip=0pt plus 1pt  minus 1pt
-}{}{}
+\ifdoc@article\else
+  \RequirePackage{xpatch}
+  \xapptocmd\normalsize{% Solution with xpatch.sty (Marco Daniel)
+    \abovedisplayskip=4pt plus 1pt minus 1pt
+    \abovedisplayshortskip=0pt plus 1pt minus 1pt
+    \belowdisplayskip=4pt plus 1pt minus 1pt
+    \belowdisplayshortskip=0pt plus 1pt  minus 1pt
+  }{}{}
+\fi
 
 %-- Defining specific font shapes and sizes
 
@@ -1483,8 +1496,6 @@
   \renewmenumacro{\directory}[/]{pathswithblackfolder}% 
 }
 
-
-
 %- Creative Commons shortcuts
 
 %- SEE ALSO THE `doclicense' package
@@ -1633,6 +1644,8 @@
 
 %\renewcommand{\emph}[1]{\textcolor{\@titlingcolor}{\itshape\bfseries#1}}
 \newcommand{\lightbf}[1]{\bgroup\lightboldfont#1\egroup}
+%\newcommand{\lightbf}[1]{\bgroup\titlingspacedfont#1\egroup}
+%\let\lightbf\textbf
 \newcommand{\emphbf}[1]{\emph{\lightboldfont#1}}
 \newcommand{\intextcolor}[1]{\textcolor{\@layoutcolor}{#1}}
 %\newcommand{\jazzicon}[1]{\textcolor{firstcolor}{\normalfont #1}}
@@ -1720,6 +1733,92 @@
 
 
 %---------------------------------------------------------------------------------------------------
+%---- Document layout / Agencement du document
+%---------------------------------------------------------------------------------------------------
+
+%-- Setting general layout
+%-------------------------
+
+%- Overall layout
+\RequirePackage{geometry}
+
+%- Provides commands/environment according to the page `side' (odd/even)
+\RequirePackage[strict]{changepage}
+
+%- Adds commands to put contents according to the current page `side'
+\RequirePackage{ifoddpage}% Must be loaded *after* the `changepage' package
+
+%- An analogue of minipage whose width is the natural width of its contents
+\RequirePackage{varwidth}
+
+%- Alignement du texte avec césures correctes
+\RequirePackage{ragged2e}
+
+%- Arranges marginpars "intelligently" / Automatically adjust the side material nicely
+\RequirePackage{marginfix}
+
+%- LaTex3 implementation of sidenotes, for compatibility (clashes because we use same names commands)
+%\RequirePackage{sidenotes}
+
+%-- Effective layout application
+%-------------------------------
+
+%--- For the record:
+%- inner/outer margins = 20mm, marginparwidth = 52mm, marginparsep=8mm,
+%- textwidth = 110mm, fullwidth = 170mm
+%---
+
+\ifbool{doc@showframe}{%
+%\ifdoc@showframe
+  \geometry{%
+    a4paper, twoside,
+    top=27mm, bottom=27mm, inner=20mm, outer=20mm,
+    ignorehead, ignorefoot, includemp,
+    marginparwidth=52mm, marginparsep=8mm,
+    headsep=7mm, headheight=12.2pt, footskip=14mm, showframe
+  }
+  }{%
+%\else
+  \geometry{%
+    a4paper, twoside,
+    top=27mm, bottom=27mm, inner=20mm, outer=20mm,
+    ignorehead, ignorefoot, includemp,
+    marginparwidth=52mm, marginparsep=8mm,
+    headsep=7mm, headheight=12.2pt, footskip=14mm
+  }
+%\fi
+}
+
+%- Layout utility commands: changing the page layout mid-document
+\newcommand{\symmetricalpage}{
+  \newgeometry{%
+    top=27mm, bottom=27mm, inner=20mm, outer=20mm,
+    ignorehead, ignorefoot, includemp, nomarginpar,
+    headsep=7mm, headheight=12.2pt, footskip=14mm,
+  }
+}
+\newcommand{\appendixpage}{
+  \newgeometry{%
+    twoside,
+    top=27mm, bottom=27mm, inner=20mm, outer=10mm,
+    ignorehead, ignorefoot, includemp,
+    marginparwidth=36mm, marginparsep=4mm,
+    headsep=7mm, headheight=12.2pt, footskip=14mm
+  }
+}
+\newcommand{\referencepage}{
+  \newgeometry{%
+    twoside,
+    top=27mm, bottom=27mm, inner=20mm, outer=20mm,
+    ignorehead, ignorefoot, includemp,
+    marginparwidth=24mm, marginparsep=8mm,
+    headsep=7mm, headheight=12.2pt, footskip=14mm
+  }
+}
+\newcommand{\asymmetricalpage}{\restoregeometry}
+
+
+%---------------------------------------------------------------------------------------------------
 %----    Counter management
 %---------------------------------------------------------------------------------------------------
 
@@ -1768,14 +1867,33 @@
 %\DeclareFloatingEnvironment[within=none]{duplicata}
 %\DeclareFloatingEnvironment[within=none]{training}
 
-\DeclareFloatingEnvironment[% Video environment
-  fileext=lov,
-  listname={List of Videos},
-  name=video,
-  placement=hbt,
-  within=chapter,
-]{video}
+\ifdoc@article
+  \DeclareFloatingEnvironment[% Video environment
+    fileext=lov,
+    listname={List of Videos},
+    name=video,
+    placement=hbt,
+    within=none,%section
+  ]{video}
+\else
+  \DeclareFloatingEnvironment[% Video environment
+    fileext=lov,
+    listname={List of Videos},
+    name=video,
+    placement=hbt,
+    within=chapter,
+  ]{video}
+\fi
 
+%\ifdoc@article
+%\DeclareFloatingEnvironment[% Listing environment: already defined by the `minted' package below
+%  fileext=lol,
+%  listname={List of Listings},
+%  name=listing,
+%  placement=hbt,
+%  within=none,
+%]{listing}
+%\else
 %\DeclareFloatingEnvironment[% Listing environment: already defined by the `minted' package below
 %  fileext=lol,
 %  listname={List of Listings},
@@ -1783,14 +1901,25 @@
 %  placement=hbt,
 %  within=chapter,
 %]{listing}
+%\fi
 
-\DeclareFloatingEnvironment[% Code environment: must be define to use \captionof and wrapfig
-  fileext=loc,
-  listname={List of Codes},
-  name=code,
-  placement=hbt,
-  within=chapter,
-]{code}
+\ifdoc@article
+  \DeclareFloatingEnvironment[% Code environment: must be define to use \captionof and wrapfig
+    fileext=loc,
+    listname={List of Codes},
+    name=code,
+    placement=hbt,
+    within=none,
+  ]{code}
+\else
+  \DeclareFloatingEnvironment[% Code environment: must be define to use \captionof and wrapfig
+    fileext=loc,
+    listname={List of Codes},
+    name=code,
+    placement=hbt,
+    within=chapter,
+  ]{code}
+\fi
 
 %- Default placement of floats (figures and tables are already defined by article and book classes)
 
@@ -1885,11 +2014,15 @@
 %- But, firstly, `pygmentize' must be installed: synaptic (python3-pip, python3-pygments) or pip.
 %-----
 %- UBUNTU MATE 20.04: A LINK FROM PYTHON TO PYTHON3 *MUST BE DONE* IN /bin (AND MAYBE /usr/bin)
-%- IN ORDER TO USE minted, tcolorbox with minted AND PythonTeX WITH PYTHON3:
+%- IN ORDER TO USE minted, tcolorbox WITH minted AND PythonTeX WITH PYTHON3:
 %-   > sudo ln -s /bin/python3 /bin/python
 %-----
 
-\PassOptionsToPackage{chapter,newfloat=true}{minted}
+\ifdoc@article
+  \PassOptionsToPackage{section,newfloat=true}{minted}
+\else
+  \PassOptionsToPackage{chapter,newfloat=true}{minted}
+\fi
 \RequirePackage{minted}% also loaded by the `tcolorbox' package (see below)
 
 %\usemintedstyle[python]{tango}
@@ -2918,203 +3051,11 @@
 
 %\RequirePackage{sidenotes}
 
+
 %--- Sidenotes macros (TODO: implement some ideas)
 %- Based on `sidenotes' macros, switching between marginpar and marginote without overlap
 %\RequirePackage{sidenotes}% use marginnote (fixed) or marginpar (float)
 %---
-
-%-- Sidenote command definition (\sidenote) stolen to the `sidenotes` package
-%----------------------------------------------------------------------------
-
-%- TODO: really understand ALL the code! Not fully done for the moment being... But it works!
-
-%- All the `sidenotes' package code is copied below, and commented
-%- to avoid conflict with our previous attempts for the same goal
-
-%\RequirePackage{l3keys2e}% May be put at the beginning of the class (not needed: for options)
-%\RequirePackage{expl3}% Already loaded at the beginning of the class (see above)
-%\ProvidesExplPackage{sidenotes}{2016/04/21}{1.00}{rich text in the margin for LaTeX}% (not needed)
-%\RequirePackage{marginnote}% provides an offset option for the marginals instead of a float
-%\RequirePackage{caption}% handles the captions (in the margin)
-%\RequirePackage{xparse}% new LaTeX3 syntax to define macros and environments
-%\RequirePackage[strict]{changepage} % Changepage package for symmetric twoside handling
-\ExplSyntaxOn
-%\keys_define:nn { sidenotes }
-%  {
-%    oneside .bool_set:N = \sidenotes_oneside
-%  }
-%\ProcessKeysOptions { sidenotes }
-\newcounter{sidenote} % make a counter
-%\setcounter{sidenote}{1} % init the counter − Original
-%\setcounter{sidenote}{0} % init the counter: not needed with our modifications
-%\DeclareExpandableDocumentCommand{\IfNoValueOrEmptyTF}{ m m m }% Already defined (egreg L3 command)
-%{
-% \IfNoValueTF{#1}
-%  {#2}
-%  {\tl_if_empty:nTF {#1} {#2} {#3}}
-%}
-\NewDocumentCommand{\@sidenotes@thesidenotemark}{ m }{% See latex.ltx \@footnotemark definition
-  \leavevmode
-  \ifhmode\edef\@x@sf{\the\spacefactor}\nobreak\fi
-  %\hbox {\@textsuperscript {\normalfont #1 }}% Original
-  \hbox{\@textsuperscript{\color{secondcolor}\normalfont#1}}% See latex.ltx \@makefnmark definition
-  \ifhmode\spacefactor\@x@sf\fi
-  \relax
-}
-\NewDocumentCommand{\@sidenotes@multisign}{ }{3sp}
-\NewDocumentCommand{\@sidenotes@multimarker}{ }{%
-  \kern-\@sidenotes@multisign
-  \kern\@sidenotes@multisign\relax
-}
-\NewDocumentCommand{\@sidenotes@multichecker}{ }{%
-  \dim_compare:nNnTF \lastkern = \@sidenotes@multisign
-  {\@sidenotes@thesidenotemark{,}}
-  %{}% Original: no extra space between text and note numbering
-  {\hspace*{0.5pt}}% Adding a small space between text and note numbering
-}
-\NewDocumentCommand{\@sidenotes@placemarginal}{ m m }{%
-  \IfNoValueOrEmptyTF{#1}
-    {\marginpar{#2}}
-    {\marginnote{#2}[#1]}
-}
-\NewDocumentCommand{\sidenote}{ o o +m }{%
-  \sidenotemark[#1]
-  \sidenotetext[#1][#2]{#3}
-  \@sidenotes@multimarker
-}
-\NewDocumentCommand{\sidenotemark}{ o }{%
-  \@sidenotes@multichecker
-  \IfNoValueOrEmptyTF{#1}
-    {\@sidenotes@thesidenotemark{\thesidenote}}
-    {\@sidenotes@thesidenotemark{#1}}
-  \@sidenotes@multimarker
-}
-\NewDocumentCommand{\sidenotetext}{ o o +m }{%
-  \IfNoValueOrEmptyTF{#1}{%
-    %\@sidenotes@placemarginal{#2}{\textsuperscript{\thesidenote}{}~\footnotesize#3}% Original
-    \@sidenotes@placemarginal{#2}{% French layout
-      %\footnotesize\textcolor{secondcolor}{\thesidenote.\:}#3%
-      \footnotesize\textcolor{secondcolor}{\thesidenote.~}#3%
-    }%
-    \refstepcounter{sidenote}
-  }{%
-    \@sidenotes@placemarginal{#2}{\textsuperscript{#1}~\footnotesize#3}% To be modified
-  }
-}
-%- Following the idea from: https://tex.stackexchange.com/questions/434023/reference-to-sidenote
-%- some adjustments have to be done to \sidenotetext and \sidenote
-\RenewDocumentCommand{\sidenote}{ o o +m }{%
-  \@sidenotes@multichecker
-  \sidenotetext[#1][#2]{#3}
-  \sidenotemark[#1]
-  \@sidenotes@multimarker
-}
-\RenewDocumentCommand{\sidenotetext}{ o o +m }{%
-  \IfNoValueOrEmptyTF{#1}{%
-    \refstepcounter{sidenote}
-    %\@sidenotes@placemarginal{#2}{\textsuperscript{\thesidenote}{}~\footnotesize#3}% Original
-    \@sidenotes@placemarginal{#2}{% French layout
-      %\footnotesize\textcolor{secondcolor}{\thesidenote.\:}#3%
-      \footnotesize\textcolor{secondcolor}{\thesidenote.~}#3%
-    }%
-  }{%
-    \@sidenotes@placemarginal{#2}{\textsuperscript{#1}~\footnotesize#3}% To be modified
-  }
-}
-%\DeclareCaptionStyle{sidecaption}{font=footnotesize}
-%\NewDocumentCommand \sidecaption {s o o m}
-%{
-%  \captionsetup{style=sidecaption}
-%  \IfBooleanTF{#1}
-%  { % starred
-%    \IfNoValueOrEmptyTF{#2}
-%    {\marginnote{\caption*{#4}}}
-%    {\marginnote{\caption*{#4}}[#2]}
-%  }
-%  { % unstarred
-%  \IfNoValueOrEmptyTF{#2}
-%    {\def\@sidenotes@sidecaption@tof{#4}}
-%    {\def\@sidenotes@sidecaption@tof{#2}}
-%  \IfNoValueOrEmptyTF{#3}
-%    {\marginnote{\caption[\@sidenotes@sidecaption@tof]{#4}}}
-%    {\marginnote{\caption[\@sidenotes@sidecaption@tof]{#4}}[#3]}
-%  }
-%}
-%\newsavebox{\@sidenotes@marginfigurebox}
-%\DeclareCaptionStyle{marginfigure}{font=footnotesize}
-%\NewDocumentEnvironment{marginfigure} { o }
-%{
-%  \begin{lrbox}{\@sidenotes@marginfigurebox}
-%    \begin{minipage}{\marginparwidth}
-%      \captionsetup{type=figure,style=marginfigure}
-%}
-%{
-%    \end{minipage}%
-%  \end{lrbox}%
-%  \@sidenotes@placemarginal{#1}{\usebox{\@sidenotes@marginfigurebox}}
-%}
-%\newsavebox{\@sidenotes@margintablebox}
-%\DeclareCaptionStyle{margintable}{font=footnotesize}
-%\NewDocumentEnvironment{margintable} { o }
-%{
-%  \begin{lrbox}{\@sidenotes@margintablebox}
-%    \begin{minipage}{\marginparwidth}
-%      \captionsetup{type=table,style=margintable}
-%}
-%{
-%    \end{minipage}
-%  \end{lrbox}
-%  \@sidenotes@placemarginal{#1}{\usebox{\@sidenotes@margintablebox}}
-%}
-%\AtBeginDocument{%
-%\newlength{\@sidenotes@extrawidth}
-%\setlength{\@sidenotes@extrawidth}{\marginparwidth}
-%\addtolength{\@sidenotes@extrawidth}{\marginparsep}}
-%\NewDocumentEnvironment{autoadjustwidth}{ m m }%
-%{
-%    \bool_if:NTF \sidenotes_oneside
-%    {
-%        \begin{adjustwidth}{#1}{#2}
-%    }
-%    {
-%        \begin{adjustwidth*}{#1}{#2}
-%    }
-%}
-%{
-%    \bool_if:NTF \sidenotes_oneside
-%    {
-%        \end{adjustwidth}
-%    }
-%    {
-%        \end{adjustwidth*}
-%    }
-%}
-%\DeclareCaptionStyle{widefigure}{font=footnotesize}
-%\RenewDocumentEnvironment{figure*}{ O{htbp} }
-%{
-%    \begin{figure}[#1]
-%        \begin{autoadjustwidth}{}{-\@sidenotes@extrawidth}
-%        \captionsetup{style=widefigure}
-%}
-%{
-%        \end{autoadjustwidth}
-%    \end{figure}
-%}
-%\DeclareCaptionStyle{widetable}{font=footnotesize}
-%\RenewDocumentEnvironment{table*}{ O{htbp} }
-%{
-%    \begin{table}[#1]
-%        \begin{autoadjustwidth}{}{-\@sidenotes@extrawidth}
-%        \captionsetup{style=widetable}
-%}
-%{
-%        \end{autoadjustwidth}
-%    \end{table}
-%}
-\ExplSyntaxOff
-%\endinput
-%%%
-%%% End of file `sidenotes.sty'.
 
 
 %--- Sidenotes macros (TODO: implement some ideas)
@@ -3122,17 +3063,19 @@
 %\RequirePackage{snotez}% use marginnote (fixed) or marginpar (float)
 %---
 
-%-- Sidenote command definition (\sidenote) stolen to the `snotez` package
-%-------------------------------------------------------------------------
+%-- Sidenote command definition (\sidenote) borrowed to Clemens Niederberger `snotez` package
+%--------------------------------------------------------------------------------------------
 
 %- `snotez' package is not compatible with `sidenotes' package,
 %- but some features seem very interesting to study and may be implement
+\RequirePackage{texjazz-sidenotes}
+%\setsidenotes{perpage=false}
 
 
 %-- Sidenote command definition (\sideNote): own traditional way of doing, may be old fashion ;-)
 %------------------------------------------------------------------------------------------------
 
-% TODO: SYNTHÉTISER TOUT CE BORDEL DE COMMANDES POUR CLARIFIER ET SIMPLIFIER LES CHOSES !
+% TODO: SYNTHÉTISER TOUT CE BOUZIN DE COMMANDES POUR CLARIFIER ET SIMPLIFIER LES CHOSES !
 
 %- Sidenote commons (own old fashion way)
 \DeclareDocumentCommand{\sideMark}{O{secondcolor} m}{{\color{#1}\normalfont#2.{\:}}}
@@ -3140,7 +3083,7 @@
 \DeclareDocumentCommand{\sideTitleColor}{m}{{\color{black!80}\sideTitle{#1}}}
 
 %- Uncomment below to have rigth/left justification of the margin contents
-\DeclareDocumentCommand{\marginElement}{m}{%
+\DeclareDocumentCommand{\marginelement}{m}{%
   \marginpar{%
     \strictpagechecktrue%
     \checkoddpage%
@@ -3376,7 +3319,7 @@
 %    \footnotemark%
 %  }%
 %  \ignorespaces%
-%  \marginElement{%
+%  \marginelement{%
 %    \sideMark[#1]{\thefootnote}%
 %    \ignorespaces%
 %    #2%
@@ -3422,7 +3365,7 @@
   \@makesidecoremark
   \ifhmode\spacefactor\@x@sf\fi
   \relax}
-\DeclareDocumentCommand{\sideCore}{O{secondcolor} m}{% Old fashion but works with just above stuff
+\DeclareDocumentCommand{\sidecore}{O{secondcolor} m}{% Old fashion but works with just above stuff
   {%
     \hypersetup{linkcolor=secondcolor}% There is a bug with hyperlinks: wrong page key
     \sidecoremark%
@@ -3438,7 +3381,7 @@
 }
 
 %- Side note with forced position
-\DeclareDocumentCommand{\forcedSideNote}{O{secondcolor} m}{%
+\DeclareDocumentCommand{\forcedsidenote}{O{secondcolor} m}{%
   {%
     \hypersetup{linkcolor=maincolor}%
     \normalfont%
@@ -3560,7 +3503,7 @@
 %- Side figure
 \DeclareDocumentCommand{\sidefigure}{o m}{%
   %\FloatBarrier% process all floats before this point so the figure-like stuff numbers stay in order
-  \marginElement{% \subcaptionbox et `subfigure' env. ne passent pas car pour flottants TODO: FIXME
+  \marginelement{% \subcaptionbox et `subfigure' env. ne passent pas car pour flottants TODO: FIXME
     %\strictpagechecktrue\checkoddpage\ifoddpage\RaggedRight\else\RaggedLeft\fi%
     \setcounter{subfigure}{0}% Must reset the counter for "subSideFigure": WHY? FIXME
     %\centering%
@@ -3641,7 +3584,7 @@
 
 %- Side table !!! For the record, use \subcaptionbox for subtable !!! (see `subcaption.sty')
 \DeclareDocumentCommand{\sidetable}{o m}{%
-  \marginElement{% \subcaptionbox et `subfigure' env. ne passent pas car pour flottants TODO: FIXME
+  \marginelement{% \subcaptionbox et `subfigure' env. ne passent pas car pour flottants TODO: FIXME
     %\strictpagechecktrue\checkoddpage\ifoddpage\RaggedRight\else\RaggedLeft\fi%
     \begin{minipage}{\marginparwidth}%
       \captionsetup*{type=table, font=footnotesize,
@@ -3687,6 +3630,72 @@
   \edef#3{\the\dimexpr\ht#1+\dp#1\relax}%
 }
 
+\DeclareDocumentCommand{\sideimage}{s o m g O{0pt}}{%
+  % Syntax − #1 = no star = copyright symbol, star = no copyright symbol
+  %          #2 = caption text
+  %          #3 = margin contents: an image file (or more) included with \includegraphics
+  %          #4 = optional copyright/source of the graphic (graphics are different from figures)
+  %          #5 = optional voffset
+  %\hspace{0pt}%
+  \marginnote{% more flexible, but... Lost floats?
+  %\marginnote{% Seems to solve the "lost floats" issue. Yes, but... to clarify and be understood
+    %\vspace*{2pt}% compensate an unknown gap TODO: find the issue!
+    %\vspace*{\baselineskip}% compensate an unknown gap TODO: find the issue!
+    \IfValueTF{#4}{%
+      \stepcounter{graphiccount}%
+      \graphictikzmark{\thegraphiccount}%
+      %- Box height measurement is done with the same command used for margin ToC (see below)
+      \begin{measurebox}[nobeforeafter]{\graphicboxheight}%, show bounding box
+        \centering%
+        \@afterindentfalse\@afterheading%
+        #3%
+      \end{measurebox}%
+      \strictpagechecktrue%
+      \checkoddpage%
+      \ifoddpageoroneside%
+        \setlength{\graphicboxhshift}{\marginparsep}%
+        \setlength{\graphicboxvshift}{5pt}%
+        \renewcommand{\graphicside}{west}%
+        \renewcommand{\graphicotherside}{east}%
+        \renewcommand{\graphicrotateangle}{90}%
+      \else%
+        \settowidth{\graphiccreditshift}{%
+          \IfBooleanTF{#1}%
+            {\scriptsize\space#4}%
+            {\scriptsize\faCopyright\space#4}%
+        }%
+        %\setlength{\graphicboxhshift}{%
+        %  -\marginparwidth-.5\marginparsep-.5\graphiccreditshift-0.4pt}%-0.8pt}%-1.6pt}% thick=0.8pt
+        \setlength{\graphicboxhshift}{%
+          -\marginparwidth-\marginparsep-\graphicboxheight+\graphiccreditshift}%
+        \setlength{\graphicboxvshift}{\marginparwidth+5pt}%
+        \renewcommand{\graphicside}{east}%
+        \renewcommand{\graphicotherside}{west}%
+        \renewcommand{\graphicrotateangle}{-90}%
+      \fi%
+      \begin{tikzpicture}[remember picture,overlay]
+        \node[%draw=red, thick,
+              anchor=\graphicside,
+              %rotate=0,%\graphicrotateangle,
+              rotate around={\graphicrotateangle:(\thegraphiccount)},
+              xshift=\graphicboxhshift, yshift=\graphicboxvshift,
+              inner sep=0pt]
+          (graphicbox\thegraphiccount)
+          at ([yshift=0pt]current page text area.\graphicotherside|-\thegraphiccount)
+          {\IfBooleanTF{#1}{\scriptsize#4}{\scriptsize\faCopyright\space#4}};%
+          %{\scriptsize\faCopyright\space#4};%
+      \end{tikzpicture}%
+    }{\centering%
+      \@afterindentfalse\@afterheading%
+      #3}%
+    \IfValueT{#2}{% Insert in \captionsetup inside the option warning from the `caption' package
+      \captionsetup{type=graphic, font=footnotesize, textfont=it, %skip=2pt,
+        format=plain, indention={1mm+.5em}, list=false}% To avoid "Unused \captionsetup[graphic]..."
+      \captionof{graphic}{#2}%
+    }%
+  }[#5]%
+}
+
 %- Side graphic: environment for unmumbered figure or illustration (with or without a caption)
 \DeclareDocumentCommand{\sidegraphic}{s o m g}{%
   % Syntax − #1 = no star = copyright symbol, star = no copyright symbol
@@ -3695,7 +3704,8 @@
   %          #4 = optional copyright/source of the graphic (graphics are different from figures)
   %\hspace{0pt}%
   \leavevmode% https://tex.stackexchange.com/questions/395826 (That's the solution! Marvellous!)
-  \marginpar{% more flexible, but...
+  \marginpar{% more flexible, but... Lost floats?
+  %\marginnote{% Seems to solve the "lost floats" issue. Yes, but... to clarify and be understood
     %\vspace*{2pt}% compensate an unknown gap TODO: find the issue!
     %\vspace*{\baselineskip}% compensate an unknown gap TODO: find the issue!
     \IfValueTF{#4}{%
@@ -3756,7 +3766,7 @@
 %- Side movie/video (full margin environment with the video counter)
 \DeclareDocumentCommand{\sideVideo}{o m m D<>{\faVideoCamera}}{%
   %\FloatBarrier% process all floats before this point so the figure-like stuff numbers stay in order
-  \marginElement{%
+  \marginelement{%
     %\strictpagechecktrue\checkoddpage\ifoddpage\RaggedRight\else\RaggedLeft\fi%
     %\refstepcounter{video}%
     \begin{minipage}{\marginparwidth}%
@@ -4433,7 +4443,7 @@
 
 %----- Side caption note
 %- Unfortunately, the '\captionof' command from the 'caption' package can't be used directly
-%- in \marginpar and \marginElement: it leads to wrong placement in the "List of..."
+%- in \marginpar and \marginelement: it leads to wrong placement in the "List of..."
 %- A simple workaround is to add an entry in the "list of..." after margin caption typesetting.
 %- This is done using the "list=false" option for the '\captionof' command and defining an entry
 %- after the margin stuff displaying: namely the '\sidecaptionlist' command.
@@ -4564,7 +4574,7 @@
 }
 
 \DeclareDocumentCommand{\sideQuote}{o m}{%
-  \marginElement{%
+  \marginelement{%
     \llap{\raisebox{-1.8cm}[0mm][0mm]{\quoteStart\hspace*{-16mm}}}%
     %\llap{\raisebox{-1.8cm}[0mm][0mm]{\quoteStart\hspace*{-16mm}\isOddPage{}{\hspace*{-7mm}}}}%
     {\itshape#2}%
@@ -4642,6 +4652,7 @@
 
 \RequirePackage{tabularx}% extending tabular* for modifying certain width column
 %\RequirePackage{delarray}% surrounding an array (math) with delimiters: parentheses, braces, etc.
+\RequirePackage{xltabular}% Extend tabularx to pagebreaking the tabularx env.
 
 %- New column type to center the values
 %- http://tex.stackexchange.com/questions/89166/centering-in-tabularx-and-x-columns
@@ -4716,7 +4727,10 @@
 %\RequirePackage{ltablex}% Extending the `tabularx' package environment to longtable
                          % Ça fout le bouzin sur les légendes et la numérotation, donc à oublier
 %\RequirePackage{supertabular}% extended tabular over several page
-%\RequirePackage{xtab}% improvement version of supertabular
+
+%- Improvement version of supertabular: incompatible! Because `glossaries` package is loading
+%- `glossary-super.sty' which is based on `supertabular` package (see below)
+%\RequirePackage{xtab}% 
 
 %-- Spaces in tables
 
@@ -4817,7 +4831,7 @@
 
 %- http://tex.stackexchange.com/questions/129713/tabular-environment-for-specified-width-bg-and-font-colorings-by-row
 % >{\fontcolor}c  >{\fontcolor}l  >{\fontcolor}X
-\newcommand\fontcolor{}
+%\newcommand\fontcolor{}
 %- Usage: \noalign{\gdef\fontcolor{\color{blue}}}
 
 %-- Autre astuce pour gérer les fontes par ligne (Werner) avec `array.sty'
@@ -4893,24 +4907,28 @@
 
 %--- TODO: Please have a look to the Clemens Niederberger's `fnpct' and `snotez' package s!
 
+\RequirePackage{fnpct}
+
 %- Appel des notes de bas de page : application de couleur adéquate
-\def\@makefnmark{\hbox{\@textsuperscript{\normalfont\textcolor{secondcolor}{\@thefnmark}}}}
+%\def\@makefnmark{\hbox{\@textsuperscript{\normalfont\textcolor{secondcolor}{\@thefnmark}}}}
 
 %- Contrôle des espaces verticales entre notes de bas de page
-\newlength{\jazzfootnotesep}
-\setlength{\jazzfootnotesep}{\baselineskip}
-\addtolength{\jazzfootnotesep}{-.25\footnotesep}
-\setlength{\footnotesep}{\jazzfootnotesep}
+%\newlength{\jazzfootnotesep}
+%\setlength{\jazzfootnotesep}{\baselineskip}
+%\addtolength{\jazzfootnotesep}{-.25\footnotesep}
+%\setlength{\footnotesep}{\jazzfootnotesep}
+
+\renewcommand{\thefootnote}{\alph{footnote}}% footnotes a, b, c... (sidenote 1, 2, 3...)
 
 %- Ligne séparatrice de footnotes aux couleurs du document
 \newif\iffootnote@rule
 %\footnote@ruletrue
-\footnote@rulefalse
+\footnote@ruletrue
 
 \renewcommand\footnoterule{% Redefining from book.cls
   \iffootnote@rule
     \kern-3\p@
-    {\color{darkelectricblue}\hrule\@width.3333\columnwidth}% Default thickness=0.4pt
+    {\color{firstcolor}\hrule\@width.3333\columnwidth}% Default thickness=0.4pt
     \kern2\p@
   \else% https://tex.stackexchange.com/questions/312793/toggle-presence-of-footnote-rule
     \advance\skip\footins 4\p@\@plus2\p@\relax%
@@ -4934,10 +4952,10 @@
   \AtBeginDocument{%
     \long\def\@makefntext#1{\@makefntextFB{#1}}%
   }%
-\else% Pour French Babel, reprise afin d'être sûr...
+%\else% Pour French Babel, reprise afin d'être sûr...
   % NON PROBANT AT ALL !!! FIX ME!
-  \renewcommand*{\dotFFN}{.}%
-  \renewcommand*{\kernFFN}{\kern .5em}%
+  %\renewcommand*{\dotFFN}{.}%
+  %\renewcommand*{\kernFFN}{\kern .5em}%
   %\settowidth{\FBfnindent}{\dotFFN\kernFFN}%
   %\providecommand\localleftbox[1]{}%
   %\addtolength{\FBfnindent}{\parindentFFN}%
@@ -4963,11 +4981,11 @@
 %    \let\FBeverypar@quote\FBeverypar@save
 %    \localleftbox{\FBeveryline@quote}%
 %  }%
-  \long\def\@makefntextFB#1{%
-    \vspace*{-\baselineskip}%
-    \localleftbox{}%
+%  \long\def\@makefntextFB#1{%
+%    \vspace*{-\baselineskip}%
+%    \localleftbox{}%
     % French layout
-    \parindent=\parindentFFN
+%    \parindent=\parindentFFN
 %    \parindent=\z@%
 %    %\rule\z@\footnotesep
 %    %\textcolor{darkelectricblue}{\hrule\@width.3333\columnwidth}%
@@ -4978,46 +4996,46 @@
 %    \fi
 %    \vspace*{-2.0\baselineskip}%
     %\llap{\color{secondcolor}\@thefnmark\dotFFN\kernFFN}%
-    #1%
-  }%
-  \AtBeginDocument{%
-    \long\def\@makefntext#1{\@makefntextFB{#1}}%
-  }%
+%    #1%
+%  }%
+%  \AtBeginDocument{%
+%    \long\def\@makefntext#1{\@makefntextFB{#1}}%
+%  }%
 \fi
 
 %- Notes de bas de page dans un environnement `minipage'
-\long\def\@makefntextMP#1{% Temporary command used just below
-  %\parindent=\parindentFFN
-  \parindent=\z@
-  \addtolength{\footnotesep}{-2pt}
-  \rule\z@\footnotesep
-  % letter class like definition
-  \noindent
-  \hangindent 10\p@
-  %\hb@xt@5\p@{\hss\@makefnmark}#1% Original definition
-  \hb@xt@10\p@{\hss\@thefnmark\dotFFN\kernFFN}#1%
-}%
-%\skip\@mpfootins = \skip\footins% from letter.cls
-\skip\@mpfootins=\medskipamount
-%\skip\footins=\bigskipamount % space added when footnote is present
-\long\def\@mpfootnotetext#1{% Minipage footnotes redefining from latex.ltx
-  \global\setbox\@mpfootins\vbox{%
-    \unvbox\@mpfootins
-    \reset@font\footnotesize
-    %\reset@font\scriptsize
-    %\addtolength{\columnwidth}{.5em}
-    \hsize\columnwidth
-    %\hsize\linewidth
-    \@parboxrestore
-    \protected@edef\@currentlabel
-      {\csname p@mpfootnote\endcsname\@thefnmark}%
-    \color@begingroup
-      %\@makefntext{%
-      \@makefntextMP{%
-        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
-    \color@endgroup%
-  }%
-}
+%\long\def\@makefntextMP#1{% Temporary command used just below
+%  %\parindent=\parindentFFN
+%  \parindent=\z@
+%  \addtolength{\footnotesep}{-2pt}
+%  \rule\z@\footnotesep
+%  % letter class like definition
+%  \noindent
+%  \hangindent 10\p@
+%  %\hb@xt@5\p@{\hss\@makefnmark}#1% Original definition
+%  \hb@xt@10\p@{\hss\@thefnmark\dotFFN\kernFFN}#1%
+%}%
+%%\skip\@mpfootins = \skip\footins% from letter.cls
+%\skip\@mpfootins=\medskipamount
+%%\skip\footins=\bigskipamount % space added when footnote is present
+%\long\def\@mpfootnotetext#1{% Minipage footnotes redefining from latex.ltx
+%  \global\setbox\@mpfootins\vbox{%
+%    \unvbox\@mpfootins
+%    \reset@font\footnotesize
+%    %\reset@font\scriptsize
+%    %\addtolength{\columnwidth}{.5em}
+%    \hsize\columnwidth
+%    %\hsize\linewidth
+%    \@parboxrestore
+%    \protected@edef\@currentlabel
+%      {\csname p@mpfootnote\endcsname\@thefnmark}%
+%    \color@begingroup
+%      %\@makefntext{%
+%      \@makefntextMP{%
+%        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
+%    \color@endgroup%
+%  }%
+%}
 
 %- Framed footnotes (like caution notes, but for footnote displaying)
 %- See: https://tex.stackexchange.com/questions/312793/toggle-presence-of-footnote-rule
@@ -6033,120 +6051,6 @@
     IfValueTF={#1}{#1}{}% More options comma separated
 }
 
-\NewTCBListing[%
-  auto counter,% The internal counter is \tcb@cnt@code (not \c@code, see below)
-  %use counter*=code,% Using own counter to have full control on the numbering
-  number within=chapter,
-  list inside=loc,% to have a list of exercice with \tcblistof[\section]{<name>}{<title>}
-  %- With "list type" field, a \l@code command must be defined OR done with `titletoc' package
-  %- See: change-tcolorbox-tcblistof-font-formatting-to-match-documents-other-lists:
-  %          https://tex.stackexchange.com/questions/353947/
-  list type=code,% By default → Layout is done by \l@tcolorbox command
-  %- https://tex.stackexchange.com/questions/263577/referring-to-example-numbers-in-tcolorbox
-  %- https://tex.stackexchange.com/questions/261471/example-numbers-with-respect-to-chapters-in-tcolorbox-title
-  %crefname={code}{codes},% Explicitly defined by the `cleveref' package (see end of class)
-  %Crefname={Code}{Codes},% Explicitly defined by the `cleveref' package (see end of class)
-  %number freestyle={\noexpand\thechapter.\noexpand\arabic{\tcbcounter}}]
-  ]
-  {codeformer}{ o m o g }{%
-    % Usage − \begin{code}[<more-options>]{<code-language>}[<optional-title>]{<optional-caption>}
-    %           ...
-    %         \end{code}
-    %code = {%
-    %  \ifdoc@appendix% Resetting code numbering for appendixchapter
-    %    \let\jazzcodeprefixnum\theappendixchapter
-    %  \else
-    %    \let\jazzcodeprefixnum\thechapter
-    %  \fi%
-    %},
-    %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
-    before={%
-      \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
-      \vspace*{2.5\parskip}%
-      %\noindent Before → Code : \thecode ; TCBcounter : \thetcbcounter\par%
-    },
-    IfValueTF={#4}{% Adding a code caption with an entry in the "list of code" (LoC)
-      before pre={%
-        %- Because the box is automatically increased, code and box counters have to be adjusted
-        \addtocounter{tcb@cnt@code}{-1}%
-        \setcounter{code}{\number\value{tcb@cnt@code}}%
-        \captionof{code}{#4}%
-        %- Because \captionof automatically increases code counter, box counter must be adjusted
-        \setcounter{tcb@cnt@code}{\number\value{code}}%
-      },
-      IfValueTF={#3}{notitle}{notitle},% If a caption exists, no title at all is available/displayed
-      label type={code},% To be used in cunjonction to the `cleveref' package
-      label={code:\thetcbcounter},
-    }{IfValueTF={#3}{% No caption but a title
-        before pre={%
-          %- Because \captionof is not used, the code counter must be adjusted to the box counter
-          \setcounter{code}{\number\value{tcb@cnt@code}}%
-        },
-        fonttitle=\footnotesize\lightboldfont,%\normalfont,%\titlingfont,
-        %bottomtitle=2.5pt, toptitle=2.5pt,% default=0pt
-        coltitle=white,% Default=white
-        %colbacktitle=black!65,% Default: black!50!white
-        %lefttitle=16pt,% Default=4mm (additional to boxsep), here 16pt=\parindent
-        %ignore nobreak=true,% In case it follows a heading (e.g. mainly \overparagraph, \paragraph)
-        %after title={\hfill\colorbox{secondcolor}{Code \thecode}},
-        %title filled=false,% Default=true
-        %code title layout={#3},
-        attach boxed title to top right={% Title placement + options (doc. p.159-161)
-          yshift=-\tcboxedtitleheight, yshifttext=-2pt,%-\tcboxedtitleheight/3,
-          %yshift*=-\tcboxedtitleheight,% yshifttext is only set if necessary
-        },
-        boxed title style={% original code borrowed to `tcolorbox' (see doc. p.165)
-          empty,
-          boxsep=0pt,
-          toptitle=0pt, bottomtitle=0pt,% default=0pt
-          lefttitle=0pt, righttitle=0pt,% Default=4mm (additional to boxsep)
-          left=6pt, right=4pt,% Default=4mm (additional to boxsep)
-          top=1pt, bottom=0pt,% Default=2mm (additional to boxsep)
-        },
-        underlay boxed title={% Only drawn if a boxed title is given (cf. doc. §10.2.3 p.162)
-          %- Bézier curve .. control .. don't work! Why? FIX ME!
-          \path[draw=black!20, fill=firstcolor!75!black, line width=0.4pt]
-            ([xshift=-\tcboxedtitleheight/2,yshift=0.0mm]title.north west)
-              %node[circle, inner sep=0.8pt, fill=blue] (a) {}
-            to [bend left=30] ([xshift=2pt,yshift=-1pt]title.west)
-              %node[circle, inner sep=0.8pt, fill=green] (b) {}
-            [rounded corners=2pt]% arc=2pt − default
-            -- ([xshift=4pt,yshift=0.0mm]title.south west)
-              %node[circle, inner sep=0.8pt, fill=blue] (c) {}
-            -- ([yshift=0.0mm]title.south east)
-            -- ([yshift=0.0mm]title.north east)
-            [sharp corners] -- cycle;
-          %\node[circle, inner sep=0.6pt, fill=green] at (title.south west) {};
-          %\node[circle, inner sep=0.6pt, fill=cyan] at (title.west) {};
-        },
-        before title app={\strut \textsc{Code \thetcbcounter}},
-          title={\strut\space\textemdash\space #3},
-        label type={code},% To be used in cunjonction to the `cleveref` package
-        label={code:\thetcbcounter},
-        list entry={% Adding a code symbol in the "list of codes" entries
-          \protect\numberline{\thetcbcounter}#3%
-          \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}%
-        },
-      }{% No caption neither a title
-        %\IfNoValueOrEmptyTF{}{}{}
-        before pre={%
-          % Because the box counter is not used, it has to be adjusted to the code counter
-          \setcounter{tcb@cnt@code}{\number\value{code}}%
-        },
-        notitle,
-      },
-    },
-    code box layout,% General code box layout options
-    code language/#2,% Code language options
-    code layout,% Common code `minted` layout options − If set before *does not* work! WHY? FIXME!
-    numbering lines=true,% Default=true
-    %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
-    after={%
-      \vspace*{2.0\parskip}%
-      %\par La dernière référence de code numéroté est : \ref{code:\thecode}.\par%
-    },
-    IfValueTF={#1}{#1}{}% More/reset/change options comma separated
-}
 
 %- Redefining the "code*" environment (previously defined by the `minted` package)
 
@@ -6941,6 +6845,322 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
   xleftmargin=12pt,% framesep + framerule + 4pt (numbersep-4pt=indentation) % default=0pt
   %xrightmargin=-2.4pt,% numbersep + framerule % default=0pt
   morekeywords={addl,cmpl,movl}
+}
+
+%-- Defining "(La)TeX" listing styles to be used for documentation (with `listings' package)
+%-------------------------------------------------------------------------------------------
+
+%- New colors
+\definecolor{texcsdoccolor}{RGB}{119, 41, 83}% From Radiant-MATE theme: #772953 or other : RGB(172,53,53) #ac3535
+\definecolor{emphdoccolor}{RGB}{38, 107, 189}% approximative Crayola NavyBlue -> #266BBD, the real one is #0066CC
+%\definecolor{commentdoccolor}{RGB}{59, 125, 37}% #3B7D25 Kind of green
+%\definecolor{commentdoccolor}{RGB}{118, 111, 100}% "Bis" kind of brown #766f64
+\definecolor{commentdoccolor}{RGB}{118, 94, 47}% "Café au lait" / #785e2f
+\definecolor{keyworddoccolor}{RGB}{128, 128, 0}% #808000 Olive #c0be51 espèce de jaune-vert
+
+\lstdefinestyle{lstlatexstyle}{%
+	language=[LaTeX]TeX,
+	tabsize=2,
+	aboveskip={\dimexpr\parskip+2pt\relax},
+	belowskip=0pt,
+	%belowskip=\parskip,
+	lineskip=0.25pt,
+	showstringspaces=false,
+	breaklines=true,%
+	backgroundcolor=\color{black!5},
+	numbers=none,
+	xleftmargin=1ex,
+	xrightmargin=1ex,
+	frame=lines,
+	rulesep=0pt,
+	framesep=2pt,
+	framerule=0.0pt,
+	framexleftmargin=1pt,
+	framexrightmargin=1pt,
+	framextopmargin=1pt,
+	framexbottommargin=0pt,
+	numbersep=1ex,
+	numberstyle=\small\ttfamily, 
+	basicstyle=\small\ttfamily,
+	texcsstyle=*\color{texcsdoccolor}\bfseries,
+	keywordstyle=\color{keyworddoccolor}\bfseries,
+	identifierstyle=\color{black}\normalfont\ttfamily,
+	commentstyle=\itshape\color{commentdoccolor},%
+	stringstyle=,%\color{magenta},
+	emphstyle=\color{emphdoccolor}\bfseries,%\emphstyle,
+	keywords={% Mainly the environment names in use (within parenthesis)
+		equal,
+ 		tabular,
+ 		enumerate,
+		itemize,
+		table,
+		figure,
+		assignpoints,
+		exercisepoints,
+		exercise,
+		quiz,
+		subexercise,
+		quizquestion,
+		cleveref,
+		caption,
+		tcolorbox
+	},%
+	alsoletter={*},
+	moretexcs={
+		newcommand*,
+		newcommand*,
+		renewcommand,
+		renewcommand*,
+		providecommand,
+		section,
+		subsection,
+		texorpdfstring,
+		iftoggle,
+		if@assignpoints@usefrenchlanguage,
+	},
+	literate=*%
+		{-}{{\textcolor{texcsdoccolor}{-}}}{1}
+		{<}{{\textcolor{texcsdoccolor}{<}}}{1}
+		{>}{{\textcolor{texcsdoccolor}{>}}}{1}
+		{/}{{\textcolor{texcsdoccolor}{/}}}{1}
+		{\&}{{\textcolor{texcsdoccolor}{\&}}}{1}
+		{\{}{{\textcolor{texcsdoccolor}{\{}}}{1}
+		{\}}{{\textcolor{texcsdoccolor}{\}}}}{1}
+		{[}{{\textcolor{texcsdoccolor}{[}}}{1}
+		{]}{{\textcolor{texcsdoccolor}{]}}}{1}
+		{\\\\}{{\textcolor{texcsdoccolor}{\textbackslash{}\textbackslash{}}}}{1},
+	emph={% Mainly the new command names with a preceeding backslash
+		AtBeginExercise,
+		AtEndExercise,
+		AtBeginSubexercise,
+		AtEndSubexercise,
+		AtBeginQuiz,
+		AtEndQuiz,
+		AtBeginQuizquestion,
+		AtEndQuizquestion,
+		assignpointsdecimalsep,
+		assignpointsunitsingular,
+		assignpointsunitplural,
+		points,
+		displaypoints,
+		itempoints,
+		itempoints*,
+		getpoints,
+		getpoints*,
+		getbonuspoints,
+		getbounuspoints*,
+		numberofexercises,
+		exercisetotalpoints,
+		exercisetotalpoints*,
+		numberofquizzes,
+		quiztotalpoints,
+		quiztotalpoints*,
+		%currentexercisepoints,
+		%currentsubexercisepoints,
+		currentexercisenumber,
+		currentexercisetitle,
+		currentsubexercisenumber,
+		currentsubexercisetitle,
+		currentquiznumber,
+		currentquiztitle,
+		currentquizquestionnumber,
+		currentquizquestiontitle,
+		bonuspoints,
+		getbonuspoints,
+		getbonuspoints*,
+		customlayout,
+		%totalpointswithbonus,
+		exercisetotalpointswithbonus,
+		exercisetotalpointswithbonus*,
+		quiztotalpointswithbonus,
+		quiztotalpointswithbonus*,
+		exercisename,
+		quizname,
+		totalpointsname,
+		showcaseexercise,
+		showcasequiz,
+		showcaseexercise*,
+		showcasequiz*,
+		setitempointsunit
+	}
+}
+
+%- "Re-hook" literate char table
+
+\lst@AddToHook{SelectCharTable}
+    {\ifx\lst@literate\@empty\else
+         \expandafter\lst@Literate\lst@literate{}\relax\z@
+     \fi}
+
+%- Defining some shortcuts (see also `ltxdoc' package)
+
+\newcommand*{\cs}[1]{\texttt{\textbackslash#1}}
+\newcommand*{\dir}[1]{\texttt{\textbackslash#1}}
+
+\newcommand{\lstltx}[1]{% emph fout le bouzin avec texcs ! (cf. doc.)
+	\lstinline[%
+		language={[LaTeX]{TeX}},
+		numberstyle=\small\ttfamily, 
+		basicstyle=\ttfamily,
+		%texcsstyle=\color{texcsdoccolor}\bfseries\textbackslash{},
+		keywordstyle=\color{keyworddoccolor}\bfseries,
+		identifierstyle=\color{black}\normalfont\ttfamily,
+		%stringstyle=,%\color{magenta},
+		emphstyle=\color{texcsdoccolor}\bfseries\textbackslash{},
+		alsoletter={*},
+		literate=*%
+			{-}{{\textcolor{texcsdoccolor}{-}}}{1}
+			{<}{{\textcolor{texcsdoccolor}{<}}}{1}
+			{>}{{\textcolor{texcsdoccolor}{>}}}{1}
+			{/}{{\textcolor{texcsdoccolor}{/}}}{1}
+			{\&}{{\textcolor{texcsdoccolor}{\&}}}{1}
+			{\{}{{\textcolor{texcsdoccolor}{\{}}}{1}
+			{\}}{{\textcolor{texcsdoccolor}{\}}}}{1}
+			{[}{{\textcolor{texcsdoccolor}{[}}}{1}
+			{]}{{\textcolor{texcsdoccolor}{]}}}{1},
+		keywords={% Mainly the environment names in use (within parenthesis)
+			tabular,
+			enumerate,
+			itemize,
+			assignpoints,
+			exercisepoints,
+			exercise,
+			quiz,
+			subexercise,
+			quizquestion,
+			cleveref,
+			caption,
+			},
+		emph={% Mainly the new command names with a preceeding backslash
+			usepackage,
+			newcommand
+		}
+	]!#1!
+}
+
+\newcommand{\lstcs}[1]{%
+	\lstinline[%
+		language={[LaTeX]{TeX}},%
+		numberstyle=\small\ttfamily, 
+		basicstyle=\ttfamily,
+		texcsstyle=*\color{texcsdoccolor}\bfseries,
+		keywordstyle=\color{keyworddoccolor}\bfseries,
+		identifierstyle=\color{black}\normalfont\ttfamily,
+		commentstyle=\color{commentdoccolor}\itshape,%
+		stringstyle=,%\color{magenta},
+		emphstyle=\color{emphdoccolor}\bfseries\textbackslash{},
+		alsoletter={*},%
+		literate=*%
+			{-}{{\textcolor{texcsdoccolor}{-}}}{1}
+			{<}{{\textcolor{texcsdoccolor}{<}}}{1}
+			{>}{{\textcolor{texcsdoccolor}{>}}}{1}
+			{/}{{\textcolor{texcsdoccolor}{/}}}{1}
+			{\&}{{\textcolor{texcsdoccolor}{\&}}}{1}
+			{\{}{{\textcolor{texcsdoccolor}{\{}}}{1}
+			{\}}{{\textcolor{texcsdoccolor}{\}}}}{1}
+			{[}{{\textcolor{texcsdoccolor}{[}}}{1}
+			{]}{{\textcolor{texcsdoccolor}{]}}}{1},
+		keywords={% Mainly the environment names in use (within parenthesis)
+			equal,
+			tabular,
+			enumerate,
+			itemize,
+			assignpoints,
+			exercisepoints,
+			exercise,
+			quiz,
+			subexercise,
+			quizquestion,
+			cleveref,
+			caption,
+		},%
+		emph={% Mainly the new command names with a preceeding backslash
+			AtBeginExercise,
+			AtEndExercise,
+			AtBeginSubexercise,
+			AtEndSubexercise,
+			AtBeginQuiz,
+			AtEndQuiz,
+			AtBeginQuizquestion,
+			AtQuizquestion,
+			AtEndQuizquestion,
+			assignpointsdecimalsep,
+			assignpointsunitsingular,
+			assignpointsunitplural,
+			points,
+			displaypoints,
+			itempoints,
+			itempoints*,
+			getpoints,
+			getpoints*,
+			getbonuspoints,
+			getbounuspoints*,
+			numberofexercises,
+			exercisetotalpoints,
+			exercisetotalpoints*,
+			numberofquizzes,
+			quiztotalpoints,
+			quiztotalpoints*,
+			currentexercisenumber,
+			currentexercisetitle,
+			currentsubexercisenumber,
+			currentsubexercisetitle,
+			currentquiznumber,
+			currentquiztitle,
+			currentquizquestionnumber,
+			currentquizquestiontitle,
+			bonuspoints,
+			getbonuspoints,
+			getbonuspoints*,
+			customlayout,
+			totalpointswithbonus,
+			exercisetotalpointswithbonus,
+			exercisetotalpointswithbonus*,
+			quiztotalpointswithbonus,
+			quiztotalpointswithbonus*,
+			exercisename,
+			quizname,
+			totalpointsname,
+			setitempointsunit,
+			currentexercisepoints,
+			showcaseexercise,
+			showcasequiz,
+			showcaseexercise*,
+			showcasequiz*
+		}
+	]!#1!%
+}
+
+\newcommand{\lstenv}[1]{%
+  \lstinline[%
+		language={[LaTeX]{TeX}},%
+		basicstyle=\ttfamily,%
+		texcsstyle=*\color{texcsdoccolor}\bfseries,
+		keywordstyle=\color{keyworddoccolor}\bfseries,%
+		identifierstyle=\color{black}\normalfont\ttfamily,%
+		alsoletter={*},
+		literate=*%
+			{/}{{\textcolor{keyworddoccolor}{/}}}{1},
+		keywords={% Mainly the environment names in use (within parenthesis)
+			equal,
+			tabular,
+			enumerate,
+			itemize,
+			assignpoints,
+			exercisepoints,
+			exercise,
+			quiz,
+			subexercise,
+			quizquestion,
+			cleveref,
+			caption,
+			TikZ,
+			PGF,
+			tcolorbox,
+			breakable,
+			etoolbox
+		},%
+	]!#1!%
 }
 
 
@@ -8947,7 +9167,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %  \raisebox{-.25\baselineskip}{\tikz\fill[secondcolor] (0,0) rectangle (1mm, \baselineskip);}%
 %}
 \NewDocumentCommand{\sideStuff}{ o m }{%
-  \marginElement{% optional#2=title, mandatory#3=text TODO: optional margin symbol
+  \marginelement{% optional#2=title, mandatory#3=text TODO: optional margin symbol
     \begin{tcolorbox}[
       %enhanced jigsaw,
       %skin=enhancedmiddle jigsaw,% setting middle to have textmark (cf. doc. pp. 204-207)
@@ -8988,7 +9208,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 }
 
 \NewDocumentCommand{\sideQuestion}{ o m }{% optional#1=title, mandatory#2=text
-  \marginElement{%
+  \marginelement{%
     \begin{tcolorbox}[
       %enhanced jigsaw,
       %skin=enhancedmiddle jigsaw,% setting middle to have textmark (cf. doc. pp. 204-207)
@@ -9023,7 +9243,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
   }
 }
 \NewDocumentCommand{\sideEye}{ o m }{% optional#1=title, mandatory#2=text
-  \marginElement{%
+  \marginelement{%
     \begin{tcolorbox}[
       %enhanced jigsaw,
       %skin=enhancedmiddle jigsaw,% setting middle to have textmark (cf. doc. pp. 204-207)
@@ -9286,7 +9506,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 
 %- Numbering typesetting / Composition de la numérotation (à modifier selon convenances)
 \renewcommand{\thepart}{\Roman{part}}% default is Roman
-\ifdoc@article\relax\else
+\ifdoc@article\else
   \renewcommand{\thechapter}{\arabic{chapter}}
 \fi
 \renewcommand{\thesection}{\arabic{section}}
@@ -9454,7 +9674,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
           \ifdoc@licence% adding licence information if needed
             \ifdefempty{\@copyrightname}{}{\quad\@copyrightsymbol\ }\@copyrightname
             \ifdefempty{\@versiondate}{}{ \textendash{} }\@versiondate
-            \ifdefempty{\@versiondoc}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@versiondoc
+            \ifdefempty{\@docversion}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@docversion
           \fi};%
   \end{tikzpicture}
 }
@@ -9491,7 +9711,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
           \ifdoc@licence% adding licence information if needed
             \ifdefempty{\@copyrightname}{}{\quad\@copyrightsymbol\ }\@copyrightname
             \ifdefempty{\@versiondate}{}{ \textendash{} }\@versiondate
-            \ifdefempty{\@versiondoc}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@versiondoc
+            \ifdefempty{\@docversion}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@docversion
           \fi};%
   \end{tikzpicture}
 }
@@ -9536,7 +9756,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
           \ifdoc@licence% adding licence information if needed
             \ifdefempty{\@copyrightname}{}{\quad\@copyrightsymbol\ }\@copyrightname
             \ifdefempty{\@versiondate}{}{ \textendash{} }\@versiondate
-            \ifdefempty{\@versiondoc}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@versiondoc
+            \ifdefempty{\@docversion}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@docversion
           \fi};%
   \end{tikzpicture}
 }
@@ -9578,7 +9798,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
           \ifdoc@licence% adding licence information if needed
             \ifdefempty{\@copyrightname}{}{\quad\@copyrightsymbol\ }\@copyrightname
             \ifdefempty{\@versiondate}{}{ \textendash{} }\@versiondate
-            \ifdefempty{\@versiondoc}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@versiondoc
+            \ifdefempty{\@docversion}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@docversion
           \fi};%
   \end{tikzpicture}
 }
@@ -9958,7 +10178,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
           \ifdoc@licence% adding licence information if needed
             \ifdefempty{\@copyrightname}{}{\quad\@copyrightsymbol\ }\@copyrightname
             \ifdefempty{\@versiondate}{}{ \textendash{} }\@versiondate
-            \ifdefempty{\@versiondoc}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@versiondoc
+            \ifdefempty{\@docversion}{}{\ifdefempty{\@versiondate}{ \textendash{} }{, }}\@docversion
           \fi};%
   \end{tikzpicture}
 }
@@ -10098,14 +10318,15 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
     \begin{tcolorbox}[
       width=.9\linewidth,
       enhanced, breakable,
-      blank,
+      %blank,
       nobeforeafter,
       %arc=0pt, outer arc=0pt,
       %boxsep=0pt,
       left=8pt, right=8pt,
       top=8pt, bottom=4pt,
       %boxrule=0pt,
-      %colback=white,%black!10, %colframe=black!40,
+      colback=black!5,%black!10,
+      colframe=firstcolor,
       %toptitle=4pt, bottomtitle=4pt,
       %colbacktitle=black!10, coltitle=secondcolor,
       %titlerule=1pt,
@@ -10234,7 +10455,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %-- Chapter margin mini-ToC
 \newcommand{\sideChapterToC}{%
   \startcontents[chapters]% For 2016/03/21 version and new update 2019/09/09
-  %\marginElement{% Based on floating LaTeX marginpar: DOESN'T WORK with multicol ToC
+  %\marginelement{% Based on floating LaTeX marginpar: DOESN'T WORK with multicol ToC
   %\marginpar{%
   \marginnote{% Much more efficient for the margin vertical space management
     \chaptertoc@tcolorbox
@@ -11108,36 +11329,38 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 \newif\ifdoc@appendix
 %\pretocmd{\appendixchapter}{\global\doc@appendixtrue}{}{}
 
-\ifdoc@appendix
-  \@addtoreset{exfigurecaptioncounter}{appendixchapter}
-  \@addtoreset{extablecaptioncounter}{appendixchapter}
-  \@addtoreset{exlistingcaptioncounter}{appendixchapter}
-  \@addtoreset{excodecaptioncounter}{appendixchapter}
-  \@addtoreset{exfigurecounter}{appendixchapter}
-  \@addtoreset{extablecounter}{appendixchapter}
-  \@addtoreset{exlistingcounter}{appendixchapter}
-  \@addtoreset{excodecounter}{appendixchapter}
-  \@addtoreset{tmpfigurecounter}{appendixchapter}
-  \@addtoreset{tmptablecounter}{appendixchapter}
-  \@addtoreset{tmplistingcounter}{appendixchapter}
-  \@addtoreset{tmpcodecounter}{appendixchapter}
-  \@addtoreset{tmpvideocounter}{appendixchapter}
-  \@addtoreset{tmpdocumentcounter}{appendixchapter}
-\else
-  \@addtoreset{exfigurecaptioncounter}{chapter}
-  \@addtoreset{extablecaptioncounter}{chapter}
-  \@addtoreset{exlistingcaptioncounter}{chapter}
-  \@addtoreset{excodecaptioncounter}{chapter}
-  \@addtoreset{exfigurecounter}{chapter}
-  \@addtoreset{extablecounter}{chapter}
-  \@addtoreset{exlistingcounter}{chapter}
-  \@addtoreset{excodecounter}{chapter}
-  \@addtoreset{tmpfigurecounter}{chapter}
-  \@addtoreset{tmptablecounter}{chapter}
-  \@addtoreset{tmplistingcounter}{chapter}
-  \@addtoreset{tmpcodecounter}{chapter}
-  \@addtoreset{tmpvideocounter}{chapter}
-  \@addtoreset{tmpdocumentcounter}{chapter}
+\ifdoc@article\else
+  \ifdoc@appendix
+    \@addtoreset{exfigurecaptioncounter}{appendixchapter}
+    \@addtoreset{extablecaptioncounter}{appendixchapter}
+    \@addtoreset{exlistingcaptioncounter}{appendixchapter}
+    \@addtoreset{excodecaptioncounter}{appendixchapter}
+    \@addtoreset{exfigurecounter}{appendixchapter}
+    \@addtoreset{extablecounter}{appendixchapter}
+    \@addtoreset{exlistingcounter}{appendixchapter}
+    \@addtoreset{excodecounter}{appendixchapter}
+    \@addtoreset{tmpfigurecounter}{appendixchapter}
+    \@addtoreset{tmptablecounter}{appendixchapter}
+    \@addtoreset{tmplistingcounter}{appendixchapter}
+    \@addtoreset{tmpcodecounter}{appendixchapter}
+    \@addtoreset{tmpvideocounter}{appendixchapter}
+    \@addtoreset{tmpdocumentcounter}{appendixchapter}
+  \else
+    \@addtoreset{exfigurecaptioncounter}{chapter}
+    \@addtoreset{extablecaptioncounter}{chapter}
+    \@addtoreset{exlistingcaptioncounter}{chapter}
+    \@addtoreset{excodecaptioncounter}{chapter}
+    \@addtoreset{exfigurecounter}{chapter}
+    \@addtoreset{extablecounter}{chapter}
+    \@addtoreset{exlistingcounter}{chapter}
+    \@addtoreset{excodecounter}{chapter}
+    \@addtoreset{tmpfigurecounter}{chapter}
+    \@addtoreset{tmptablecounter}{chapter}
+    \@addtoreset{tmplistingcounter}{chapter}
+    \@addtoreset{tmpcodecounter}{chapter}
+    \@addtoreset{tmpvideocounter}{chapter}
+    \@addtoreset{tmpdocumentcounter}{chapter}
+  \fi
 \fi
 
 \AtBeginDocument{%
@@ -12527,7 +12750,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
                 \cleardoublepage\asymmetricalpage%
                 \@mainmattertrue\pagenumbering{arabic}\pagestyle{main}%
                 % Explicitly reset the counters
-                \@addtoreset{sidenote}{chapter}
+                %\@addtoreset{sidenote}{chapter}
                 \@addtoreset{figure}{chapter}
                 \@addtoreset{table}{chapter}
                 \@addtoreset{code}{chapter}
@@ -12547,7 +12770,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
                 \assignpagestyle{\backchapter}{plain}
                 \cleardoublepage\asymmetricalpage%
                 \@mainmatterfalse\pagestyle{back}
-                \@addtoreset{sidenote}{backchapter}
+                %\@addtoreset{sidenote}{backchapter}
                 \@addtoreset{section}{backchapter}
                 \@addtoreset{figure}{backchapter}
                 \@addtoreset{table}{backchapter}
@@ -12570,7 +12793,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
     \setbool{appendices}{true}
     \assignpagestyle{\appendixchapter}{plain}
     \pagestyle{appendix}
-    \@addtoreset{sidenote}{appendixchapter}
+    %\@addtoreset{sidenote}{appendixchapter}
     \@addtoreset{footnote}{appendixchapter}
     \@addtoreset{section}{appendixchapter}
     \@addtoreset{figure}{appendixchapter}
@@ -12661,7 +12884,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 
 %-- Utilities
 
-\newlength{\titlepageTitleLength}
+%\newlength{\titlepageTitleLength}
 %\newif\ifSymmetrical\Symmetricalfalse
 
 %-- Defining a "afterstuff" macro like afterpage
@@ -12715,15 +12938,37 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 
 %-- Workbook front title page
 
+%\newlength{\titlepageHeaderHeightWorkbook}
+%\setlength{\titlepageHeaderHeightWorkbook}{10cm}
+
 \newlength{\titlepageHeaderHeightWorkbook}
 \setlength{\titlepageHeaderHeightWorkbook}{10cm}
 
-\NewDocumentCommand{\maketitleWorkbook}{ o }{%
-  \symmetricalpage
-  \thispagestyle{plain}
+\newlength{\maintitlexoffsetWB}
+\setlength{\maintitlexoffsetWB}{0.0cm}
+
+\newlength{\maintitleyoffsetWB}
+\setlength{\maintitleyoffsetWB}{-2.5cm}
+
+\newlength{\titlepageTitleLength}
+
+\RequirePackage{footnotehyper}% Useful for footnotes in title page
+
+%- From latex.ltx file
+\def\jazzfnsymbol#1{\expandafter\@jazzfnsymbol\csname c@#1\endcsname}
+\def\@jazzfnsymbol#1{%
+   \ifcase#1\or \textasteriskcentered\or
+   \textasteriskcentered\textasteriskcentered\or
+   \textasteriskcentered\textasteriskcentered\textasteriskcentered\or
+   \textdagger\or
+   \textdaggerdbl\else
+   \@ctrerr \fi
+}%
+
+%\NewDocumentCommand{\maketitleWorkbook}{ o }{%
+\NewDocumentCommand{\maketitleWorkbook}{ }{%
   %\thispagestyle{empty}
-  %\symmetricalpage%\asymmetricalpage
-  \null% add an empty box to the paragraph just started
+  \null
   \tikzset{
     fitting node/.style={
       inner sep=0pt,
@@ -12734,97 +12979,97 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
     },
     reset transform/.code={\pgftransformreset}
   }
+  %\let\footnote\thanks
+  %\let\dotFFNjazz\dotFFN
+  \renewcommand*{\dotFFN}{}%
+  \renewcommand{\thefootnote}{\jazzfnsymbol{footnote}}
+  %- Appel des notes de bas de page : application de couleur adéquate
+  \contourlength{.5pt}% how thick each copy is
+  \contournumber{20}%
+  \savenotes% Begining to store footnotes if any
   \begin{tikzpicture}[remember picture, overlay]
-    % some coordinates
-    \coordinate[yshift=-\titlepageHeaderHeightWorkbook] (rectangleEnd) at (current page.north east);
-    % background rectangle
-    \fill[maincolor, fill opacity=1]
-      (current page.north west) rectangle (rectangleEnd) node[fitting node] (headerRectangle) {};
-    %- Separation lines
-    \node[inner sep=0pt, anchor=north west] at
-      ([yshift=-\titlepageHeaderHeightWorkbook]current page.north west)
-        {\color{firstcolor}\rule{\paperwidth}{.6mm}};
-    % title
-    \node[align=left, inner sep=0mm, anchor=south west,
-      xshift=\parindent, yshift=\Gm@tmargin-.5\titlepageHeaderHeightWorkbook,
-      font=\fontsize{2.0cm}{2.4cm}\selectfont\titlefont\color{secondcolor}
-      %font=\fontsize{2.3cm}{1.8cm}\selectfont\titlefont\color{secondcolor}
-      ]  (title) at (current page text area.north west) {%
-      \hspace*{-.8mm}%
+    % Some coordinates
+    \coordinate[yshift=-\titlepageHeaderHeightWorkbook](rectangleEnd) at (current page.north east);
+    \coordinate[xshift=-4cm](dateCenter) at (rectangleEnd);
+    % Cover color rectangle
+    \fill[black!45] (current page.north west) rectangle (rectangleEnd)
+      node[fitting node] (headerRectangle) {};
+    % Title page text (title, rule, subtitle and author)
+    % Title
+    \draw (\leftmargin + \maintitlexoffsetWB, \maintitleyoffsetWB) node[align=left, inner sep=0mm,
+      anchor=south west, font=\fontsize{2.3cm}{1.8cm}\selectfont\titlefont] (title) {%
       \begin{varwidth}{\textwidth}%
         \FlushLeft%
-        \noHyphen\@title%
+        \noHyphen\textcolor{secondcolor}{\@title}%
       \end{varwidth}%
     };
-    % title rule
+    % Rule
     \getwidthofnode{\titlepageTitleLength}{title}
-    \node[inner xsep=0mm, text width=\titlepageTitleLength, anchor=north west, yshift=-2mm]
-      (rule) at (title.south west) {{\color{white}\rule{\linewidth}{.6mm}}};
-    % author
-    \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm]
-      (author) at (rule.south west) {
-        {\fontsize{.6cm}{.72cm}\selectfont\color{white}\@author}
+    \node[inner xsep=0mm, text width=\titlepageTitleLength, anchor=north west, yshift=-2mm] (rule)
+      at (title.south west) {{\color{white}\rule{\linewidth}{.6mm}}};
+    % Subtitle, document version and date version
+    \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\textcolor{white}{\@thefnmark}}}}
+    \ifdefempty{\@versiondate}{%
+      \ifdefempty{\@docversion}{%
+        \ifdefempty{\@subtitle}{}{%
+          \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm] (subtitle)
+            at (rule.south west) {{%
+              %\fontsize{1.2cm}{1.44cm}\selectfont\subtitlefont\color{white}\@subtitle}};
+              \fontsize{1.0cm}{1.2cm}\selectfont\subtitlefont\color{white}\@subtitle}};
+        }%
+      }{%
+        \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm] (subtitle)
+          at (rule.south west) {{%
+            \fontsize{1.0cm}{1.2cm}\selectfont\subtitlefont%
+              \color{white}\@subtitle\space\@docversion}};
+      }%
+    }{%
+      \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm] (subtitle)
+        at (rule.south west) {{%
+          \fontsize{1.0cm}{1.2cm}\selectfont\subtitlefont%
+            \color{white}\@subtitle\space\@docversion\space\@versiondate}};
+    }
+      \ifdefempty{\@subtitle}{}{%
+      \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm] (subtitle)
+        at (rule.south west) 
+          {{\fontsize{1.0cm}{1.2cm}\selectfont\subtitlefont\color{white}\@subtitle}};
+    }
+    % Author
+    \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\contour{fourthcolor}{\@thefnmark}}}}
+    \ifdefempty{\@authorref}{%
+      \node[anchor=south east, font=\fontsize{10mm}{6mm}\selectfont\subtitlefont]
+        at ($(current page.north east)+(-15mm, -0.95\titlepageHeaderHeightWorkbook)$) {%
+        \contourlength{.5pt}% how thick each copy is
+        \contournumber{20}%
+        \contour{fourthcolor}{\@author}
       };
-    % subtitle and date
-    %\node[inner sep=10pt, anchor=south] (label) at (current page marginpar area.north)
-    %    {\normalfont\huge\textcolor{firstcolor}{\textsc{\chaptertitlename}~\thechapter}};
-    \ifdoc@licence% adding licence information if needed
-    \node[inner xsep=0mm, anchor=south east,% text width=(\linewidth+\marginparsep+\marginparwidth),
-          %xshift=(-14mm), yshift=4mm]
-          xshift=(-1in-\oddsidemargin), yshift=10mm]
-      (subtitle) at (rectangleEnd) {
-        {\fontsize{1cm}{1.2cm}\selectfont\titlefont\textcolor{black}{\@subtitle}%
-          \subtitlefont~\textendash{}~\textcolor{white}{\@date}}
+    }{%
+      \node[anchor=south east, font=\fontsize{10mm}{6mm}\selectfont\subtitlefont]
+        at ($(current page.north east)+(-15mm, -0.95\titlepageHeaderHeightWorkbook)$) {%
+        \contourlength{.5pt}% how thick each copy is
+        \contournumber{20}%
+        \contour{fourthcolor}{\@author}\footnote{\@authorref}
       };
-      % license and copyright
-      \node[inner xsep=0mm, anchor=south east,
-            xshift=(-1in-\oddsidemargin), yshift=2mm]
-        (licence) at (rectangleEnd) {%
-        \color{white}%
-        {\scriptsize\@copyrightsymbol\ \@copyrightname%
-          ~\textemdash{}~\@versiondate,\ \@versiondoc}%
-        };%
-    \else
-    \node[inner xsep=0mm, anchor=south east,% text width=(\linewidth+\marginparsep+\marginparwidth),
-          %xshift=(-14mm), yshift=4mm]
-          xshift=(-1in-\oddsidemargin), yshift=4mm]
-      (subtitle) at (rectangleEnd) {
-        {\fontsize{.9cm}{1.08cm}\selectfont\titlefont\textcolor{black}{\@subtitle}%
-          \subtitlefont~\textendash{}~\textcolor{white}{\@date}}
-      };
-    \fi
-   \end{tikzpicture}
-  \null% add an empty box to the paragraph just started
-  % Retour en haut de page
-  \vspace{-\Gm@tmargin}% Décalage de marge d'entête
-  \vspace{-1.0cm}% Décalage quid ?
-  % Espace réservé au titre
-  \vspace{\titlepageHeaderHeightWorkbook}% Décalage depuis le titre
-  %\vspace{.6mm}% Ligne séparatrice
-  %\vspace{0.9cm}% Décalage de la hauteur de police de sous-titre
-  %\ifdoc@licence
-    %\vspace{10mm}% Décalage de l'affichage de sous-titre
-    %\vspace{20pt}% Décalage si licence
-    %\vspace{\baselineskip}% Décalage pour début de contenu textuel
-  %\else
-  %\vspace{4mm}% Décalage de l'affichage de sous-titre
-    \vspace{2\baselineskip}% Décalage pour début de contenu textuel
-  %\fi
-  % See http://tex.stackexchange.com/questions/40501/
-  % See http://tex.stackexchange.com/questions/322128/
-  \afterpage{\vfill\clearpage}%\aftergroup\asymmetricalpage
-  %- With the `everyshi' package
-  %\AtNextShipout{\vfill\clearpage}% Applied just before the next page
-  %- With the `atbegshi' package
-  %\AtBeginShipoutNext{\vfill\clearpage}% doesn't interfer with `showframe' geometry
+    }
+  \end{tikzpicture}
+  \null
+  \vfill
+  \spewnotes% Displaying the title footnotes
+  \setcounter{footnote}{0}% Resetting the footnote counter fot main text
+  \renewcommand{\thefootnote}{\alph{footnote}}
+  \renewcommand*{\dotFFN}{.}%
+  \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\textcolor{black}{\@thefnmark}}}}
+  %\newpage%\thispagestyle{empty}
+  %\vspace*{\fill}
+  %\@typesettinginfo
 }
 
 %-- Textbook/handbook front title page
 
 \newlength{\titlepageHeaderHeightHandbook}
 \setlength{\titlepageHeaderHeightHandbook}{11cm}
-\newlength{\maintitlexoffset}
-\setlength{\maintitlexoffset}{0.0cm}
+\newlength{\maintitlexoffsetHB}
+\setlength{\maintitlexoffsetHB}{0.0cm}
 
 %- TODO: Improve the interface to add logos and other stuffs
 \NewDocumentCommand{\maketitleHandbook}{ o }{%
@@ -12860,7 +13105,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
     % Title page text (title, rule, subtitle and author)
     % Title
     %\draw (\leftmargin, -3.5cm) node[align=left, inner sep=0mm, anchor=south west,
-    \draw (\leftmargin + \maintitlexoffset, -3.5cm) node[align=left, inner sep=0mm,
+    \draw (\leftmargin + \maintitlexoffsetHB, -3.5cm) node[align=left, inner sep=0mm,
       anchor=south west, font=\fontsize{2.3cm}{1.8cm}\selectfont\titlefont] (title) {%
       %\hspace*{-16mm}%
       \hspace*{-.8mm}%
@@ -12903,7 +13148,8 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %-- Front page layout settings
 
 \ifdoc@article
-  \let\maketitle\maketitleWorkbook
+  %\LetLtxMacro{\maketitle}{\maketitleWorkbook}
+  \let\maketitle\maketitleWorkbook% Why is there a difference between title workbook and handbook? FIX ME
 \else
   \LetLtxMacro{\maketitle}{\maketitleHandbook}
   %\let\maketitle\maketitleHandbook
@@ -13128,7 +13374,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
     \ifdoc@Ref
        \noindent\makebox[0.75\linewidth]{\textcolor{\@layoutcolor!20}{\hrulefill}}%
        ~\@copyrightsymbol~\scriptsize~\@copyrightname%
-       ~\scriptsize\@versiondate\@versiondoc~\textcolor{\@layoutcolor!20}{\hrulefill}%
+       ~\scriptsize\@versiondate\@docversion~\textcolor{\@layoutcolor!20}{\hrulefill}%
      \else
       \noindent\makebox[\linewidth]{\textcolor{\@layoutcolor!20}{\hrulefill}}%
     \fi
@@ -13141,7 +13387,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
     \ifdoc@Ref
       \noindent\makebox[0.6\linewidth]{\textcolor{\@layoutcolor!20}{\hrulefill}}%
       ~\textcolor{\@layoutcolor!50}{\@copyrightsymbol~\footnotesize~\@copyrightname%
-      ~\scriptsize\@versiondate\@versiondoc~}\textcolor{\@layoutcolor!20}{\hrulefill}%
+      ~\scriptsize\@versiondate\@docversion~}\textcolor{\@layoutcolor!20}{\hrulefill}%
     \else
       \noindent\makebox[\linewidth]{\textcolor{\@layoutcolor!20}{\hrulefill}}%
     \fi
@@ -14468,12 +14714,14 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 \def\part@nostar@nopt#1{\NR@gettitle{#1}\titlesec@part{#1}}
 \def\part@nostar@opt[#1]#2{\NR@gettitle{#2}\titlesec@part[#1]{#2}}
 
-\let\titlesec@appendixchapter\appendixchapter
-\renewcommand{\appendixchapter}{\@ifstar\appendixchapter@star\appendixchapter@nostar}
-\def\appendixchapter@star#1{\NR@gettitle{#1}\titlesec@appendixchapter*{#1}}
-\def\appendixchapter@nostar{\@ifnextchar[\appendixchapter@nostar@opt\appendixchapter@nostar@nopt}
-\def\appendixchapter@nostar@nopt#1{\NR@gettitle{#1}\titlesec@appendixchapter{#1}}
-\def\appendixchapter@nostar@opt[#1]#2{\NR@gettitle{#2}\titlesec@appendixchapter[#1]{#2}}
+\ifdoc@article\else
+  \let\titlesec@appendixchapter\appendixchapter
+  \renewcommand{\appendixchapter}{\@ifstar\appendixchapter@star\appendixchapter@nostar}
+  \def\appendixchapter@star#1{\NR@gettitle{#1}\titlesec@appendixchapter*{#1}}
+  \def\appendixchapter@nostar{\@ifnextchar[\appendixchapter@nostar@opt\appendixchapter@nostar@nopt}
+  \def\appendixchapter@nostar@nopt#1{\NR@gettitle{#1}\titlesec@appendixchapter{#1}}
+  \def\appendixchapter@nostar@opt[#1]#2{\NR@gettitle{#2}\titlesec@appendixchapter[#1]{#2}}
+\fi
 
 %- Nameref in quotes (egreg: http://tex.stackexchange.com/questions/258358/nameref-with-quotes)
 \NewDocumentCommand{\qnameref}{s m}{% BUG WITH PART CALL/LABEL: THE FIX IS GIVEN JUST ABOVE
@@ -14631,12 +14879,15 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %\RequirePackage{zref-abspage}% Already loaded (see above)
 
 %- Defining a new bookmark command referring to the absolute page number (Martin Scharrer)
+%- https://tex.stackexchange.com/questions/11962/how-to-determine-current-page-number
 \newcommand{\pagebookmark}[3][]{%
   \zlabel{#2}%
   \bookmark[page=\zref@extractdefault{#2}{abspage}{1},#1]{#3}%
 }
 
 %- Defining a new bookmark command referring to the absolute page number (Heiko Oberdiek)
+%- https://tex.stackexchange.com/questions/67396/[...]
+%-    [...]probem-with-bookmarks-and-linking-and-page-numbering/
 \newcounter{zpage}
 \renewcommand*{\thezpage}{pagelabel\the\value{zpage}}
 \newcommand*{\linkpagebookmark}[2][]{%
@@ -14890,8 +15141,39 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 
 %-- Points counting with the `assignpoints` package
 
-\RequirePackage[french]{texjazz-assignpoints}% Assigning/calculating points within exercises/quizzes
-\RequirePackage[french]{texjazz-askreply}% To be loaded *after* `assignpoints` and `hyperref' pkgs
+%\ifdoc@assignpoints
+%  \ifdoc@askreply
+%    \RequirePackage[french]{texjazz-assignpoints}% Assigning/calculating points within exercises/quizzes
+%    \RequirePackage[french]{texjazz-askreply}% To be loaded *after* `assignpoints` and `hyperref' pkgs
+%    \typeout{*** Both TeXjazz assignpoints and askreply packages are loaded ***}
+%  \else
+%    \RequirePackage[french]{texjazz-assignpoints}% Assigning/calculating points within exercises/quizzes
+%    \typeout{*** Only the TeXjazz assignpoints package is loaded ***}
+%  \fi
+%\else
+%  \typeout{*** None of TeXjazz assignpoints and askreply packages are loaded ***}
+%\fi
+
+%\ifbool{doc@assignpoints}{%
+%  \ifbool{doc@askreply}{%
+  \ifdoc@english
+    \RequirePackage{texjazz-assignpoints}% Assigning/calculating points within exercises/quizzes
+    \RequirePackage{texjazz-askreply}% To be loaded *after* `assignpoints` and `hyperref' pkgs
+    \typeout{*** Both TeXjazz assignpoints and askreply packages are loaded ***}
+  \else
+    \RequirePackage[french]{texjazz-assignpoints}% Assigning/calculating points within exercises/quizzes
+    \RequirePackage[french]{texjazz-askreply}% To be loaded *after* `assignpoints` and `hyperref' pkgs
+    \typeout{*** Both TeXjazz assignpoints and askreply packages are loaded ***}
+  \fi
+%  }{%
+%    \RequirePackage[french]{texjazz-assignpoints}% Assigning/calculating points within exercises/quizzes
+%    \typeout{*** Only the TeXjazz assignpoints package is loaded ***}
+%  }%
+%}{%
+%  \typeout{*** None of TeXjazz assignpoints and askreply packages are loaded ***}
+%}
+
+
 %\RequirePackage[french]{texjazz-askreply-light}% To be loaded *after* `assignpoints` and `hyperref' pkgs
 
 %-- Default style with possible points counting (commands: \points, \itempoints)
@@ -15393,8 +15675,8 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 \newcommand{\triplint}{\int\!\!\!\int\!\!\!\int}
 
 %-- Other shortcuts
-\newcommand*{\mail}[1]{\href{mailto:#1}{\texttt{#1}}}
-\newcommand*{\pkg}[1]{\texttt{#1}}
+%\newcommand*{\mail}[1]{\href{mailto:#1}{\texttt{#1}}}
+%\newcommand*{\pkg}[1]{\texttt{#1}}
 
 %-- Symbols and logos
 \newcommand{\Csharp}{% egreg: http://tex.stackexchange.com/questions/44528/
@@ -15409,6 +15691,7 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %-- (La)TeX logos
 %-- From http://tex.stackexchange.com/questions/60499/custom-latex-logo
 %\RequirePackage{metalogo}
+%\RequirePackage{metalogox}% There also exist a `metalogox` package
 %\setlogokern{La}{-.24em}% default value = -.36em (see doc.)
 
 %- New way (2010-2016: Heiko Oberdiek himself!), working also in bookmark
@@ -15418,10 +15701,10 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %\def\AllTeX{\hologo{(La)TeX}}
 
 %-- From http://tex.stackexchange.com/questions/60499/custom-latex-logo
-\RequirePackage{metalogo}% There also exist a `metalogox` package
-\setlogokern{La}{-.24em}% default value = -.36em (see doc.)
-\newcommand{\BibTeX}{B\kern-.10em\textsc{i}\kern-.10em\textsc{b}\kern-.15em\TeX}
-% TODO: Add a Biber logo
+%\RequirePackage{metalogo}% There also exist a `metalogox` package
+%\setlogokern{La}{-.24em}% default value = -.36em (see doc.)
+%\newcommand{\BibTeX}{B\kern-.10em\textsc{i}\kern-.10em\textsc{b}\kern-.15em\TeX}
+%% TODO: Add a Biber logo
 \DeclareRobustCommand\AllTeX{%
   \@xl@everylogo
   (\kern\xl@kern@LaTeX@aT L\kern\xl@kern@La@La
@@ -15440,6 +15723,10 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
       \vss}}%
   \kern\xl@kern@LaTeX@aT)\TeX%
 }
+
+\RequirePackage{metalogox}%
+\setlogokern{Te}{-.10em}% default value = -.36em (see doc.)
+\setlogokern{eX}{-.05em}% default value = -.36em (see doc.)
 
 \RequirePackage{lipsum}% For illustrations and tests
 
