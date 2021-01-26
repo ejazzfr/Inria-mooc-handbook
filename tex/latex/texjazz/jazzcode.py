@@ -3,8 +3,8 @@
     pygments.styles.tango
     ~~~~~~~~~~~~~~~~~~~~~
 
-    The Crunchy default Style inspired from the color palette from
-    the Tango Icon Theme Guidelines.
+    The Jazzcode Style is inspired from the color palette from
+    the Radiant Ubuntu MATE Theme Guidelines.
 
     http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines
 
@@ -25,14 +25,6 @@
     Token types, unlike most (if not all) of the styles included in the
     Pygments distribution.
 
-    However, since Crunchy is intended to be used by beginners, we have strived
-    to create a style that gloss over subtle distinctions between different
-    categories.
-
-    Taking Python for example, comments (Comment.*) and docstrings (String.Doc)
-    have been chosen to have the same style.  Similarly, keywords (Keyword.*),
-    and Operator.Word (and, or, in) have been assigned the same style.
-
     :copyright: Copyright 2006-2017 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
@@ -44,13 +36,13 @@ from pygments.token import Keyword, Name, Comment, String, Error, \
 
 class JazzcodeStyle(Style):
     """
-    The Crunchy default Style inspired from the color palette from
-    the Tango Icon Theme Guidelines.
+    The Jazzcode Style inspired from the color palette from
+    the Radiant Ubuntu MATE Theme Guidelines.
     """
 
     # work in progress...
 
-    background_color = "#f8f8f8"
+    #background_color = "#f8f8f8"
     default_style = ""
 
     styles = {
@@ -60,19 +52,19 @@ class JazzcodeStyle(Style):
         Error:                     "#a40000 border:#ef2929", # class: 'err'
         Other:                     "#000000",                # class 'x'
 
-        Comment:                   "italic #408080", # class: 'c'  Original: italic #8f5902
-        Comment.Multiline:         "italic #408080", # class: 'cm' Original: italic #8f5902
-        Comment.Preproc:           "italic #408080", # class: 'cp' Original: italic #8f5902
-        Comment.Single:            "italic #408080", # class: 'c1' Original: italic #8f5902
-        Comment.Special:           "italic #408080", # class: 'cs' Original: italic #8f5902
+        Comment:                   "#765e2f", # class: 'c'  Original: italic #8f5902 #408080
+        Comment.Multiline:         "#765e2f", # class: 'cm' Original: italic #8f5902 #408080
+        Comment.Preproc:           "#765e2f", # class: 'cp' Original: italic #8f5902 #408080
+        Comment.Single:            "#765e2f", # class: 'c1' Original: italic #8f5902 #408080
+        Comment.Special:           "#765e2f", # class: 'cs' Original: italic #8f5902 #408080
 
-        Keyword:                   "bold #750000",   # class: 'k'  Original: bold #204a87
-        Keyword.Constant:          "bold #750000",   # class: 'kc' Original: bold #204a87
-        Keyword.Declaration:       "bold #750000",   # class: 'kd' Original: bold #204a87
-        Keyword.Namespace:         "bold #750000",   # class: 'kn' Original: bold #204a87
-        Keyword.Pseudo:            "bold #750000",   # class: 'kp' Original: bold #204a87
-        Keyword.Reserved:          "bold #750000",   # class: 'kr' Original: bold #204a87
-        Keyword.Type:              "bold #750000",   # class: 'kt' Original: bold #204a87
+        Keyword:                   "bold #772953",   # class: 'k'  Original: bold #204a87 #750000
+        Keyword.Constant:          "bold #772953",   # class: 'kc' Original: bold #204a87 #750000
+        Keyword.Declaration:       "bold #772953",   # class: 'kd' Original: bold #204a87 #750000
+        Keyword.Namespace:         "bold #772953",   # class: 'kn' Original: bold #204a87 #750000
+        Keyword.Pseudo:            "bold #772953",   # class: 'kp' Original: bold #204a87 #750000
+        Keyword.Reserved:          "bold #772953",   # class: 'kr' Original: bold #204a87 #750000
+        Keyword.Type:              "bold #772953",   # class: 'kt' Original: bold #204a87 #750000
 
         Operator:                  "#750000",        # class: 'o'  Original: bold #ce5c00 like a prompt
         Operator.Word:             "#204a87",        # class: 'ow' - like keywords Original: bold #204a87
@@ -86,7 +78,7 @@ class JazzcodeStyle(Style):
         Name.Attribute:            "#c4a000",        # class: 'na' - to be revised
         Name.Builtin:              "#900090",        # class: 'nb' Original: #204a87
         Name.Builtin.Pseudo:       "#900090",        # class: 'bp' Original: #3465a4
-        Name.Class:                "#005875",        # class: 'nc' - to be revised Original: #000000
+        Name.Class:                "#808000",        # class: 'nc' - to be revised Original: #000000 #005875
         Name.Constant:             "#000000",        # class: 'no' - to be revised
         Name.Decorator:            "bold #5c35cc",   # class: 'nd' - to be revised
         Name.Entity:               "#750000",        # class: 'ni' Original: #ce5c00 like a prompt
@@ -96,7 +88,7 @@ class JazzcodeStyle(Style):
         Name.Label:                "#f57900",        # class: 'nl' Original: #f57900
         Name.Namespace:            "#000000",        # class: 'nn' - to be revised
         Name.Other:                "#000000",        # class: 'nx'
-        Name.Tag:                  "bold #204a87",   # class: 'nt' - like a keyword
+        Name.Tag:                  "bold #204a87",   # class: 'nt' - like a keyword #204a87
         Name.Variable:             "#000000",        # class: 'nv' - to be revised
         Name.Variable.Class:       "#000000",        # class: 'vc' - to be revised
         Name.Variable.Global:      "#000000",        # class: 'vg' - to be revised
@@ -131,7 +123,7 @@ class JazzcodeStyle(Style):
         Generic.Deleted:           "#a40000",        # class: 'gd'
         Generic.Emph:              "italic #000000", # class: 'ge'
         Generic.Error:             "#ef2929",        # class: 'gr'
-        Generic.Heading:           "bold #000080",   # class: 'gh'
+        Generic.Heading:           "bold #000080",   # class: 'gh' Original: "bold #000080"
         Generic.Inserted:          "#00A000",        # class: 'gi'
         Generic.Output:            "#0000cf",        # class: 'go' Original: italic #000000
         Generic.Prompt:            "#770000",        # class: 'gp' Original: #8f5902
