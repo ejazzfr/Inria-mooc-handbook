@@ -1,0 +1,307 @@
+%%
+%% texjazz-titlepage.def
+%%
+%% A LaTeX file to make the front title pages (hanbook and workbook).
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+% --------------------------------------------------------------------------------------------------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-titlepage.def' and `texjazz-titlepage[-fr].tex' (not yet fully available).
+%
+% --------------------------------------------------------------------------------------------------
+
+%-- File identification
+%----------------------
+
+\ProvidesFile{texjazz-titlepage}[2021/02/08 v0.1a − Defining document front title page]
+
+%-- Typo helper package to have extended contoured/outlined fonts
+\RequirePackage{contour}
+
+%-- Provides \EveryShipout and \AtNextShipout macros (applied at end of page)
+%\RequirePackage{everyshi}%
+
+%-- Better implementation of `everyshi' by Heiko Hoberdiek
+\RequirePackage{atbegshi}% Provides \AtBeginShipout, \AtBeginShipoutNext, \AtBeginShipoutFirst
+
+%-- Synopsis environment for workbook
+
+\NewTColorBox{synopsis}{ o }{% optional arg #1 = more options list
+  breakable,
+  parbox=false,
+  colframe=darkelectricblue, colback=maincolor!20,
+  %colbacktitle=\@titlingcolor,% initially=black!50!white
+  %colframe=boxbackgroundcolor!20, colback = boxbackgroundcolor!0,
+  %colbacktitle=boxtitlecolor,% initially=black!50!white
+  enhanced jigsaw,
+  %sharpish corners,
+  sharp corners = uphill,
+  fontupper={\normalfont\small\color{black}},
+  %fontupper=\keyFont\Large\color{black},
+  arc = 20pt, %outer arc = 2pt,
+  boxrule = 0pt,
+  boxsep = 0pt,% default=1mm
+  left = 20pt, right = 10pt,% additional to boxsep, default=4mm
+  top = 4pt, bottom = 4pt,% default=2mm
+  %middle = 2pt,% additional to boxsep
+  %halign=center, valign=bottom,
+  %capture=hbox,% default=minipage
+  %noparskip,
+  beforeafter skip=2.5\parskip,
+  %after={\rlap{\raisebox{9\baselineskip}{\quad\textcolor{secondcolor}{\Huge\faKey}}}},
+  %width=\linewidth
+  before={\vspace{\parskip}%
+          \llap{\textcolor{boxtitlecolor}{\faThumbTack}~}\vspace{-\baselineskip}},
+  %after=,
+  %{ --- #1}
+  title={\textcolor{secondcolor}{\titlefont\Large\addtracked[6]{Synopsis}}},
+  attach title to upper={\ ---\ },
+  \IfValueT{#1}{#1}
+}
+
+%-- Workbook front title page
+
+%\newlength{\titlepageHeaderHeightWorkbook}
+%\setlength{\titlepageHeaderHeightWorkbook}{10cm}
+
+\newlength{\titlepageHeaderHeightWorkbook}
+\setlength{\titlepageHeaderHeightWorkbook}{10cm}
+
+\newlength{\maintitlexoffsetWB}
+\setlength{\maintitlexoffsetWB}{0.0cm}
+
+\newlength{\maintitleyoffsetWB}
+\setlength{\maintitleyoffsetWB}{-2.5cm}
+
+\newlength{\titlepageTitleLength}
+
+\RequirePackage{footnotehyper}% Useful for footnotes in title page
+
+%- From latex.ltx file
+\def\jazzfnsymbol#1{\expandafter\@jazzfnsymbol\csname c@#1\endcsname}
+\def\@jazzfnsymbol#1{%
+   \ifcase#1\or \textasteriskcentered\or
+   \textasteriskcentered\textasteriskcentered\or
+   \textasteriskcentered\textasteriskcentered\textasteriskcentered\or
+   \textdagger\or
+   \textdaggerdbl\else
+   \@ctrerr \fi
+}%
+
+%\NewDocumentCommand{\maketitleWorkbook}{ o }{%
+\NewDocumentCommand{\maketitleWorkbook}{ }{%
+  %\thispagestyle{empty}
+  \null
+  \tikzset{
+    fitting node/.style={
+      inner sep=0pt,
+      fill=none,
+      draw=none,
+      reset transform,
+      fit={(\pgf@pathminx,\pgf@pathminy) (\pgf@pathmaxx,\pgf@pathmaxy)}
+    },
+    reset transform/.code={\pgftransformreset}
+  }
+  %\let\footnote\thanks
+  %\let\dotFFNjazz\dotFFN
+  \renewcommand*{\dotFFN}{}%
+  \renewcommand{\thefootnote}{\jazzfnsymbol{footnote}}
+  %- Appel des notes de bas de page : application de couleur adéquate
+  \contourlength{.5pt}% how thick each copy is
+  \contournumber{20}%
+  \savenotes% Begining to store footnotes if any
+  \begin{tikzpicture}[remember picture, overlay]
+    % Some coordinates
+    \coordinate[yshift=-\titlepageHeaderHeightWorkbook](rectangleEnd) at (current page.north east);
+    \coordinate[xshift=-4cm](dateCenter) at (rectangleEnd);
+    % Cover color rectangle
+    \fill[black!45] (current page.north west) rectangle (rectangleEnd)
+      node[fitting node] (headerRectangle) {};
+    % Title page text (title, rule, subtitle and author)
+    % Title
+    \draw (\leftmargin + \maintitlexoffsetWB, \maintitleyoffsetWB) node[align=left, inner sep=0mm,
+      anchor=south west, font=\fontsize{2.3cm}{1.8cm}\selectfont\titlefont] (title) {%
+      \begin{varwidth}{\textwidth}%
+        \FlushLeft%
+        \noHyphen\textcolor{secondcolor}{\@title}%
+      \end{varwidth}%
+    };
+    % Rule
+    \getwidthofnode{\titlepageTitleLength}{title}
+    \node[inner xsep=0mm, text width=\titlepageTitleLength, anchor=north west, yshift=-2mm] (rule)
+      at (title.south west) {{\color{white}\rule{\linewidth}{.6mm}}};
+    % Subtitle, document version and date version
+    \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\textcolor{white}{\@thefnmark}}}}
+    \ifdefempty{\@versiondate}{%
+      \ifdefempty{\@docversion}{%
+        \ifdefempty{\@subtitle}{}{%
+          \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm] (subtitle)
+            at (rule.south west) {{%
+              %\fontsize{1.2cm}{1.44cm}\selectfont\subtitlefont\color{white}\@subtitle}};
+              \fontsize{1.0cm}{1.2cm}\selectfont\subtitlefont\color{white}\@subtitle}};
+        }%
+      }{%
+        \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm] (subtitle)
+          at (rule.south west) {{%
+            \fontsize{1.0cm}{1.2cm}\selectfont\subtitlefont%
+              \color{white}\@subtitle\space\@docversion}};
+      }%
+    }{%
+      \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm] (subtitle)
+        at (rule.south west) {{%
+          \fontsize{1.0cm}{1.2cm}\selectfont\subtitlefont%
+            \color{white}\@subtitle\space\@docversion\space\@versiondate}};
+    }
+      \ifdefempty{\@subtitle}{}{%
+      \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm] (subtitle)
+        at (rule.south west) 
+          {{\fontsize{1.0cm}{1.2cm}\selectfont\subtitlefont\color{white}\@subtitle}};
+    }
+    % Author
+    \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\contour{fourthcolor}{\@thefnmark}}}}
+    \ifdefempty{\@authorref}{%
+      \node[anchor=south east, font=\fontsize{10mm}{6mm}\selectfont\subtitlefont]
+        at ($(current page.north east)+(-15mm, -0.95\titlepageHeaderHeightWorkbook)$) {%
+        \contourlength{.5pt}% how thick each copy is
+        \contournumber{20}%
+        \contour{fourthcolor}{\@author}
+      };
+    }{%
+      \node[anchor=south east, font=\fontsize{10mm}{6mm}\selectfont\subtitlefont]
+        at ($(current page.north east)+(-15mm, -0.95\titlepageHeaderHeightWorkbook)$) {%
+        \contourlength{.5pt}% how thick each copy is
+        \contournumber{20}%
+        \contour{fourthcolor}{\@author}\footnote{\@authorref}
+      };
+    }
+  \end{tikzpicture}
+  \null
+  \vfill
+  \spewnotes% Displaying the title footnotes
+  \setcounter{footnote}{0}% Resetting the footnote counter fot main text
+  \renewcommand{\thefootnote}{\alph{footnote}}
+  \renewcommand*{\dotFFN}{.}%
+  \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\textcolor{black}{\@thefnmark}}}}
+  %\newpage%\thispagestyle{empty}
+  %\vspace*{\fill}
+  %\@typesettinginfo
+}
+
+%-- Textbook/handbook front title page
+
+\newlength{\titlepageHeaderHeightHandbook}
+\setlength{\titlepageHeaderHeightHandbook}{11cm}
+\newlength{\maintitlexoffsetHB}
+\setlength{\maintitlexoffsetHB}{0.0cm}
+
+%- TODO: Improve the interface to add logos and other stuffs
+\NewDocumentCommand{\maketitleHandbook}{ o }{%
+  \thispagestyle{empty}
+  \symmetricalpage
+  \null
+  \tikzset{
+    fitting node/.style={
+      inner sep=0pt,
+      fill=none,
+      draw=none,
+      reset transform,
+      fit={(\pgf@pathminx,\pgf@pathminy) (\pgf@pathmaxx,\pgf@pathmaxy)}
+    },
+    reset transform/.code={\pgftransformreset}
+  }
+  \begin{tikzpicture}[remember picture, overlay]
+    % some coordinates
+    \coordinate[yshift=-\titlepageHeaderHeightHandbook](rectangleEnd) at (current page.north east);
+    \coordinate[xshift=-4cm](dateCenter) at (rectangleEnd);
+    % display an image if one is provided
+    \IfValueTF{#1}{%
+      \draw (current page.center)[yshift=-\titlepageHeaderHeightHandbook/2]
+        node[align=center, inner sep=0mm, anchor=center]
+          {\includegraphics[height=\paperheight-\titlepageHeaderHeightHandbook]{#1}};%
+    }{\draw (current page.center)[yshift=-\titlepageHeaderHeightHandbook/2]
+        node[align=center, inner sep=0mm, anchor=center]
+          {Please consider adding a image to this cover!};%
+    }%
+    % Cover color rectangle
+    \fill[covercolor] (current page.north west) rectangle (rectangleEnd)
+      node[fitting node] (headerRectangle) {};
+    % Title page text (title, rule, subtitle and author)
+    % Title
+    %\draw (\leftmargin, -3.5cm) node[align=left, inner sep=0mm, anchor=south west,
+    \draw (\leftmargin + \maintitlexoffsetHB, -3.5cm) node[align=left, inner sep=0mm,
+      anchor=south west, font=\fontsize{2.3cm}{1.8cm}\selectfont\titlefont] (title) {%
+      %\hspace*{-16mm}%
+      \hspace*{-.8mm}%
+      \begin{varwidth}{\textwidth}%
+        \FlushLeft%
+        \noHyphen\textcolor{titlecovercolor}{\@title}%
+      \end{varwidth}%
+    };
+    % Rule
+    \getwidthofnode{\titlepageTitleLength}{title}
+    \node[inner xsep=0mm, text width=\titlepageTitleLength, anchor=north west, yshift=-2mm] (rule)
+      at (title.south west) {{\color{white}\rule{\linewidth}{.6mm}}};
+    % Subtitle
+    \node[inner xsep=0mm, text width=\linewidth, anchor=north west, yshift=-2mm] (subtitle)
+      at (rule.south west) {{\fontsize{.6cm}{.72cm}\selectfont\color{white}\@subtitle}};
+    % Author
+    \node[anchor=south east, font=\fontsize{10mm}{6mm}\selectfont\subtitlefont]
+      at ($(current page.south east)+(-15mm, 5mm)$) {%
+      %\fontsize{10mm}{6mm}\selectfont\subtitlefont
+      \contourlength{.5pt}% how thick each copy is
+      \contournumber{20}%
+      \contour{authorcovercolor}{\@author}%
+    };
+    % Logo if one is provided
+    \node[anchor=south west, align=center, inner sep=0mm]
+      at ($(current page.south west)+(15mm, 7.5mm)$) {\displaylogo};%
+    % Added logo if one is provided
+    \node[anchor=south east, align=right, inner sep=0mm]
+      at ($(current page.south east)+(-15mm, \paperheight-\titlepageHeaderHeightHandbook-25mm)$)
+        {\displayaddlogo};%
+%    }%
+  \end{tikzpicture}
+  \null
+  \vfill
+  \newpage\thispagestyle{empty}%\asymmetricalpage
+  \vspace*{\fill}
+  \@typesettinginfo
+}
+
+%-- Front page layout settings
+
+\ifdoc@article
+  %\LetLtxMacro{\maketitle}{\maketitleWorkbook}
+  \let\maketitle\maketitleWorkbook% Why is there a difference between title workbook and handbook? FIX ME
+\else
+  \LetLtxMacro{\maketitle}{\maketitleHandbook}
+  %\let\maketitle\maketitleHandbook
+  \cleardoublepage
+\fi
+
+
+\endinput
+
+
+
+
+
+
+
+
+
+
+
+
+
