@@ -1,0 +1,1145 @@
+%%
+%% texjazz-glossary.def
+%%
+%% A LaTeX file to configure the glossaries.
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+%---------------------------------------------------------------------------------------------------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-glossary.def' and `texjazz-glossary[-fr].tex' (not yet fully available).
+%---------------------------------------------------------------------------------------------------
+
+%-- File identification
+
+\ProvidesFile{texjazz-glossary.def}%
+  [2021/02/08 v0.1a − Configuring the glossaries]
+
+
+%--- Different ways to build glossaries and alike
+%------------------------------------------------
+%- See the user manual: a bit hard to understand... A lot of time has been spent to read this doc.!
+%- Really great package, but too much information for a beginner... It's OK after a while!
+%-
+%- Option 1 (TeX)
+%----------------
+%- Simplest but ineficient, the sorting is done according to the English alphabet: No accent.
+%- Only TeX is used (no external application), straightforward but slow and ineficient
+%- Unable to manage large glossary and to sort extended Latin characters (accents)
+%-  \makenoidxglossaries% In the preamble before defining entries
+%-
+%- Option 2 (makeindex)
+%----------------------
+%- Uses CLI application `makeindex' but can’t sort accents and fails with UTF-8 characters: avoid!
+%-  \makeglossaries% In the preamble before defining entries
+%-
+%- Option 3 (xindy)
+%------------------
+%- Uses CLI application `xindy', more flexible for accents, but needs Perl and have drawbacks
+%- TEST FAILS WITH EXTERNAL SCRIPT:
+%-   → libncurses.so.5: cannot open shared object file: No such file or directory
+%- THE SOLUTION IS to install the libncurse5'/`libncursew5' packages (in Ubuntu repositories) YES!!!
+%- TRYING THE `automake' option FOR CONVENIENCE: we fail with that for the moment being :-(
+%-  \usepackage[xindy]{glossaries}
+%-  \makeglossaries% In the preamble before defining entries
+%- Configuring a TeX IDE: LaTeXila/Gnome LaTeX (Gtk+) or TeXmaker (Qt)
+%-   In order to run external applications from a TeX IDE (e.g. for glossaries with `xindy'
+%-   Perl script or `bib2gls' Java application), ONE MUST ADD SYMBOLIC LINKS IN /usr/user/bin/:
+%-   > sudo ln -s /opt/texlive/2019/bin/x86_64-linux/xindy xindy (OK: FINE!)
+%-
+%- Option 4 (bib2gls − Only available with the extension package `glossaries-extra')
+%-----------------------------------------------------------------------------------
+%-  Uses the CLI external application `bib2gls' to both fetch entry definitions from a .bib files
+%-  and to hierarchically sort and collate (with at least Java 8). It supports Unicode. This option
+%-  needs the `glossaries-extra' package and seems to be the more powerful way but not obvious
+%-  to configure with LaTexila (TODO); OK with CLI using.
+%-  \usepackage[record=only]{glossaries-extra}
+%-  \GlsXtrLoadResources[src={entries}]% file name entries.bib with definitions as @entry{...}
+%-
+%- Option 5 (no sorting − Only available with the extension package `glossaries-extra')
+%--------------------------------------------------------------------------------------
+%-  no indexing application is required
+%-
+%- Conclusion
+%------------
+%- For options 2 and 3, a external script (Perl `makeglossaries' or Lua `makeglossaries-lite')
+%- simplifies the build process. As for now, the Perl script is better to use because it provides
+%- additional diagnostics if things go wrong (see documentation).
+%- For example, a buil-in command has been configured in LaTeXila.
+%----- Xindy indexing
+%- Besides the possibility to manage the extended Latin languages (like French), the `xindy' option
+%- is the best choice for having glossaries with displaying refered text from labels when calling
+%- the \gls{<label>} and alike commands from the first LaTeX run. This means that, as a first step,
+%- one can write and manage its document without building and displaying the glossaries.
+%- The advantage is also just loading the `glossaries' package (no need of the `glossaries-extra'
+%- package). But one of the drawback is when wanting the entry locations list (location pages):
+%- a spurious and weird page number is added, corresponding to the \gls{<label>} call in the main
+%- glossary itself. This is not an unacceptable issue using the command `\glsaddallunused[main]`
+%- The CLI command to be ran are, for each glossary (Perl script):
+%-   > xindy -L french -C utf8 -I xindy -M jobname -t jobname.glg -o jobname.gls jobname.glo
+%- and for all glossaries at once (Perl script):
+%-   > makeglossaries jobname
+%----- Bib2gls indexing
+%- The `bib2gls' Java script is the most powerful tool for indexing, but needs, like Biber, to be
+%- run after the first LaTeX run to have the refered texts printed. It also need the `glossaries-
+%- extra' package to be loaded. One of the drawbacks is to have Java installed.
+%- The CLI command to be run is (Java application) − typeset "bib2gls --help" for options:
+%-   > bib2gls --group jobname
+%-----
+
+%-------------
+%- AFTER TESTING ALL THE SOLUTIONS, THE CHOICE SHOULD BE THE `bib2gls' OPTION FOR FINAL DOCUMENT.
+%- The reasons:
+%-   * Managing the extended Latin/non Latin characters
+%-   * Printing correctly the entry/page locations
+%-   * Using the new and/or up-to-date extensions and commands from the `glossaries-extra' package
+%- NEVERTHELESS, IN THE PROCESS OF WRITING A DOCUMENT AND/OR THE GLOSSARIES ARE LATER PRINTED,
+%- THE `xindy' OPTION IS MORE CONVENIENT AND MORE THAN ENOUGH IN MOST CASES OF USE.
+%- The reasons:
+%-   * Managing the extended Latin/non Latin characters
+%-   * Giving the referenced/labelled text term after the first LaTeX run
+%-   * Printing correctly the entry/page locations (with the help of \glsaddallunused command)
+%-   * Using the new and/or up-to-date extensions and commands from the `glossaries-extra' package
+%- THE `xindy' OPTION IS THUS USED BY DEFAULT. A CLASS OPTION IS DEFINED TO MAKE THE CHOICE EASIER.
+%-------------
+
+%-----
+%- IF USING `xindy`, ONE MUST HAVE A LOOK TO (in French):
+%-  http://geekographie.maieul.net/169 − Un outil d’indexation plus efficace que `makeindex`
+%-  http://geekographie.maieul.net/170 − Premier pas avec xindy
+%-  http://geekographie.maieul.net/171 − Régler l’apparence des index avec xindy
+%-  http://geekographie.maieul.net/172 − xindy et hyperref
+%-  http://geekographie.maieul.net/174 − xindy, eledmac et hyperref
+%-  http://geekographie.maieul.net/176 − Tri personnalisé des entrées avec xindy
+%-  http://geekographie.maieul.net/190 − xindy, hyperref et |see
+%-  http://geekographie.maieul.net/200 − xindy et bibleref
+%-----
+%- FOR SPURIOUS WARNINGS FROM `hyperref' WITH `xindy` WITH LuaTeX:
+%-  https://tex.stackexchange.com/questions/333255/[...]
+%-   [...]strange-atbegshioutput-warning-in-case-of-special-xdy-style-file-that-is-supp
+%- SEE ALSO THE `glossaries` PACKAGE DOCUMENTATION: p.
+%-----
+
+%- Xindy or Bib2gls − TODO: make a real option for the document (for the moment being: `xindy')
+\newif\ifdocglossary@xindy\docglossary@xindytrue%\docglossary@xindyfalse
+
+%- Setting the glossaries indexing engine
+\ifdocglossary@xindy
+  \newcounter{localglossary}% See `glossaries-extra` doc. p. 74, 76 for details
+  \ifdoc@glossnowarn
+    \RequirePackage[% Take care that \PassOptionsToPackage command seems not to work here... WHY?
+      toc=false,% No ToC adding: a \backchapter is previously settled (bug with `titletoc' package?)
+      %toc=true,% ToC adding = wrong: there is really a bug with the `titletoc' package
+                % Moreover, the ToC display is not designed correctly and the page marks also
+      nopostdot,% No final dot added to the description field: manually inserted in each entry
+      %nonumberlist,% No entry locations if the sorting engine `xindy' is used
+      %nogroupskip,% No vertical space after one logical group but before the next one
+      xindy,% AKA option 3: Uses `xindy' Perl script for sorting (`makeindex' leads to weird errors)
+            % CAUTION: As for september 2019, with Ubuntu MATE 18.10, the installed `libncurse' is
+            % `libncurse6/libncursew6', but`xindy' script explicitly requires `libncurse5/libncursew5'
+            % thus these packages HAVE TO BE INSTALLED (they are in the Ubuntu repositories).
+            % Things are then much more easy... Enjoy `xindy'!
+       section=subsection,% Set the glossaries as \subsection* unit (not \chapter* book default)
+                         % This can be also set within the document with \setglossarysection
+      %automake,% Only works (NO! JUST COMPILES: WHY?) with `makeindex/xindy' options, not `bib2gls'
+                 % No need to explicitly call the `xindy' nor the `makeglossaries' Perl scripts
+                 % (uses the LaTeX `write18' functionality which obviously must be allowed)
+      %nostyles,% No style loaded: not works...
+      %counter=subsection,% Just to test if it works for the moment being
+      counterwithin={localglossary},% See `glossaries` doc. p. 71
+    ]{glossaries}%
+  \else
+    \RequirePackage[% Take care that \PassOptionsToPackage command seems not to work here... WHY?
+      nowarn,% Suppressing all the warnings generated by the `glossaries` package (final document)
+      toc=false,% No ToC adding: a \backchapter is previously settled (bug with `titletoc' package?)
+      %toc=true,% ToC adding = wrong: there is really a bug with the `titletoc' package
+                % Moreover, the ToC display is not designed correctly and the page marks also
+      nopostdot,% No final dot added to the description field: manually inserted in each entry
+      %nonumberlist,% No entry locations if the sorting engine `xindy' is used
+      %nogroupskip,% No vertical space after one logical group but before the next one
+      xindy,% AKA option 3: Uses `xindy' Perl script for sorting (`makeindex' leads to weird errors)
+            % CAUTION: As for september 2019, with Ubuntu MATE 18.10, the installed `libncurse' is
+            % `libncurse6/libncursew6', but`xindy' script explicitly requires `libncurse5/libncursew5'
+            % thus these packages HAVE TO BE INSTALLED (they are in the Ubuntu repositories).
+            % Things are then much more easy... Enjoy `xindy'!
+       section=subsection,% Set the glossaries as \subsection* unit (not \chapter* book default)
+                         % This can be also set within the document with \setglossarysection
+      %automake,% Only works (NO! JUST COMPILES: WHY?) with `makeindex/xindy' options, not `bib2gls'
+                 % No need to explicitly call the `xindy' nor the `makeglossaries' Perl scripts
+                 % (uses the LaTeX `write18' functionality which obviously must be allowed)
+      %nostyles,% No style loaded: not works...
+      %counter=subsection,% Just to test if it works for the moment being
+      counterwithin={localglossary},% See `glossaries` doc. p. 71
+    ]{glossaries}%
+  \fi
+  %- The `glossaries-extra' package adds much more functionalities
+  %- Default options for the `glossaries-extra' package: toc, nopostdot
+  %\PassOptionsToPackage{%
+    %toc=false,% No ToC adding: a \backchapter is previously inserted (bug with `titletoc' package?)
+              % Note also that one must type in \printunsrtglossary[title={}] to print the glossary
+              % to avoid the title print (as section: see below)
+    %nopostdot,% Althought it's the default, we explicitely add this option for clarity (doesn't work)
+    %nostyles,% Don't load default style packages, but add the ones used
+    %stylemods={listgroup},% Loads the used styles only (with glossaries-extra-stylemods.sty)
+    %style=listhypergroup,% To have the navigation bar, compile the document twice
+    %record=only,% To have the benefit of the external JAVA 8 indexing engine `bib2gls':
+                 % run CLI "bib2gls --group finame" (without extension) in master file directory
+    %record=nameref,% Like record=only but records the information given by \@currentlabel
+                   % and \@currentHref, which provides a more reliable way for location
+    %xindy,% Uses the external `xindy' Perl script as sorting engine
+    %automake,% Only works with `makeindex' and `xindy' options, not with `bib2gls'
+  %}{glossaries-extra}% For options 2, 3 and 4: see the user guide Tab. 1.1
+  %\RequirePackage{glossaries-extra}% No loading, the needed commands are (re)defined
+  %- Adding the prefix p. (only one page or pp. several pages before the page number referenced
+  %- The following command needs the `glossaries-extra' package to work
+  %\GlsXtrEnablePreLocationTag% It works! Needs a minimum of two/three compilations
+  %  {\raisebox{.15ex}{\textcolor{maincolor}{\tiny\faSquare}}\space{p.~}}%
+  %  {\raisebox{.15ex}{\textcolor{maincolor}{\tiny\faSquare}}\space{pp.~}}
+  %{\textemdash{} p.~}{\textemdash{} pp.~}
+  %\pretocmd{\GlsXtrEnablePreLocationTag}{\hspace*{-0.5em}}{}{}
+  %\AtEndOfClass{% Just a shortcut to mimic biber process
+  %  \newcommand{\addglossressource}[1]{%
+  %    \makeglossaries% Open glossary files
+  %    \loadglsentries{#1}% File name with the entry definitions (option 1, 2 or 3)
+  %  }
+  %}
+\else% TODO: Load the `glossaries-extra` package too and configure the options
+\fi
+
+\RequirePackage{glossaries-extra}
+%\RequirePackage[automake]{glossaries-extra}
+
+%- Workaround to circonvent an issue of \imediate\write16 from `supp-pdf.mkii' file
+%- See our question and Ulrike FRischer comments/answer:
+%- https://tex.stackexchange.com/questions/541191/[...]
+%-    [...]tcolorbox-with-minted-option-glossaries-biblatex-limitation-incompatibilit...
+
+\newcommand\writestatus[2]{}% <-- Essential
+
+\newcommand{\glsmain}[1]{\gls{#1-main}}% For main glossary references
+
+%- Avoid the following until you understand the real consequences of using this command
+%- Dealing with this thing seems to be a bit complex for a beginner. See doc. and for example:
+%-  https://tex.stackexchange.com/questions/89107/glossary-per-chapter-or-section
+%-  https://tex.stackexchange.com/questions/325434/glossary-per-chapter-not-by-section
+%\GlsSetXdyMinRangeLength{0}
+%\GlsSetXdyMinRangeLength{1}
+
+%--- Capitalizing the first letter of glossary list of terms
+%- See:
+%-   https://tex.stackexchange.com/questions/69567/uppercase-word-in-glossary-lowercase-in-text
+%-   https://tex.stackexchange.com/questions/79907/[...]
+%-     [...]howto-achieve-capitalized-description-in-glossary-table
+%-   https://tex.stackexchange.com/questions/294473/title-case-an-acronym
+%-   https://latex.org/forum/viewtopic.php?f=5&t=9966
+%-   https://latex.org/forum/viewtopic.php?p=94372#p94372
+%-----
+%\RequirePackage{titlecaps}% Capitalizes the first letter of argument (each word)
+%\RequirePackage{mfirstuc}% Capitalizes the first letter of argument (first word if several)
+
+%- Default glossary uses the description env. to display the entry list: a try to customize it
+%\renewcommand*{\glsnamefont}[1]{% Capitalizing the first letter of ALL words of the term definition
+%  \lightbf{\textsc{\titlecap{#1}}}
+%}
+\renewcommand*{\glsnamefont}[1]{% Capitalizing the first letter for ONLY THE FIRST WORD of the term
+  \lightbf{\scshape\makefirstuc{#1}\space\textemdash\hspace*{-0.5em}}
+}
+
+%- Although the entrycounter − glossaryentry counter − is activated, its displaying is not wanted
+\renewcommand*{\glsentryitem}[1]{%
+  \ifglsentrycounter
+    \glsstepentry{#1}%\glsentrycounterlabel
+  \else
+    \glsresetsubentrycounter
+  \fi
+}
+
+%- Explicitely setting the glossary term color (not needed with `hyperref' package)
+%- See: https://tex.stackexchange.com/questions/38544/glossary-links-color
+%\renewcommand*{\glstextformat}[1]{\textcolor{secondcolor}{#1}}% Default `hyperref' = firstcolor
+
+%-- Configuring the navigation bar line (if used by the applied style)
+
+%--- Note
+%- As september 2019, we don't have find a better way than redefining the \glsnavigation command
+%- to set the hyperlinks color of group titles in the navigation line. By default and for a unknown
+%- reason, this color is a kind of pastel green which is not settled by the `hyperref' package
+%- (all links are colored with the so-called `firstcolor', corresponding to `darkelectricblue',
+%- see the settings above). To have a better understanding, may be we'll ask a question to TeX.SE
+%-----
+
+%- Setting the navigation bar hyperlinks color to match the hyperlinks color of the document
+\renewcommand*{\glsnavigation}{%
+  \def\@gls@between{}%
+  \ifcsundef{@gls@hypergrouplist@\@glo@type}%
+  {%
+    \def\@gls@list{}%
+  }%
+  {%
+    \expandafter\let\expandafter\@gls@list
+      \csname @gls@hypergrouplist@\@glo@type\endcsname
+  }%
+  \@for\@gls@tmp:=\@gls@list\do{%
+    \@gls@between% Separator between each group title in the navigation bar line
+    \@gls@getgrouptitle{\@gls@tmp}{\@gls@grptitle}%
+    %\glsnavhyperlink{\@gls@tmp}{\@gls@grptitle}% Original
+    \glsnavhyperlink{\@gls@tmp}{\textcolor{firstcolor}{\@gls@grptitle}}%
+    \let\@gls@between\glshypernavsep
+  }%
+}
+
+%--- Note (from Nicola Talbot's answer: https://tex.stackexchange.com/questions/348610/)
+%- By default the navigation line/bar in "hypergroup" styles is in the optional argument of \item
+%- which aligns it with the entries and group headers. This is fine as long as there's enough room
+%- on the line. If there isn't, the \glslistnavigationitem command needs to be redefined. See:
+%-   https://tex.stackexchange.com/questions/389443/tweak-altlisthypergroup-glossary-style
+%-   https://tex.stackexchange.com/questions/348610/can-package-glossaries-work-in-two-column-mode
+%-----
+
+%- Putting the navigation bar in the description text rather than in the label
+%\renewcommand*{\glslistnavigationitem}[1]{\item[#1]}% Original
+\renewcommand*{\glslistnavigationitem}[1]{% No description item label and no gap with its core text
+  \labelsep0pt\relax% No space before the navigation bar: no indent/labelsep from the left margin
+  \begin{fullwidth}% Avoid horizontal overfull
+    \item #1%
+    \vspace*{-0.5\baselineskip}% 
+    \item {\color{secondcolor}\rule{\entirewidth}{0.8pt}}\par% Adding a separation line
+  \end{fullwidth}
+  % Resetting a standard \labelsep for the following list items
+  \labelsep0.5em\relax% \labelsep=0.5em as defined in the `book' class
+}
+
+%- Retrieving a standard gap between label and description core text after the navigation bar
+%\apptocmd{\glslistnavigationitem}{% Resetting a standard \labelsep for the following list items
+%  \vspace*{-0.5\baselineskip}%
+%  %\item {\color{secondcolor}\rule{\textwidth}{0.4pt}}\par% Adding a separation line
+%  \item {\color{secondcolor}\rule{\entirewidth}{0.8pt}}\par% Adding a separation line
+%  \labelsep0.5em\relax% \labelsep=0.5em as defined in the `book' class
+%}{}{}
+
+%- Compressing the gap between letters in the navigation bar, if used by the applied style
+%\renewcommand*{\glshypernavsep}{\space\textbar\space}% Original
+%\renewcommand*{\glshypernavsep}{\textbar}%
+\renewcommand*{\glshypernavsep}{% Modifying the navigation bar separator and layout
+  %\textcolor{secondcolor}{\normalfont\textbar}% If \glossaryheaderfont doesn't have a pipe symbol
+  \textcolor{secondcolor}{\,\textbar\,}% If \glossaryheaderfont has the pipe/textbar symbol
+}%
+
+%-- As for the navigation bar, setting the location/page(s) color hyperlink (not pastel green!)
+
+%- Setting the link color of location/page(s) to the one of the document (firstcolor)
+%- See: https://tex.stackexchange.com/questions/431766/[...]
+%-   [...]formatting-back-references-in-glossary-same-as-in-bibliography
+%\renewcommand{\glsnumberformat}[1]{\textcolor{green}{$\uparrow$\glshypernumber{#1}}}
+\renewcommand{\glshypernumber}[1]{\textcolor{firstcolor}{#1}}% THAT'S IT! Putain, on y est arrivé...
+
+%--- Note about extra macros and command sequences for glossaries
+%----------------------------------------------------------------
+%- The `glossaries-extra' package adds a lot of usefull extensions to the `glossaries` package.
+%- But because only a few of them are used, just the required macros and command sequences
+%- are defined, borrowing/stealing the code to the `glossaries-extra` package.
+%- Loading the `glossaries-extra` package is therefore not necessary and its a good
+%- pedagogical way to understand more in deep the internals of the package and also
+%- to learn the `etoolbox' package using!
+%- In order to be able to load the `glossaries-extra` package for future needs, all
+%- the "xtr" prefixes are replaced with "jazz" as for the other specific commands
+%- defined for the `texjazz` bundle extension files, class or styles.
+%-----
+
+%- Adding the prefix p. (only one page) or pp. (several pages) before the referenced page number
+%- The following command is a clone of \GlsXtrEnablePreLocationTag from `glossaries-extra' package
+\GlsXtrEnablePreLocationTag% It works! Needs a minimum of two/three compilations
+  {\raisebox{.15ex}{\textcolor{maincolor}{\tiny\faSquare}}\space{p.~}}%
+  {\raisebox{.15ex}{\textcolor{maincolor}{\tiny\faSquare}}\space{pp.~}}
+  %{\textemdash{} p.~}{\textemdash{} pp.~}
+%\pretocmd{\JazzGlsXtrEnablePreLocationTag}{\hspace*{-0.5em}}{}{}
+
+
+%-- Setting the main glossary style and commands occurring at the end of the document
+%------------------------------------------------------------------------------------
+
+%- Defining a new helper (vertical) length to use with the main glossary style
+\newlength{\glossgroupheadheight}
+\settoheight{\glossgroupheadheight}{\glossaryheaderfont\huge{Q}}% See font definitions above
+
+%- After trying many ways to solve the issue of putting correct margin group header, let's use TikZ!
+%- See: https://tex.stackexchange.com/questions/411557/draw-on-margin-of-page-with-tikz
+%- See: https://tex.stackexchange.com/questions/229934/anchor-tikz-at-the-left-margin
+%- See also Gonzalo Medina's code inserted in a `\marginnote' (and see also \caution above)
+%- A toggle between right/left margin is not necessary because outpout is wanted in the left margin
+\newcounter{mainglossgroup}
+\newcommand{\mainglossgroupheader}[1]{% Applying a style with Fractur font to the header group title
+  \stepcounter{mainglossgroup}%
+  \jazztikzmark{\themainglossgroup}% See def. above: e.g. `\caution' command definition
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[draw=none, thick,
+          xshift=0pt, yshift=-0.5\glossgroupheadheight,
+          inner sep=0pt, anchor=north east]
+      (glossgroupheader\themainglossgroup)
+      at ([xshift=-0.3\marginparsep, yshift=5pt]current page text area.west|-\themainglossgroup)
+      {\glossaryheaderfont\huge\textcolor{secondcolor}{#1}};%\nopagebreak[4]
+  \end{tikzpicture}%
+}
+
+%- Defining a new glossary style for the main glossary (with a line bar navigation)
+\newglossarystyle{jazzhypergroup}{% Based on the `listhypergroup' style (cf. glossaries-code.pdf)
+  %\setglossarystyle{list}%
+  \renewenvironment{theglossary}% Use the description environment
+    {\begin{description}}%
+    {\end{description}}%
+  \renewcommand*{\glossentry}[2]{% Main (level 0) entries start a new item in the list
+    \item[\glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}}]
+      \glossentrydesc{##1}\glspostdescription\space ##2%
+  }%
+  \renewcommand*{\subglossentry}[3]{%Sub-entries continue on the same line
+    \glssubentryitem{##2}%
+    \glstarget{##2}{\strut}\space\glossentrydesc{##2}\glspostdescription\space ##3.%
+  }%
+  \renewcommand*{\glossaryheader}{% See \glossarypreamble to add something BEFORE the glossary
+    %\glslistnavigationitem{\glsnavigation}% Original
+    % Adding navigation links extended to whole width but without \glslistnavigationitem
+    % See: https://tex.stackexchange.com/questions/296202/list-of-letter-not-folding-in-glossaries
+    %\glslistnavigationitem{\parbox{\textwidth}{\huge\glsnavigation}}%
+    \glslistnavigationitem{% Full width main glossary navigation bar (from `changepage' package)
+      \begin{adjustwidth*}{0em}{-\marginparwidth - \marginparsep}%
+        \RaggedRight\glossaryheaderfont\large\glsnavigation%
+      \end{adjustwidth*}%
+    }%
+  }
+  \renewcommand*{\glsgroupheading}[1]{% Each group has a heading with a hypertarget
+    %\item[\glslistgroupheaderfmt{\glsnavhypertarget{##1}{\glsgetgrouptitle{##1}}}]% Original
+    \Needspace{2\baselineskip}% Verifying/reserving a minimum of two lines space before a page break
+    \item[% Modified
+      \glslistgroupheaderfmt{% Formatting the group header title
+        \glsnavhypertarget{##1}{% Setting the group header as a hyperlink target for the navigation
+          \mainglossgroupheader{% Applying the group header style defined just above
+            \glsgetgrouptitle{##1}% Getting the group header title to print/display
+          }%
+        }%
+      }%
+    ]%
+    % The above \Needspace command seems to do the trick! May be further settings would be necessary
+    %\nobreak% No break between group header and the first glossary entry definition (horizontal)
+    %\nopagebreak[4]%
+  }%
+  \renewcommand*{\glsgroupskip}{% Add vertical space between groups
+    %\ifglsnogroupskip\else\indexspace\fi% Original
+    \ifglsnogroupskip\else% Modified (if necessary)
+      \vspace*{-\baselineskip}% Suppressing the vertical space introduced by \par? Yes, it seems
+      %\vspace*{-.5\glossgroupheadheight}% Glossary header letter are \huge
+      %\par\vskip -.5\glossgroupheadheight% \@plus 5\p@ \@minus 5\p@ \relax% Modified definition
+      \vskip 4\p@ \@plus 2\p@ \@minus 2\p@ \relax% Modified definition
+    \fi
+  }%
+}
+
+%- Defining a command sequence to allow including margin graphics in the glossaries
+%- This command may be used in the description field of a glossary entry (preamble or external file)
+%- For normal paragraph text layout, this is just a call to the \sideGgraphic command defined above,
+%- with conditionals to be settled before glossaries. But for text inside a tcolorbox − as for local
+%- glossaries −, one must use a `tikzmark` approach in a way given by the G. Medina's \caution
+%- command as defined above too.
+\newif\ifallowglossary@graphic
+%\allowglossary@graphictrue
+\allowglossary@graphicfalse
+\newif\ifallowlocalglossary@graphic
+%\allowlocalglossary@graphictrue
+\allowlocalglossary@graphicfalse
+
+
+%- Defining a side element command to be used from inside a tcolorbox
+%- This a clone of the \caution command above (http://tex.stackexchange.com/questions/78193/)
+\newcounter{xsidecount}
+
+\newcommand\sideelementtikzmark[1]{%
+  \tikz[remember picture,overlay]\node[inner xsep=0pt,outer sep=0pt] (#1) {};}
+
+%- The `tcolorbox` package redefines \textwidth and \linewidth to be shorter.
+%- So, it leads to have a gap for elements to be displayed outside a tcolorbox, and must be corrected
+\newcommand{\sideElementRight}[1]{%
+  \stepcounter{xsidecount}%
+  \sideelementtikzmark{\thexsidecount}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[draw=red, anchor=west, xshift=\marginparsep, yshift=0pt, inner sep=4pt]
+      (mybox\thexsidecount)
+      at ([yshift=3pt]current page text area.east|-\thexsidecount)
+      {\parbox{\marginparwidth-8pt}{\centering\footnotesize#1}};
+  \end{tikzpicture}%
+}
+
+\newbool{sideElementGraphic}
+\newbool{tcbsideElement}
+
+%\newcommand*{\defaultelementboxname}{Note de la rédaction}
+
+\NewDocumentCommand{\tcbsideElement}{s O{c} D<>{secondcolor} m g s}{%
+  \IfBooleanTF{#1}{\booltrue{sideElementGraphic}}{\boolfalse{sideElementGraphic}}%
+  \IfBooleanTF{#6}{\booltrue{tcbsideElement}}{\boolfalse{tcbsideElement}}%
+  \checkoddpage
+  \ifoddpageoroneside
+    \setlength\trianglexshift{-3pt}%
+    \setlength\boxhshift{\marginparsep}%
+    \renewcommand{\side}{west}%
+    \renewcommand{\otherside}{east}%
+  \else
+    \setlength\trianglexshift{3pt}%
+    \setlength\boxhshift{-\marginparsep}%
+    \renewcommand{\side}{east}%
+    \renewcommand{\otherside}{west}%
+  \fi%
+  \settoheight{\noteheight}{\parbox{\marginparwidth-8pt}{\footnotesize#3}}%
+  \stepcounter{xsidecount}%
+  \sideelementtikzmark{\thexsidecount}%
+  \if#2b\relax
+    \renewcommand\pointeranchor{xsidebox\thexsidecount.south \side}%
+    \renewcommand\boxanchor{south \side}%
+    \setlength\boxvshift{\noteheight}%
+    \addtolength\boxvshift{-.6\baselineskip}% Adjust the vertical shift with the text line
+    \setlength\uppertrianglecorner{13pt}%
+  \else
+    \if#2t\relax
+      \renewcommand\pointeranchor{xsidebox\thexsidecount.north \side}%
+      \renewcommand\boxanchor{north \side}%
+      \setlength\boxvshift{-\noteheight}%
+      \addtolength\boxvshift{.6\baselineskip}% Adjust the vertical shift with the text line
+      \setlength\uppertrianglecorner{-7pt}%
+    \else
+      \if#2c\relax
+        \renewcommand\pointeranchor{xsidebox\thexsidecount.\side}%
+        \renewcommand\boxanchor{\side}%
+        %\setlength\boxvshift{\baselineskip}% No vertical shift, just centered with the text line
+        \setlength\uppertrianglecorner{3pt}%
+      \fi%
+    \fi%
+  \fi%
+  \marginnote{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \ifbool{sideElementGraphic}{% Graphic inserting
+        \ifbool{tcbsideElement}{% Inside a tcolorbox
+          \BeforeBeginEnvironment{displaylocalglossary}{%
+            \tikz[remember picture,overlay]
+              \node[fit=(current page text area),
+                    line width=0, inner sep=0,
+                    name=correct current page text area]{};
+          }
+          \node[draw=#3, thick, anchor=\side,
+                xshift=\boxhshift, yshift=\boxvshift, inner sep=0pt]
+            (xsidebox\thexsidecount)
+            at ([yshift=3pt]correct current page text area.\otherside|-\thexsidecount)
+            {\parbox{\marginparwidth}{\centering\footnotesize#4}};
+        }{% Normal paragraph
+          \node[draw=#3, thick, anchor=\side,
+                xshift=\boxhshift, yshift=\boxvshift, inner sep=0pt]
+            (xsidebox\thexsidecount)
+            at ([yshift=3pt]current page text area.\otherside|-\thexsidecount)
+            {\parbox{\marginparwidth}{\centering\footnotesize#4}};
+        }%
+      }{% Text inserting
+        \ifbool{tcbsideElement}{% Inside a tcolorbox
+          \BeforeBeginEnvironment{displaylocalglossary}{%
+            \tikz[remember picture,overlay]
+              \node[fit=(current page text area),
+                    line width=0, inner sep=0,
+                    name=correct current page text area]{};
+          }
+          \node[draw=#3, thick, anchor=\side,
+                xshift=\boxhshift, yshift=\boxvshift, inner sep=4pt]
+            (xsidebox\thexsidecount)
+            at ([yshift=3pt]correct current page text area.\otherside|-\thexsidecount)
+            {\parbox{\marginparwidth-8pt}{\vskip4pt\footnotesize#4\vskip2pt}};
+        }{% Normal paragraph
+          \node[draw=#3, thick, anchor=\side,
+                xshift=\boxhshift, yshift=\boxvshift, inner sep=4pt]
+            (xsidebox\thexsidecount)
+            at ([yshift=3pt]current page text area.\otherside|-\thexsidecount)
+            {\parbox{\marginparwidth-8pt}{\vskip4pt\footnotesize#4\vskip2pt}};
+        }%
+      }%
+      \IfValueT{#5}{%
+        \node[fill=white, font=\color{#3}\sffamily,
+              anchor=west, inner sep=2pt,
+              xshift=7pt, yshift=0pt]
+          at (xsidebox\thexsidecount.north west)
+          {\footnotesize\enspace\textcolor{black}{\textsc{#5}}\enspace};
+      }%
+      \fill[#3]
+        ([yshift=\uppertrianglecorner]\pointeranchor) --
+        ([yshift=\uppertrianglecorner-3pt, xshift=\trianglexshift]\pointeranchor) --
+        ([yshift=\uppertrianglecorner-6pt]\pointeranchor) -- cycle;
+    \end{tikzpicture}%
+  }%
+}
+
+\newcounter{glsgraphiccount}
+\newcommand\glssidetikzmark[1]{%
+  \tikz[remember picture,overlay]\node[inner xsep=0pt,outer sep=0pt] (#1) {};}
+
+\newcommand*{\glssidenodename}{current page text area}% Default node name for side glossary graphic
+
+\NewDocumentCommand{\glssidegraphic}{m}{%
+  \checkoddpage
+  \ifoddpageoroneside
+    \setlength\boxhshift{\marginparsep}%
+    \renewcommand{\side}{west}%
+    \renewcommand{\otherside}{east}%
+  \else
+    \setlength\boxhshift{-\marginparsep}%
+    \renewcommand{\side}{east}%
+    \renewcommand{\otherside}{west}%
+  \fi%
+  \settoheight{\noteheight}{\parbox{\marginparwidth}{#1}}%
+  \stepcounter{glsgraphiccount}%
+  \glssidetikzmark{\theglsgraphiccount}%
+  \renewcommand\pointeranchor{glossarysidebox\theglsgraphiccount.north \side}%
+  \renewcommand\boxanchor{north \side}%
+  \setlength\boxvshift{-\noteheight}%
+  \addtolength\boxvshift{.6\baselineskip}% Adjust the vertical shift with the text line
+  \marginnote{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[draw=secondcolor, thick, anchor=\side,
+            xshift=\boxhshift, yshift=\boxvshift, inner sep=0pt]
+        (glossarysidebox\theglsgraphiccount)
+        at ([yshift=0pt]\glssidenodename.\otherside|-\theglsgraphiccount)
+        {\parbox{\marginparwidth}{\centering#1}};
+    \end{tikzpicture}%
+  }%
+}
+
+%--- Note − Margin contents from a tcolorbox: purpose, issues and solution
+%-------------------------------------------------------------------------
+%- A ‘tcolorbx’ doesn't manage floats. Because our glossary environments are displayed
+%- with tcolorboxes, we can't use the \marginpar command (which defines a special float)
+%- and their companion commands from the ‘marginfix’ package to automatically manage
+%- the vertical layout of margin contents (see \sidenote and \chapterToC commands above).
+%- This issue is corrected by using the ‘marginnote’ package, which defines margin position
+%- by mean of PDFTeX, XeTeX and LuaTeX primitives \savepos, \lastxpos, and \lastypos
+%- (\pdfsavepos, \pdflastxpos, \pdflastxpos and \pdflastypos), see the documentation and:
+%- https://tex.stackexchange.com/questions/427533/savepos-savepos-in-lualatex-why
+%- But unfortunately, if several margin notes are called on the same line,
+%- or from the next lines if the contents of the first note are too long, a overlapping occurs.
+%- This is a feature of ‘marginnote’ package, and not a bug. Nevertheless, this behaviour
+%- is not wanted for  automatically managing consecutive margin notes in this context.
+%- So, to solve the problem, a new command for this kind of margin contents must be defined.
+%-----
+
+%- Defining a ‘glossary’ side note: special treatment inside a ‘tcolorbox’ environment
+%- TODO: adding hyperlink properties: an issue occurs with footnote/sidenote hyperlinks
+
+\newcounter{glsnote}
+\renewcommand{\theglsnote}{\alph{glsnote}}
+\newcounter{glsmarginnotepage}
+
+\def\@makeglssidemark{%
+  \hbox{\@textsuperscript{\raisebox{-1.25pt}{\normalfont\textcolor{secondcolor}{\itshape\@theglssidemark}}}}%
+}
+\def\glssidemark{%
+  \@ifnextchar[\@xglssidemark
+    {\stepcounter{glsnote}%
+    \protected@xdef\@theglssidemark{\theglsnote}%
+    \@glssidemark}}
+\def\@xglssidemark[#1]{%
+  \begingroup
+    \c@glsnote #1\relax
+      \unrestored@protected@xdef\@theglssidemark{\theglsnote}%
+  \endgroup
+  \@glssidemark}
+\def\@glssidemark{%
+  \leavevmode
+  \ifhmode\edef\@x@sf{\the\spacefactor}\nobreak\fi%
+  \@makeglssidemark%
+  \ifhmode\spacefactor\@x@sf\fi%
+  \relax}
+
+\newlength{\glsmarginposy}
+\newlength{\glsmarginlastposy}
+\newlength{\glsmarginposyshift}
+\newlength{\glsmarginnoteheight}
+\newlength{\glsmarginvoffset}
+\newlength{\glsmarginparpush}
+\setlength{\glsmarginparpush}{6pt}
+
+%\newcommand*{\@mn@lastcurrpage}{}
+%\newcommand*{\textglsmargin}{}
+
+%--- Note: margin notes within a tcolorbox
+%-----------------------------------------
+%- LaTeX \marginpar(s) are special floats and can't be used within a tcolorbox => \marginnote
+%- But a margin note on the same line or spilling on the next one are misplaced (this is a feature
+%- and not a bug of the `marginnote' package). A solution with the help of the `zref' bundle
+%- is given below (certainly a better way could be found as an extension of the `marginnote'
+%- package, but our skills are still too poor to understand all subtilities of some internals).
+%- This solution uses the second optional argument of the main command: \marginnote{text}[voffset].
+%- With this proposed dirty workaround, one has to take care of margin notes that are displayed
+%- at the bottom of a page (there is no automatic adjustment for the moment being).
+%- To solve this latter point, may be the following reference could be useful:
+%-  https://tex.stackexchange.com/questions/244853/reflowing-marginpars-typeset-using-pdfsavepos
+%-----
+
+\NewDocumentCommand{\glssidenote}{O{secondcolor} m}{% Need the `zref-savepos' package module
+  {%
+    %\ignorespaces%
+    \hypersetup{linkcolor=#1}% There is a issue with hyperlinks: wrong page key
+    \glssidemark%
+  }%
+  \renewcommand*{\marginfont}{\footnotesize}%
+  \zsaveposy{glsnote:\number\value{glsnote}}%
+  \zref@label{glsnotepage:\number\value{glsnote}}%
+  %- Applying two \strut before and after (that does the trick), see (original by @egreg):
+  %-  https://tex.stackexchange.com/questions/216388/uneven-spacing-between-parbox
+  %-  https://tex.stackexchange.com/questions/34971/[...]
+  %-    [...]how-to-keep-a-constant-baselineskip-when-using-minipages-or-parboxes
+  %- See also the use of \prevdepth:
+  %-  https://tex.stackexchange.com/questions/433912/[...]
+  %-    [...]marginnote-vertical-alignment-half-length-of-paragraph
+  \settototalheight{\glsmarginnoteheight}{%
+    \parbox[t]{\marginparwidth}{%
+      \normalfont\footnotesize\strut%
+      \makebox[1em][l]{\textit{\theglsnote}.}%
+      #2\strut% Second \strut = having the depth of the paragraph last line (correct?)
+    }%        % If not, we notice a vertical difference for paragraphs with only one line
+  }%          % or with several lines
+  \setlength{\glsmarginposy}{\zposy{glsnote:\number\value{glsnote}}sp}%
+  %\renewcommand*{\marginnotevadjust}{4pt}% if all margin notes are displayed too high
+  \ifnum\c@glsnote=1
+    \setlength{\glsmarginvoffset}{0pt}%
+    \setlength{\glsmarginlastposy}{\glsmarginposy}%
+    \setlength{\glsmarginposyshift}{\glsmarginnoteheight+\glsmarginparpush}%
+    %\renewcommand*{\@mn@lastcurrpage}{\@mn@currpage}% Current page given by `marginnote' package
+    \setcounter{glsmarginnotepage}{\zref@extract{glsnotepage:\number\value{glsnote}}{abspage}}
+  \else
+    \ifnum\c@glsmarginnotepage<\zref@extract{glsnotepage:\number\value{glsnote}}{abspage}
+      %\renewcommand*{\textglsmargin}{newpage}%
+      \setlength{\glsmarginvoffset}{0pt}%
+      \setlength{\glsmarginlastposy}{\glsmarginposy}%
+      \setlength{\glsmarginposyshift}{\glsmarginnoteheight+\glsmarginparpush}%
+      \setcounter{glsmarginnotepage}{\zref@extract{glsnotepage:\number\value{glsnote}}{abspage}}
+    \else
+      \ifdim\glsmarginposy=\glsmarginlastposy% Same line
+        %\renewcommand*{\textglsmargin}{equal}%
+        \setlength{\glsmarginvoffset}{\glsmarginposyshift}%
+        \setlength{\glsmarginlastposy}{\glsmarginlastposy-\glsmarginposyshift}%
+        \setlength{\glsmarginposyshift}{\glsmarginnoteheight+\glsmarginparpush}%
+      \else
+        \ifdimcomp{\glsmarginposy}{>}{\glsmarginlastposy-\glsmarginposyshift}{% `etoolbox' package
+          %- Previous margin note spills on the current one
+          %\renewcommand*{\textglsmargin}{inf}%
+          \setlength{\glsmarginvoffset}{\glsmarginposyshift+\glsmarginposy-\glsmarginlastposy}%
+          \setlength{\glsmarginlastposy}{\glsmarginlastposy-\glsmarginposyshift}%
+          \setlength{\glsmarginposyshift}{\glsmarginnoteheight+\glsmarginparpush}%
+        }{%- Previous margin notes do not interfere with the current one
+          %\renewcommand*{\textglsmargin}{sup}%
+          \setlength{\glsmarginvoffset}{0pt}%
+          \setlength{\glsmarginlastposy}{\glsmarginposy}%
+          \setlength{\glsmarginposyshift}{\glsmarginnoteheight+\glsmarginparpush}%
+        }%
+      \fi
+    \fi
+  \fi
+  % Global lengths to keep their values from one margin note to the next one
+  \global\glsmarginposy=\glsmarginposy%
+  \global\glsmarginlastposy=\glsmarginlastposy%
+  \global\glsmarginposyshift=\glsmarginposyshift%
+  \global\glsmarginnoteheight=\glsmarginnoteheight%
+  \global\glsmarginvoffset=\glsmarginvoffset%
+  \global\glsmarginparpush=\glsmarginparpush%
+  \marginnote{%
+    \parbox[t]{\marginparwidth}{%
+      \normalfont\footnotesize\strut%
+      \makebox[1em][l]{\textcolor{#1}{\textit{\theglsnote}.}}% Aligning the margin note label
+      %\ignorespaces% ?
+      #2\strut%
+      %~\textglsmargin~\@mn@currpage~\themn@abspage
+      %~\textglsmargin~\theglsmarginnotepage%
+    }%
+  }[\glsmarginvoffset]%\unskip% ?
+}
+
+%- Side glossary graphic for unmumbered figure or illustration (with or without a caption)
+\DeclareDocumentCommand{\sideglossarygraphic}{s o m g}{%
+  % Syntax − #1 = no star = copyright symbol, star = no copyright symbol
+  %          #2 = caption text
+  %          #3 = margin contents: an image file included with \includegraphics
+  %          #4 = optional copyright/source of the graphic (graphics are different from figures)
+  \ifallowglossary@graphic
+    \ifallowlocalglossary@graphic
+      \glssidegraphic{#3}%
+      %\glssideElement*[t]{#3}{correct}%
+      %\tcbsideElement{#3}%
+      %\caution[t]<secondcolor>{#3}{Graphique}
+      %{Put the graphic here!}%
+      %\marginpar{Put the graphic here!}%
+      %- With marginote there is a horizontal gap:
+      %- See: https://tex.stackexchange.com/questions/269426/[...]
+      %-        [...]wrong-marginnote-positions-inside-a-tikzpicture-with-xelatex
+      %\marginnote{Put the graphic here!}%
+    \else
+      \IfBooleanTF{#1}{%
+        \IfValueTF{#2}{%
+          \IfValueTF{#4}{%
+            \sidegraphic*[#2]{#3}{#4}%
+          }{%
+            \sidegraphic*[#2]{#3}%
+          }%
+        }{%
+          \sidegraphic*{#3}%
+        }%
+      }{%
+        \IfValueTF{#2}{%
+          \IfValueTF{#4}{%
+            \sidegraphic[#2]{#3}{#4}%
+          }{%
+            \sidegraphic[#2]{#3}%
+          }%
+        }{%
+          \sidegraphic{#3}%
+        }%
+      }
+    %\else
+      %\ClassWarning{texjazz-handbook.cls}{Glossary displaying:\MessageBreak
+      %The description of this term is associated with a figure in the main glossary}
+      %\typeout{TeXjazz handbook:
+      %The description of this term is associated with a figure in the main glossary}
+    \fi
+  \fi
+}
+
+%- Defining a shortcut command to display the main glossary (to use with a preceeding \backchapter)
+\ifdocglossary@xindy
+  \newcommand{\printmainglossary}[1][0pt]{% #1 = adjust vertical space before glossary displaying
+    \vspace*{#1}%
+    \setcounter{glsnote}{0}%
+    \glsresetentrycounter% See `glossaries-extra` doc. p.66
+    \setglossarysection{section=section}%
+    \glsglossarymark{\glossaryname}%
+    \setglossarystyle{jazzhypergroup}% Applied style
+    \allowglossary@graphictrue% Allowing margin graphics to be displayed
+    \allowlocalglossary@graphicfalse%
+    %\glsaddall% consider all entries (not only those cited with \gls and other similar commands)
+    % See: https://tex.stackexchange.com/questions/150228/[...]
+    %   [...]glossaries-display-the-page-number-but-not-the-current-page/
+    \glsaddallunused[main]% consider all entries with location only if used
+    % Adjusting the glossary heading: it CAN'T be done in a glossary style
+    % Redefining `\glossarysection' command for the main glossary (cf. glossary-code.pdf p.43-44)
+    % See also: https://tex.stackexchange.com/questions/446442/[...]
+    %  [...]glossaries-acronym-symbols-etc-per-chapter-with-style-super-so-that-descripti?rq=1
+    % Because several glossaries are needed and a new `\glossarysection' can't be included in a
+    % style, its redefinition is done just before its use
+    \renewcommand{\glossarysection}[2][]{\vspace*{-1.5\baselineskip}}% Adjusting the vertical space
+    \printglossary[%
+      type=main,% Default main glossary explicitly settled
+      %title={\vspace*{#1}}% No title printed but compensate too much vertical space
+      %title={}% Not printed title
+    ]%
+  }%
+  %\pretocmd{\printmainglossary}{% Modifying the sidenote label for the main glossary (alphabetic)
+  %  \renewcommand*{\thefootnote}{\alph{footnote}}%
+  %}{}{}
+\else% TODO: setting the correct macros and commands for building the glossaries with `bib2gls'
+%  \newcommand{\printmainglossary}{%
+    %- The sectional unit for partial glossaries MUST BE SET BEFORE \GlsXtrLoadResources
+    %- The following command needs `glossaries-extra' package and `record=only/alsoindex' options
+    %\GlsXtrRecordCounter{section}
+    %\GlsXtrRecordCounter{subsection}
+%    \printunsrtglossary[%
+%      type=main,% Default main glossary explicitly settled
+      %title={\vspace*{-3\baselineskip}}]% not printed title but let too much vertical space
+%  }%
+\fi
+
+%- Adjusting the glossary heading: it CAN'T be done in a glossary style
+%- Redefining the `\glossarysection' command for the main glossary (cf. glossary-code.pdf p.43-44)
+%- See also: https://tex.stackexchange.com/questions/446442/[...]
+%-   [...]glossaries-acronym-symbols-etc-per-chapter-with-style-super-so-that-descripti?rq=1
+%- Because several glossaries are needed and a new `\glossarysection' can't be included in a style,
+%- its redefinition is done just before its use by mean of the `\pretocmd' from `etoolbox' package
+%\pretocmd{\printmainglossary}{%
+%  \renewcommand{\glossarysection}[2][]{}% No section heading for the main glossary
+%}{}{}%
+
+
+%-- Local and/or per chapter, section, subsection glossaries
+%-----------------------------------------------------------
+
+%--- Note about local glossaries
+%- Well, if you want to "play" with the `glossaries` bundle, you have to be aware that many internal
+%- command sequences and macros use the `etoolbox' package. By the way, may be some TeX.SX links
+%- can be useful to understand what's happen.
+%- For the `glossaries` bundle using:
+%-   https://tex.stackexchange.com/questions/89107/glossary-per-chapter-or-section
+%-   https://tex.stackexchange.com/questions/446442/
+%-   https://tex.stackexchange.com/questions/325434/glossary-per-chapter-not-by-section
+%-   https://tex.stackexchange.com/questions/296202/list-of-letter-not-folding-in-glossaries
+%-   https://tex.stackexchange.com/questions/99142/customising-glossary-group-titles
+%-   https://tex.stackexchange.com/questions/440324/
+%-   https://tex.stackexchange.com/questions/474791/
+%-   https://tex.stackexchange.com/questions/150228/
+%-   https://tex.stackexchange.com/questions/217478/glossary-entries-for-multiple-glossaries
+%-   https://tex.stackexchange.com/questions/498166
+%-   https://tex.stackexchange.com/questions/384022
+%-   https://tex.stackexchange.com/questions/190966/issue-with-glossaries-and-hierarchal-categories
+%- For more in deep and fundamental TeX understanding:
+%-   https://tex.stackexchange.com/questions/471625/nameuse-as-conditional
+%-   https://tex.stackexchange.com/questions/321868/concatenate-macro-string-and-counter
+%-   https://tex.stackexchange.com/questions/315365/using-counter-in-csdef
+%-   https://tex.stackexchange.com/questions/353900/
+%-   https://tex.stackexchange.com/questions/377581/less-than-string-comparison-like-ifstrequal
+%-   https://tex.stackexchange.com/questions/478835/how-to-compare-a-string-to-a-cs-from-a-read-properly
+%-----
+
+\newcommand\glstwodigits[1]{%
+  \ifnum#1<10 0#1\else #1\fi
+}
+
+%- Local or contextual glossary name
+\ifdoc@english
+  \newcommand{\localglossarytitle}{Contextual glossary}
+\else
+  \newcommand{\localglossarytitle}{Glossaire contextuel}
+\fi
+
+%- Adding a new storage key that can be used to indicate a local glossary (like the category field)
+%- The default local glossary is local. See the `glossaries-extra` code p. 178
+\glsaddstoragekey{localglossary}{local}{\glslocalglossary}
+
+%- Convenient shortcut to determine if an entry belongs to the given local glossary
+\newcommand{\ifglslocalglossary}[4]{%
+  \ifglsfielddefeq{#1}{localglossary}{#2}{#3}{#4}%
+}
+
+%- Defining a systematic prefix for local glossaries label
+\newcommand{\localglossaryprefix}{local-}
+
+%- Standalone local glossary − TODO: verify the relevance of that command sequence!!!
+%- This seems to be not needed for our purpose...
+%\newcommand{\GlsXtrStandaloneGlossaryType}{\glsentrytype{\glscurrententrylabel}}
+%\renewcommand{\GlsXtrStandaloneGlossaryType}{% See `glossaries-extra` doc. p. 76
+%  standalone.\thelocalglossary.\arabic{glossaryentry}%
+%}
+
+%- Defining a new glossary style for local glossaries
+\newglossarystyle{jazzlocalglossary}{% Based on the simple `list' style (cf. glossaries-code.pdf)
+  \setglossarystyle{list}%
+  \renewcommand*{\glossaryheader}{}
+  \renewcommand*{\glsgroupheading}[1]{}%
+  \renewcommand*{\glsgroupskip}{\ifglsnogroupskip\else\fi}% No vertical space between groups
+}
+
+%- Defining a shortcut command to display the local glossaries
+\newcommand{\printlocalglossarybasic}[1][0pt]{% #1 = adjust vertical space before the glossary display
+  \vspace*{#1}%
+  \glsresetentrycounter% See `glossaries-extra` doc. p.66
+  \stepcounter{localglossary}% Used to set the local glossary field label
+  \edef\tmplocalglossaryname{\localglossaryprefix\number\value{localglossary}}%
+  \setglossarystyle{jazzlocalglossary}% Applied style
+  \allowglossary@graphictrue% Allowing margin graphics to be displayed
+  %\allowlocalglossary@graphictrue
+  \allowlocalglossary@graphicfalse
+  %- The following gives a error with `xkeyval` package and 'target' option, it works without it
+  %- For further details, see the `glossaries-extra` package documentation p.68, p.69 and p.70
+  %\printunsrtglossary*[target=false, title={\vspace*{-\baselineskip}}]{%
+  \printunsrtglossary*[title={\vspace*{-\baselineskip}}]{%
+    \renewcommand{\printunsrtglossaryentryprocesshook}[1]{% See `glossaries-extra` doc. p. 69, 70
+      \ifglslocalglossary{##1}{\tmplocalglossaryname}{}{\printunsrtglossaryskipentry}%
+      %\ifglsfielddefeq{##1}{localglossary}{\tmplocalglossaryname}{}{\printunsrtglossaryskipentry}%
+    }%
+  }%
+  \allowlocalglossary@graphicfalse
+  \allowglossary@graphicfalse% Reset to "False" inclusion of graphics in glossaries
+}%
+
+%- See: https://tex.stackexchange.com/questions/494574/todo-notes-inside-tcolorbox
+%\newsavebox{\glsgraphicbox}
+%\newcommand{\glsmargingraphic}[2][inMargin]{%
+%  \marginpar{%
+%    \savebox\glsgraphicbox{\todo[inline]{#2}}% measure height
+%    \begin{tikzpicture}[remember picture, overlay]
+%      \coordinate (#1) at (0pt,0.5\ht\glsgraphicbox);
+%    \end{tikzpicture}%
+%    \usebox\glsgraphicbox%
+%  }%
+%}
+%\newcommand{\glsmarginmark}{%
+%  \begin{tikzpicture}[remember picture, overlay]
+%    \draw[orange,thick] (#1) -- ++(-0.5\marginparsep,0) |- (0pt,\lineskip-\dp\strutbox);
+%  \end{tikzpicture}
+%}
+
+%- Trying to display margin elements within a tcolorbox gives errors (floats or outer...)
+%- A first step to solve this issue is to consider G. Medina answer (OK for title environment icon):
+%- https://tex.stackexchange.com/questions/214303/framed-environment-with-fixed-image-in-marginpar
+%- A second step is to consider J. Kormylo answer (with the `tikzmark/`todonote` packages):
+%- https://tex.stackexchange.com/questions/494574/todo-notes-inside-tcolorbox
+%- A third one is to use the `tikzmark` approach as decribed for \caution or \sideElement commands
+\newtcolorbox{displaylocalglossary}[1][]{% optional arg = more options list
+  breakable,
+  enhanced jigsaw,
+  check odd page,
+  width=\linewidth,
+  %parbox=false,
+  colframe=firstcolor,
+  colback=gray!20,
+  arc = 0pt, outer arc = 0pt,
+  boxrule = 0pt,
+  %leftrule = 2pt, rightrule = 2pt,
+  %toprule=0pt, bottomrule = 0pt,
+  boxsep = 2pt,% default=1mm
+  toptitle=4pt, bottomtitle=2pt,% additional to boxsep, default=0mm
+  lefttitle = 4pt, righttitle = 4pt,% additional to boxsep, default=4mm
+  %title=\spacedsmallcaps{\strut\lightbf{\localglossarytitle}~\hrulefill},
+  title={\strut\textsc{\boxtitlefont\localglossarytitle~\hrulefill}},
+  top = 0pt, bottom = 2pt,% additional to boxsep, default=2mm
+  left = 4pt, right = 4pt,% additional to boxsep, default=4mm
+  before skip=10pt,
+  after skip=2pt,
+  %overlay={% There is a bug: the title "logo/picture" is sometimes displayed twice! WHY?
+  %  \checkoddpage
+  %  \ifoddpageoroneside
+  %  %\ifoddpage
+  %    %- Original
+  %    %\node[overlay,anchor=west] at ([xshift=\marginparsep]title.east) {\LARGE\faBook};
+  %    %- Modified
+  %    \node[overlay,anchor=west] at ([xshift=2.0pt]title.east)
+  %      {\textcolor{secondcolor}{\Large\faBook}};
+  %  \else
+  %    %- Original
+  %    %\node[overlay,anchor=east] at ([xshift=-\marginparsep]title.west) {\LARGE\faBook};
+  %    %- Modified
+  %    \node[overlay,anchor=east] at ([xshift=-2.0pt]title.west)
+  %      {\textcolor{secondcolor}{\Large\faBook}};
+  %  \fi
+  %},
+  #1,
+}
+
+%- If a margin element is called from a tcolorbox, one has to take care about the fact that the
+%- `tcolorbox` package redefines \textwidth and \linewidth to be shorter. So, it leads to have
+%- a gap for elements displayed outside the tcolorbox, and must be corrected. This is the case here
+%- for the displaying of local glossaries. The solution is one more time given by G. Medina, see:
+%-   https://tex.stackexchange.com/questions/257731/[...]
+%-     [...]tikz-node-in-margin-right-to-other-node-interacts-with-tcbtheorem
+\BeforeBeginEnvironment{displaylocalglossary}{% Setting the node name to be correct inside a tcbox
+  \vspace*{-\baselineskip}% Needed to avoid spurious vertical space: WHY? TODO: FIND THE REASON!
+  \tikz[remember picture,overlay]
+    \node[fit=(current page text area),
+          line width=0, inner sep=0,
+          name=correct current page text area]{};%
+  \renewcommand*{\glssidenodename}{correct current page text area}%
+}
+
+\AfterEndEnvironment{displaylocalglossary}{% Resetting the node name to default
+  \renewcommand*{\glssidenodename}{current page text area}%
+}
+
+%- Defining a shortcut command to print the local glossaries with a tcolorbox
+%\newcommand{\printlocalglossary}[1][0pt]{% #1 = adjust vertical space before the glossary display
+\NewDocumentCommand{\printlocalglossaryold}{O{0pt} g}{% #1 = adjust vertical space before the glossary display
+%\NewDocumentCommand{\printlocalglossary}{s O{0pt}}{%
+%\NewDocumentCommand{\printlocalglossary}{O{0pt}}{%
+  \vspace*{#1}%
+  %\setcounter{footnote}{0}%
+  %\IfBooleanT{#1}{\allowglossary@graphictrue}%
+  %\IfValueT{#2}{\vspace*{#2}}%
+  \glsresetentrycounter% See `glossaries-extra` doc. p.66
+  \IfNoValueTF{#2}{
+    \stepcounter{localglossary}% Used to set the local glossary field label
+  }{%
+    \setcounter{localglossary}{#2}% Set the wanted local glossary field label: just a integer
+  }
+  \edef\tmplocalglossaryname{\localglossaryprefix\number\value{localglossary}}%
+  \setglossarystyle{jazzlocalglossary}% Applied style
+  \allowglossary@graphictrue% Allowing margin graphics to be displayed
+  \allowlocalglossary@graphictrue
+  \begin{displaylocalglossary}
+    %- The following gives a error with `xkeyval` package and 'target' option, it works without it
+    %- For further details, see the `glossaries-extra` package documentation p.68, p.69 and p.70
+    %\printunsrtglossary*[target=false, title={\vspace*{-\baselineskip}}]{%
+    \printunsrtglossary*[title={\vspace*{-\baselineskip}}]{%
+      \renewcommand{\printunsrtglossaryentryprocesshook}[1]{% See `glossaries-extra` doc. p. 69, 70
+        \ifglslocalglossary{##1}{\tmplocalglossaryname}{}{\printunsrtglossaryskipentry}%
+        %\ifglsfielddefeq{##1}{localglossary}{\tmplocalglossaryname}{}{\printunsrtglossaryskipentry}%
+      }%
+    }%
+  \end{displaylocalglossary}%
+  \allowlocalglossary@graphicfalse
+  \allowglossary@graphicfalse% Reset to "False" inclusion of graphics in glossaries
+}%
+
+\NewDocumentCommand{\printlocalglossary}{O{0pt} g}{% #1 = adjust vertical space before the glossary display
+  \vspace{#1}%
+  %\setcounter{footnote}{0}%
+  %\IfBooleanT{#1}{\allowglossary@graphictrue}%
+  %\IfValueT{#2}{\vspace*{#2}}%
+  \glsresetentrycounter% See `glossaries-extra` doc. p.66
+  \IfNoValueTF{#2}{
+    \stepcounter{localglossary}% Used to set the local glossary field label
+  }{%
+    \setcounter{localglossary}{#2}% Set the wanted local glossary field label: just a integer
+  }
+  \edef\tmplocalglossaryname{\localglossaryprefix\number\value{localglossary}}%
+  \edef\glslocalname{local\glstwodigits{\number\value{localglossary}}}%
+  \setglossarystyle{jazzlocalglossary}% Applied style
+  \allowglossary@graphictrue% Allowing margin graphics to be displayed
+  \allowlocalglossary@graphictrue
+  \begin{displaylocalglossary}
+    %- The following gives a error with `xkeyval` package and 'target' option, it works without it
+    %- For further details, see the `glossaries-extra` package documentation p.68, p.69 and p.70
+    %\printunsrtglossary*[target=false, title={\vspace*{-\baselineskip}}]{%
+    %\printunsrtglossary*[title={\vspace*{-\baselineskip}}]{%
+    %  \renewcommand{\printunsrtglossaryentryprocesshook}[1]{% See `glossaries-extra` doc. p. 69, 70
+    %    \ifglslocalglossary{##1}{\tmplocalglossaryname}{}{\printunsrtglossaryskipentry}%
+    %    %\ifglsfielddefeq{##1}{localglossary}{\tmplocalglossaryname}{}{\printunsrtglossaryskipentry}%
+    %  }%
+    %}%
+    \printunsrtglossary[type=\glslocalname,title={\vspace*{-\baselineskip}}]%
+  \end{displaylocalglossary}%
+  \allowlocalglossary@graphicfalse
+  \allowglossary@graphicfalse% Reset to "False" inclusion of graphics in glossaries
+}%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
