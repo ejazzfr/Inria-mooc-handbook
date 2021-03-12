@@ -1,0 +1,1990 @@
+\ProvidesFile{texjazz-listings.def}[2021/01/30 v.01a Programming code highlighting with listings]
+
+
+%--------------------------------------------------------------------------------------------------
+%---- Code listings (re)definitions (with/from the `listings' package)
+%--------------------------------------------------------------------------------------------------
+
+%-- HTML5 add-ons definition language
+
+%- http://tex.stackexchange.com/questions/99500/listings-code-style-for-html5-css-html-javascript
+%- http://tex.stackexchange.com/questions/252307/specific-color-for-different-tags-and-comments
+
+%-- Hack the tag style for having attributes and "=" in the same color
+
+%- Take the open tag, then let the color as black or whatever you want (now the "=" sign is black)
+%\gdef\lst@BeginTag{%
+%	\lst@DelimOpen
+%		\lst@ifextags\else
+%			{\let\lst@ifkeywords\iftrue
+%				\lst@ifmarkfirstintag\lst@firstintagtrue\fi\color{black}}}
+%- Set the closed tag to the specified color (the open and closed tag color may be now different)
+%\gdef\lst@EndTag{\lst@DelimClose\lst@ifextags\else\color{red}}
+
+%----- For the record (same as above)
+%- Redefine tags layout/colors according to http://www.w3schools.com/html/html_attributes.asp
+%- This is only usefull if attribute colors is different than the first level keywords color
+%\gdef\lst@BeginTag{% Borrowed to the `lstmisc.sty' file and adding color
+%	\lst@DelimOpen
+%		\lst@ifextags\else
+%			{\let\lst@ifkeywords\iftrue
+%				\lst@ifmarkfirstintag\lst@firstintagtrue\fi\color{idesyntaxcolor}}}
+%\gdef\lst@EndTag{\lst@DelimClose\lst@ifextags\else\color{idesyntaxcolor}}
+%-----
+
+%--- Hack for highlightning part of code in listings (no line break)
+%- From: https://tex.stackexchange.com/questions/15237/
+%- 			 (highlight-text-in-code-listing-while-also-keeping-syntax-highlighting)
+%- See also: https://tex.stackexchange.com/questions/8851/
+%- 			(how-can-i-highlight-some-lines-from-source-code)
+%- Usage: moredelim=**[is][\btHL]{`}{`}
+%-				moredelim=**[is][{\btHL[fill=green!30,draw=red,dashed,thin]}]{@}{@}
+%---
+
+\newenvironment{btHighlight}[1][]{%
+	\begingroup\tikzset{bt@Highlight@par/.style={#1}}\begin{lrbox}{\@tempboxa}%
+}{\end{lrbox}\bt@HL@box[bt@Highlight@par]{\@tempboxa}\endgroup}
+
+\newcommand\btHL[1][]{%
+	\begin{btHighlight}[#1]\bgroup\aftergroup\bt@HL@endenv%
+}
+\def\bt@HL@endenv{%
+	\end{btHighlight}%   
+	\egroup
+}
+\newcommand{\bt@HL@box}[2][]{%
+	\tikz[#1]{%
+		\pgfpathrectangle{\pgfpoint{1pt}{0pt}}{\pgfpoint{\wd #2}{\ht #2}}%
+		\pgfusepath{use as bounding box}%
+		\node[anchor=base west, fill=orange!30, outer sep=0pt, inner xsep=1pt, 
+					inner ysep=0pt, rounded corners=3pt, minimum height=\ht\strutbox+1pt,#1]
+			{\raisebox{1pt}{\strut}\strut\usebox{#2}};
+  }%
+}
+
+%- Algorithms style (basic output: sophistications later... TODO)
+\lstdefinestyle{lstassemblerstyle}{% needed syntax for colors: \color{<name>} (due to key-value system)
+  aboveskip=0pt, belowskip=0pt,% default=\medskipamount
+  basicstyle={\small\shellttfont},
+  %linewidth=.9\linewidth,% default=\linewidth
+  % frame settings
+  %backgroundcolor=\color{\@layoutcolor!0},%\color{orange!20},
+  backgroundcolor=\color{black!5},
+  %frame=l,% adds a line to the left (used for line numbers)
+  framerule=0pt,% default=0.4pt,
+  %fillcolor=\color{orange},% frame-fill color (lines numbering column)
+  %xleftmargin=4pt,
+  %xrightmargin=4pt,
+  framesep=4pt,
+  framextopmargin=4pt,% default=0pt
+  framexbottommargin=4pt,% default=0pt
+  %frameround=tttt,% default ffff for false
+  %rulecolor=\color{orange},% frame-rule-color
+  % line numbering
+  numbers=left,% line numbers on the left
+  numbersep=6pt,% numbers-code distance
+  numberstyle={\tiny\sffamily\itshape\color{black!80}},
+  % code display
+  language={[x86masm]Assembler},
+  identifierstyle=\color{black},
+  stringstyle=\color{algostringcolor},
+  commentstyle=\color{idecommentcolor},
+  keywordstyle=\color{secondcolor}\bfseries\upshape,
+  keywordstyle={[2]\color{idesyntaxcolor}\bfseries\itshape},
+  emphstyle=\color{black}\itshape\bfseries,% emphasized style
+  %otherkeywords={--,-->,<--,::},
+  %escapeinside = {\%*}{*},% useful for adding LaTeX within the code
+  %keepspaces=true,% tab to spaces: default=false
+  %showspaces=false,% all blank spaces appear (underscore bracket): default=false
+  %showtabs=false,% shows tabs within strings (underscore bracket): default=true
+  %showstringspaces=false,
+  breaklines=true,
+  breakatwhitespace=true,
+  %escapechar=\%, 
+  tabsize=2, extendedchars=true, captionpos=t,
+  % adjusting margins
+  xleftmargin=12pt,% framesep + framerule + 4pt (numbersep-4pt=indentation) % default=0pt
+  %xrightmargin=-2.4pt,% numbersep + framerule % default=0pt
+  morekeywords={addl,cmpl,movl}
+}
+
+
+\lstdefinelanguage{HTML5}{% Try to have a standalone HTML5 language definition
+	%language=HTML,% Defined in lstlang.sty, copy and completed below
+	morekeywords=[1]{
+		%- HTML tags (only lowercase as keywords)
+		%A, ABBR, ACRONYM, ADDRESS, APPLET, AREA,
+		%B, BASE, BASEFONT, BDO, BIG, BLOCKQUOTE, BODY, BR, BUTTON,
+		%CAPTION, CENTER, CITE, CODE, COL, COLGROUP,
+		%DD, DEL, DFN, DIR, DIV, DL, DOCTYPE, DT, EM,
+		%FIELDSET, FONT, FORM, FRAME, FRAMESET,
+		%HEAD, HR, H1, H2, H3, H4, H5, H6, %HTML, to write text HTML
+		%I, IFRAME, IMG, INPUT, INS, ISINDEX, KBD,
+		%LABEL, LEGEND, LH, LI, LINK, LISTING, MAP, META, MENU,
+		%NOFRAMES, NOSCRIPT, OBJECT, OPTGROUP, OPTION, OL,
+		%P, PARAM, PLAINTEXT, PRE, Q,
+		%S, SAMP, SCRIPT, SELECT, SMALL, SPAN, STRIKE, STRING, STRONG, STYLE, SUB, SUP,
+		%TABLE, TBODY, TD, TEXTAREA, TFOOT, TH, THEAD, TITLE, TR, TT,
+		%U, UL, VAR, XMP,
+		%BALISE, TAG,
+		a, abbr, acronym, address, applet, area,
+		b, base, basefont, bdo, big, blockquote, body, br, button,
+		caption, center, cite, code, col, colgroup,
+		dd, del, dfn, dir, div, dl, doctype, dt, em,
+		fieldset, font, form, frame, frameset,
+		head, hr, h1, h2, h3, h4, h5, h6, html,
+		i, iframe, img, input, ins, isindex, kbd,
+		label, legend, lh, li, link, listing, map, meta, menu,
+		noframes, noscript, object, optgroup, option, ol,
+		p, param, plaintext, pre, q, 
+		s, samp, script, select, small, span, strike, string, strong, style, sub, sup,
+		table, tbody, td, textarea, tfoot, th, thead, title, tr, tt,
+		u, ul, var, xmp,
+		%- HTML5 tags
+		article, aside, audio, bdi, canvas, data, datalist, details, embed,
+		figcaption, figure, footer, header, keygen,
+		main, mark, math, menuitem, meter, nav, output, progress, q, rp, rt, ruby,
+		section, summary, svg, template, time, track, video, wbr,%/>, <!
+		%- Generic tags French/English
+		balise, tag,
+	},
+	%morekeywords=[2]{% NOT NEEDED: see above to change tags attribute color
+		% HTML attributes
+			%accesskey, action, align, alink, alt, archive, axis,
+		%background,% also in CSS
+			%bgcolor, border,
+			%cellpadding, cellspacing, charset, checked, cite, class, classid,
+			%code, codebase, codetype, 
+		%color,% also in CSS
+			%cols, colspan, content, coords,
+			%data, datetime, defer, dir, disabled, event, error, for, frameborder,
+			%headers, height, href, hreflang, hspace, http-equiv, id, ismap,
+			%label, lang, link, longdesc,
+			%marginwidth, marginheight, maxlength, media, method, multiple,
+			%name, nohref, noresize, noshade, nowrap,
+			%onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
+			%onload, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, onunload,
+			%profile, readonly, rel, rev, rows, rowspan,
+			%scheme, scope, scrolling, selected, shape, size, src, standby, style,
+			%tabindex, target, text, title, type,
+			%units, usemap, valign, value, valuetype, vlink, vspace, 
+			%width,% also in CSS 
+			%xmlns,
+		% General
+			%=,!,
+		% HTML5 attributes
+			%accept, accept-charset, async, autocomplete, autofocus, autoplay, autosave,
+			%buffered, challenge, contenteditable, contextmenu, controls,
+			%default, dirname, download, draggable, dropzone, enctype, formaction,
+			%hidden, high, icon, itemprop, keytype, kind, language, list, loop, low, 
+			%manifest, max, media, method, min, novalidate, open, optimum, 
+			%pattern, ping, placeholder, poster, preload, pubdate, radiogroup, required, reversed, 
+			%sandbox, scoped, seamless, sizes, spellcheck, srcdoc, srclang, start, step, summary, wrap,
+		% Generic attribute French/English
+			%attribut, attribut1, attribut2, attribute, attribute1, attribute2,
+	%},
+	morekeywords=[2]{
+		% CSS properties and selectors
+		accelerator, azimuth, background, background-attachment,
+		background-color, background-image, background-position,
+		background-position-x, background-position-y, background-repeat,
+		behavior, border, border-bottom, border-bottom-color,
+		border-bottom-style, border-bottom-width, border-collapse,
+		border-color, border-left, border-left-color, border-left-style,
+		border-left-width, border-right, border-right-color,
+		border-right-style, border-right-width, border-spacing,
+		border-style, border-top, border-top-color, border-top-style,
+		border-top-width, border-width, bottom, caption-side, clear,
+		clip, color, content, counter-increment, counter-reset, cue,
+		cue-after, cue-before, cursor, direction, display, elevation,
+		empty-cells, filter, float, font, font-family, font-size,
+		font-size-adjust, font-stretch, font-style, font-variant,
+		font-weight, height, ime-mode, include-source,
+		layer-background-color, layer-background-image, layout-flow,
+		layout-grid, layout-grid-char, layout-grid-char-spacing,
+		layout-grid-line, layout-grid-mode, layout-grid-type, left,
+		letter-spacing, line-break, line-height, list-style,
+		list-style-image, list-style-position, list-style-type, margin,
+		margin-bottom, margin-left, margin-right, margin-top,
+		marker-offset, marks, max-height, max-width, min-height,
+		min-width, transition-duration, transition-property,
+		transition-timing-function, transform,
+		-moz-transform, -moz-binding, -moz-border-radius,
+		-moz-border-radius-topleft, -moz-border-radius-topright,
+		-moz-border-radius-bottomright, -moz-border-radius-bottomleft,
+		-moz-border-top-colors, -moz-border-right-colors,
+		-moz-border-bottom-colors, -moz-border-left-colors, -moz-opacity,
+		-moz-outline, -moz-outline-color, -moz-outline-style,
+		-moz-outline-width, -moz-user-focus, -moz-user-input,
+		-moz-user-modify, -moz-user-select, orphans, outline,
+		outline-color, outline-style, outline-width, overflow,
+		overflow-X, overflow-Y, padding, padding-bottom, padding-left,
+		padding-right, padding-top, page, page-break-after,
+		page-break-before, page-break-inside, pause, pause-after,
+		pause-before, pitch, pitch-range, play-during, position, quotes,
+		-replace, richness, right, ruby-align, ruby-overhang,
+		ruby-position, -set-link-source, size, speak, speak-header,
+		speak-numeral, speak-punctuation, speech-rate, stress,
+		scrollbar-arrow-color, scrollbar-base-color,
+		scrollbar-dark-shadow-color, scrollbar-face-color,
+		scrollbar-highlight-color, scrollbar-shadow-color,
+		scrollbar-3d-light-color, scrollbar-track-color, table-layout,
+		text-align, text-align-last, text-decoration, text-indent,
+		text-justify, text-overflow, text-shadow, text-transform,
+		text-autospace, text-kashida-space, text-underline-position, top,
+		unicode-bidi, -use-link-source, vertical-align, visibility,
+		voice-family, volume, white-space, widows, width, word-break,
+		word-spacing, word-wrap, writing-mode, z-index, zoom,
+		% Add-ons
+		sélecteur,propriété,selector,property,
+		both, none,
+	},
+	MoreSelectCharTable=% Où ai-je trouvé ça ? Dans le fichier lstlang1.sty !!!
+      \lst@CArgX--\relax\lst@DefDelimB{}{}%
+          {\ifnum\lst@mode=\lst@tagmode\else
+               \expandafter\@gobblethree
+           \fi}%
+          \lst@BeginComment\lst@commentmode{{\lst@commentstyle}}%
+      \lst@CArgX--\relax\lst@DefDelimE{}{}{}%
+          \lst@EndComment\lst@commentmode,
+	sensitive=true,
+	%morestring=[d]",% ??? doubled
+	morestring=[b]",
+	morestring=[b]',
+	tag=**[s]<>,% This comes from the lstlang1.sty and defined in lstmisc.sty (DONT CHANGE IT!)
+}[keywords,comments,strings,html]% Loading different engine default definitions
+
+\lstdefinelanguage{XML_SYNTAX}{%
+    alsoletter=-,
+    morestring=[b]",stringstyle=\color[rgb]{0,0,1},
+    moredelim=*[s][{\color[rgb]{0.75,0,0}}]{<}{>},
+    moredelim=[s][{\color[rgb]{0,0,0}}]{<!--}{-->},
+    moredelim=[s][{\color[rgb]{0,0.75,0}}]{\ }{=},
+    moredelim=[s][{\color[rgb]{0,0.75,0}}]{\	}{=} % here there is \tab
+}
+
+%-- CSS language definition
+
+\lstdefinelanguage{CSS}{%
+	morekeywords=[1]{% CSS core
+		accelerator, azimuth, background, background-attachment,
+		background-color, background-image, background-position,
+		background-position-x, background-position-y, background-repeat,
+		behavior, border, border-bottom, border-bottom-color,
+		border-bottom-style, border-bottom-width, border-collapse,
+		border-color, border-left, border-left-color, border-left-style,
+		border-left-width, border-right, border-right-color,
+		border-right-style, border-right-width, border-spacing,
+		border-style, border-top, border-top-color, border-top-style,
+		border-top-width, border-width, bottom, caption-side, clear,
+		clip, color, content, counter-increment, counter-reset, cue,
+		cue-after, cue-before, cursor, direction, display, elevation,
+		empty-cells, filter, float, font, font-family, font-size,
+		font-size-adjust, font-stretch, font-style, font-variant,
+		font-weight, height, ime-mode, include-source,
+		layer-background-color, layer-background-image, layout-flow,
+		layout-grid, layout-grid-char, layout-grid-char-spacing,
+		layout-grid-line, layout-grid-mode, layout-grid-type, left,
+		letter-spacing, line-break, line-height, list-style,
+		list-style-image, list-style-position, list-style-type, margin,
+		margin-bottom, margin-left, margin-right, margin-top,
+		marker-offset, marks, max-height, max-width, min-height,
+		min-width, transition-duration, transition-property,
+		transition-timing-function, transform,
+		-moz-transform, -moz-binding, -moz-border-radius,
+		-moz-border-radius-topleft, -moz-border-radius-topright,
+		-moz-border-radius-bottomright, -moz-border-radius-bottomleft,
+		-moz-border-top-colors, -moz-border-right-colors,
+		-moz-border-bottom-colors, -moz-border-left-colors, -moz-opacity,
+		-moz-outline, -moz-outline-color, -moz-outline-style,
+		-moz-outline-width, -moz-user-focus, -moz-user-input,
+		-moz-user-modify, -moz-user-select, orphans, outline,
+		outline-color, outline-style, outline-width, overflow,
+		overflow-X, overflow-Y, padding, padding-bottom, padding-left,
+		padding-right, padding-top, page, page-break-after,
+		page-break-before, page-break-inside, pause, pause-after,
+		pause-before, pitch, pitch-range, play-during, position, quotes,
+		-replace, richness, right, ruby-align, ruby-overhang,
+		ruby-position, -set-link-source, size, speak, speak-header,
+		speak-numeral, speak-punctuation, speech-rate, stress,
+		scrollbar-arrow-color, scrollbar-base-color,
+		scrollbar-dark-shadow-color, scrollbar-face-color,
+		scrollbar-highlight-color, scrollbar-shadow-color,
+		scrollbar-3d-light-color, scrollbar-track-color, table-layout,
+		text-align, text-align-last, text-decoration, text-indent,
+		text-justify, text-overflow, text-shadow, text-transform,
+		text-autospace, text-kashida-space, text-underline-position, top,
+		unicode-bidi, -use-link-source, vertical-align, visibility,
+		voice-family, volume, white-space, widows, width, word-break,
+		word-spacing, word-wrap, writing-mode, z-index, zoom,
+		% Personal add-ons
+		sélecteur,propriété,selector,property,
+		both, none,
+		% CSS3 functionalities TODO: complete the list if needed
+		@media, max-device-width,
+	},  
+	morekeywords=[2]{% HTML core
+		% HTML tags
+		a, abbr, acronym, address, applet, area,
+		b, base, basefont, bdo, big, blockquote, body, br, button,
+		caption, cite, code, col, colgroup,
+		dd, del, dfn, dir, div, dl, doctype, dt, em,
+		fieldset, font, form, frame, frameset,
+		head, hr, h1, h2, h3, h4, h5, h6, html,
+		i, iframe, img, input, ins, isindex, kbd,
+		label, legend, lh, li, link, listing, map, meta, menu,
+		noframes, noscript, object, optgroup, option, ol,
+		p, param, plaintext, pre, q, 
+		s, samp, script, select, small, span, strike, string, strong, style, sub, sup,
+		table, tbody, td, textarea, tfoot, th, thead, title, tr, tt,
+		u, ul, var, xmp,
+		% HTML5 tags
+		article, aside, audio, bdi, canvas, data, datalist, details, embed,
+		figcaption, figure, footer, header, keygen,
+		main, mark, math, menuitem, meter, nav, output, progress, q, rp, rt, ruby,
+		section, summary, svg, template, time, track, video, wbr,
+		% Generic tags French/English
+		balise, tag,
+	},
+	%morekeywords=[3]{% HTML attributes: NOT NEEDED
+		% HTML attributes
+			%accesskey, action, align, alink, alt, archive, axis,
+			%background, bgcolor, border,
+			%cellpadding, cellspacing, charset, checked, cite, class, classid,
+			%code, codebase, codetype, color, cols, colspan, content, coords,
+			%data, datetime, defer, dir, disabled, event, error, for, frameborder,
+			%headers, height, href, hreflang, hspace, http-equiv, id, ismap,
+			%label, lang, link, longdesc,
+			%marginwidth, marginheight, maxlength, media, method, multiple,
+			%name, nohref, noresize, noshade, nowrap,
+			%onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
+			%onload, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, onunload,
+			%profile, readonly, rel, rev, rows, rowspan,
+			%scheme, scope, scrolling, selected, shape, size, src, standby, style,
+			%tabindex, target, text, title, type,
+			%units, usemap, valign, value, valuetype, vlink, vspace, width, xmlns,
+		% Generic attribute French/English
+			%attribut, attribut1, attribut2, attribute, attribute1, attribute2,
+	%},
+	sensitive=true,
+	%- I.		Set the tags on (between < and >) and apply a style
+		tag=**[s]<>,% This comes from the lstlang1.sty and defined in lstmisc.sty (DONT CHANGE!)
+		tagstyle=\color{idesyntaxcolor},% everything from < to > are styled by tagstyle=<code>
+		%tagstyle=\color{yellow!70!black},
+	%- II.	Set the comment properly with correct tags (cf. TeX.SE /questions/252307/)
+		%usekeywordsintag=true,% default=true
+		markfirstintag=true,% Prints the first name in tags with keyword style (for personal tags)
+		morecomment=[s]{<!-}{-->},% HTML comments
+		morecomment=[l]{//},
+		morecomment=[s]{/*}{*/},
+	%- III. Further styled tags by hacking \lst@BeginTag and \lst@EndTag (see commands above)
+	%- IV.	Set characters ! and / using a consistent color to form !DOCTYPE and /html
+		alsoletter={!/},
+		alsodigit={-},
+	%- V.		Font and like
+		basicstyle={\small\ttfamily},
+		%basicstyle={\lstfontsize\ttfamily},
+		basewidth=.5em,
+	%- VI.	Other styles
+		keywordstyle={[1]{\color{csssyntaxcolor}\bfseries}},
+		%keywordstyle={[2]{\color{idesyntaxcolor}}},
+		keywordstyle={[2]{\color{csssyntaxcolor}\bfseries}},
+		%keywordstyle={[3]\color{idesyntaxcolor}},
+		identifierstyle=\color{black},
+		commentstyle={\color{idecommentcolor}\itshape},
+		stringstyle=\color{idestringcolor},
+		emphstyle={\color{ideMisccolor}\itshape\bfseries},% emphasized style
+		%literate=*{:}{{{\color{csssyntaxcolor}{:}}}}{1}
+		%literate=%
+			%{/}{{{\color{idesyntaxcolor}{/}}}}{1}% NON car bouffe les commentaires (même définis après)
+			%{\{}{{{\color{csssyntaxcolor}{\{}}}}{1}
+			%{\}}{{{\color{csssyntaxcolor}{\}}}}}{1},
+		%alsodigit={-},
+		%morestring=[d]",% ??? doubled
+		%morestring=[b]",
+		%morestring=[b]',
+		%alsoletter={!/},% To have the same color as < and > for <! and /> (see redefinition above)
+		%morestring=[b]',
+		%morestring=[b]",% b = escape with a backslash, d = doubled
+		moredelim=[s][{\color{csssyntaxcolor}\bfseries}]{.\ },
+		moredelim=[s][{\color{csssyntaxcolor}\bfseries}]{\#\ },
+		moredelim=[s][{\color{csssyntaxcolor}}]{\{\}},
+		literate=*
+			{:}{{{\color{csssyntaxcolor}{:}}}}{1}
+			{\{}{{{\color{csssyntaxcolor}{\{}}}}{1}
+			{\}}{{{\color{csssyntaxcolor}{\}}}}}{1}
+			%{/}{{{\color{idesyntaxcolor}{/}}}}{1}
+			{=}{{{\color{idesyntaxcolor}{=}}}}{1}
+			{<}{{{\color{idesyntaxcolor}{<}}}}{1}
+			{>}{{{\color{idesyntaxcolor}{>}}}}{1},
+	%alsoletter={/},% To have the whole tags and attributes name
+	%alsoletter={:},% If uncomment keywords need to be `keyword:'
+}[keywords,comments,strings,html]% Loading different engine default definitions
+
+%-- JavaScript language definition (with HTML and CSS tags)
+
+%- http://tex.stackexchange.com/questions/99500/listings-code-style-for-html5-css-html-javascript
+
+\lstdefinelanguage{JavaScript}{% JavaScript is not define in the `listings' package
+	keywords={break, case, catch, continue, debugger, default, delete, 
+		do, else, false, finally, for, function, if, in, instanceof, new, null,
+		return, switch, this, throw, true, try, typeof, var, void, while, with,
+		%- Add-ons https://gist.github.com/Geruhn/3d21f60a869457373d84
+		arguments, await, class, const, debugger, enum, eval, export, extends, 
+		implements, import, interface, let, 
+		package, private, protected, public, static, super, this, yield,
+		%- Add-ons of object keywords
+		Array, Date, String,
+	},
+	morekeywords=[2]{%- Add-ons of JavaScript methods
+		%- window and document properties
+		write, getElementById, innerHtml, innerHTML,
+		appendChild, insertBefore, removeChild, replaceChild,
+		backgroundcolor,
+		childNodes, firstChild, lastChild, parentNode, previousSibling, nextSibling,
+		%- Array methods
+		join, concat, pop, push, reverse, shift, sort, unshift,
+		%- Date methods
+		getDate, setDate, getDay,% No "setDay"
+		getFullYear, setFullYear, getHours, setHours, getMilliseconds, setMilliseconds,
+		getMinutes, setMinutes, getMonth, setMonth, getSeconds, getTime, setTime,
+		getTimezoneOffset, setTimezoneOffset,
+		getUTCDate, setUTCDate, getUTCDay,% No "setUTCDay"
+		getYear, setYear, setTimeout,% No "getTimeout
+		getUTCFullYear, setUTCFullYear,
+		%- String methods
+		charAt, substring, toLowerCase, toUpperCase, indexOf, lastIndexOf, eval, split,
+		%- Mathematical methods
+		parseInt, parseFloat, chain,
+		Math.abs, Math.sqrt, Math.random, Math.cos, Math.sin, Math.tan,
+		Math.log, Math.exp, Math.min, Math.max, Math.round,
+	},
+	morekeywords=[3]{%- Add-ons of JavaScript properties
+		%- Array properties
+		length,
+		%- String properties
+		charAt, substring, toLowerCase, toUpperCase, indexOf
+	},
+	morekeywords=[4]{
+		% HTML tags
+		DOCTYPE,
+		a, abbr, acronym, address, applet, area,
+		b, base, basefont, bdo, big, blockquote, body, br, button,
+		caption, cite, code, col, colgroup,
+		dd, del, dfn, dir, div, dl, doctype, dt, em,
+		fieldset, font, form, frame, frameset,
+		head, hr, h1, h2, h3, h4, h5, h6, html,
+		%i,% à décommenter si besoin mais se confond avec les variables traditionnelles de boucle
+		iframe, img, input, ins, isindex, kbd,
+		label, legend, lh, li, link, listing, map, meta, menu,
+		noframes, noscript, object, optgroup, option, ol,
+		p, param, plaintext, pre, q, 
+		s, samp, script, select, small, span, strike, string, strong, style, sub, sup,
+		table, tbody, td, textarea, tfoot, th, thead, title, tr, tt,
+		u, ul, var, xmp,
+		% HTML5 tags
+		article, aside, audio, bdi, canvas, data, datalist, details, embed,
+		figcaption, figure, footer, header, keygen,
+		main, mark, math, menuitem, meter, nav, output, progress, q, rp, rt, ruby,
+		section, summary, svg, template, time, track, video, wbr,
+		% Generic tags French/English
+		balise, tag,
+	},
+	morekeywords=[5]{%
+		% HTML attributes
+		accesskey, action, align, alink, alt, archive, axis,
+		background, bgcolor, border,
+		cellpadding, cellspacing, charset, checked, cite, class, classid,
+		code, codebase, codetype, color, cols, colspan, content, coords,
+		data, datetime, defer, dir, disabled, event, error, for, frameborder,
+		headers, height, href, hreflang, hspace, http-equiv, id, ismap,
+		label, lang, link, longdesc,
+		marginwidth, marginheight, maxlength, media, method, multiple,
+		name, nohref, noresize, noshade, nowrap,
+		onblur, onchange, onclick, ondblclick, onfocus, onkeydown, onkeypress, onkeyup,
+		onload, onmousedown, onmousemove, onmouseout, onmouseover, onmouseup, onselect, onunload,
+		profile, readonly, rel, rev, rows, rowspan,
+		scheme, scope, scrolling, selected, shape, size, src, standby, style,
+		tabindex, target, text, title, type,
+		units, usemap, valign, value, valuetype, vlink, vspace, width, xmlns,
+		% Personnal add-ons
+		language,
+		% Generic attribute French/English
+		attribut, attribut1, attribut2, attribute, attribute1, attribute2,
+		%- HTML DOM and JavaScript events
+		onclick, onClick, onsubmit, onSubmit,
+		clientX, clientY, 
+		addEventListener, 		
+	},
+	morekeywords=[6]{%- CSS keywords
+		accelerator, azimuth, background, background-attachment,
+		background-color, background-image, background-position,
+		background-position-x, background-position-y, background-repeat,
+		behavior, border, border-bottom, border-bottom-color,
+		border-bottom-style, border-bottom-width, border-collapse,
+		border-color, border-left, border-left-color, border-left-style,
+		border-left-width, border-right, border-right-color,
+		border-right-style, border-right-width, border-spacing,
+		border-style, border-top, border-top-color, border-top-style,
+		border-top-width, border-width, bottom, caption-side, clear,
+		clip, color, content, counter-increment, counter-reset, cue,
+		cue-after, cue-before, cursor, direction, display, elevation,
+		empty-cells, filter, float, font, font-family, font-size,
+		font-size-adjust, font-stretch, font-style, font-variant,
+		font-weight, height, ime-mode, include-source,
+		layer-background-color, layer-background-image, layout-flow,
+		layout-grid, layout-grid-char, layout-grid-char-spacing,
+		layout-grid-line, layout-grid-mode, layout-grid-type, left,
+		letter-spacing, line-break, line-height, list-style,
+		list-style-image, list-style-position, list-style-type, margin,
+		margin-bottom, margin-left, margin-right, margin-top,
+		marker-offset, marks, max-height, max-width, min-height,
+		min-width, transition-duration, transition-property,
+		transition-timing-function, transform,
+		-moz-transform, -moz-binding, -moz-border-radius,
+		-moz-border-radius-topleft, -moz-border-radius-topright,
+		-moz-border-radius-bottomright, -moz-border-radius-bottomleft,
+		-moz-border-top-colors, -moz-border-right-colors,
+		-moz-border-bottom-colors, -moz-border-left-colors, -moz-opacity,
+		-moz-outline, -moz-outline-color, -moz-outline-style,
+		-moz-outline-width, -moz-user-focus, -moz-user-input,
+		-moz-user-modify, -moz-user-select, orphans, outline,
+		outline-color, outline-style, outline-width, overflow,
+		overflow-X, overflow-Y, padding, padding-bottom, padding-left,
+		padding-right, padding-top, page, page-break-after,
+		page-break-before, page-break-inside, pause, pause-after,
+		pause-before, pitch, pitch-range, play-during, position, quotes,
+		-replace, richness, right, ruby-align, ruby-overhang,
+		ruby-position, -set-link-source, size, speak, speak-header,
+		speak-numeral, speak-punctuation, speech-rate, stress,
+		scrollbar-arrow-color, scrollbar-base-color,
+		scrollbar-dark-shadow-color, scrollbar-face-color,
+		scrollbar-highlight-color, scrollbar-shadow-color,
+		scrollbar-3d-light-color, scrollbar-track-color, table-layout,
+		text-align, text-align-last, text-decoration, text-indent,
+		text-justify, text-overflow, text-shadow, text-transform,
+		text-autospace, text-kashida-space, text-underline-position, top,
+		unicode-bidi, -use-link-source, vertical-align, visibility,
+		voice-family, volume, white-space, widows, width, word-break,
+		word-spacing, word-wrap, writing-mode, z-index, zoom,
+		% Add-ons
+		sélecteur,propriété,selector,property,
+		both, none,
+		% CSS3 functionalities
+		@media, max-device-width,
+	},  
+	sensitive=true,
+	%tag=[s]{<>},
+	%tag=**[s],%
+	morecomment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	morecomment=[s]{<!--}{-->},% HTML comments
+	morestring=[b]',
+	morestring=[b]",% b = escape with a backslash, d = doubled
+	%moredelim=[s][{\color{csssyntaxcolor}\bfseries}]{.\ },% NON car bouzin en délimiteur (notation pointée)
+	moredelim=[s][{\color{csssyntaxcolor}\bfseries}]{\#\ },
+	moredelim=[s][{\color{csssyntaxcolor}}]{\{\}},
+	%moredelim=*[l][{\color{csssyntaxcolor}\bfseries}]{.\ },
+	%moredelim=*[s][{\color{csssyntaxcolor}\bfseries}]{.\ },
+	%moredelim=*[s][{\color{idesyntaxcolor}}]{<}{>},
+	%moredelim=[s][{\color{csssyntaxcolor}\bfseries}]{\#\ },
+	%moredelim=[s][{\color{csssyntaxcolor}}]{\{\}},
+	literate=*{:}{{{\color{csssyntaxcolor}{:}}}}{1}
+		{\{}{{{\color{csssyntaxcolor}{\{}}}}{1}
+		{\}}{{{\color{csssyntaxcolor}{\}}}}}{1}
+		{!}{{{\color{idesyntaxcolor}{!}}}}{1}
+		%{/}{{{\color{idesyntaxcolor}{/}}}}{1}% Non car bouffe les commentaires //
+		{=}{{{\color{idesyntaxcolor}{=}}}}{1}
+		%{!=}{{{\color{idesyntaxcolor}{=}}}}{1}% ne fonctionne pas TODO
+		{<}{{{\color{idesyntaxcolor}{<}}}}{1}
+		{>}{{{\color{idesyntaxcolor}{>}}}}{1},
+	basicstyle={\small\ttfamily}, basewidth=.5em,
+	%tagstyle=\color{idesyntaxcolor},% everything from < to > are styled by tagstyle=<code>
+	identifierstyle=\color{black},
+	stringstyle=\color{ideStringcolor},
+	commentstyle={\color{idecommentcolor}\itshape},
+	keywordstyle={[1]\color{csssyntaxcolor}\bfseries},
+	keywordstyle={[2]\color{csssyntaxcolor}},
+	keywordstyle={[3]\color{csssyntaxcolor}\itshape},
+	keywordstyle={[4]\color{csssyntaxcolor}\bfseries},
+	keywordstyle={[5]\color{csssyntaxcolor}},
+	keywordstyle={[6]\color{csssyntaxcolor}},
+	emphstyle={\color{ideMisccolor}\itshape\bfseries},% emphasized style
+}[keywords,comments,strings,html]% Loading different engine default definitions
+
+%-- Php language definition (adapted from listings package)
+
+\lstdefinelanguage{customPhp}{%
+	morekeywords=[1]{
+		%- HTML tags (only lowercase as keywords except DOCTYPE)
+		%A, ABBR, ACRONYM, ADDRESS, APPLET, AREA,
+		%B, BASE, BASEFONT, BDO, BIG, BLOCKQUOTE, BODY, BR, BUTTON,
+		%CAPTION, CENTER, CITE, CODE, COL, COLGROUP,
+		%DD, DEL, DFN, DIR, DIV, DL, DOCTYPE, DT, EM,
+		%FIELDSET, FONT, FORM, FRAME, FRAMESET,
+		%HEAD, HR, H1, H2, H3, H4, H5, H6, %HTML, to write text HTML
+		%I, IFRAME, IMG, INPUT, INS, ISINDEX, KBD,
+		%LABEL, LEGEND, LH, LI, LINK, LISTING, MAP, META, MENU,
+		%NOFRAMES, NOSCRIPT, OBJECT, OPTGROUP, OPTION, OL,
+		%P, PARAM, PLAINTEXT, PRE, Q,
+		%S, SAMP, SCRIPT, SELECT, SMALL, SPAN, STRIKE, STRING, STRONG, STYLE, SUB, SUP,
+		%TABLE, TBODY, TD, TEXTAREA, TFOOT, TH, THEAD, TITLE, TR, TT,
+		%U, UL, VAR, XMP,
+		%BALISE, TAG,
+		DOCTYPE,
+		a, abbr, acronym, address, applet, area,
+		b, base, basefont, bdo, big, blockquote, body, br, button,
+		caption, center, cite, code, col, colgroup,
+		dd, del, dfn, dir, div, dl, doctype, dt, em,
+		fieldset, font, form, frame, frameset,
+		head, hr, h1, h2, h3, h4, h5, h6, html,
+		%i,% ne pas confondre avec indice
+		iframe, img, input, ins, isindex, kbd,
+		label, legend, lh, li, link, listing, map, meta, menu,
+		noframes, noscript, object, optgroup, option, ol,
+		p, param, plaintext, pre, q, 
+		s, samp, script, select, small, span, strike, string, strong, style, sub, sup,
+		table, tbody, td, textarea, tfoot, th, thead, title, tr, tt,
+		u, ul, var, xmp,
+		%/a, /abbr, /acronym, /address, /applet, /area,
+		%/b, /base, /basefont, /bdo, /big, /blockquote, /body, /br, /button,
+		%/caption, /center, /cite, /code, /col, /colgroup,
+		%/dd, /del, /dfn, /dir, /div, /dl, /dt, /em,
+		%/fieldset, /font, /form, /frame, /frameset,
+		%/head, /hr, /h1, /h2, /h3, /h4, /h5, /h6, /html,
+		%/i, /iframe, /img, /input, /ins, /isindex, /kbd,
+		%/label, /legend, /lh, /li, /link, /listing, /map, /meta, /menu,
+		%/noframes, /noscript, /object, /optgroup, /option, /ol,
+		%/p, /param, /plaintext, /pre, /q, 
+		%/s, /samp, /script, /select, /small, /span, /strike, /string, /strong, /style, /sub, /sup,
+		%/table, /tbody, /td, /textarea, /tfoot, /th, /thead, /title, /tr, /tt,
+		%/u, /ul, /var, /xmp,
+		%- HTML5 tags
+		article, aside, audio, bdi, canvas, data, datalist, details, embed,
+		figcaption, figure, footer, 
+		%header,% Php has a header function (see below)
+		keygen,
+		main, mark, math, menuitem, meter, nav, output, progress, q, rp, rt, ruby,
+		section, summary, svg, template, time, track, video, wbr,
+		%/article, /aside, /audio, /bdi, /canvas, /data, /datalist, /details, /embed,
+		%/figcaption, /figure, /footer, /header, /keygen,
+		%/main, /mark, /math, /menuitem, /meter, /nav, /output, /progress, /q, /rp, /rt, /ruby,
+		%/section, /summary, /svg, /template, /time, /track, /video, /wbr,
+		%- Generic tags French/English
+		%balise, tag,
+	},
+  morekeywords=[2]{% From `listings' package
+  %--- core language
+    ::,break,case,continue,default,do,else,%<?,?>,
+    elseif,for,foreach,if,include,require,phpinfo,%
+    switch,while,false,FALSE,true,TRUE,%
+  %--- apache functions
+    apache_lookup_uri,apache_note,ascii2ebcdic,ebcdic2ascii,%
+    virtual,apache_child_terminate,apache_setenv,%
+  %--- array functions
+    array,array_change_key_case,array_chunk,array_count_values,%
+    array_filter,array_flip,array_fill,array_intersect,%
+    array_keys,array_map,array_merge,array_merge_recursive,%
+    array_pad,array_pop,array_push,array_rand,array_reverse,%
+    array_shift,array_slice,array_splice,array_sum,array_unique,%
+    array_values,array_walk,arsort,asort,compact,count,current,each,%
+    extract,in_array,array_search,key,krsort,ksort,list,natsort,%
+    next,pos,prev,range,reset,rsort,shuffle,sizeof,sort,uasort,%
+    usort,%
+  %--- aspell functions
+    aspell_new,aspell_check,aspell_check_raw,aspell_suggest,%
+  %--- bc functions
+    bcadd,bccomp,bcdiv,bcmod,bcmul,bcpow,bcscale,bcsqrt,bcsub,%
+  %--- bzip2 functions
+    bzclose,bzcompress,bzdecompress,bzerrno,bzerror,bzerrstr,%
+    bzopen,bzread,bzwrite,%
+  %--- calendar functions
+    JDToGregorian,GregorianToJD,JDToJulian,JulianToJD,JDToJewish,%
+    JDToFrench,FrenchToJD,JDMonthName,JDDayOfWeek,easter_date,%
+    unixtojd,jdtounix,cal_days_in_month,cal_to_jd,cal_from_jd,%
+  %--- ccvs functions
+    ccvs_init,ccvs_done,ccvs_new,ccvs_add,ccvs_delete,ccvs_auth,%
+    ccvs_reverse,ccvs_sale,ccvs_void,ccvs_status,ccvs_count,%
+    ccvs_report,ccvs_command,ccvs_textvalue,%
+  %--- classobj functions
+    call_user_method,call_user_method_array,class_exists,get_class,%
+    get_class_vars,get_declared_classes,get_object_vars,%
+    is_a,is_subclass_of,method_exists,%
+  %--- com functions
+    COM,VARIANT,com_load,com_invoke,com_propget,com_get,com_propput,%
+    com_set,com_addref,com_release,com_isenum,com_load_typelib,%
+  %--- cpdf functions
+    cpdf_add_annotation,cpdf_add_outline,cpdf_arc,cpdf_begin_text,%
+    cpdf_clip,cpdf_close,cpdf_closepath,cpdf_closepath_fill_stroke,%
+    cpdf_continue_text,cpdf_curveto,cpdf_end_text,cpdf_fill,%
+    cpdf_finalize,cpdf_finalize_page,%
+    cpdf_import_jpeg,cpdf_lineto,cpdf_moveto,cpdf_newpath,cpdf_open,%
+    cpdf_page_init,cpdf_place_inline_image,cpdf_rect,cpdf_restore,%
+    cpdf_rmoveto,cpdf_rotate,cpdf_rotate_text,cpdf_save,%
+    cpdf_scale,cpdf_set_char_spacing,cpdf_set_creator,%
+    cpdf_set_font,cpdf_set_horiz_scaling,cpdf_set_keywords,%
+    cpdf_set_page_animation,cpdf_set_subject,cpdf_set_text_matrix,%
+    cpdf_set_text_rendering,cpdf_set_text_rise,cpdf_set_title,%
+    cpdf_setdash,cpdf_setflat,cpdf_setgray,cpdf_setgray_fill,%
+    cpdf_setlinecap,cpdf_setlinejoin,cpdf_setlinewidth,%
+    cpdf_setrgbcolor,cpdf_setrgbcolor_fill,cpdf_setrgbcolor_stroke,%
+    cpdf_show_xy,cpdf_stringwidth,cpdf_set_font_directories,%
+    cpdf_set_viewer_preferences,cpdf_stroke,cpdf_text,%
+    cpdf_set_action_url,%
+  %--- crack functions
+    crack_opendict,crack_closedict,crack_check,crack_getlastmessage,%
+  %--- ctype functions
+    ctype_alnum,ctype_alpha,ctype_cntrl,ctype_digit,ctype_lower,%
+    ctype_print,ctype_punct,ctype_space,ctype_upper,ctype_xdigit,%
+  %--- curl functions
+    curl_init,curl_setopt,curl_exec,curl_close,curl_version,%
+    curl_error,curl_getinfo,%
+  %--- cybercash functions
+    cybercash_encr,cybercash_decr,cybercash_base64_encode,%
+  %--- cybermut functions
+    cybermut_creerformulairecm,cybermut_testmac,%
+  %--- cyrus functions
+    cyrus_connect,cyrus_authenticate,cyrus_bind,cyrus_unbind,%
+    cyrus_close,%
+  %--- datetime functions
+    checkdate,date,getdate,gettimeofday,gmdate,gmmktime,gmstrftime,%
+    microtime,mktime,strftime,time,strtotime,%
+  %--- dbase functions
+    dbase_create,dbase_open,dbase_close,dbase_pack,dbase_add_record,%
+    dbase_delete_record,dbase_get_record,%
+    dbase_numfields,dbase_numrecords,%
+  %--- dba functions
+    dba_close,dba_delete,dba_exists,dba_fetch,dba_firstkey,%
+    dba_nextkey,dba_popen,dba_open,dba_optimize,dba_replace,%
+  %--- dbm functions
+    dbmopen,dbmclose,dbmexists,dbmfetch,dbminsert,dbmreplace,%
+    dbmfirstkey,dbmnextkey,dblist,%
+  %--- dbx functions
+    dbx_close,dbx_connect,dbx_error,dbx_query,dbx_sort,dbx_compare,%
+  %--- dio functions
+    dio_open,dio_read,dio_write,dio_truncate,dio_stat,dio_seek,%
+    dio_close,%
+  %--- dir functions
+    chroot,chdir,dir,closedir,getcwd,opendir,readdir,rewinddir,%
+  %--- dotnet functions
+    dotnet_load,%
+  %--- errorfunc functions
+    error_log,error_reporting,restore_error_handler,%
+    trigger_error,user_error,%
+  %--- exec functions
+    escapeshellarg,escapeshellcmd,exec,passthru,system,shell_exec,%
+  %--- fbsql functions
+    fbsql_affected_rows,fbsql_autocommit,fbsql_change_user,%
+    fbsql_commit,fbsql_connect,fbsql_create_db,fbsql_create_blob,%
+    fbsql_database_password,fbsql_data_seek,fbsql_db_query,%
+    fbsql_drop_db,fbsql_errno,fbsql_error,fbsql_fetch_array,%
+    fbsql_fetch_field,fbsql_fetch_lengths,fbsql_fetch_object,%
+    fbsql_field_flags,fbsql_field_name,fbsql_field_len,%
+    fbsql_field_table,fbsql_field_type,fbsql_free_result,%
+    fbsql_list_dbs,fbsql_list_fields,fbsql_list_tables,%
+    fbsql_num_fields,fbsql_num_rows,fbsql_pconnect,fbsql_query,%
+    fbsql_read_clob,fbsql_result,fbsql_rollback,fbsql_set_lob_mode,%
+    fbsql_start_db,fbsql_stop_db,fbsql_tablename,fbsql_warnings,%
+    fbsql_get_autostart_info,fbsql_hostname,fbsql_password,%
+    fbsql_username,%
+  %--- fdf functions
+    fdf_open,fdf_close,fdf_create,fdf_save,fdf_get_value,%
+    fdf_next_field_name,fdf_set_ap,fdf_set_status,fdf_get_status,%
+    fdf_get_file,fdf_set_flags,fdf_set_opt,%
+    fdf_set_javascript_action,fdf_set_encoding,fdf_add_template,%
+  %--- filepro functions
+    filepro,filepro_fieldname,filepro_fieldtype,filepro_fieldwidth,%
+    filepro_fieldcount,filepro_rowcount,%
+  %--- filesystem functions
+    basename,chgrp,chmod,chown,clearstatcache,copy,delete,dirname,%
+    diskfreespace,disk_total_space,fclose,feof,fflush,fgetc,fgetcsv,%
+    fgetss,file_get_contents,file,file_exists,fileatime,filectime,%
+    fileinode,filemtime,fileowner,fileperms,filesize,filetype,flock,%
+    fopen,fpassthru,fputs,fread,fscanf,fseek,fstat,ftell,ftruncate,%
+    set_file_buffer,is_dir,is_executable,is_file,is_link,%
+    is_writable,is_writeable,is_uploaded_file,link,linkinfo,mkdir,%
+    parse_ini_file,pathinfo,pclose,popen,readfile,readlink,rename,%
+    rmdir,stat,lstat,realpath,symlink,tempnam,tmpfile,touch,umask,%
+  %--- fribidi functions
+    fribidi_log2vis,%
+  %--- ftp functions
+    ftp_connect,ftp_login,ftp_pwd,ftp_cdup,ftp_chdir,ftp_mkdir,%
+    ftp_nlist,ftp_rawlist,ftp_systype,ftp_pasv,ftp_get,ftp_fget,%
+    ftp_fput,ftp_size,ftp_mdtm,ftp_rename,ftp_delete,ftp_site,%
+    ftp_quit,ftp_exec,ftp_set_option,ftp_get_option,%
+  %--- funchand functions
+    call_user_func_array,call_user_func,create_function,%
+    func_get_args,func_num_args,function_exists,%
+    register_shutdown_function,register_tick_function,%
+  %--- gettext functions
+    bindtextdomain,bind_textdomain_codeset,dcgettext,dcngettext,%
+    dngettext,gettext,ngettext,textdomain,%
+  %--- gmp functions
+    gmp_init,gmp_intval,gmp_strval,gmp_add,gmp_sub,gmp_mul,%
+    gmp_div_r,gmp_div_qr,gmp_div,gmp_mod,gmp_divexact,gmp_cmp,%
+    gmp_com,gmp_abs,gmp_sign,gmp_fact,gmp_sqrt,gmp_sqrtrm,%
+    gmp_pow,gmp_powm,gmp_prob_prime,gmp_gcd,gmp_gcdext,gmp_invert,%
+    gmp_jacobi,gmp_random,gmp_and,gmp_or,gmp_xor,gmp_setbit,%
+    gmp_scan0,gmp_scan1,gmp_popcount,gmp_hamdist,%
+  %--- http functions
+    header,headers_sent,setcookie,%
+  %--- hw functions
+    hw_Array2Objrec,hw_Children,hw_ChildrenObj,hw_Close,hw_Connect,%
+    hw_Deleteobject,hw_DocByAnchor,hw_DocByAnchorObj,%
+    hw_Document_BodyTag,hw_Document_Content,hw_Document_SetContent,%
+    hw_ErrorMsg,hw_EditText,hw_Error,hw_Free_Document,hw_GetParents,%
+    hw_GetChildColl,hw_GetChildCollObj,hw_GetRemote,%
+    hw_GetSrcByDestObj,hw_GetObject,hw_GetAndLock,hw_GetText,%
+    hw_GetObjectByQueryObj,hw_GetObjectByQueryColl,%
+    hw_GetChildDocColl,hw_GetChildDocCollObj,hw_GetAnchors,%
+    hw_Mv,hw_Identify,hw_InCollections,hw_Info,hw_InsColl,hw_InsDoc,%
+    hw_InsertObject,hw_mapid,hw_Modifyobject,hw_New_Document,%
+    hw_Output_Document,hw_pConnect,hw_PipeDocument,hw_Root,%
+    hw_Who,hw_getusername,hw_stat,hw_setlinkroot,hw_connection_info,%
+    hw_insertanchors,hw_getrellink,hw_changeobject,%
+  %--- ibase functions
+    ibase_connect,ibase_pconnect,ibase_close,ibase_query,%
+    ibase_fetch_row,ibase_fetch_object,ibase_field_info,%
+    ibase_free_result,ibase_prepare,ibase_execute,ibase_trans,%
+    ibase_rollback,ibase_timefmt,ibase_num_fields,ibase_blob_add,%
+    ibase_blob_close,ibase_blob_create,ibase_blob_echo,%
+    ibase_blob_import,ibase_blob_info,ibase_blob_open,%
+  %--- icap functions
+    icap_open,icap_close,icap_fetch_event,icap_list_events,%
+    icap_delete_event,icap_snooze,icap_list_alarms,%
+    icap_rename_calendar,icap_delete_calendar,icap_reopen,%
+  %--- iconv functions
+    iconv,iconv_get_encoding,iconv_set_encoding,ob_iconv_handler,%
+  %--- ifx functions
+    ifx_connect,ifx_pconnect,ifx_close,ifx_query,ifx_prepare,ifx_do,%
+    ifx_errormsg,ifx_affected_rows,ifx_getsqlca,ifx_fetch_row,%
+    ifx_fieldtypes,ifx_fieldproperties,ifx_num_fields,ifx_num_rows,%
+    ifx_create_char,ifx_free_char,ifx_update_char,ifx_get_char,%
+    ifx_copy_blob,ifx_free_blob,ifx_get_blob,ifx_update_blob,%
+    ifx_textasvarchar,ifx_byteasvarchar,ifx_nullformat,%
+    ifxus_free_slob,ifxus_close_slob,ifxus_open_slob,%
+    ifxus_seek_slob,ifxus_read_slob,ifxus_write_slob,%
+  %--- iisfunc functions
+    iis_get_server_by_path,iis_get_server_by_comment,iis_add_server,%
+    iis_set_dir_security,iis_get_dir_security,iis_set_server_rights,%
+    iis_set_script_map,iis_get_script_map,iis_set_app_settings,%
+    iis_stop_server,iis_stop_service,iis_start_service,%
+  %--- image functions
+    exif_imagetype,exif_read_data,exif_thumbnail,getimagesize,%
+    imagealphablending,imagearc,imagefilledarc,imageellipse,%
+    imagechar,imagecharup,imagecolorallocate,imagecolordeallocate,%
+    imagecolorclosest,imagecolorclosestalpha,imagecolorclosestthwb,%
+    imagecolorexactalpha,imagecolorresolve,imagecolorresolvealpha,%
+    imagecolorset,imagecolorsforindex,imagecolorstotal,%
+    imagecopy,imagecopymerge,imagecopymergegray,imagecopyresized,%
+    imagecreate,imagecreatetruecolor,imagetruecolortopalette,%
+    imagecreatefromgd2,imagecreatefromgd2part,imagecreatefromgif,%
+    imagecreatefrompng,imagecreatefromwbmp,imagecreatefromstring,%
+    imagecreatefromxpm,imagedashedline,imagedestroy,imagefill,%
+    imagefilledrectangle,imagefilltoborder,imagefontheight,%
+    imagegd,imagegd2,imagegif,imagepng,imagejpeg,imagewbmp,%
+    imageline,imageloadfont,imagepalettecopy,imagepolygon,%
+    imagepsencodefont,imagepsfreefont,imagepsloadfont,%
+    imagepsslantfont,imagepstext,imagerectangle,imagesetpixel,%
+    imagesetstyle,imagesettile,imagesetthickness,imagestring,%
+    imagesx,imagesy,imagettfbbox,imageftbbox,imagettftext,%
+    imagetypes,jpeg2wbmp,png2wbmp,iptcembed,read_exif_data,%
+  %--- imap functions
+    imap_8bit,imap_alerts,imap_append,imap_base64,imap_binary,%
+    imap_bodystruct,imap_check,imap_clearflag_full,imap_close,%
+    imap_delete,imap_deletemailbox,imap_errors,imap_expunge,%
+    imap_fetchbody,imap_fetchheader,imap_fetchstructure,%
+    imap_getmailboxes,imap_getsubscribed,imap_header,%
+    imap_headers,imap_last_error,imap_listmailbox,%
+    imap_mail,imap_mail_compose,imap_mail_copy,imap_mail_move,%
+    imap_mime_header_decode,imap_msgno,imap_num_msg,imap_num_recent,%
+    imap_ping,imap_popen,imap_qprint,imap_renamemailbox,imap_reopen,%
+    imap_rfc822_parse_headers,imap_rfc822_write_address,%
+    imap_search,imap_setacl,imap_set_quota,imap_setflag_full,%
+    imap_status,imap_subscribe,imap_uid,imap_undelete,%
+    imap_utf7_decode,imap_utf7_encode,imap_utf8,imap_thread,%
+  %--- info functions
+    assert,assert_options,extension_loaded,dl,getenv,get_cfg_var,%
+    get_defined_constants,get_extension_funcs,getmygid,%
+    get_loaded_extensions,get_magic_quotes_gpc,%
+    getlastmod,getmyinode,getmypid,getmyuid,get_required_files,%
+    ini_alter,ini_get,ini_get_all,ini_restore,ini_set,phpcredits,%
+    phpversion,php_logo_guid,php_sapi_name,php_uname,putenv,%
+    set_time_limit,version_compare,zend_logo_guid,zend_version,%
+  %--- ircg functions
+    ircg_pconnect,ircg_fetch_error_msg,ircg_set_current,ircg_join,%
+    ircg_msg,ircg_notice,ircg_nick,ircg_topic,ircg_channel_mode,%
+    ircg_whois,ircg_kick,ircg_ignore_add,ircg_ignore_del,%
+    ircg_is_conn_alive,ircg_lookup_format_messages,%
+    ircg_set_on_die,ircg_set_file,ircg_get_username,%
+    ircg_nickname_unescape,%
+  %--- java functions
+    java_last_exception_clear,java_last_exception_get,%
+  %--- ldap functions
+    ldap_add,ldap_bind,ldap_close,ldap_compare,ldap_connect,%
+    ldap_delete,ldap_dn2ufn,ldap_err2str,ldap_errno,ldap_error,%
+    ldap_first_attribute,ldap_first_entry,ldap_free_result,%
+    ldap_get_dn,ldap_get_entries,ldap_get_option,ldap_get_values,%
+    ldap_list,ldap_modify,ldap_mod_add,ldap_mod_del,%
+    ldap_next_attribute,ldap_next_entry,ldap_read,ldap_rename,%
+    ldap_set_option,ldap_unbind,ldap_8859_to_t61,%
+    ldap_next_reference,ldap_parse_reference,ldap_parse_result,%
+    ldap_sort,ldap_start_tls,ldap_t61_to_8859,%
+  %--- mail functions
+    mail,ezmlm_hash,%
+  %--- math functions
+    abs,acos,acosh,asin,asinh,atan,atanh,atan2,base_convert,bindec,%
+    cos,cosh,decbin,dechex,decoct,deg2rad,exp,expm1,floor,%
+    hexdec,hypot,is_finite,is_infinite,is_nan,lcg_value,log,log10,%
+    max,min,mt_rand,mt_srand,mt_getrandmax,number_format,octdec,pi,%
+    rad2deg,rand,round,sin,sinh,sqrt,srand,tan,tanh,%
+  %--- mbstring functions
+    mb_language,mb_parse_str,mb_internal_encoding,mb_http_input,%
+    mb_detect_order,mb_substitute_character,mb_output_handler,%
+    mb_strlen,mb_strpos,mb_strrpos,mb_substr,mb_strcut,mb_strwidth,%
+    mb_convert_encoding,mb_detect_encoding,mb_convert_kana,%
+    mb_decode_mimeheader,mb_convert_variables,%
+    mb_decode_numericentity,mb_send_mail,mb_get_info,%
+    mb_ereg,mb_eregi,mb_ereg_replace,mb_eregi_replace,mb_split,%
+    mb_ereg_search,mb_ereg_search_pos,mb_ereg_search_regs,%
+    mb_ereg_search_getregs,mb_ereg_search_getpos,%
+  %--- mcal functions
+    mcal_open,mcal_popen,mcal_reopen,mcal_close,%
+    mcal_rename_calendar,mcal_delete_calendar,mcal_fetch_event,%
+    mcal_append_event,mcal_store_event,mcal_delete_event,%
+    mcal_list_alarms,mcal_event_init,mcal_event_set_category,%
+    mcal_event_set_description,mcal_event_set_start,%
+    mcal_event_set_alarm,mcal_event_set_class,mcal_is_leap_year,%
+    mcal_date_valid,mcal_time_valid,mcal_day_of_week,%
+    mcal_date_compare,mcal_next_recurrence,%
+    mcal_event_set_recur_daily,mcal_event_set_recur_weekly,%
+    mcal_event_set_recur_monthly_wday,mcal_event_set_recur_yearly,%
+    mcal_event_add_attribute,mcal_expunge,mcal_week_of_year,%
+  %--- mcrypt functions
+    mcrypt_get_cipher_name,mcrypt_get_block_size,%
+    mcrypt_create_iv,mcrypt_cbc,mcrypt_cfb,mcrypt_ecb,mcrypt_ofb,%
+    mcrypt_list_modes,mcrypt_get_iv_size,mcrypt_encrypt,%
+    mcrypt_module_open,mcrypt_module_close,mcrypt_generic_deinit,%
+    mcrypt_generic,mdecrypt_generic,mcrypt_generic_end,%
+    mcrypt_enc_is_block_algorithm_mode,%
+    mcrypt_enc_is_block_mode,mcrypt_enc_get_block_size,%
+    mcrypt_enc_get_supported_key_sizes,mcrypt_enc_get_iv_size,%
+    mcrypt_enc_get_modes_name,mcrypt_module_self_test,%
+    mcrypt_module_is_block_algorithm,mcrypt_module_is_block_mode,%
+    mcrypt_module_get_algo_key_size,%
+  %--- mhash functions
+    mhash_get_hash_name,mhash_get_block_size,mhash_count,mhash,%
+  %--- misc functions
+    connection_aborted,connection_status,connection_timeout,%
+    define,defined,die,eval,exit,get_browser,highlight_file,%
+    ignore_user_abort,iptcparse,leak,pack,show_source,sleep,uniqid,%
+    usleep,%
+  %--- mnogosearch functions
+    udm_add_search_limit,udm_alloc_agent,udm_api_version,%
+    udm_cat_list,udm_clear_search_limits,udm_errno,udm_error,%
+    udm_free_agent,udm_free_ispell_data,udm_free_res,%
+    udm_get_res_field,udm_get_res_param,udm_load_ispell_data,%
+    udm_check_charset,udm_check_stored,udm_close_stored,udm_crc32,%
+  %--- msession functions
+    msession_connect,msession_disconnect,msession_count,%
+    msession_destroy,msession_lock,msession_unlock,msession_set,%
+    msession_uniq,msession_randstr,msession_find,msession_list,%
+    msession_set_array,msession_listvar,msession_timeout,%
+    msession_getdata,msession_setdata,msession_plugin,%
+  %--- msql functions
+    msql,msql_affected_rows,msql_close,msql_connect,msql_create_db,%
+    msql_data_seek,msql_dbname,msql_drop_db,msql_dropdb,msql_error,%
+    msql_fetch_field,msql_fetch_object,msql_fetch_row,%
+    msql_field_seek,msql_fieldtable,msql_fieldtype,msql_fieldflags,%
+    msql_free_result,msql_freeresult,msql_list_fields,%
+    msql_list_dbs,msql_listdbs,msql_list_tables,msql_listtables,%
+    msql_num_rows,msql_numfields,msql_numrows,msql_pconnect,%
+    msql_regcase,msql_result,msql_select_db,msql_selectdb,%
+  %--- mssql functions
+    mssql_close,mssql_connect,mssql_data_seek,mssql_fetch_array,%
+    mssql_fetch_object,mssql_fetch_row,mssql_field_length,%
+    mssql_field_seek,mssql_field_type,mssql_free_result,%
+    mssql_min_error_severity,mssql_min_message_severity,%
+    mssql_num_fields,mssql_num_rows,mssql_pconnect,mssql_query,%
+    mssql_select_db,mssql_bind,mssql_execute,mssql_fetch_assoc,%
+    mssql_guid_string,mssql_init,mssql_rows_affected,%
+  %--- muscat functions
+    muscat_setup,muscat_setup_net,muscat_give,muscat_get,%
+  %--- mysql functions
+    mysql_affected_rows,mysql_change_user,mysql_character_set_name,%
+    mysql_connect,mysql_create_db,mysql_data_seek,mysql_db_name,%
+    mysql_drop_db,mysql_errno,mysql_error,mysql_escape_string,%
+    mysql_fetch_assoc,mysql_fetch_field,mysql_fetch_lengths,%
+    mysql_fetch_row,mysql_field_flags,mysql_field_name,%
+    mysql_field_seek,mysql_field_table,mysql_field_type,%
+    mysql_info,mysql_insert_id,mysql_list_dbs,mysql_list_fields,%
+    mysql_list_tables,mysql_num_fields,mysql_num_rows,%
+    mysql_ping,mysql_query,mysql_unbuffered_query,%
+    mysql_result,mysql_select_db,mysql_tablename,mysql_thread_id,%
+    mysql_get_host_info,mysql_get_proto_info,mysql_get_server_info,%
+  %--- network functions
+    checkdnsrr,closelog,debugger_off,debugger_on,%
+    fsockopen,gethostbyaddr,gethostbyname,gethostbynamel,getmxrr,%
+    getprotobynumber,getservbyname,getservbyport,ip2long,long2ip,%
+    pfsockopen,socket_get_status,socket_set_blocking,%
+    syslog,%
+  %--- nis functions
+    yp_get_default_domain,yp_order,yp_master,yp_match,yp_first,%
+    yp_errno,yp_err_string,yp_all,yp_cat,%
+  %--- oci8 functions
+    OCIDefineByName,OCIBindByName,OCILogon,OCIPLogon,OCINLogon,%
+    OCIExecute,OCICommit,OCIRollback,OCINewDescriptor,OCIRowCount,%
+    OCIResult,OCIFetch,OCIFetchInto,OCIFetchStatement,%
+    OCIColumnName,OCIColumnSize,OCIColumnType,OCIServerVersion,%
+    OCINewCursor,OCIFreeStatement,OCIFreeCursor,OCIFreeDesc,%
+    OCIError,OCIInternalDebug,OCICancel,OCISetPrefetch,%
+    OCISaveLobFile,OCISaveLob,OCILoadLob,OCIColumnScale,%
+    OCIColumnTypeRaw,OCINewCollection,OCIFreeCollection,%
+    OCICollAppend,OCICollAssignElem,OCICollGetElem,OCICollMax,%
+    OCICollTrim,%
+  %--- oracle functions
+    Ora_Bind,Ora_Close,Ora_ColumnName,Ora_ColumnSize,Ora_ColumnType,%
+    Ora_CommitOff,Ora_CommitOn,Ora_Do,Ora_Error,Ora_ErrorCode,%
+    Ora_Fetch,Ora_Fetch_Into,Ora_GetColumn,Ora_Logoff,Ora_Logon,%
+    Ora_Numcols,Ora_Numrows,Ora_Open,Ora_Parse,Ora_Rollback,%
+  %--- outcontrol functions
+    flush,ob_start,ob_get_contents,ob_get_length,ob_get_level,%
+    ob_flush,ob_clean,ob_end_flush,ob_end_clean,ob_implicit_flush,%
+  %--- ovrimos functions
+    ovrimos_connect,ovrimos_close,ovrimos_longreadlen,%
+    ovrimos_execute,ovrimos_cursor,ovrimos_exec,ovrimos_fetch_into,%
+    ovrimos_result,ovrimos_result_all,ovrimos_num_rows,%
+    ovrimos_field_name,ovrimos_field_type,ovrimos_field_len,%
+    ovrimos_free_result,ovrimos_commit,ovrimos_rollback,%
+  %--- pcntl functions
+    pcntl_fork,pcntl_signal,pcntl_waitpid,pcntl_wexitstatus,%
+    pcntl_wifsignaled,pcntl_wifstopped,pcntl_wstopsig,%
+    pcntl_exec,%
+  %--- pcre functions
+    preg_match,preg_match_all,preg_replace,preg_replace_callback,%
+    preg_quote,preg_grep,Pattern Modifiers,Pattern Syntax,%
+  %--- pdf functions
+    pdf_add_annotation,pdf_add_bookmark,pdf_add_launchlink,%
+    pdf_add_note,pdf_add_outline,pdf_add_pdflink,pdf_add_thumbnail,%
+    pdf_arc,pdf_arcn,pdf_attach_file,pdf_begin_page,%
+    pdf_begin_template,pdf_circle,pdf_clip,pdf_close,pdf_closepath,%
+    pdf_closepath_stroke,pdf_close_image,pdf_close_pdi,%
+    pdf_concat,pdf_continue_text,pdf_curveto,pdf_delete,%
+    pdf_endpath,pdf_end_pattern,pdf_end_template,pdf_fill,%
+    pdf_findfont,pdf_get_buffer,pdf_get_font,pdf_get_fontname,%
+    pdf_get_image_height,pdf_get_image_width,pdf_get_parameter,%
+    pdf_get_pdi_value,pdf_get_majorversion,pdf_get_minorversion,%
+    pdf_initgraphics,pdf_lineto,pdf_makespotcolor,pdf_moveto,%
+    pdf_open,pdf_open_CCITT,pdf_open_file,pdf_open_gif,%
+    pdf_open_image_file,pdf_open_jpeg,pdf_open_memory_image,%
+    pdf_open_pdi_page,pdf_open_png,pdf_open_tiff,pdf_place_image,%
+    pdf_rect,pdf_restore,pdf_rotate,pdf_save,pdf_scale,pdf_setcolor,%
+    pdf_setflat,pdf_setfont,pdf_setgray,pdf_setgray_fill,%
+    pdf_setlinecap,pdf_setlinejoin,pdf_setlinewidth,pdf_setmatrix,%
+    pdf_setpolydash,pdf_setrgbcolor,pdf_setrgbcolor_fill,%
+    pdf_set_border_color,pdf_set_border_dash,pdf_set_border_style,%
+    pdf_set_duration,pdf_set_font,pdf_set_horiz_scaling,%
+    pdf_set_info_author,pdf_set_info_creator,pdf_set_info_keywords,%
+    pdf_set_info_title,pdf_set_leading,pdf_set_parameter,%
+    pdf_set_text_rendering,pdf_set_text_rise,pdf_set_text_matrix,%
+    pdf_set_word_spacing,pdf_show,pdf_show_boxed,pdf_show_xy,%
+    pdf_stringwidth,pdf_stroke,pdf_translate,%
+  %--- pfpro functions
+    pfpro_init,pfpro_cleanup,pfpro_process,pfpro_process_raw,%
+  %--- pgsql functions
+    pg_close,pg_affected_rows,pg_connect,pg_dbname,pg_end_copy,%
+    pg_query,pg_fetch_array,pg_fetch_object,pg_fetch_row,%
+    pg_field_name,pg_field_num,pg_field_prtlen,pg_field_size,%
+    pg_free_result,pg_last_oid,pg_host,pg_last_notice,pg_lo_close,%
+    pg_lo_export,pg_lo_import,pg_lo_open,pg_lo_read,pg_lo_seek,%
+    pg_lo_read_all,pg_lo_unlink,pg_lo_write,pg_num_fields,%
+    pg_options,pg_pconnect,pg_port,pg_put_line,pg_fetch_result,%
+    pg_client_encoding,pg_trace,pg_tty,pg_untrace,pg_get_result,%
+    pg_send_query,pg_cancel_query,pg_connection_busy,%
+    pg_connection_status,pg_copy_from,pg_copy_to,pg_escape_bytea,%
+    pg_result_error,%
+  %--- posix functions
+    posix_kill,posix_getpid,posix_getppid,posix_getuid,%
+    posix_getgid,posix_getegid,posix_setuid,posix_seteuid,%
+    posix_setegid,posix_getgroups,posix_getlogin,posix_getpgrp,%
+    posix_setpgid,posix_getpgid,posix_getsid,posix_uname,%
+    posix_ctermid,posix_ttyname,posix_isatty,posix_getcwd,%
+    posix_getgrnam,posix_getgrgid,posix_getpwnam,posix_getpwuid,%
+  %--- printer functions
+    printer_open,printer_abort,printer_close,printer_write,%
+    printer_set_option,printer_get_option,printer_create_dc,%
+    printer_start_doc,printer_end_doc,printer_start_page,%
+    printer_create_pen,printer_delete_pen,printer_select_pen,%
+    printer_delete_brush,printer_select_brush,printer_create_font,%
+    printer_select_font,printer_logical_fontheight,%
+    printer_draw_rectangle,printer_draw_elipse,printer_draw_text,%
+    printer_draw_chord,printer_draw_pie,printer_draw_bmp,%
+  %--- pspell functions
+    pspell_add_to_personal,pspell_add_to_session,pspell_check,%
+    pspell_config_create,pspell_config_ignore,pspell_config_mode,%
+    pspell_config_repl,pspell_config_runtogether,%
+    pspell_new,pspell_new_config,pspell_new_personal,%
+    pspell_store_replacement,pspell_suggest,%
+  %--- qtdom functions
+    qdom_tree,qdom_error,%
+  %--- readline functions
+    readline,readline_add_history,readline_clear_history,%
+    readline_info,readline_list_history,readline_read_history,%
+  %--- recode functions
+    recode_string,recode,recode_file,%
+  %--- regex functions
+    ereg,ereg_replace,eregi,eregi_replace,split,spliti,sql_regcase,%
+  %--- sem functions
+    sem_get,sem_acquire,sem_release,sem_remove,shm_attach,%
+    shm_remove,shm_put_var,shm_get_var,shm_remove_var,ftok,%
+  %--- sesam functions
+    sesam_connect,sesam_disconnect,sesam_settransaction,%
+    sesam_rollback,sesam_execimm,sesam_query,sesam_num_fields,%
+    sesam_diagnostic,sesam_fetch_result,sesam_affected_rows,%
+    sesam_field_array,sesam_fetch_row,sesam_fetch_array,%
+    sesam_free_result,%
+  %--- session functions
+    session_start,session_destroy,session_name,session_module_name,%
+    session_id,session_register,session_unregister,session_unset,%
+    session_get_cookie_params,session_set_cookie_params,%
+    session_encode,session_set_save_handler,session_cache_limiter,%
+    session_write_close,%
+  %--- shmop functions
+    shmop_open,shmop_read,shmop_write,shmop_size,shmop_delete,%
+  %--- snmp functions
+    snmpget,snmpset,snmpwalk,snmpwalkoid,snmp_get_quick_print,%
+    snmprealwalk,%
+  %--- strings functions
+    addcslashes,addslashes,bin2hex,chop,chr,chunk_split,%
+    count_chars,crc32,crypt,echo,explode,get_html_translation_table,%
+    hebrev,hebrevc,htmlentities,htmlspecialchars,implode,join,%
+    localeconv,ltrim,md5,md5_file,metaphone,nl_langinfo,nl2br,ord,%
+    print,printf,quoted_printable_decode,quotemeta,str_rot13,rtrim,%
+    setlocale,similar_text,soundex,sprintf,strncasecmp,strcasecmp,%
+    strcmp,strcoll,strcspn,strip_tags,stripcslashes,stripslashes,%
+    strlen,strnatcmp,strnatcasecmp,strncmp,str_pad,strpos,strrchr,%
+    strrev,strrpos,strspn,strstr,strtok,strtolower,strtoupper,%
+    strtr,substr,substr_count,substr_replace,trim,ucfirst,ucwords,%
+    vsprintf,wordwrap,%
+  %--- swf functions
+    swf_openfile,swf_closefile,swf_labelframe,swf_showframe,%
+    swf_getframe,swf_mulcolor,swf_addcolor,swf_placeobject,%
+    swf_removeobject,swf_nextid,swf_startdoaction,%
+    swf_actiongeturl,swf_actionnextframe,swf_actionprevframe,%
+    swf_actionstop,swf_actiontogglequality,swf_actionwaitforframe,%
+    swf_actiongotolabel,swf_enddoaction,swf_defineline,%
+    swf_definepoly,swf_startshape,swf_shapelinesolid,%
+    swf_shapefillsolid,swf_shapefillbitmapclip,%
+    swf_shapemoveto,swf_shapelineto,swf_shapecurveto,%
+    swf_shapearc,swf_endshape,swf_definefont,swf_setfont,%
+    swf_fontslant,swf_fonttracking,swf_getfontinfo,swf_definetext,%
+    swf_definebitmap,swf_getbitmapinfo,swf_startsymbol,%
+    swf_startbutton,swf_addbuttonrecord,swf_oncondition,%
+    swf_viewport,swf_ortho,swf_ortho2,swf_perspective,swf_polarview,%
+    swf_pushmatrix,swf_popmatrix,swf_scale,swf_translate,swf_rotate,%
+  %--- sybase functions
+    sybase_affected_rows,sybase_close,sybase_connect,%
+    sybase_fetch_array,sybase_fetch_field,sybase_fetch_object,%
+    sybase_field_seek,sybase_free_result,sybase_get_last_message,%
+    sybase_min_error_severity,sybase_min_message_severity,%
+    sybase_num_fields,sybase_num_rows,sybase_pconnect,sybase_query,%
+    sybase_select_db,%
+  %--- uodbc functions
+    odbc_autocommit,odbc_binmode,odbc_close,odbc_close_all,%
+    odbc_connect,odbc_cursor,odbc_do,odbc_error,odbc_errormsg,%
+    odbc_execute,odbc_fetch_into,odbc_fetch_row,odbc_fetch_array,%
+    odbc_fetch_object,odbc_field_name,odbc_field_num,%
+    odbc_field_len,odbc_field_precision,odbc_field_scale,%
+    odbc_longreadlen,odbc_num_fields,odbc_pconnect,odbc_prepare,%
+    odbc_result,odbc_result_all,odbc_rollback,odbc_setoption,%
+    odbc_tableprivileges,odbc_columns,odbc_columnprivileges,%
+    odbc_primarykeys,odbc_foreignkeys,odbc_procedures,%
+    odbc_specialcolumns,odbc_statistics,%
+  %--- url functions
+    base64_decode,base64_encode,parse_url,rawurldecode,rawurlencode,%
+    urlencode,%
+  %--- var functions
+    doubleval,empty,floatval,gettype,get_defined_vars,%
+    import_request_variables,intval,is_array,is_bool,is_double,%
+    is_int,is_integer,is_long,is_null,is_numeric,is_object,is_real,%
+    is_scalar,is_string,isset,print_r,serialize,settype,strval,%
+    unset,var_dump,var_export,is_callable,%
+  %--- vpopmail functions
+    vpopmail_add_domain,vpopmail_del_domain,%
+    vpopmail_add_domain_ex,vpopmail_del_domain_ex,%
+    vpopmail_add_user,vpopmail_del_user,vpopmail_passwd,%
+    vpopmail_auth_user,vpopmail_alias_add,vpopmail_alias_del,%
+    vpopmail_alias_get,vpopmail_alias_get_all,vpopmail_error,%
+  %--- w32api functions
+    w32api_set_call_method,w32api_register_function,%
+    w32api_deftype,w32api_init_dtype,%
+  %--- wddx functions
+    wddx_serialize_value,wddx_serialize_vars,wddx_packet_start,%
+    wddx_add_vars,wddx_deserialize,%
+  %--- xml functions
+    xml_parser_create,xml_set_object,xml_set_element_handler,%
+    xml_set_processing_instruction_handler,xml_set_default_handler,%
+    xml_set_notation_decl_handler,%
+    xml_parse,xml_get_error_code,xml_error_string,%
+    xml_get_current_column_number,xml_get_current_byte_index,%
+    xml_parser_free,xml_parser_set_option,xml_parser_get_option,%
+    utf8_encode,xml_parser_create_ns,%
+    xml_set_start_namespace_decl_handler,%
+  %--- xslt functions
+    xslt_set_log,xslt_create,xslt_errno,xslt_error,xslt_free,%
+    xslt_set_sax_handler,xslt_set_scheme_handler,%
+    xslt_set_base,xslt_set_encoding,xslt_set_sax_handlers,%
+  %--- yaz functions
+    yaz_addinfo,yaz_close,yaz_connect,yaz_errno,yaz_error,yaz_hits,%
+    yaz_database,yaz_range,yaz_record,yaz_search,yaz_present,%
+    yaz_scan,yaz_scan_result,yaz_ccl_conf,yaz_ccl_parse,%
+    yaz_wait,yaz_sort,%
+  %--- zip functions
+    zip_close,zip_entry_close,zip_entry_compressedsize,%
+    zip_entry_filesize,zip_entry_name,zip_entry_open,zip_entry_read,%
+    zip_read,%
+  %--- zlib functions
+    gzclose,gzeof,gzfile,gzgetc,gzgets,gzgetss,gzopen,gzpassthru,%
+    gzread,gzrewind,gzseek,gztell,gzwrite,readgzfile,gzcompress,%
+    gzdeflate,gzinflate,gzencode,
+	},%
+	morekeywords=[3]{break, case, catch, continue, debugger, default, delete, 
+		do, else, false, finally, for, function, if, in, instanceof, new, null,
+		return, switch, this, throw, true, try, typeof, var, void, while, with,
+		%- Add-ons https://gist.github.com/Geruhn/3d21f60a869457373d84
+		arguments, await, class, const, debugger, enum, eval, export, extends, 
+		implements, import, interface, let, 
+		package, private, protected, public, static, super, this, yield,
+		%- Add-ons of object keywords
+		Array, Date, String,
+	},
+	morekeywords=[4]{%- Add-ons of JavaScript methods
+		%- window and document properties
+		write, getElementById, innerHtml, innerHTML,
+		appendChild, insertBefore, removeChild, replaceChild,
+		backgroundcolor,
+		childNodes, firstChild, lastChild, parentNode, previousSibling, nextSibling,
+		%- Array methods
+		join, concat, pop, push, reverse, shift, sort, unshift,
+		%- Date methods
+		getDate, setDate, getDay,% No "setDay"
+		getFullYear, setFullYear, getHours, setHours, getMilliseconds, setMilliseconds,
+		getMinutes, setMinutes, getMonth, setMonth, getSeconds, getTime, setTime,
+		getTimezoneOffset, setTimezoneOffset,
+		getUTCDate, setUTCDate, getUTCDay,% No "setUTCDay"
+		getYear, setYear, setTimeout,% No "getTimeout
+		getUTCFullYear, setUTCFullYear,
+		%- String methods
+		charAt, substring, toLowerCase, toUpperCase, indexOf, lastIndexOf, eval, split,
+		%- Mathematical methods
+		parseInt, parseFloat, chain,
+		Math.abs, Math.sqrt, Math.random, Math.cos, Math.sin, Math.tan,
+		Math.log, Math.exp, Math.min, Math.max, Math.round,
+	},
+	morekeywords=[5]{%- Add-ons of JavaScript properties
+		%- Array properties
+		length,
+		%- String properties
+		charAt, substring, toLowerCase, toUpperCase, indexOf
+	},  
+	sensitive,%
+	morecomment=[l]\#,%
+	morecomment=[l]//,%
+	morecomment=[s]{/*}{*/},%
+	morestring=[b]",%
+	morestring=[b]',%
+}[keywords,comments,strings]
+
+
+%--- Remarque concernant les algorithmes (pseudocode)
+%----------------------------------------------------
+%- Après étude, aucune extension de présentation simple d'un pseudocode n'est sastisfaisante sans
+%- un investissement conséquent. Même l'utilisation seule de l'extension `fancyvrb', bien qu'en 
+%- offrant de nombreuses ouvertures (par ex. à la base de `minted') n'est pas aisée à intégrer
+%- dans une boîte `tcolorbox'. La solution la plus efficace reste d'utiliser `listings' :
+%- amplement suffisant pour nos besoins... (quitte à définir des mots-clefs spécifiques)
+%-----
+
+%- Pseudo-code and algorithm listings
+\lstdefinelanguage{pseudocode}{%
+  morekeywords={Répéter, Pour, Si, Alors, Sinon, SinonSi, FinSi, FinPour, Jusque, FinTri, 
+                allant_de, à, À, de, variant_de, Variant_de, Suivant, Pas,
+                TantQue, FinTantQue, Faire, Écrire, Lire, Début, Fin,
+                Variable, Variables, Tableau, Tableaux, REM, 
+                Ou, Et, Non, Or, And, Not, OU, ET, NON, OR, AND, NOT, XOR,
+                Fonction, FinFonction, Procédure, FinProcédure,
+                Ouvrir, Fermer, LireFichier,
+                Dimmensionner, ReDimensionner,
+                Return, Renvoyer,
+                If, ElseIf, Else, if, elseif, else, 
+                Switch, switch, case, break, default,
+                For, for, var,
+                While, while, Do, do,
+                function, return,
+                },
+  morekeywords=[2]{
+    % Fonctions génériques
+    Len, Mid, Find, Mod, Modulo, Sum, Ent, Aléa, Lecture,
+    % Instructions et mots-clefs génériques
+    Public, Private,
+  },
+  sensitive=true,% Case sentitive or not
+  showtabs=false, showstringspaces=true, showspaces=false,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]", morestring=[s]{«}{»}, morestring=[s]{“}{”},
+  %morestring=[s]{(}{)},
+}
+
+%- Algorithms style (basic output: sophistications later... TODO)
+\lstdefinestyle{lstalgostyle}{% needed syntax for colors: \color{<name>} (due to key-value system)
+  aboveskip=0pt, belowskip=0pt,% default=\medskipamount
+  basicstyle={\small\shellttfont},
+  %linewidth=.9\linewidth,% default=\linewidth
+  % frame settings
+  %backgroundcolor=\color{\@layoutcolor!0},%\color{orange!20},
+  frame=l,% adds a line to the left (used for line numbers)
+  framesep=8pt,
+  framerule=0pt,% default=0.4pt,
+  %fillcolor=\color{\@layoutcolor!2},% frame-fill color (lines numbering column)
+  %framextopmargin=4pt,% default=0pt
+  %framexbottommargin=4pt,% default=0pt
+  %frameround=tttt,% default ffff for false
+  %rulecolor=\color{orange},% frame-rule-color
+  % line numbering
+  numbers=left,% line numbers on the left
+  numbersep=6pt,% numbers-code distance
+  numberstyle={\tiny\sffamily\itshape\color{black!80}},
+  % code display
+  language=pseudocode,
+  identifierstyle=\color{black},
+  stringstyle=\color{algostringcolor},
+  commentstyle=\color{idecommentcolor},
+  keywordstyle=\color{secondcolor}\bfseries\upshape,
+  keywordstyle={[2]\color{idesyntaxcolor}\bfseries\itshape},
+  emphstyle=\color{black}\itshape\bfseries,% emphasized style
+  emph={Tri_Bulle,Tri_Selection,Tri_Insertion,Tri_Shell},% emphasizes particular identifiers
+  otherkeywords={--,-->,<--,::},
+  %escapeinside = {\%*}{*},% useful for adding LaTeX within the code
+  %keepspaces=true,% tab to spaces: default=false
+  %showspaces=false,% all blank spaces appear (underscore bracket): default=false
+  %showtabs=false,% shows tabs within strings (underscore bracket): default=true
+  %showstringspaces=false,
+  breaklines=true,
+  breakatwhitespace=true,
+  %escapechar=\%, 
+  tabsize=2, extendedchars=true, captionpos=t,
+  % adjusting margins
+  xleftmargin=12pt,% framesep + framerule + 4pt (numbersep-4pt=indentation) % default=0pt
+  %xrightmargin=-2.4pt,% numbersep + framerule % default=0pt
+}
+
+%--------------------------------------------------------------------------------------------------
+%---- Code listing layouts (with/from the `listings' package)
+%--------------------------------------------------------------------------------------------------
+
+%---
+%- Define code styles for embedded `tcolorbox' (see main file the layouts, below the listing styles)
+%- or direct use with the `listings' package
+%---
+
+%-- General styles for code listings (to be used later in other specific styles)
+
+%- Frame style - Note: needed syntax for colors →  \color{<name>} (due to key-value system)
+\lstdefinestyle{lstframelayout}{%- General frame layout settings for code listings
+		%linewidth=.9\linewidth,% default=\linewidth
+		%- frame settings
+		%backgroundcolor=\color{\@layoutcolor!5},
+		frame=l,% adds a line to the left (used for line numbers)
+		framesep=8pt,
+		framerule=0pt,% default=0.4pt,
+		%fillcolor=\color{\@layoutcolor!15},% frame-fill color (lines numbering column)
+		%framextopmargin=4pt, framexbottommargin=4pt,% default=0pt
+		%frameround=tttt,% default ffff for false
+		%rulecolor=\color{orange},% frame-rule-color
+		%- line (column) numbering
+		numbers=left,% column of numbers on the left
+		numbersep=4pt,% numbers-code distance
+		numberstyle={\tiny\sffamily\itshape\color{\@titlingcolor}},
+		%- spaces, breaks and escaping
+		aboveskip=0pt, % default=\medskipamount
+		belowskip=0pt,% default=\medskipamount
+		breaklines=true, 
+		breakatwhitespace=true,
+		%keepspaces=true,% tab to spaces: default=false
+		%showspaces=true,% all blank spaces appear (underscore bracket): default=false
+		%showtabs=false,% shows tabs within strings (underscore bracket): default=true
+		%escapeinside = {\%*}{*},% useful for adding LaTeX within the code
+		tabsize=2, extendedchars=true, captionpos=t,
+		%- adjusting margins
+		xleftmargin=10.0pt,% framesep + framerule + 2pt (numbersep-2pt=indentation) % default=0pt
+		%xrightmargin=-2.4pt,% numbersep + framerule % default=0pt
+}
+
+%-- HTML code listing layout
+
+%- HTML code listings (Firefox color code; seems to be roughly the same as IDE Eclipse)
+\lstdefinestyle{lsthtmlstyle}{% 
+	language=HTML5,
+	%- I.		Set the tags (between < and >) and apply a style
+		tagstyle=\color{idesyntaxcolor},% everything from < to > are styled by tagstyle=<code>
+		%tagstyle=\color{yellow!70!black},
+	%- II.	Set the comment properly with correct tags (cf. TeX.SE /questions/252307/)
+		%usekeywordsintag=true,% default=true
+		markfirstintag=true,% Prints the first name in tags with keyword style (for personal tags)
+		morecomment=[s]{<!-}{-->},% HTML comments
+	%- III. Further styled tags by hacking \lst@BeginTag and \lst@EndTag (see commands above)
+	%- IV.	Set characters ! and / using a consistent color to form !DOCTYPE and /html
+		alsoletter={!/},
+	%- V.		Font and like
+		basicstyle={\small\ttfamily},
+		%basicstyle={\lstfontsize\ttfamily},
+		basewidth=.5em,% letter space (more compact)
+	%- VI.	Add-ons
+		%literate=*{:}{{{\color{csssyntaxcolor}{:}}}}{1}
+		%literate=%
+			%{/}{{{\color{idesyntaxcolor}{/}}}}{1}% NON car bouffe les commentaires (même définis après)
+			%{\{}{{{\color{csssyntaxcolor}{\{}}}}{1}
+			%{\}}{{{\color{csssyntaxcolor}{\}}}}}{1},
+		%alsodigit={-},
+		%alsoletter={!/},% To have the same color as < and > for <! and /> (see redefinition above)
+		%- CSS complements
+		morecomment=[l]{//},
+		morecomment=[s]{/*}{*/},% CSS comments
+		%moredelim=[s][{\color{csssyntaxcolor}\bfseries}]{:\ },
+		%moredelim=[s][{\color{csssyntaxcolor}\bfseries}]{.\ },
+		%moredelim=[s][{\color{csssyntaxcolor}\bfseries}]{\#\ },
+		%- HTML tuning
+		%moredelim=[l][{\color{red}}]{/},
+		%moredelim=*[s][{\color{idesyntaxcolor}}]{<}{>},
+		%moredelim=[s][{\color{idecommentcolor}\itshape}]{<!--}{-->},
+		%- Old code display
+		%moredelim=*[s][{\color{idesyntaxcolor}}]{<}{>},
+		%moredelim=[s][{\color{idecommentcolor}}]{<!--}{-->},
+		%moredelim=[s][{\color{idesyntaxcolor}}]{\ }{=},
+		%moredelim=[s][{\color{idesyntaxcolor}}]{\    }{=} % here there is \tab
+		%emph={out},% emphasizes particular identifiers (e.g `out' for Java, like Eclipse IDE)
+	%- VII.	Apply the styles
+		keywordstyle={[1]{\color{idesyntaxcolor}\bfseries}},
+		%keywordstyle={[2]{\color{idesyntaxcolor}}},% old attribute color as keyword
+		keywordstyle={[2]{\color{csssyntaxcolor}\bfseries}},
+		identifierstyle=\color{black},
+		commentstyle={\color{idecommentcolor}\itshape},
+		stringstyle=\color{idestringcolor},
+		emphstyle={\color{ideMisccolor}\itshape\bfseries},% emphasized style
+	%alsolanguage=CSS,
+	style=lstframelayout,
+	escapechar=\&, 
+}
+%- HTML style without numbered lines
+\lstdefinestyle{lsthtmltext}{%
+	style=lsthtmlstyle,
+	basicstyle={\small\ttfamily}, basewidth=.5em,
+	numbers=none,
+}
+
+%-- CSS code listing layout (Firefox color code; seems to be roughly the same as IDE Eclipse)
+
+\lstdefinestyle{lstcssstyle}{%
+	language=CSS,% alsolanguage=HTML5,
+	%linewidth=.9\linewidth,% default=\linewidth
+	%- frame settings
+	%backgroundcolor=\color{\@layoutcolor!5},
+	frame=l,% adds a line to the left (used for line numbers)
+	framesep=8pt,
+	framerule=0pt,% default=0.4pt,
+	%fillcolor=\color{\@layoutcolor!15},% frame-fill color (lines numbering column)
+	%framextopmargin=4pt, framexbottommargin=4pt,% default=0pt
+	%frameround=tttt,% default ffff for false
+	%rulecolor=\color{orange},% frame-rule-color
+	% line (column) numbering
+	numbers=left,% column of numbers on the left
+	numbersep=4pt,% numbers-code distance
+	numberstyle={\tiny\sffamily\itshape\color{\@titlingcolor}},
+	%- code display
+	aboveskip=0pt, belowskip=0pt,% default=\medskipamount
+	breaklines=true, breakatwhitespace=true,
+	escapechar=\%, tabsize=2, extendedchars=true, captionpos=t,
+	%- adjusting margins
+	xleftmargin=10.0pt,% framesep + framerule + 2pt (numbersep-2pt=indentation) % default=0pt
+	%xrightmargin=-2.4pt,% numbersep + framerule % default=0pt
+}
+
+%-- CSS code listing style without numbered lines
+
+\lstdefinestyle{lstcsstext}{%
+	style=lstcssstyle,% alsolanguage=HTML5,
+	basicstyle={\small\ttfamily}, basewidth=.5em,
+	numbers=none, %frame=lines, backgroundcolor=\color{\@layoutcolor!2}, 
+}
+
+%-- JavaScript code listing style with numbered lines
+
+\lstdefinestyle{lstjsstyle}{%
+	language=JavaScript,
+	%linewidth=.9\linewidth,% default=\linewidth
+	%- frame settings
+	%backgroundcolor=\color{\@layoutcolor!5},
+	frame=l,% adds a line to the left (used for line numbers)
+	framesep=8pt,
+	framerule=0pt,% default=0.4pt,
+	%fillcolor=\color{\@layoutcolor!15},% frame-fill color (lines numbering column)
+	%framextopmargin=4pt,% default=0pt
+	%framexbottommargin=4pt,% default=0pt
+	%frameround=tttt,% default ffff for false
+	%rulecolor=\color{orange},% frame-rule-color
+	%- line (column) numbering
+	numbers=left,% column of numbers on the left
+	numbersep=4pt,% numbers-code distance
+	numberstyle={\tiny\sffamily\itshape\color{\@titlingcolor}},
+	%- code display
+	aboveskip=0pt, belowskip=0pt,% default=\medskipamount
+	breaklines=true, breakatwhitespace=true,
+	escapechar=\%, tabsize=2, extendedchars=true, captionpos=t,
+	%- adjusting margins
+	xleftmargin=10.0pt,% framesep + framerule + 2pt (numbersep-2pt=indentation) % default=0pt
+	%xrightmargin=-2.4pt,% numbersep + framerule % default=0pt
+}
+
+%-- JavaScript code listing style without numbered lines
+
+\lstdefinestyle{lstjstext}{%
+	style=lstjsstyle,
+	%basicstyle={\normalsize\ttfamily},
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	%framextopmargin=2pt, framexbottommargin=2pt,% default=0pt
+}
+
+%-- JavaScript code listing text style
+
+\lstdefinestyle{lstjsintext}{%
+	style=lstjsstyle,
+	%basicstyle={\normalsize\ttfamily},
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	backgroundcolor=\color{thirdcolor!25!white},
+	aboveskip=2pt, belowskip=2pt,
+	framerule=2pt, framesep=4pt, rulecolor=\color{secondcolor},
+	xleftmargin=6pt,% framesep + framerule?
+	%framextopmargin=2pt, framexbottommargin=2pt,% default=0pt
+}
+
+%-- Coloured digits and Php variables in code listings (not in comments/strings beetwen quotes)
+
+\definecolor{digitcolor}{HTML}{663300}% Dark brown
+%\newcommand\digitcolor{\color{digitcolor}}
+\definecolor{phpvariablecolor}{HTML}{999900}% Yellow-kaki rgb(153, 153, 0)
+\definecolor{graycommentcolor}{RGB}{160,160,160}% Gray/red
+
+%- Numeral value assignment and Php variables (after "=" sign, with/whithout "$" sign)
+\newif\iffirstchar\firstchartrue
+\newif\ifstartedbyadigit
+\newif\ifprecededbyequalsign
+\newif\ifstartedbyadollar
+\newif\ifprecededbydollarsign
+\newcommand\processletter
+{%
+  \ifnum\lst@mode=\lst@Pmode%
+    \iffirstchar%
+        \global\startedbyadigitfalse%
+      \fi
+      \global\firstcharfalse%
+    \fi
+}
+\newcommand\processdigit
+{%
+  \ifnum\lst@mode=\lst@Pmode%
+      \iffirstchar%
+        \global\startedbyadigittrue%
+      \fi
+      \global\firstcharfalse%
+  \fi
+}
+\newcommand\processdollar{%
+	\ifnum\lst@mode=\lst@Pmode%
+		\iffirstchar%
+			\global\startedbyadollartrue%
+		\fi
+		\global\firstcharfalse%
+	\fi
+}
+\lst@AddToHook{OutputOther}{%
+	\lst@IfLastOtherOneOf{=}
+		{\global\precededbyequalsigntrue}
+		{}%
+}
+\lst@AddToHook{OutputOther}{%
+	\lst@IfLastOtherOneOf{$}
+		{\global\precededbyequalsigntrue}
+		{}%
+}
+\lst@AddToHook{Output}{%
+	\ifprecededbyequalsign% after equal sign
+		\ifstartedbyadigit%
+			\def\lst@thestyle{\color{digitcolor}}%
+		\fi
+		\ifstartedbyadollar%
+			\def\lst@thestyle{\color{phpvariablecolor}}%
+		\fi
+	\else% before equal sign
+		\startedbyadigitfalse% don't start with a digit in all cases
+		\ifstartedbyadollar% Php variable
+			\def\lst@thestyle{\color{phpvariablecolor}}%
+		\fi
+	\fi
+	\global\firstchartrue%
+	\global\startedbyadigitfalse%
+	\global\startedbyadollarfalse%
+	\global\precededbyequalsignfalse%
+}
+
+%- Highlight  (beginning with "$" sign)
+
+%- This will be done by triggering the function \phpHighlightVariable at the start of any $ run.
+%- This function will only highlight variables and any other identifiers will be ignored.
+%- Luckily lstlisting will only give correct identifiers so we only will have to check if 
+%- the previous call was made with a $
+
+\newtoggle{phpInString}% Keep track of if we are within a string (default=false)
+\togglefalse{phpInString}% Assume not initally in string (redundant: default=false)
+
+\newcounter{phpDollarFlag}
+\newcommand{\phpHighlightVariable}[1]{%
+	\ifnum\thephpDollarFlag=1
+		\textcolor{phpvariablecolor}{#1}%
+	\fi%
+\setcounter{phpDollarFlag}{0}%
+}
+
+%-- Php code listing style with numbered lines
+
+\lstdefinestyle{lsthtmlphpstyle}{%
+	language=customPhp,%
+		alsoletter={!/},
+		basicstyle={\small\ttfamily},
+		%basicstyle={\lstfontsize\ttfamily},
+		basewidth=.5em,% letter space (more compact)
+	%- Apply the styles
+		keywordstyle={[1]{\color{idesyntaxcolor}\bfseries}},
+		%keywordstyle={[2]{\color{idesyntaxcolor}}},% old attribute color as keyword
+		keywordstyle={[2]{\color{csssyntaxcolor}\bfseries}},
+		keywordstyle={[3]{\color{csssyntaxcolor}\bfseries}},
+		keywordstyle={[4]{\color{csssyntaxcolor}\bfseries}},
+		keywordstyle={[5]{\color{csssyntaxcolor}\bfseries}},
+		keywordstyle={[6]{\color{csssyntaxcolor}\bfseries}},
+		identifierstyle=\color{black},%\phpHighlightVariable,
+		commentstyle={\color{graycommentcolor}\itshape},
+		stringstyle=\color{ideStringcolor},
+		emphstyle={\color{ideMisccolor}\itshape\bfseries},% emphasized style
+	%- Html tags
+		moredelim=**[s][{\color{idesyntaxcolor}}]{<}{>},
+		%moredelim=*[s][{\color{csssyntaxcolor}}]{<?}{?>},
+		morecomment=[s]{<!-}{-->},% HTML comments
+	%- New tags for Php
+		literate=
+			{.}{.}1
+			{!}{{\textbf{!}}}1
+			{<=}{{\textcolor{black}{<=}}}2
+			{>=}{{\textcolor{black}{>=}}}2
+			%{<}{{\textcolor{black}{<}}}1
+			%{>}{{\textcolor{black}{>}}}1
+			{<?php}{{\textcolor{csssyntaxcolor}{<\textbf{?php}}}}5
+			{?>}{{\textcolor{csssyntaxcolor}{\textbf{?}>}}}2,
+		morecomment=[is]{///}{///},% invible comment to add a $ if unbalanced: readibility of TeX source
+	%- Frame settings
+		style=lstframelayout,
+		escapechar=\&, 
+	%- Highlight numerical value assignment (after "=" sign)
+	alsoletter=0123456789,
+	SelectCharTable=
+	\lst@DefSaveDef{`$}\lsts@mydollar{\lsts@mydollar\processdollar}
+	\lst@DefSaveDef{`0}\lsts@myzero{\lsts@myzero\processdigit}
+  \lst@DefSaveDef{`1}\lsts@myone{\lsts@myone\processdigit}
+  \lst@DefSaveDef{`2}\lsts@mytwo{\lsts@mytwo\processdigit}
+  \lst@DefSaveDef{`3}\lsts@mythree{\lsts@mythree\processdigit}
+  \lst@DefSaveDef{`4}\lsts@myfour{\lsts@myfour\processdigit}
+  \lst@DefSaveDef{`5}\lsts@myfive{\lsts@myfive\processdigit}
+  \lst@DefSaveDef{`6}\lsts@mysix{\lsts@mysix\processdigit}
+  \lst@DefSaveDef{`7}\lsts@myseven{\lsts@myseven\processdigit}
+  \lst@DefSaveDef{`8}\lsts@myeight{\lsts@myeight\processdigit}
+  \lst@DefSaveDef{`9}\lsts@mynine{\lsts@mynine\processdigit}
+  \lst@DefSaveDef{`a}\lsts@mya{\lsts@mya\processletter}
+  \lst@DefSaveDef{`b}\lsts@myb{\lsts@myb\processletter}
+  \lst@DefSaveDef{`c}\lsts@myc{\lsts@myc\processletter}
+  \lst@DefSaveDef{`d}\lsts@myd{\lsts@myd\processletter}
+  \lst@DefSaveDef{`e}\lsts@mye{\lsts@mye\processletter}
+  \lst@DefSaveDef{`f}\lsts@myf{\lsts@myf\processletter}
+  \lst@DefSaveDef{`g}\lsts@myg{\lsts@myg\processletter}
+  \lst@DefSaveDef{`h}\lsts@myh{\lsts@myh\processletter}
+  \lst@DefSaveDef{`i}\lsts@myi{\lsts@myi\processletter}
+  \lst@DefSaveDef{`j}\lsts@myj{\lsts@myj\processletter}
+  \lst@DefSaveDef{`k}\lsts@myk{\lsts@myk\processletter}
+  \lst@DefSaveDef{`l}\lsts@myl{\lsts@myl\processletter}
+  \lst@DefSaveDef{`m}\lsts@mym{\lsts@mym\processletter}
+  \lst@DefSaveDef{`n}\lsts@myn{\lsts@myn\processletter}
+  \lst@DefSaveDef{`o}\lsts@myo{\lsts@myo\processletter}
+  \lst@DefSaveDef{`p}\lsts@myp{\lsts@myp\processletter}
+  \lst@DefSaveDef{`q}\lsts@myq{\lsts@myq\processletter}
+  \lst@DefSaveDef{`r}\lsts@myr{\lsts@myr\processletter}
+  \lst@DefSaveDef{`s}\lsts@mys{\lsts@mys\processletter}
+  \lst@DefSaveDef{`t}\lsts@myt{\lsts@myt\processletter}
+  \lst@DefSaveDef{`u}\lsts@myu{\lsts@myu\processletter}
+  \lst@DefSaveDef{`v}\lsts@myv{\lsts@myv\processletter}
+  \lst@DefSaveDef{`w}\lsts@myw{\lsts@myw\processletter}
+  \lst@DefSaveDef{`x}\lsts@myx{\lsts@myx\processletter}
+  \lst@DefSaveDef{`y}\lsts@myy{\lsts@myy\processletter}
+  \lst@DefSaveDef{`z}\lsts@myz{\lsts@myz\processletter}
+  \lst@DefSaveDef{`A}\lsts@myA{\lsts@myA\processletter}
+  \lst@DefSaveDef{`B}\lsts@myB{\lsts@myB\processletter}
+  \lst@DefSaveDef{`C}\lsts@myC{\lsts@myC\processletter}
+  \lst@DefSaveDef{`D}\lsts@myD{\lsts@myD\processletter}
+  \lst@DefSaveDef{`E}\lsts@myE{\lsts@myE\processletter}
+  \lst@DefSaveDef{`F}\lsts@myF{\lsts@myF\processletter}
+  \lst@DefSaveDef{`G}\lsts@myG{\lsts@myG\processletter}
+  \lst@DefSaveDef{`H}\lsts@myH{\lsts@myH\processletter}
+  \lst@DefSaveDef{`I}\lsts@myI{\lsts@myI\processletter}
+  \lst@DefSaveDef{`J}\lsts@myJ{\lsts@myJ\processletter}
+  \lst@DefSaveDef{`K}\lsts@myK{\lsts@myK\processletter}
+  \lst@DefSaveDef{`L}\lsts@myL{\lsts@myL\processletter}
+  \lst@DefSaveDef{`M}\lsts@myM{\lsts@myM\processletter}
+  \lst@DefSaveDef{`N}\lsts@myN{\lsts@myN\processletter}
+  \lst@DefSaveDef{`O}\lsts@myO{\lsts@myO\processletter}
+  \lst@DefSaveDef{`P}\lsts@myP{\lsts@myP\processletter}
+  \lst@DefSaveDef{`Q}\lsts@myQ{\lsts@myQ\processletter}
+  \lst@DefSaveDef{`R}\lsts@myR{\lsts@myR\processletter}
+  \lst@DefSaveDef{`S}\lsts@myS{\lsts@myS\processletter}
+  \lst@DefSaveDef{`T}\lsts@myT{\lsts@myT\processletter}
+  \lst@DefSaveDef{`U}\lsts@myU{\lsts@myU\processletter}
+  \lst@DefSaveDef{`V}\lsts@myV{\lsts@myV\processletter}
+  \lst@DefSaveDef{`W}\lsts@myW{\lsts@myW\processletter}
+  \lst@DefSaveDef{`X}\lsts@myX{\lsts@myX\processletter}
+  \lst@DefSaveDef{`Y}\lsts@myY{\lsts@myY\processletter}
+  \lst@DefSaveDef{`Z}\lsts@myZ{\lsts@myZ\processletter},	
+}
+
+\lstdefinestyle{lstphpstyle}{%
+	language=customPhp,%
+		basicstyle={\small\ttfamily},
+		%basicstyle={\lstfontsize\ttfamily},
+		basewidth=.5em,% letter space (more compact)
+	%- Apply the styles
+		keywordstyle={[1]{\color{black}\bfseries}},
+		%keywordstyle={[2]{\color{idesyntaxcolor}}},% old attribute color as keyword
+		keywordstyle={[2]{\color{csssyntaxcolor}\bfseries}},
+		keywordstyle={[3]{\color{csssyntaxcolor}\bfseries}},
+		keywordstyle={[4]{\color{idesyntaxcolor}\bfseries}},
+		keywordstyle={[5]{\color{idesyntaxcolor}\bfseries}},
+		identifierstyle=\color{black},%\phpHighlightVariable,
+		commentstyle={\color{graycommentcolor}\itshape},
+		stringstyle=\color{ideStringcolor},
+		emphstyle={\color{ideMisccolor}\itshape\bfseries},% emphasized style
+	%- New tags for Php
+		moredelim=**[s][{\color{csssyntaxcolor}}]{<?}{?>},
+		literate=
+			{!}{{\textbf{!}}}1
+			{<=}{{\textcolor{black}{<=}}}2
+			{>=}{{\textcolor{black}{>=}}}2
+			%{<}{{\textcolor{black}{<}}}1
+			%{>}{{\textcolor{black}{>}}}1
+			{<?php}{{\textcolor{csssyntaxcolor}{<\textbf{?php}}}}5
+			{?>}{{\textcolor{csssyntaxcolor}{\textbf{?}>}}}2,
+		morecomment=[s]{<!-}{-->},% HTML comments
+		morecomment=[is]{///}{///},% invible comment to add $ if unbalanced: readibility of TeX source
+	%- Frame settings
+		style=lstframelayout,
+		escapechar=\&, 
+	%- Highlight numerical value assignment (after "=" sign)
+	alsoletter=0123456789,
+	SelectCharTable=
+	\lst@DefSaveDef{`$}\lsts@mydollar{\lsts@mydollar\processdollar}
+	\lst@DefSaveDef{`0}\lsts@myzero{\lsts@myzero\processdigit}
+  \lst@DefSaveDef{`1}\lsts@myone{\lsts@myone\processdigit}
+  \lst@DefSaveDef{`2}\lsts@mytwo{\lsts@mytwo\processdigit}
+  \lst@DefSaveDef{`3}\lsts@mythree{\lsts@mythree\processdigit}
+  \lst@DefSaveDef{`4}\lsts@myfour{\lsts@myfour\processdigit}
+  \lst@DefSaveDef{`5}\lsts@myfive{\lsts@myfive\processdigit}
+  \lst@DefSaveDef{`6}\lsts@mysix{\lsts@mysix\processdigit}
+  \lst@DefSaveDef{`7}\lsts@myseven{\lsts@myseven\processdigit}
+  \lst@DefSaveDef{`8}\lsts@myeight{\lsts@myeight\processdigit}
+  \lst@DefSaveDef{`9}\lsts@mynine{\lsts@mynine\processdigit}
+  \lst@DefSaveDef{`a}\lsts@mya{\lsts@mya\processletter}
+  \lst@DefSaveDef{`b}\lsts@myb{\lsts@myb\processletter}
+  \lst@DefSaveDef{`c}\lsts@myc{\lsts@myc\processletter}
+  \lst@DefSaveDef{`d}\lsts@myd{\lsts@myd\processletter}
+  \lst@DefSaveDef{`e}\lsts@mye{\lsts@mye\processletter}
+  \lst@DefSaveDef{`f}\lsts@myf{\lsts@myf\processletter}
+  \lst@DefSaveDef{`g}\lsts@myg{\lsts@myg\processletter}
+  \lst@DefSaveDef{`h}\lsts@myh{\lsts@myh\processletter}
+  \lst@DefSaveDef{`i}\lsts@myi{\lsts@myi\processletter}
+  \lst@DefSaveDef{`j}\lsts@myj{\lsts@myj\processletter}
+  \lst@DefSaveDef{`k}\lsts@myk{\lsts@myk\processletter}
+  \lst@DefSaveDef{`l}\lsts@myl{\lsts@myl\processletter}
+  \lst@DefSaveDef{`m}\lsts@mym{\lsts@mym\processletter}
+  \lst@DefSaveDef{`n}\lsts@myn{\lsts@myn\processletter}
+  \lst@DefSaveDef{`o}\lsts@myo{\lsts@myo\processletter}
+  \lst@DefSaveDef{`p}\lsts@myp{\lsts@myp\processletter}
+  \lst@DefSaveDef{`q}\lsts@myq{\lsts@myq\processletter}
+  \lst@DefSaveDef{`r}\lsts@myr{\lsts@myr\processletter}
+  \lst@DefSaveDef{`s}\lsts@mys{\lsts@mys\processletter}
+  \lst@DefSaveDef{`t}\lsts@myt{\lsts@myt\processletter}
+  \lst@DefSaveDef{`u}\lsts@myu{\lsts@myu\processletter}
+  \lst@DefSaveDef{`v}\lsts@myv{\lsts@myv\processletter}
+  \lst@DefSaveDef{`w}\lsts@myw{\lsts@myw\processletter}
+  \lst@DefSaveDef{`x}\lsts@myx{\lsts@myx\processletter}
+  \lst@DefSaveDef{`y}\lsts@myy{\lsts@myy\processletter}
+  \lst@DefSaveDef{`z}\lsts@myz{\lsts@myz\processletter}
+  \lst@DefSaveDef{`A}\lsts@myA{\lsts@myA\processletter}
+  \lst@DefSaveDef{`B}\lsts@myB{\lsts@myB\processletter}
+  \lst@DefSaveDef{`C}\lsts@myC{\lsts@myC\processletter}
+  \lst@DefSaveDef{`D}\lsts@myD{\lsts@myD\processletter}
+  \lst@DefSaveDef{`E}\lsts@myE{\lsts@myE\processletter}
+  \lst@DefSaveDef{`F}\lsts@myF{\lsts@myF\processletter}
+  \lst@DefSaveDef{`G}\lsts@myG{\lsts@myG\processletter}
+  \lst@DefSaveDef{`H}\lsts@myH{\lsts@myH\processletter}
+  \lst@DefSaveDef{`I}\lsts@myI{\lsts@myI\processletter}
+  \lst@DefSaveDef{`J}\lsts@myJ{\lsts@myJ\processletter}
+  \lst@DefSaveDef{`K}\lsts@myK{\lsts@myK\processletter}
+  \lst@DefSaveDef{`L}\lsts@myL{\lsts@myL\processletter}
+  \lst@DefSaveDef{`M}\lsts@myM{\lsts@myM\processletter}
+  \lst@DefSaveDef{`N}\lsts@myN{\lsts@myN\processletter}
+  \lst@DefSaveDef{`O}\lsts@myO{\lsts@myO\processletter}
+  \lst@DefSaveDef{`P}\lsts@myP{\lsts@myP\processletter}
+  \lst@DefSaveDef{`Q}\lsts@myQ{\lsts@myQ\processletter}
+  \lst@DefSaveDef{`R}\lsts@myR{\lsts@myR\processletter}
+  \lst@DefSaveDef{`S}\lsts@myS{\lsts@myS\processletter}
+  \lst@DefSaveDef{`T}\lsts@myT{\lsts@myT\processletter}
+  \lst@DefSaveDef{`U}\lsts@myU{\lsts@myU\processletter}
+  \lst@DefSaveDef{`V}\lsts@myV{\lsts@myV\processletter}
+  \lst@DefSaveDef{`W}\lsts@myW{\lsts@myW\processletter}
+  \lst@DefSaveDef{`X}\lsts@myX{\lsts@myX\processletter}
+  \lst@DefSaveDef{`Y}\lsts@myY{\lsts@myY\processletter}
+  \lst@DefSaveDef{`Z}\lsts@myZ{\lsts@myZ\processletter},	
+}
+
+%-- Java definition language (NO NEED: listing package provides the definitions)
+
+%-- Java code listings (Eclipse color code): 
+%		NO color of background and frame for `tcbox' overlay
+
+\lstdefinestyle{lstjavastyle}{% needed syntax for colors: \color{<name>} (due to key-value system)
+	language=Java,
+	aboveskip=0pt, belowskip=0pt,% default=\medskipamount
+	% code display
+	basicstyle={\lstfontsize\ttfamily},
+	identifierstyle=\color{black},
+	stringstyle=\color{idestringcolor},
+	commentstyle={\color{idecommentcolor}\itshape},
+	keywordstyle={\color{idesyntaxcolor}\bfseries},
+	morekeywords=[2]{
+		% Java function attributes
+		random,sqrt,
+	},
+	keywordstyle=[2]{\color{black}\itshape},
+	alsodigit={-,--},%,-->,<--,::},
+	emph={out,PI},% emphasizes particular identifiers (e.g `out' for Java, like Eclipse IDE)
+	emphstyle={\color{ideMisccolor}\itshape\bfseries},% emphasized style
+	%linewidth=.9\linewidth,% default=\linewidth
+	% frame settings
+	%backgroundcolor=\color{\@layoutcolor!5},
+	frame=l,
+	framesep=8pt,
+	framerule=0pt,% default=0.4pt,
+	%fillcolor=\color{\@layoutcolor!15},% frame-fill color (lines numbering column)
+	%framextopmargin=4pt,% default=0pt
+	%framexbottommargin=4pt,% default=0pt
+	%frameround=tttt,% default ffff for false
+	%rulecolor=\color{orange},% frame-rule-color
+	% line numbering
+	numbers=left,% line numbers on the left
+	numbersep=4pt,% numbers-code distance
+	numberstyle={\tiny\sffamily\itshape\color{\@titlingcolor}},
+	%escapeinside = {\%*}{*},% useful for adding LaTeX within the code
+	%keepspaces=true,% tab to spaces: default=false
+	%showspaces=true,% all blank spaces appear (underscore bracket): default=false
+	%showtabs=false,% shows tabs within strings (underscore bracket): default=true
+	breaklines=true,
+	breakatwhitespace=true,
+	escapechar=\%, tabsize=2, extendedchars=true, captionpos=t,
+	% adjusting margins
+	xleftmargin=10.0pt,% framesep + framerule + 2pt (numbersep-2pt=indentation) % default=0pt
+	%xrightmargin=-2.4pt,% numbersep + framerule % default=0pt
+}
+\lstdefinestyle{lstjavatext}{%
+	style=lstjavastyle,
+	basicstyle={\normalsize\ttfamily},
+	numbers=none
+}
+\lstdefinestyle{lstjavatextsmall}{%
+	style=lstjavastyle,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	backgroundcolor=\color{thirdcolor!25!white},
+	aboveskip=2pt, belowskip=2pt,
+	framerule=2pt, framesep=4pt, rulecolor=\color{secondcolor},
+	xleftmargin=6pt,% framesep + framerule?
+	%framextopmargin=2pt, framexbottommargin=2pt,% default=0pt
+}
+
+%- Algorithms style (basic output: sophistications later... TODO)
+\lstdefinestyle{lstalgostyle}{% needed syntax for colors: \color{<name>} (due to key-value system)
+	aboveskip=0pt, belowskip=0pt,% default=\medskipamount
+	basicstyle={\small\ttfamily},
+	%linewidth=.9\linewidth,% default=\linewidth
+	% frame settings
+	%backgroundcolor=\color{\@layoutcolor!0},%\color{orange!20},
+	frame=l,% adds a line to the left (used for line numbers)
+	framesep=8pt,
+	framerule=0pt,% default=0.4pt,
+	%fillcolor=\color{\@layoutcolor!2},% frame-fill color (lines numbering column)
+	%framextopmargin=4pt,% default=0pt
+	%framexbottommargin=4pt,% default=0pt
+	%frameround=tttt,% default ffff for false
+	%rulecolor=\color{orange},% frame-rule-color
+	% line numbering
+	numbers=left,% line numbers on the left
+	numbersep=6pt,% numbers-code distance
+	numberstyle={\tiny\sffamily\itshape\color{thirdcolor}},
+	% code display
+	language=pseudocode,
+	identifierstyle=\color{black},
+	stringstyle=\color{algostringcolor},
+	commentstyle=\color{idecommentcolor},
+	keywordstyle=\color{secondcolor}\bfseries\upshape,
+	keywordstyle={[2]\color{idesyntaxcolor}\bfseries\itshape},
+	emphstyle=\color{black}\itshape\bfseries,% emphasized style
+	emph={Tri_Bulle,Tri_Selection,Tri_Insertion,Tri_Shell},% emphasizes particular identifiers
+	otherkeywords={--,-->,<--,::},
+	%escapeinside = {\%*}{*},% useful for adding LaTeX within the code
+	%keepspaces=true,% tab to spaces: default=false
+	%showspaces=false,% all blank spaces appear (underscore bracket): default=false
+	%showtabs=false,% shows tabs within strings (underscore bracket): default=true
+	%showstringspaces=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	escapechar=\%, tabsize=2, extendedchars=true, captionpos=t,
+	% adjusting margins
+	xleftmargin=12pt,% framesep + framerule + 4pt (numbersep-4pt=indentation) % default=0pt
+	%xrightmargin=-2.4pt,% numbersep + framerule % default=0pt
+}
+\lstdefinestyle{lstalgotext}{%
+	style=lstalgostyle,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	backgroundcolor=\color{thirdcolor!25!white},
+	aboveskip=2pt, belowskip=2pt,
+	framerule=2pt, framesep=4pt, rulecolor=\color{secondcolor},
+	xleftmargin=6pt,% framesep + framerule?
+	%framextopmargin=2pt, framexbottommargin=2pt,% default=0pt
+}
+
+
+
+
+
+
+
+
+
+
+

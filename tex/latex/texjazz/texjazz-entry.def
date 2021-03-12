@@ -1,0 +1,1119 @@
+%%
+%% texjazz-entry.def
+%%
+%% A LaTeX file to set-up first entry in a document.
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+%---------------------------------------------------------------------------------------------------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-entry.def' and `texjazz-entry[-fr].tex' (not yet fully available).
+%---------------------------------------------------------------------------------------------------
+
+%-- File identification
+%----------------------
+
+\ProvidesFile{texjazz-entry.def}%
+  [2021/02/08 v0.1a − Setting first entry environments in a document]
+
+\AtBeginDocument{%
+  \AtBeginEnvironment{figure}{%
+    \iftoggle{noFigs}{%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 2pt minus 2pt}}% Before chapter LoF heading
+      \ifdoc@appendix
+        \addtocontents{lof}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lof}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+            }{}{%
+            \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noFigs}%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 1.5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{jazzfigure}{%
+    \iftoggle{noFigs}{%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 2pt minus 2pt}}% Before chapter LoF heading
+      \ifdoc@appendix
+        \addtocontents{lof}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lof}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+            }{}{%
+            \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noFigs}%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 1.5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{jazzfigure*}{%
+    \iftoggle{noFigs}{%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 2pt minus 2pt}}% Before chapter LoF heading
+      \ifdoc@appendix
+        \addtocontents{lof}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lof}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+            }{}{%
+            \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noFigs}%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 1.5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{wrapfigure}{%
+    \iftoggle{noFigs}{%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 2pt minus 2pt}}% Before chapter LoF heading
+      \ifdoc@appendix
+        \addtocontents{lof}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lof}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+            }{}{%
+            \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noFigs}%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 1.5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{marginfigure}{%
+    \iftoggle{noFigs}{%  BUT THERE IS STILL A BUG if it is the first one in a chapter WHY?
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 2pt minus 2pt}}% Before chapter LoF heading
+      \ifdoc@appendix
+        \addtocontents{lof}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lof}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+            }{}{%
+            \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noFigs}%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 1.5pt minus 1.5pt}}%
+    }{}%
+  }
+  % Side figure command must be patched (using \captionof to be at the right place in the LoF)
+  \pretocmd{\sidefigure}{% Patching \sidefigure doesn't detect the first chapter margin figure
+    \iftoggle{noFigs}{%  BUT THERE IS STILL A BUG: with a preceeding subfigure ? with a tikzpicture?
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 2pt minus 2pt}}% Before chapter LoF heading
+      \ifdoc@appendix
+        \addtocontents{lof}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lof}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+            }{}{%
+            \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noFigs}%
+      %\addtocontents{lof}{\protect\addvspace{-6pt plus 1.5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+  \AtBeginEnvironment{table}{%
+    \iftoggle{noTabs}{%
+      %\addtocontents{lot}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoT heading
+      \ifdoc@appendix
+        \addtocontents{lot}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lot}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noTabs}%
+      \addtocontents{lot}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{margintable}{%
+    \iftoggle{noTabs}{%
+      %\addtocontents{lot}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoT heading
+      \ifdoc@appendix
+        \addtocontents{lot}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lot}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noTabs}%
+      \addtocontents{lot}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{jazztable}{%
+    \iftoggle{noTabs}{%
+      %\addtocontents{lot}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoT heading
+      \ifdoc@appendix
+        \addtocontents{lot}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lot}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noTabs}%
+      \addtocontents{lot}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{jazztable*}{%
+    \iftoggle{noTabs}{%
+      %\addtocontents{lot}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoT heading
+      \ifdoc@appendix
+        \addtocontents{lot}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lot}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noTabs}%
+      \addtocontents{lot}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{wraptable}{%
+    \iftoggle{noTabs}{%
+      %\addtocontents{lot}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoT heading
+      \ifdoc@appendix
+        \addtocontents{lot}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lot}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noTabs}%
+      \addtocontents{lot}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{margintable}{%
+    \iftoggle{noTabs}{%
+      %\addtocontents{lot}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoT heading
+      \ifdoc@appendix
+        \addtocontents{lot}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lot}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noTabs}%
+      \addtocontents{lot}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  % Side table command must be patched (using \captionof to be at the right place in the LoT)
+  \pretocmd{\sidetable}{%
+    \iftoggle{noTabs}{%
+      %\addtocontents{lot}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoT heading
+      \ifdoc@appendix
+        \addtocontents{lot}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lot}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noTabs}%
+      \addtocontents{lot}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+  \AtBeginEnvironment{video}{%
+    \iftoggle{noVids}{%
+      %\addtocontents{lov}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoV heading
+      \ifdoc@appendix
+        \addtocontents{lov}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lov}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noVids}%
+      \addtocontents{lov}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{wrapvideo}{%
+    \iftoggle{noVids}{%
+      %\addtocontents{lov}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoV heading
+      \ifdoc@appendix
+        \addtocontents{lov}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lov}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noVids}%
+      \addtocontents{lov}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{marginvideo}{%
+    \iftoggle{noVids}{%
+      \addtocontents{lov}{\protect\addvspace{-10pt plus 2pt minus 2pt}}% Before chapter LoV heading
+      \ifdoc@appendix
+        \addtocontents{lov}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lov}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noVids}%
+      \addtocontents{lov}{\protect\addvspace{-4pt plus 1.5pt minus 1.5pt}}%
+    }{}%
+  }
+  % Side video command must be patched (using \captionof to be at the right place in the LoV)
+  \pretocmd{\sideVideo}{%
+    \iftoggle{noVids}{%
+      %\addtocontents{lov}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoT heading
+      \ifdoc@appendix
+        \addtocontents{lov}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lov}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noVids}%
+      \addtocontents{lov}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+  \AtBeginEnvironment{algorithm}{%
+    \iftoggle{noCodes}{%
+      %\addtocontents{loc}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoC heading
+      \ifdoc@appendix
+        \addtocontents{loc}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{loc}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noCodes}%
+      \addtocontents{loc}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{code}{%
+    \iftoggle{noCodes}{%
+      %\addtocontents{loc}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoC heading
+      \ifdoc@appendix
+        \addtocontents{loc}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{loc}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noCodes}%
+      \addtocontents{loc}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{jazzcode}{%
+    \iftoggle{noCodes}{%
+      %\addtocontents{loc}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoC heading
+      \ifdoc@appendix
+        \addtocontents{loc}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{loc}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noCodes}%
+      \addtocontents{loc}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{jazzcode*}{%
+    \iftoggle{noCodes}{%
+      %\addtocontents{loc}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoC heading
+      \ifdoc@appendix
+        \addtocontents{loc}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{loc}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noCodes}%
+      \addtocontents{loc}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{listing}{%
+    \iftoggle{noListings}{%
+      %\addtocontents{loc}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoC heading
+      \ifdoc@appendix
+        \addtocontents{lol}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lol}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noListings}%
+      \addtocontents{lol}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{jazzlisting}{%
+    \iftoggle{noListings}{%
+      %\addtocontents{loc}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoC heading
+      \ifdoc@appendix
+        \addtocontents{lol}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lol}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noListings}%
+      \addtocontents{lol}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{jazzlisting*}{%
+    \iftoggle{noListings}{%
+      %\addtocontents{loc}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoC heading
+      \ifdoc@appendix
+        \addtocontents{lol}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lol}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noListings}%
+      \addtocontents{lol}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{exercise}{%
+    \iftoggle{noExos}{% If no exercise before
+      %\addtocontents{loe}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoE heading
+      \ifdoc@appendix
+        \addtocontents{loe}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{loe}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+            }{}{%
+            \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noExos}%
+      \addtocontents{loe}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  \AtBeginEnvironment{quiz}{%
+    \iftoggle{noQuiz}{% If no quiz before
+      %\addtocontents{loq}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoQ heading
+      \ifdoc@appendix
+        \addtocontents{loq}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{loq}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+            }{}{%
+            \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noQuiz}%
+      \addtocontents{loq}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }
+  % The two document commands \webdoc and \hrefdoc must be patched (to be at the right place in LoD)
+  \pretocmd{\webdoc}{%
+    \iftoggle{noDocs}{%
+      %\addtocontents{lod}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoD heading
+      \ifdoc@appendix
+        \addtocontents{lod}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lod}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noDocs}%
+      \addtocontents{lod}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+  \pretocmd{\hrefdoc}{%
+    \iftoggle{noDocs}{%
+      %\addtocontents{lod}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoD heading
+      \ifdoc@appendix
+        \addtocontents{lod}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lod}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noDocs}%
+      \addtocontents{lod}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+  \pretocmd{\textdoc}{%
+    \iftoggle{noDocs}{%
+      %\addtocontents{lod}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoD heading
+      \ifdoc@appendix
+        \addtocontents{lod}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lod}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noDocs}%
+      \addtocontents{lod}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+  \pretocmd{\pdfdoc}{%
+    \iftoggle{noDocs}{%
+      %\addtocontents{lod}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoD heading
+      \ifdoc@appendix
+        \addtocontents{lod}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lod}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noDocs}%
+      \addtocontents{lod}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+  \pretocmd{\pdfwatch}{%
+    \iftoggle{noDocs}{%
+      %\addtocontents{lod}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoD heading
+      \ifdoc@appendix
+        \addtocontents{lod}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lod}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noDocs}%
+      \addtocontents{lod}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+  \pretocmd{\videolink}{%
+    \iftoggle{noVids}{%
+      %\addtocontents{lov}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoV heading
+      \ifdoc@appendix
+        \addtocontents{lov}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lov}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noVids}%
+      \addtocontents{lov}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+  \pretocmd{\sidevideolink}{%
+    \iftoggle{noVids}{%
+      %\addtocontents{lov}{\protect\addvspace{-4pt plus 2pt minus 2pt}}% Before chapter LoV heading
+      \ifdoc@appendix
+        \addtocontents{lov}{%
+          \protect\contentsline{appendixchapter}{%
+            \ifx\thisappendixchapternumber\@empty
+            \else
+              \protect\numberline{\thisappendixchapternumber}%
+            \fi
+            \thisappendixchaptertitle
+          }{}{%
+          \thisappendixchapterHref % hyperref support
+          }%
+        }%
+      \else
+        \addtocontents{lov}{%
+          \protect\contentsline{chapter}{%
+            \ifx\thischapternumber\@empty
+            \else
+              \protect\numberline{\thischapternumber}%
+            \fi
+            \thischaptertitle
+          }{}{%
+          \thischapterHref % hyperref support
+          }%
+        }%
+      \fi
+      \global\togglefalse{noVids}%
+      \addtocontents{lov}{\protect\addvspace{-2pt plus .5pt minus 1.5pt}}%
+    }{}%
+  }{}{}
+}
+
+
+
+\endinput
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

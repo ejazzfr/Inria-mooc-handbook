@@ -1,0 +1,183 @@
+% !TEX encoding = UTF-8 Unicode
+%%
+%% texjazz-list.def
+%%
+%% A LaTeX file to configure tabulars.
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+%----------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-list.def' and `texjazz-list[-fr].tex' (not yet fully available).
+%----------
+
+%-- File identification
+%----------------------
+
+\ProvidesFile{texjazz-list.def}%
+  [2021/02/08 v0.1a − Configuring list environments]
+
+%---- Itemize, enumerate, description and other lists
+%--------------------------------------------------------------------------------------------------
+
+%-- Customizing lists environments (adaptation of Babel-french layout)
+
+%- Ajustements des espaces verticaux (reprise des commandes frenchb)
+\newlength{\listendsep}% personal length for end of lists (see below redefinition of trivlist)
+\def\FB@listVsettings{% Adapted from french-babel 2020/04/18 v3.5h
+  \setlength{\itemsep}{.5\parskip}%
+  \setlength{\parsep}{\z@}%
+  \setlength{\topsep}{\z@}%
+  \setlength{\partopsep}{\z@}%
+  \@tempdima=\parskip
+  \addtolength{\topsep}{-.5\@tempdima}%
+  \addtolength{\partopsep}{\@tempdima}%
+  \setlength{\listendsep}{\@tempdima - \itemsep + \topsep}%
+}
+\def\FB@listHsettings{% Adapted from french-babel 2020/04/18 v3.5h
+  \ifFBListItemsAsPar
+    \itemindent=\labelindentFB
+    \advance\itemindent by \labelwidthFB
+    \advance\itemindent by \labelsep
+    \leftmargini\z@
+    \bbl@for\FB@dp {2, 3, 4, 5, 6}%
+      {\csname leftmargin\romannumeral\FB@dp\endcsname =
+        \labelindentFB}%
+  \else
+    \leftmarginFB=\labelwidthFB
+    \advance\leftmarginFB by \labelsep
+    \bbl@for\FB@dp {1, 2, 3, 4, 5, 6}%
+      {\csname leftmargin\romannumeral\FB@dp\endcsname =
+        \leftmarginFB}%
+    \advance\leftmargini by \listindentFB
+  \fi
+  \leftmargin=\csname leftmargin%
+    \ifnum\@listdepth=\@ne i\else ii\fi\endcsname
+}
+
+%- French itemize environment
+\def\FB@itemizesettings{% Updated to french-babel 2020/04/18 v3.5h
+  \ifFBStandardListSpacing
+  \else
+    \setlength{\itemsep}{\z@}% +vspace between items (\itemsep + \parsep)
+    \setlength{\parsep}{\z@}% vspace between items
+    %\setlength{\parsep}{0.5pt plus 0.5pt minus 0.5pt}% vspace between items
+    \setlength{\topsep}{\z@}% +vspace before list (\topsep + \partopsep)
+    \setlength{\partopsep}{\z@}% +vspace before list if empty line
+    \@tempdima=\parskip
+    %\addtolength{\topsep}{-\@tempdima}% valeur initiale FB
+    %\addtolength{\topsep}{-.5\@tempdima}%
+    \addtolength{\partopsep}{-0.25\@tempdima}%
+    %\setlength{\listendsep}{\@tempdima - \topsep}%
+    \setlength{\listendsep}{\z@}%
+  \fi
+  \settowidth{\labelwidth}{\csname\@itemitem\endcsname}%
+  \ifFBListOldLayout
+    \setlength{\leftmargin}{\labelwidth}%
+    \addtolength{\leftmargin}{\labelsep}%
+    \addtolength{\leftmargin}{\parindent}%
+  \else
+    \FB@listHsettings
+  \fi
+}
+%- French enumerate environment: same definition as french-babel 2020/04/18 v3.5h (NO CHANGE)
+%- Description environnement: same definition as french-babel 2020/04/18 v3.5h (NO CHANGE)
+\renewcommand*\descriptionlabel[1]{\hspace\labelsep\normalfont\lightboldfont #1}
+
+%-- More list commands
+
+%- Keep the Babel-French definitions alive (if lists env. are redefined with `enumitem' package)
+
+\NewDocumentEnvironment{fritemize}{   }%
+  {\itemizeFB}%
+  {\enditemizeFB}
+  
+\NewDocumentEnvironment{frenumerate}{   }%
+  {\enumerateFB}%
+  {\endenumerateFB}
+
+\NewDocumentEnvironment{frdescription}{   }%
+  {\descriptionFB}%
+  {\enddescriptionFB}
+
+\newcommand*{\jazzitem}[1][]{%
+  \ifemptyarg{#1}
+    {\renewcommand{\FrenchLabelItem}{\textcolor{itemcolor}{\normalfont\faCaretRight}}}
+    {\renewcommand{\FrenchLabelItem}{\textcolor{itemcolor}{\normalfont #1}}}%
+}
+\newcommand*{\jazzcaret}{%
+  \textcolor{itemcolor}{\normalfont\faCaretRight}%
+}
+
+%-- Side, tabular and check itemized environments (no/small indentation)
+
+\newenvironment{jazzitemize}{%
+  \renewcommand*{\FrenchLabelItem}{\textcolor{maincolor}{\normalfont\faCaretRight}}
+  \settowidth{\labelwidthFB}{\normalfont\faCaretRight}
+  \setlength{\listindentFB}{0pt}
+  \itemizeFB}
+  {\enditemizeFB}
+\newenvironment{sideitemize}{%
+  \renewcommand*{\FrenchLabelItem}{\textcolor{maincolor}{\normalfont\faCaretRight}}
+  \setlength{\listindentFB}{4pt}
+  \itemizeFB}
+  {\enditemizeFB}
+\newenvironment{tabitemize}{%
+  \renewcommand*{\FrenchLabelItem}{\textcolor{secondcolor}{\normalfont\faCaretRight}}
+  \setlength{\listindentFB}{0pt}
+  \itemizeFB}
+  {\enditemizeFB}
+\newenvironment{checkitemize}{%
+  \renewcommand*{\FrenchLabelItem}{\faSquareO}
+  \setlength{\listindentFB}{6pt}
+  \itemizeFB}
+  {\enditemizeFB}
+\newenvironment{tabuitemize}{%
+  \renewcommand*{\FrenchLabelItem}{\textcolor{secondcolor}{\normalfont\faCaretRight}}
+  \renewcommand*{\FrenchLabelItem}{}
+  \setlength{\listindentFB}{0pt}
+  \setlength{\leftmarginFB}{0pt}
+  \itemizeFB}
+  {\enditemizeFB}
+
+%-- Étendre les possibilités de numération des enumérations
+
+\RequirePackage{enumerate}% Options de numérotation [i], [I], [a], [A], etc.
+
+%- Bref, on s'en remet à David Carlisle et on fait une petite manip. pour sauver les compteurs
+%- d'un environnement à l'autre :
+%- https://tex.stackexchange.com/questions/53102/how-to-have-the-same-counter-in-two-enumerate-lists
+\def\saveenum{\xdef\@savedenum{\the\c@enumi\relax}}
+\def\resetenum{\global\c@enumi\@savedenum}
+%- Usage: (with or whithout label)
+%- \begin{enumerate}
+%- \item\label{condition1}the first condition,
+%- \item\label{condition2}the second condition,
+%- \end{enumerate}
+%- [...]
+%- \saveenum
+%- \begin{enumerate}\resetenum
+%- \item\label{condition3}the third condition.
+%- \end{enumerate}
+
+%\RequirePackage{enumitem}% Reprise complète des possibiltés de listes et d'énumération (puissant)
+
+
+
+
+
+
+
+
+
+

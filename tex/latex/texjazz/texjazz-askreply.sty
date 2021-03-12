@@ -1,0 +1,3425 @@
+%%
+%% texjazz-askreply.sty
+%%
+%% A LaTeX package to manage exercises/quizzes and solutions/answers.
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+%---------------------------------------------------------------------------------------------------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-askreply.sty' and `texjazz-askreply[-fr].tex' (not yet fully available).
+%---------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------
+%----- Note of using
+%---------------------------------------------------------------------------------------------------
+%- This package is intended to manage exercises and quizzes with their respective solutions 
+%- and answers. Each environment may be recorded and stored to disk for later display or sending
+%- to other contributors. The storage repertories are automatically created and named 
+%- Exercise-<jobname> and Quizzes-<jobname>. There are also subexercises, subsolutions and 
+%- quizquestions environments which are embedded in exercises, solutions and quizzes environments.
+%- Moreover, this package is a companion to the `texjazz-assingpoints' package which, as its name 
+%- suggests, can assign points to the exercises and quizzes. In this configuration, `askreply`
+%- package must be loaded *after* `texjazz-assignpoints' package.
+%-
+
+%---- For the record
+%- https://tex.stackexchange.com/questions/20957/[...]
+%-     [...]how-to-use-a-write-command-inside-a-newenvironment/
+%- https://tex.stackexchange.com/questions/113906/[...]
+%-     [...]format-a-verbatim-paragraph/ (implementing \\ in verbatim)
+%----
+%- MUST BE SEEN:
+%- https://tex.stackexchange.com/questions/9035/[...]
+%-     [...]how-to-pass-an-optional-argument-to-an-environment-with-verbatim-content
+%- https://tex.stackexchange.com/questions/109030/optional-arguments-in-verbatim-environments
+%- https://tex.stackexchange.com/questions/108897/[...]
+%-     [...]verbatim-like-environment-with-optional-arguments-poorly-behaved
+%- https://tex.stackexchange.com/questions/527895/[...]
+%-     [...]environment-with-optional-argument-based-on-verbatim-causes-strange-error
+%- https://tex.stackexchange.com/questions/487828/[...]
+%-     [...]what-is-the-maximum-limit-of-elements-in-a-list-expl3-xparse
+%- https://tex.stackexchange.com/questions/486148/[...]
+%-     [...]avoid-passing-an-empty-optional-argument-an-environment-with-verbatim-content
+%----
+
+%---- Generic single and multiple MCQs definitions (OCG/OCMD PDF: `ocgx2` package)
+%- See in particular Alexander Grahn and Marcel Krüger answers to our questions posted on TeX.SX
+%- From: https://tex.stackexchange.com/questions/403320/[...]
+%-          [...]multiple-choice-questions-linked-to-solutions-using-optional-content-groups-ocg
+%-       https://tex.stackexchange.com/questions/486148/[...]
+%-          [...]avoid-passing-an-empty-optional-argument-an-environment-with-verbatim-content
+%-       https://tex.stackexchange.com/questions/490706/[...]
+%-          [...]ocgx2-verify-and-reset-of-multiple-choice-questions-with-ocgs
+%-       https://tex.stackexchange.com/questions/493987/[...]
+%-          [...]ocgx2-xparse-expl3-splitting-comma-separated-ocmd-ocgs-lists-of-arguments-for
+
+
+%-- Defining package identification
+%----------------------------------
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{texjazz-askreply}%
+  [2021/01/14 v0.1g − Managing exercises/quizzes and their solutions/answers]
+
+%-- Loading necessary utilities
+%------------------------------
+
+\RequirePackage{xparse}% LaTeX3 syntax parser for LaTeX2e to define advanced commands/environments
+\RequirePackage{etoolbox}% Swiss knife!
+\RequirePackage{pgfkeys}% Key-value options management
+
+\RequirePackage{ifplatform}% Check operating system
+\RequirePackage{shellesc}% Access system commands from LaTeX (--shell-escape option is needed)
+\RequirePackage{calc}% Utilities to calculate and length measuring
+
+\RequirePackage{catchfile}% Managing files in macros
+\RequirePackage{fancyvrb}% Enhanced verbatim environments
+
+\RequirePackage{xcolor}% Color settings for layout cosmetics
+\RequirePackage{tikz}% Graphics amazing tool
+\usetikzlibrary{backgrounds, calc, fpu, chains, fit, positioning, shapes, shadings}
+\RequirePackage{atbegshi}% Hooks inserting for code executed before the page shipped out
+\RequirePackage{zref-abspos}% Making positions on a page available (references)
+\RequirePackage{tikzpagenodes}% Extended page nodes
+\RequirePackage{tcolorbox}% Fancy efficient coloured boxes (loads needed TikZ libraries)
+\tcbuselibrary{breakable, fitting, raster, skins, theorems, xparse, hooks}
+\RequirePackage{fontawesome5}% Nice and useful symbols
+
+\RequirePackage{pdfbase}[2017/03/16]% Companion package to ocgx2
+\RequirePackage{ocgbase}% Companion package to ocgx2
+\RequirePackage[tikz]{ocgx2}% Awesome package used for quizzes extended OCG/OCMD contents
+\RequirePackage{multido}% For trial number (OCG)
+
+\RequirePackage{marginnote}% Managing margin elements
+
+%- Wrong page reference (correct number, but wrong link), it's normal, one must add \phantomsection:
+%- https://tex.stackexchange.com/questions/49061/incorrect-target-of-label-link-produced-by-hyperref
+%- https://tex.stackexchange.com/questions/88468/wrong-page-with-pageref-if-using-thmtools
+\@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}% Hyperref package is needed
+
+%-- Options
+%----------
+
+\newbool{askreply@usefrenchlanguage}
+\newbool{askreply@usegermanlanguage}
+
+\DeclareOption{french}{%
+  \booltrue{askreply@usefrenchlanguage}%
+}
+\DeclareOption{german}{% German conventions seem to be close to French ones
+  \booltrue{askreply@usegermanlanguage}%
+}
+
+\DeclareOption*{%- This package does not have any other options
+  \PackageWarning{askreply}{Unknown option '\CurrentOption'}
+}
+\ProcessOptions\relax%
+
+%-- Checking/creating storage directories for exercises/solutions and quizzes/answers
+%------------------------------------------------------------------------------------
+
+%- From: https://tex.stackexchange.com/questions/16790/[...]
+%-          [...]write18-capturing-shell-script-output-as-command-variable/
+\ExplSyntaxOn
+\NewDocumentCommand{\captureshell}{ s o m }
+ {
+  \askreply_captureshell:Ne \l__askreply_captureshell_out_tl { #3 }
+  \IfBooleanT { #1 }
+   {% we may need to stringify the result
+    \tl_set:Nx \l__askreply_captureshell_out_tl
+     { \tl_to_str:N \l__askreply_captureshell_out_tl }
+   }
+  \IfNoValueTF { #2 }
+   {
+    \tl_use:N \l__askreply_captureshell_out_tl
+   }
+   {
+    \tl_set_eq:NN #2 \l__askreply_captureshell_out_tl
+   }
+ }
+\tl_new:N \l__askreply_captureshell_out_tl
+\cs_new_protected:Nn \askreply_captureshell:Nn
+ {
+  \sys_get_shell:nnN { #2 } { } #1
+  \tl_trim_spaces:N #1 % remove leading and trailing spaces
+ }
+\cs_generate_variant:Nn \askreply_captureshell:Nn { Ne }
+\ExplSyntaxOff
+
+\iflinux
+  \typeout{*** The Operating System is a \linuxname\space box ***}
+  \captureshell*[\dirstatus]{[ -d ./Exercises-\jobname/ ] && echo 'Existing' || echo 'Missing'}
+  \ifdefstring{\dirstatus}{Existing}%
+    {\typeout{*** \string`\jobname.tex' *** Directory `Exercises-\jobname' already exists.}}%
+    {\ShellEscape{mkdir Exercises-\jobname}
+      \typeout{*** \string`\jobname.tex' *** Directory `Exercises-\jobname' has been created.}}
+  \captureshell*[\dirstatus]{[ -d ./Quizzes-\jobname/ ] && echo 'Existing' || echo 'Missing'}
+  \ifdefstring{\dirstatus}{Existing}%
+    {\typeout{*** \string`\jobname.tex' *** Directory `Quizzes-\jobname' already exists.}}%
+    {\ShellEscape{mkdir Quizzes-\jobname}
+      \typeout{*** \string`\jobname.tex' *** Directory `Quizzes-\jobname' has been created.}}
+  %\captureshell*[\dirstatus]{[ -d ./Solutions-\jobname/ ] && echo 'Existing' || echo 'Missing'}
+  %\ifdefstring{\dirstatus}{Existing}%
+  %  {\message{*** \string`\jobname.tex' *** Directory `Solutions' already exists.}}%
+  %  {\ShellEscape{mkdir Solutions-\jobname}}
+\fi
+\ifmacosx
+  \typeout{*** The Operating System is a \macosxname\space box ***}
+  \captureshell*[\dirstatus]{[ -d ./Exercises-\jobname/ ] && echo 'Existing' || echo 'Missing'}
+  \ifdefstring{\dirstatus}{Existing}%
+    {\typeout{*** \string`\jobname.tex' *** Directory `Exercises-\jobname' already exists.}}%
+    {\ShellEscape{mkdir Exercises-\jobname}
+      \typeout{*** \string`\jobname.tex' *** Directory `Exercises-\jobname' has been created.}}
+  \captureshell*[\dirstatus]{[ -d ./Quizzes-\jobname/ ] && echo 'Existing' || echo 'Missing'}
+  \ifdefstring{\dirstatus}{Existing}%
+    {\typeout{*** \string`\jobname.tex' *** Directory `Quizzes-\jobname' already exists.}}%
+    {\ShellEscape{mkdir Quizzes-\jobname}
+      \typeout{*** \string`\jobname.tex' *** Directory `Quizzes-\jobname' has been created.}}
+\fi
+\ifwindows
+  \message{*** The Operating System is \windowsname\space ***}
+  % To be continued... But how? We don't know Windows commands. Is the following correct?
+  \captureshell*[\dirstatus]{IF exist Exercises-\jobname (echo Existing) ELSE (echo Missing)}
+  \ifdefstring{\dirstatus}{Existing}%
+    {\typeout{*** \string`\jobname.tex' *** Directory `Exercises-\jobname' already exists.}}%
+    {\ShellEscape{mkdir Exercises-\jobname}
+      \typeout{*** \string`\jobname.tex' *** Directory `Exercises-\jobname' has been created.}}
+  \captureshell*[\dirstatus]{IF exist Quizzes-\jobname (echo Existing) ELSE (echo Missing)}
+  \ifdefstring{\dirstatus}{Existing}%
+    {\typeout{*** \string`\jobname.tex' *** Directory `Quizzes-\jobname' already exists.}}%
+    {\ShellEscape{mkdir Exercises-\jobname}
+      \typeout{*** \string`\jobname.tex' *** Directory `Quizzes-\jobname' has been created.}}
+\fi
+
+\newcommand{\exercisesdir}{Exercises-\jobname/}
+\newcommand{\quizzesdir}{Quizzes-\jobname/}
+
+%-- Setting lengths, colors, commands and macros
+%-----------------------------------------------
+
+%- If \lightbf is defined OK (e.g. medium bold or regular if light font), else \textbf{}
+\ifcsdef{lightbf}{}{\let\lightbf\textbf}
+
+%- Colors definitions
+\definecolor{askreplycolorenvbackground}{gray}{0.95}
+\definecolor{askreplydarkelectricblue}{RGB}{83, 104, 120}% HTML: #536878 - CMYK: 31, 13, 0, 53
+\definecolor{askreplyredbrown}{RGB}{153, 25, 25}% #991919ff
+\definecolor{askreplyteal}{RGB}{0, 128, 128}% medium-satured blue-green
+\definecolor{askreplybuttongray}{RGB}{200, 200, 200}
+\colorlet{askreplyfirstcolor}{askreplydarkelectricblue}
+\colorlet{askreplysecondcolor}{askreplyredbrown}
+\colorlet{askreplythirdcolor}{askreplyteal}
+
+%- Boxes standard lengths
+\newlength{\askreplyboxmargins}
+\setlength{\askreplyboxmargins}{8pt}%24pt
+\newlength{\askreplyboxvsep}
+\setlength{\askreplyboxvsep}{6pt}
+\newlength{\askreplyboxvskip}
+\setlength{\askreplyboxvskip}{4pt}
+\newlength{\askreplyboxrule}
+\setlength{\askreplyboxrule}{0.6pt}
+\newlength{\askreplyboxarc}
+\setlength{\askreplyboxarc}{4pt}
+\newlength{\askreplyshadingradius}
+\setlength{\askreplyshadingradius}{1.8\baselineskip}
+
+\newlength{\askreplyparindent}% Because sometimes using \parindent is not effective: WHY?
+%\setlength{\askreplyparindent}{\parindent}
+\setlength{\askreplyparindent}{0pt}
+
+%\newcommand{\tcbphantom}{\vspace*{\dimexpr-\baselineskip-\dp\strutbox\relax}\vphantom{Hg}}
+\newcommand{\tcbphantom}{\vspace*{-\dp\strutbox}\vphantom{Hg}}
+
+%- Configuring itemize and enumerate lists (vertical and horizontal skips)
+\newlength\askreplyitemlabelwidth
+\newlength\askreplyitemindent
+
+\ifbool{askreply@usefrenchlanguage}{% Adapted from French-Babel
+  \newcommand*{\askreplyitemlabel}{\textemdash}  % ou \textendash (tiret plus court)
+  \settowidth{\askreplyitemlabelwidth}{\askreplyitemlabel}
+  \setlength{\askreplyitemindent}{\parindent}
+  %\addtolength{\askreplyitemindent}{\askreplyitemlabelwidth}
+  %\addtolength{\askreplyitemindent}{\labelsep}
+}{
+  \newcommand*{\askreplyitemlabel}{\tiny\normalfont\faCircle}
+  \settowidth{\askreplyitemlabelwidth}{\askreplyitemlabel}
+  \setlength{\askreplyitemindent}{\parindent}
+  \addtolength{\askreplyitemindent}{\askreplyitemlabelwidth}
+  \addtolength{\askreplyitemindent}{\labelsep}
+}
+
+%- For an unknown reason, we failed to configure list environments with the `enumitem' package
+%- inside the TikZ box (issue with \hsize/\linewidth?). A workaround is to put the list environment
+%- into a tcolorbox (see below exercise/quiz def.) or a minipage (avoid "minipage" environment: 
+%- it is not breakable!). Breakable lists are fine inside a TikZ box, but take care that they are 
+%- not breakable inside a "tcolorbox" (here subexercise, and so on...)
+%- For the moment being, we leave `enumitem' package and only set the things for French.
+
+%-- Customising exercise/quiz name (easily overwritten or deleted by main class or other packages)
+%-------------------------------------------------------------------------------------------------
+
+\ifbool{askreply@usefrenchlanguage}{%
+  \providecommand{\exercisename}{Exercice}
+  \providecommand{\exercisenamenocap}{exercice}
+  %\providecommand{\quizname}{Quiz}
+  \providecommand{\quizname}{Questionnaire}% Maybe better, but Quiz is now current, mostly with MCQ
+  \providecommand{\solutionname}{Solution}
+  \providecommand{\listexercisename}{Liste des exercices}
+  \providecommand{\listquizname}{Liste des questionnaires}
+  \newcommand*{\quizverifyname}{Vérifier}
+  \newcommand*{\quizresetname}{Réinitialiser}
+  \newcommand*{\quizselectname}{Tout sélectionner}
+  \newcommand*{\quizshowanswername}{Afficher la réponse}
+  \newcommand*{\quizhideanswername}{Masquer la réponse}
+  \newcommand*{\quizrecordname}{Enregistrer}
+  \newcommand*{\quizexplanationname}{Explications}
+  \newcommand*{\quiztrialnumbername}{Nombre d'essai : }
+}{%
+  \ifbool{askreply@usegermanlanguage}{%
+    \providecommand{\exercisename}{Ausübung}% Correct?
+    \providecommand{\exercisenamenocap}{Ausübung}
+    \providecommand{\quizname}{Quiz}% Correct?
+    \providecommand{\solutionname}{Lösung}% Correct?
+    \providecommand{\listexercisename}{List of Exercises}
+    \providecommand{\listquizname}{List of Quizzes}
+    \newcommand*{\quizverifyname}{Verify}
+    \newcommand*{\quizresetname}{Reset}
+    \newcommand*{\quizselectname}{Select all}
+    \newcommand*{\quizshowanswername}{Show answer}
+    \newcommand*{\quizhideanswername}{Hide answer}
+    \newcommand*{\quizrecordname}{Record}
+    \newcommand*{\quizexplanationname}{Explanations}
+    \newcommand*{\quiztrialnumbername}{Number of trial: }
+  }{%
+    \providecommand{\exercisename}{Exercise}
+    \providecommand{\exercisenamenocap}{exercise}
+    \providecommand{\quizname}{Quiz}
+    \providecommand{\solutionname}{Solution}
+    \providecommand{\listexercisename}{List of Exercises}
+    \providecommand{\listquizname}{List of Quizzes}
+    \newcommand*{\quizverifyname}{Verify}
+    \newcommand*{\quizresetname}{Reset}
+    \newcommand*{\quizselectname}{Select all}
+    \newcommand*{\quizshowanswername}{Show answer}
+    \newcommand*{\quizhideanswername}{Hide answer}
+    \newcommand*{\quizrecordname}{Record}
+    \newcommand*{\quizexplanationname}{Explanations}
+    \newcommand*{\quiztrialnumbername}{Number of trial: }
+  }%
+}
+
+%-- File writing management (as "verbatim.sty" way of doing)
+%-----------------------------------------------------------
+
+%- Defining verbatim way to store contents in a file (stolen to `tcolorbox' package)
+\newwrite\askreply@out% Not in the commands below to avoid "No room for a new \write" error!!!
+
+%- From tcolorbox package
+\def\askreplyverbatimwrite#1{%
+  \@bsphack
+  \immediate\openout\askreply@out #1
+  \let\do\@makeother\dospecials
+  \catcode`\^^M\active \catcode`\^^I=12
+  \def\verbatim@processline{%
+    \immediate\write\askreply@out
+      {\the\verbatim@line}}%
+  \verbatim@start}%
+
+\def\endaskreplyverbatimwrite{%
+  \immediate\closeout\askreply@out
+  \@esphack%
+}
+
+%- From: https://tex.stackexchange.com/questions/219996/[...]
+%-          [...]writing-environments-out-to-files-and-prepending-appending-additional-code/
+\def\askreplyverbatimpreapp{\FV@Environment{}{askreplyverbatimpreapp}}
+
+%- Write #2 before and #3 after environment contents
+\def\FVB@askreplyverbatimpreapp#1#2#3{%
+  \@bsphack
+  \begingroup
+    \FV@UseKeyValues
+    \FV@DefineWhiteSpace
+    \def\FV@Space{\space}%
+    \FV@DefineTabOut
+    \def\FV@ProcessLine{\immediate\write\FV@OutFile}%
+    \immediate\openout\FV@OutFile #1\relax
+    % Added next 2 lines
+    \immediate\write\FV@OutFile{#2}%
+    \def\FV@appendline{#3}%
+    \let\FV@FontScanPrep\relax
+    \let\@noligs\relax
+    \FV@Scan}
+
+\def\FVE@askreplyverbatimpreapp{%
+  % Added next line
+  \immediate\write\FV@OutFile{\FV@appendline}%
+  \immediate\closeout\FV@OutFile\endgroup\@esphack}
+
+\DefineVerbatimEnvironment{askreplyverbatimpreapp}{askreplyverbatimpreapp}{}
+
+\NewDocumentCommand{\askreply@filecopytoenv}{ m m m m G{} }{%
+  %- Usage − #1 = <src-file>, #2 = <target-file>,
+  %-         #3 = <prepend-stuff>, #4 = <append-stuff>, #5 = [<env-options>]
+  %- Reset the target file to empty (not to add the things twice), 
+  %- then process the modifications
+  \IfFileExists{#2}%
+    {\CatchFileDef{\askreply@targetcontent}{#2}{}\let\askreply@targetcontent\empty}{}%
+  \begingroup
+  \IfFileExists{#1}%
+    {\CatchFileDef{\askreply@filecontent}{#1}{%
+      % Keep existing end-of-lines (Original)
+      %\catcode`\\=12 \endlinechar=`^^J\catcode\endlinechar=12\relax
+      \let\do\@makeother\dospecials% Stuff from verbatim.sty and alike
+      \catcode`\^^L\active%  What this corresponds to? Line feed?
+      \catcode`\^^I=\active% keep tabs? YES!
+      \catcode`\ =\active% keep spaces? YES!
+      \catcode`\^^M\active% keep end of line? YES
+     }%
+    }%
+    {\let\askreply@filecontent\empty}%
+  \immediate\openout\askreply@out=#2\relax
+  % \newlinechar`^^J seems to be LaTeX native end of line
+  % (and ^^M the one of external files? TODO: clarify this!)
+  \ifstrempty{#5}%
+    {\immediate\write\askreply@out{#3^^J\detokenize\expandafter{\askreply@filecontent}#4}}%
+    {\immediate\write\askreply@out{#3#5^^J\detokenize\expandafter{\askreply@filecontent}#4}}%
+  \immediate\closeout\askreply@out
+  \endgroup
+}
+
+%-- Defining styles for TikZ and `tcolorbox` boxes
+%-------------------------------------------------
+
+%- Defining styles for the "first layer" box (TikZ)
+\tikzset{%
+  askreplyframedbox/.style={%
+    on background layer,
+    draw=askreplyfirstcolor,
+    line width=\askreplyboxrule,
+    fill=askreplycolorenvbackground,
+    rounded corners=\askreplyboxarc,
+  },%
+  askreplyframedtitlebox/.style={%
+    on background layer,
+    fill=askreplyfirstcolor!75!black,
+    rounded corners=\askreplyboxarc,
+  },
+}
+
+\tcbset{askreplybackstageboxtitle/.style={%
+  enhanced,
+  notitle,
+  colback=askreplyfirstcolor!75!black,
+  colframe=askreplyfirstcolor,
+  colupper=white,
+  %fontupper=\normalsize\scshape,
+  arc=\askreplyboxarc,
+  boxsep=2pt, boxrule=0.4pt,
+  left=4pt, right=4pt, top=1.75pt, bottom=1.75pt,
+  sharp corners=south,
+  overlay={%
+    %\node[xshift=(-0.5\envsymbolwidth-4pt)]
+    %  at (frame.west) {\textcolor{askreplysecondcolor}{\normalfont\large\envsymbol}};
+    \node[xshift=-10pt] at (frame.west) {% 10pt = 0.5*16pt + 2pt
+      \textcolor{askreplysecondcolor}{\makebox[16pt][c]{\normalfont\large\envsymbol}}};
+    \askreply@level@display% Defined below just before the environments definition
+    },
+  before={\par\pagebreak[0]\parindent=0pt},%\parindent=0pt
+  after={\par\vspace*{-2\askreplyboxrule}},
+  }
+}
+
+%- Defining styles for the "second layer" (breakabke) boxes: with and without points assignment
+\tcbset{subexercisepoints/.style={%
+  enhanced,
+  breakable,
+  colback=black!3, 
+  colframe=black!30,
+  coltitle=white,%fonttitle=\itshape\scshape,
+  title style={left color=black!65, right color=askreplyfirstcolor!75!black,
+               middle color=askreplyfirstcolor!30!black!75},
+  toptitle=1.0pt, bottomtitle=1.0pt,
+  fontupper=\normalfont,
+  arc=0.5\askreplyboxarc,
+  boxsep=2pt, boxrule=0.4pt,
+  left=4pt, right=4pt, top=4pt, bottom=4pt,
+  title={% Empty versus non-empty subexercise title
+    \iftoggle{assignpoints@checkemptystring}%
+      {\strut\textsf{\textit{\textsc{\lightbf{%
+        \exercisename~\currentexercisenumber.\currentsubexercisenumber}}}}}%
+      {\strut\textsf{\textit{\textsc{\lightbf{%
+        \exercisename~\currentexercisenumber.\currentsubexercisenumber}}}}%
+        \ifbool{askreply@usefrenchlanguage}%
+          {\textsf{\textsc{\textit{\lightbf{%
+            \enspace\textemdash\enspace\currentsubexercisetitle}}}}}%
+          {\textsf{\textsc{\textit{\lightbf{%
+            \enspace\textendash\enspace\currentsubexercisetitle}}}}}%
+      }%
+      ~\dotfill~\textsf{\textsc{\textit{\lightbf{\footnotesize%
+         \displaypoints*[exercise]{\currentexercisenumber.\currentsubexercisenumber}}}}}%
+    },
+  before={\par\pagebreak[0]\vspace{4pt}},% No indent because title box
+  after=\par\vspace{2pt},
+  }
+}
+
+\tcbset{subsolutionpoints/.style={%
+  enhanced,
+  breakable,
+  colback=black!3, colframe=black!30,
+  coltitle=white, %fonttitle=\itshape\scshape,
+  title style={left color=black!65, right color=askreplysecondcolor!75!black,
+               middle color=askreplysecondcolor!30!black!75},
+  toptitle=1.0pt, bottomtitle=1.0pt,
+  fontupper=\normalfont,
+  arc=0.5\askreplyboxarc,
+  boxsep=2pt, boxrule=0.4pt,
+  left=4pt, right=4pt, top=4pt, bottom=4pt,
+  title={% Empty versus non-empty subexercise title
+    \iftoggle{assignpoints@checkemptystring}%
+      {\strut\textsf{\textit{\textsc{\lightbf{%
+        \solutionname~\theassignpoints@solutioncount.\theassignpoints@subsolutioncount}}}}}%
+      {\strut\textsf{\textit{\textsc{\lightbf{%
+        \solutionname~\theassignpoints@solutioncount.\theassignpoints@subsolutioncount}}}}%
+        \ifbool{askreply@usefrenchlanguage}%
+          {\textsf{\textsc{\textit{\lightbf{%
+            \enspace\textemdash\enspace\currentsubexercisetitle}}}}}%
+          {\textsf{\textsc{\textit{\lightbf{%
+            \enspace\textendash\enspace\currentsubexercisetitle}}}}}%
+      }%
+      ~\dotfill~\textsf{\textsc{\textit{\lightbf{\footnotesize%
+        \displaypoints*[exercise]{%
+          \theassignpoints@solutioncount.\theassignpoints@subsolutioncount}}}}}%
+    },
+  before={\par\pagebreak[0]\vspace{4pt}},%\parindent=0pt
+  %after upper=\tcbphantom\vspace*{\dimexpr-\baselineskip+2pt\relax},
+  after=\par\vspace{2pt},
+  }
+}
+
+\tcbset{subexercisenopoint/.style={%
+  enhanced,
+  breakable,
+  colback=black!3, 
+  colframe=black!30,
+  coltitle=white, %fonttitle=\itshape\scshape,
+  title style={left color=black!65, right color=askreplyfirstcolor!75!black,
+               middle color=askreplyfirstcolor!30!black!75},
+  toptitle=1.0pt, bottomtitle=1.0pt,
+  fontupper=\normalfont,
+  arc=0.5\askreplyboxarc,
+  boxsep=2pt, boxrule=0.4pt,
+  left=4pt, right=4pt, top=4pt, bottom=4pt,
+  title={% Empty versus non-empty subexercise title
+    \ifdefempty{\currentsubexercisetitle}%
+      {\strut\textsf{\textit{\textsc{\lightbf{\exercisename~\theexercise.\thesubexercise}}}}}%
+      {\strut\textsf{\textit{\textsc{\lightbf{\exercisename~\theexercise.\thesubexercise}}}}%
+         \ifbool{askreply@usefrenchlanguage}%
+           {\textsf{\textsc{\textit{\lightbf{%
+             \enspace\textemdash\enspace\currentsubexercisetitle}}}}}%
+           {\textsf{\textsc{\textit{\lightbf{%
+             \enspace\textendash\enspace\currentsubexercisetitle}}}}}%
+      }%
+    },
+  before={\par\pagebreak[0]\vspace{4pt}},%\parindent=0pt
+  %after upper=\tcbphantom\vspace*{\dimexpr-\baselineskip+2pt\relax},
+  after=\tcbphantom\par\vspace*{4pt},% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+  %after=\par,% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+  }
+}
+
+\tcbset{subsolutionnopoint/.style={%
+  enhanced,
+  breakable,
+  colback=black!3, colframe=black!30,
+  %colbacktitle=black!65,
+  coltitle=white, %fonttitle=\itshape\scshape,
+  title style={left color=black!65, right color=askreplysecondcolor!75!black,
+               middle color=askreplysecondcolor!30!black!75},
+  toptitle=1.0pt, bottomtitle=1.0pt,
+  %fontupper=\normalfont,
+  arc=0.5\askreplyboxarc,
+  boxsep=2pt, boxrule=0.4pt,
+  top=4pt, bottom=4pt,
+  left=4pt, right=4pt,
+  title={% Empty versus non-empty subexercise title
+    \ifdefempty{\currentsubexercisetitle}%
+      {\strut\textsf{\textit{\textsc{\lightbf{\solutionname~\thesolution.\thesubsolution}}}}}%
+      {\strut\textsf{\textit{\textsc{\lightbf{\solutionname~\thesolution.\thesubsolution}}}}%
+         \ifbool{askreply@usefrenchlanguage}%
+           {\textsf{\textit{\textsc{\lightbf{%
+             \enspace\textemdash\enspace\currentsubexercisetitle}}}}}%
+           {\textsf{\textit{\textsc{\lightbf{%
+             \enspace\textendash\enspace\currentsubexercisetitle}}}}}%
+      }%
+    },
+  before={\par\pagebreak[0]\vspace{4pt}},%\parindent=0pt
+  %after upper=\tcbphantom\vspace*{\dimexpr-\baselineskip+2pt\relax},
+  %after=\tcbphantom\par\vspace*{4pt},% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+  after=\par\vspace{2pt},% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+  }
+}
+
+%-- Defining quizzes specific styles
+%-----------------------------------
+
+\tikzset{%
+  quizbutton/.style={
+    shape=rectangle, rounded corners=1pt,
+    text=black, draw=#1!90,
+    top color=#1!15!white, bottom color=#1!75,
+    inner xsep=6pt, inner ysep=2pt,
+  },
+}
+
+\tcbset{
+  quizquestionpoints/.style={
+    enhanced jigsaw,
+    breakable,% doc. p.377: A tcolorbox inside a tcolorbox is automatically set to be unbreakable
+    %enforce breakable,% If one really wants the inner box to be breakable, use enforce breakable
+    lowerbox=ignored,
+    colframe=black!30,
+    colback=black!2!white,
+    coltitle=askreplyfirstcolor,
+    %fonttitle={\scshape\fontsize{9pt}{10.8pt}\selectfont\titlingspacedfont},
+    fonttitle={\normalfont\itshape\scshape\strut},
+    attach title to upper={\par\vspace{2pt}},
+    toptitle=0.0pt, bottomtitle=0.0pt,
+    fontupper=\normalfont\small,
+    title={% Empty versus non-empty subexercise title
+      \iftoggle{assignpoints@checkemptystring}%
+        {\textsf{\lightbf{\normalsize\quizname~\currentquiznumber.\currentquizquestionnumber}}}%
+        {\textsf{\lightbf{\normalsize\quizname~\currentquiznumber.\currentquizquestionnumber}}%
+            \textsf{\lightbf{\normalsize\enspace\textemdash\enspace\currentquizquestiontitle}}%
+            ~\dotfill~\textsf{\lightbf{\footnotesize\scshape%
+              \displaypoints*[quiz]{\currentquiznumber.\currentquizquestionnumber}}}%
+        }%
+      },
+    opacityback=0.0,
+    %opacityfill=0.4,
+    boxsep=0pt, boxrule=0.4pt,
+    arc=0.5\askreplyboxarc,
+    left=6pt, right=6pt,
+    top = 4pt, bottom = 4pt,% default=2mm
+    width=\linewidth,
+    %before skip=4pt, after skip=4pt,
+    before={\par\pagebreak[0]\vspace{0pt}},%\parindent=0pt
+    %after upper=\tcbphantom\vspace*{\dimexpr-\baselineskip+2pt\relax},
+    %after=\tcbphantom\par\vspace*{4pt},% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+    after=\par\vspace{4pt},% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+  },
+}
+
+\tcbset{
+  quizquestionnopoint/.style={
+    enhanced jigsaw,
+    breakable,% doc. p.377: A tcolorbox inside a tcolorbox is automatically set to be unbreakable
+    %enforce breakable,% If one really wants the inner box to be breakable, use enforce breakable
+    lowerbox=ignored,
+    colframe=black!30,
+    colback=black!2!white,
+    coltitle=askreplyfirstcolor,
+    %fonttitle={\scshape\fontsize{9pt}{10.8pt}\selectfont\titlingspacedfont},
+    fonttitle={\normalfont\itshape\scshape\strut},
+    attach title to upper={\par\vspace{2pt}},
+    toptitle=0.0pt, bottomtitle=0.0pt,
+    fontupper=\normalfont\small,
+    title={% Empty versus non-empty quizquestion title
+      \ifdefempty{\currentquizquestiontitle}%
+        {\strut\textsf{\lightbf{\quizname~\thequizquestion}}}%
+        {\strut\textsf{\lightbf{\quizname~\thequizquestion}}%
+           \textsf{\lightbf{\enspace\textemdash\enspace\currentquizquestiontitle}}%
+        }%
+      },
+    opacityback=0.0,
+    %opacityfill=0.4,
+    boxsep=0pt, boxrule=0.4pt,
+    arc=0.5\askreplyboxarc,
+    left=6pt, right=6pt,
+    top = 4pt, bottom = 4pt,% default=2mm
+    width=\linewidth,
+    %before skip=4pt, after skip=4pt,
+    before={\par\pagebreak[0]\vspace{0pt}},%\parindent=0pt
+    %after upper=\tcbphantom\vspace*{\dimexpr-\baselineskip+2pt\relax},
+    %after=\tcbphantom\par\vspace*{4pt},% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+    after=\par\vspace{4pt},% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+  },
+}
+
+\tcbset{
+  mcqdemo/.style={
+    enhanced jigsaw,
+    breakable,% doc. p.377: A tcolorbox inside a tcolorbox is automatically set to be unbreakable
+    %enforce breakable,% If one really wants the inner box to be breakable, use enforce breakable
+    lowerbox=ignored,
+    colframe=black!30,
+    colback=black!2!white,
+    coltitle=askreplyfirstcolor,
+    %fonttitle={\scshape\fontsize{9pt}{10.8pt}\selectfont\titlingspacedfont},
+    fonttitle={\normalfont\sffamily\itshape\scshape\strut},
+    attach title to upper={\par\vspace{2pt}},
+    toptitle=0.0pt, bottomtitle=0.0pt,
+    fontupper=\normalfont\small,
+    title={% Empty versus non-empty quizquestion title
+      \ifdefempty{\currentquizquestiontitle}%
+        {\strut\lightbf{\quizname~\thequizdemo.\themcqdemo}}%
+        {\strut\lightbf{\quizname~\@Alph{\thequizdemo}.\themcqdemo}%
+            \enspace\textemdash\enspace\lightbf{%
+              \currentquizquestiontitle~\dotfill}%~{\small\displaypoints*[quiz]{\thequizdemo.\themcqdemo}}}%
+        }%
+      },
+    opacityback=0.0,
+    %opacityfill=0.4,
+    boxsep=0pt, boxrule=0.4pt,
+    arc=0.5\askreplyboxarc,
+    left=6pt, right=6pt,
+    top = 4pt, bottom = 4pt,% default=2mm
+    width=\linewidth,
+    %before skip=4pt, after skip=4pt,
+    before={\par\pagebreak[0]\vspace{0pt}},%\parindent=0pt
+    %after upper=\tcbphantom\vspace*{\dimexpr-\baselineskip+2pt\relax},
+    %after=\tcbphantom\par\vspace*{4pt},% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+    after=\par\vspace{4pt},% WHY IT IS NOT THE SAME AS WITH POINTS? STRANGE!
+  },
+}
+
+%-- Setting and tweaking useful macros from the unofficial `tikzpagelayer` package (Martin Scharrer)
+%---------------------------------------------------------------------------------------------------
+
+%- See: https://tex.stackexchange.com/questions/377161/[...]
+%-         [...]how-to-neatly-correctly-underline-with-a-tikz-rectangle/
+%-      https://tex.stackexchange.com/questions/334528/the-current-state-of-the-art-tikz-underliner/
+%- Martin Scharrer's original code: https://bitbucket.org/martin_scharrer/tikzpagelayers (dead link)
+
+\newcommand\tikzpagemark{}
+\DeclareRobustCommand\tikzpagemark[1]{%
+  \leavevmode
+  \zsavepos{tikzpagemarkpos-#1}%
+}
+
+\def\tpl@addto#1#2{%
+  \begingroup
+    \ifx#1\@undefined
+      \global\let#1\empty
+    \else
+      \ifx#1\relax
+        \global\let#1\empty
+      \fi
+    \fi
+    \edef\@tempa{\@thetikzpagemark}%
+    \expandafter\g@addto@macro\expandafter#1\expandafter{%
+      \expandafter\set@tikzpagemark\expandafter{\@tempa}%
+        #2%
+    }%
+  \endgroup
+}
+
+\newenvironment{tikzpagelayer}[2][foreground]{%
+  \stepcounter{tikzpagemark}%
+  \tikzpagelayeron
+  \tikzpagemark{\@thetikzpagemark-begin}%
+  \expandafter\tpl@addto\csname tikzpagelayer@#1@page%
+    \zref@extract{tikzpagemarkpos-\@thetikzpagemark-begin}{abspage}\endcsname{#2}%
+  \edef\endtikzpagelayer{\noexpand\tikzpagemark{\@thetikzpagemark-end}}%
+}{}%
+
+\newcommand{\starttikzpagelayer}[3][foreground]{%
+  \begingroup
+    \tikzpagelayeron
+    \edef\@thetikzpagemark{@#2}%
+    \tikzpagemark{\@thetikzpagemark-begin}%
+    \expandafter\tpl@addto\csname tikzpagelayer@#1@page%
+      \zref@extract{tikzpagemarkpos-\@thetikzpagemark-begin}{abspage}\endcsname{#3}%
+  \endgroup
+}
+
+\newcommand{\stoptikzpagelayer}[1]{%
+  \tikzpagemark{@#1-end}%
+}%
+
+\def\set@tikzpagemark#1{%
+  \def\@thetikzpagemark{#1}%
+  \edef\tplfirstpage{\zref@extract{tikzpagemarkpos-#1-begin}{abspage}}%
+  \edef\tpllastpage{\zref@extract{tikzpagemarkpos-#1-end}{abspage}}%
+  \coordinate (tplbegin) at
+    ([shift={(\zposx{tikzpagemarkpos-#1-begin}sp, 
+              \zposy{tikzpagemarkpos-#1-begin}sp)}]current page.south west);%
+  \coordinate (tplend) at
+    ([shift={(\zposx{tikzpagemarkpos-#1-end}sp, 
+              \zposy{tikzpagemarkpos-#1-end}sp)}]current page.south west);%
+}
+
+\newcommand\tplonpage[2][foreground]{%
+  \begingroup
+    \pgfmathtruncatemacro\@tplpage{#2}%
+    \expandafter\endgroup
+    \expandafter\tpl@addto\csname tikzpagelayer@#1@page\@tplpage\endcsname
+}
+
+\newcommand\tplonnextpage[1][foreground]{%
+  \tplonpage[#1]{\@tplnextpage}%
+}
+
+\newcommand\tplonlastpage[1][foreground]{%
+  \tplonpage[#1]{\tpllastpage}%
+}
+
+\newcommand\tplonmiddlepages[2][foreground]{%
+  \begingroup
+    \@tempcnta=\tplfirstpage\relax
+    \loop
+    \advance\@tempcnta\@ne
+    \ifnum\@tempcnta<\tpllastpage
+      \tplonpage[#1]{\number\@tempcnta}{#2}%
+    \repeat
+  \endgroup
+}
+
+%- During the page `abspage' is one to low
+\def\@tplnextpage{\c@abspage+2}
+
+%- In the shipout routine it is correct
+\def\@@tplnextpage{\c@abspage+1}
+
+\newcounter{tikzpagemark}
+\def\@thetikzpagemark{\number\c@tikzpagemark}
+
+\def\@tikzpagelayeron{%
+  \AtBeginShipoutNext{\tikzpagelayer@atbeginshipout}%
+  \global\let\tikzpagelayeron\relax
+}
+
+\AtBeginShipout{\tikzpagelayer@atbeginshipout}%
+\let\tikzpagelayeron\@tikzpagelayeron
+\let\tikzpagelayer@background\empty
+\let\tikzpagelayer@foreground\empty
+
+\def\tikzpagelayer@atbeginshipout{%
+  \setbox\AtBeginShipoutBox\hbox{%
+    \color@setgroup
+    \let\@tplnextpage\@@tplnextpage
+    \begin{tikzpicture}[remember picture]%
+      \path[use as bounding box, every node/.style={}, every rectangle node/.style={}]
+        node[inner sep=0pt, outer sep=0pt] (current page box) {\box\AtBeginShipoutBox};
+      %\fill[line width=10pt,blue,opacity=.5]
+      %  (current page box.north west) rectangle (current page box.south east);
+      \begin{pgfonlayer}{background}
+        \begin{scope}%
+          \csname tikzpagelayer@background@page\number\c@abspage\endcsname
+            \tikzpagelayer@background
+        \end{scope}%
+      \end{pgfonlayer}%
+      \begin{scope}%
+        \csname tikzpagelayer@foreground@page\number\c@abspage\endcsname
+        \tikzpagelayer@foreground
+      \end{scope}%
+    \end{tikzpicture}%
+    \color@endgroup
+  }%
+  \global\let\tikzpagelayer@background\empty
+  \global\let\tikzpagelayer@foreground\empty
+  \global\let\tikzpagelayeron\@tikzpagelayeron
+}
+
+\NewDocumentCommand{\@askreplytikzframebox}{ m m }{% Background box for exercises and solutions
+  \begin{scope}[#1]
+    \ifnum\tplfirstpage=\tpllastpage
+      %\node[circle, radius=2pt, fill=yellow]
+      %  at ([xshift={(-\askreplyboxmargins-\askreplyparindent+\askreplyboxrule)},
+      %       yshift={(\ht\strutbox+1.5\askreplyboxvskip+0.5\askreplyboxrule)}]tplbegin) {};
+      \path [#1] let
+        \p1 = (tplbegin),
+        \p2 = (tplend),
+        \p3 = (current page text area.north west),
+        \p4 = (current page text area.south east) in
+          (\x4-.5\pgflinewidth,\y1+\ht\strutbox+1.5\askreplyboxvskip+.5\pgflinewidth) --
+          (\x4-.5\pgflinewidth,\y2-\dp\strutbox-1.5\askreplyboxvskip-.5\pgflinewidth) --
+          (\x3+.5\pgflinewidth,
+           \y2-\dp\strutbox-1.5\askreplyboxvskip-.5\pgflinewidth) [rounded corners=false] --
+          (\x3+.5\pgflinewidth,\y1+\ht\strutbox+1.5\askreplyboxvskip+.5\pgflinewidth) -- cycle;
+      \begin{scope}
+        %- Starting with a shading and fading quarter of a circle
+        \node[save path=\shadingstartboxpath,
+              shape=circular sector,
+              rounded corners=false,
+              outer sep=0pt,
+              circular sector angle=90,
+              shape border uses incircle,
+              shape border rotate=135,%-225,%-135,%-45,%135,%45,
+              anchor=sector center,
+              minimum size=\askreplyshadingradius,
+              xshift={(-\askreplyboxmargins-\askreplyparindent+\askreplyboxrule)},
+              yshift={(\ht\strutbox+1.5\askreplyboxvskip+0.0\askreplyboxrule)},
+              ]
+          (shadingstartbox) at (tplbegin) {};
+        \clip[use path=\shadingstartboxpath];
+        \shade[inner color=#2, outer color=askreplycolorenvbackground] let %,path fading=fade in
+          \p1=($(shadingstartbox.arc center)-(shadingstartbox.sector center)$),
+          \n1={veclen(\y1,\x1)} in
+            (shadingstartbox.sector center) circle (\n1);
+      \end{scope}
+      %\begin{scope}
+      %  %- Ending with a solution reference (for exercise only, empty for solution)
+      %  \node[anchor=east, color=askreplysecondcolor] at (tplend)
+      %    {\itshape\footnotesize{\normalfont\faSquare}\enspace Solution};
+      %\end{scope}
+    \else
+      \path [#1] let
+        \p1 = (tplbegin),
+        \p3 = (current page text area.north west),
+        \p4 = (current page text area.south east) in
+          (\x3+.5\pgflinewidth,\y4-\dp\strutbox) [rounded corners=false] --
+          (\x3+.5\pgflinewidth,\y1+\ht\strutbox+1.5\askreplyboxvskip+.5\pgflinewidth) -|
+          (\x4-.5\pgflinewidth,\y4-\dp\strutbox);
+      \begin{scope}
+        %- Starting with a shading and fading quarter of a circle
+        \node[save path=\shadingstartboxpath,
+              shape=circular sector,
+              rounded corners=false,
+              outer sep=0pt,
+              circular sector angle=90,
+              shape border uses incircle,
+              shape border rotate=135,%-225,%-135,%-45,%135,%45,
+              anchor=sector center,
+              minimum size=\askreplyshadingradius,
+              xshift={(-\askreplyboxmargins-\askreplyparindent+\askreplyboxrule)},
+              yshift={(\ht\strutbox+1.5\askreplyboxvskip+0.0\askreplyboxrule)},
+              ]
+          (shadingstartbox) at (tplbegin) {};
+        \clip[use path=\shadingstartboxpath];
+        \shade[inner color=#2, outer color=askreplycolorenvbackground] let %,path fading=fade in
+          \p1=($(shadingstartbox.arc center)-(shadingstartbox.sector center)$),
+          \n1={veclen(\y1,\x1)} in
+            (shadingstartbox.sector center) circle (\n1);
+      \end{scope}
+      \tplonpage{\tpllastpage}{%
+        \begin{scope}[#1]
+          \path [#1] let
+            \p1 = (tplend),
+            \p3 = (current page text area.north west),
+            \p4 = (current page text area.south east) in
+              (\x3+.5\pgflinewidth,\y3+.5\pgflinewidth) --
+              (\x3+.5\pgflinewidth,\y1-\dp\strutbox-1.5\askreplyboxvskip-.5\pgflinewidth) -|
+              (\x4-.5\pgflinewidth,\y3+.5\pgflinewidth);
+        \end{scope}%
+      }%
+      \tplonmiddlepages{%
+        \begin{scope}[#1]
+          \path [#1,draw=none] let
+            \p1 = (current page text area.north west),
+            \p2 = (current page text area.south east) in
+              (\x1+.5\pgflinewidth,\y1+.5\pgflinewidth) --
+              (\x1+.5\pgflinewidth,\y2-.5\pgflinewidth) --
+              (\x2-.5\pgflinewidth,\y2-.5\pgflinewidth) --
+              (\x2-.5\pgflinewidth,\y1+.5\pgflinewidth) -- cycle;
+          \path [#1] let
+            \p1 = (current page text area.north west),
+            \p2 = (current page text area.south east) in
+              (\x1+.5\pgflinewidth,\y1+.5\pgflinewidth) --
+              (\x1+.5\pgflinewidth,\y2-.5\pgflinewidth)
+              (\x2-.5\pgflinewidth,\y2-.5\pgflinewidth) --
+              (\x2-.5\pgflinewidth,\y1+.5\pgflinewidth);
+         \end{scope}%
+      }%
+    \fi
+  \end{scope}
+}
+
+\NewDocumentCommand{\@askreplytikzquizframebox}{ m }{% Background box for quizzes
+  \begin{scope}[#1]
+    \ifnum\tplfirstpage=\tpllastpage
+      %\node[circle, radius=2pt, fill=yellow]
+      %  at ([xshift={(-\askreplyboxmargins-\askreplyparindent+\askreplyboxrule)},
+      %       yshift={(\ht\strutbox+1.5\askreplyboxvskip+0.5\askreplyboxrule)}]tplbegin) {};
+      \path [#1] let
+        \p1 = (tplbegin),
+        \p2 = (tplend),
+        \p3 = (current page text area.north west),
+        \p4 = (current page text area.south east) in
+          (\x4-.5\pgflinewidth,\y1+\ht\strutbox+1.5\askreplyboxvskip+.5\pgflinewidth) --
+          (\x4-.5\pgflinewidth,\y2-\dp\strutbox-1.5\askreplyboxvskip-.5\pgflinewidth) --
+          (\x3+.5\pgflinewidth,
+           \y2-\dp\strutbox-1.5\askreplyboxvskip-.5\pgflinewidth) [rounded corners=false] --
+          (\x3+.5\pgflinewidth,\y1+\ht\strutbox+1.5\askreplyboxvskip+.5\pgflinewidth) -- cycle;
+    \else
+      \path [#1] let
+        \p1 = (tplbegin),
+        \p3 = (current page text area.north west),
+        \p4 = (current page text area.south east) in
+          (\x3+.5\pgflinewidth,\y4-\dp\strutbox) [rounded corners=false] --
+          (\x3+.5\pgflinewidth,\y1+\ht\strutbox+1.5\askreplyboxvskip+.5\pgflinewidth) -|
+          (\x4-.5\pgflinewidth,\y4-\dp\strutbox);
+      \tplonpage{\tpllastpage}{%
+        \begin{scope}[#1]
+          \path [#1] let
+            \p1 = (tplend),
+            \p3 = (current page text area.north west),
+            \p4 = (current page text area.south east) in
+              (\x3+.5\pgflinewidth,\y3+.5\pgflinewidth) --
+              (\x3+.5\pgflinewidth,\y1-\dp\strutbox-1.5\askreplyboxvskip-.5\pgflinewidth) -|
+              (\x4-.5\pgflinewidth,\y3+.5\pgflinewidth);
+        \end{scope}%
+      }%
+      \tplonmiddlepages{%
+        \begin{scope}[#1]
+          \path [#1,draw=none] let
+            \p1 = (current page text area.north west),
+            \p2 = (current page text area.south east) in
+              (\x1+.5\pgflinewidth,\y1+.5\pgflinewidth) --
+              (\x1+.5\pgflinewidth,\y2-.5\pgflinewidth) --
+              (\x2-.5\pgflinewidth,\y2-.5\pgflinewidth) --
+              (\x2-.5\pgflinewidth,\y1+.5\pgflinewidth) -- cycle;
+          \path [#1] let
+            \p1 = (current page text area.north west),
+            \p2 = (current page text area.south east) in
+              (\x1+.5\pgflinewidth,\y1+.5\pgflinewidth) --
+              (\x1+.5\pgflinewidth,\y2-.5\pgflinewidth)
+              (\x2-.5\pgflinewidth,\y2-.5\pgflinewidth) --
+              (\x2-.5\pgflinewidth,\y1+.5\pgflinewidth);
+         \end{scope}%
+      }%
+    \fi
+  \end{scope}
+}
+
+%-- Storing and retrieving stuff macros
+%--------------------------------------
+
+\newcommand{\askreply@storevaluetoaux}[3]{%
+  % Usage: #1 = prefix − #2 = <env-number> − #3 = <length-name>
+  \immediate\write\@auxout{\string\global\string\long\string\@namedef{askreply@#1@#2}{#3}}%
+}
+
+\newcommand{\askreply@readvaluefromaux}[2]{%
+  % Usage: #1 = prefix − #2 = <value-(number)-(text)-(length-without-pt)>
+  %   e.g. \setlength{<length>}{\askreply@readvaluefromaux{\askreply@prefix{#1}}{#2}pt}
+  \ifcsname askreply@#1@#2\endcsname%
+    \@nameuse{askreply@#1@#2}%
+  \else%
+    \textbf{??}%
+    \PackageWarning{askreply}%
+      {Key 'askreply@#1@#2' not found in aux file. Maybe you need to recompile?}%
+  \fi%
+}
+
+\NewDocumentCommand{\getenvtitle}{ O{exercise} m }{%
+  % Usage − #1 = <env-name>, #2 = <env-number>
+  \ifstrequal{#1}{exercise}% For the exercise title
+    {% Storage exists
+      \ifcsname askreply@exercise@exercisetitle@#2\endcsname%
+        \renewcommand{\currentexercisetitle}{%
+          \askreply@readvaluefromaux{exercise}{exercisetitle@#2}}%
+      \else% Storage is empty or not yet available
+        \PackageWarning{askreply}%
+          {Storage key not found in aux file. Maybe you need to recompile?}%
+      \fi%
+    }{}%
+  \ifstrequal{#1}{subexercise}% For the subexercise title
+    {% Storage exists  assignpoints@exercise@subexercisetitle@1.1
+      \ifcsname askreply@exercise@subexercisetitle@#2\endcsname%
+        \renewcommand{\currentsubexercisetitle}{%
+          \askreply@readvaluefromaux{exercise}{subexercisetitle@#2}}%
+      \else% Storage is empty or not yet available
+        \PackageWarning{askreply}%
+          {Storage key not found in aux file. Maybe you need to recompile?}%
+      \fi%
+    }{}%
+}
+
+\providecommand{\exerciseID}{}
+\providecommand{\solutionID}{}
+\providecommand{\quizID}{}
+\providecommand{\answerID}{}
+
+\NewDocumentCommand{\getenvID}{ O{exercise} m }{%
+  % Usage − #1 = <env-name>, #2 = <env-number>
+  \ifstrequal{#1}{exercise}% For the exercise ID
+    {% Storage exists
+      \ifcsname askreply@exercise@exerciseID@#2\endcsname%
+        \renewcommand{\exerciseID}{%
+          \askreply@readvaluefromaux{exercise}{exerciseID@#2}}%
+      \else% Storage is empty or not yet available
+        \renewcommand{\exerciseID}{}%
+      \fi%
+    }{}%
+  \ifstrequal{#1}{solution}% For the solution ID
+    {% Storage exists
+      \ifcsname askreply@exercise@solutionID@#2\endcsname%
+        \renewcommand{\solutionID}{%
+          \askreply@readvaluefromaux{exercise}{solutionID@#2}}%
+      \else% Storage is empty or not yet available
+        \renewcommand{\solutionID}{}%
+      \fi%
+    }{}%
+}
+
+%-- Environment counters and symbols
+%-----------------------------------
+
+%\@ifclassloaded{book}{%
+%\@ifundefined{chapter}{%
+  \newcounter{exercise}%
+  \newcounter{solution}%
+  \newcounter{solutionnumber}%
+  \newcounter{quiz}%
+  \newcounter{answer}%
+%}{%
+%  \newcounter{exercise}[chapter]%
+%  \newcounter{solution}[chapter]%
+%  \newcounter{quiz}[chapter]%
+%  \newcounter{answer}[chapter]%
+%}%
+
+\newcounter{subexercise}[exercise]
+\newcounter{subsolution}[solution]
+\newcounter{quizquestion}[quiz]
+\newcounter{mcqdemo}
+\newcounter{quizdemo}
+\newcounter{mcqquiztotaldemo}
+\newcounter{subanswer}[answer]
+
+\newcounter{mcqproposal}[quizquestion]% Proposal IDs counter to choose within a quiz question
+\newcounter{mcqquiztotal}[quizquestion]% Total propositions counter within a quiz question
+\newcounter{mcqproposaldemo}[mcqdemo]% Proposal IDs counter to choose within a quiz question demo
+
+% Exercise symbol: \faIcon{feather-alt}} \faPenFancy \faMarker \faQuestion
+% Solution icon: \faLightbulb \faLightbulb[regular] \faUbuntu \faInfo \faInfoCircle
+
+\newcommand{\envsymbol}{}
+\newlength{\envsymbolheight}
+\newlength{\envsymbolwidth}
+
+%- Setting quiz symbols: designed with the help of the Fontawesome icons packages v.4.6 and v.5.7
+
+\newlength{\quizcheckboxwidth}
+\newlength{\quizcheckgap}
+\newlength{\quizsymbolwidth}
+\newlength{\quizanswerbuttonwidth}
+
+\setlength{\quizcheckgap}{0.5em}
+\setlength{\quizsymbolwidth}{10pt}
+\setlength{\quizanswerbuttonwidth}{%
+  \widthof{\scriptsize\lightbf{\textsc{\quizhideanswername}}}%
+}%
+\addtolength{\quizanswerbuttonwidth}{12pt}% inner 2*xsep button style
+
+% \faCheck width = 10.O pt; \faTimes width = 7.85pt => same width in a box
+\newcommand{\checktick}{%
+  \makebox[\quizsymbolwidth][c]{%
+    \textcolor{green!60!black}{\normalfont\normalsize\faCheck}%
+  }%
+}
+\newcommand{\crosstick}{%
+  \makebox[\quizsymbolwidth][c]{%
+    \textcolor{red!60!black}{\normalfont\normalsize\faTimes}%
+  }%
+}
+
+%-- Setting displaying and recording useful commands
+%---------------------------------------------------
+
+\newcommand{\phantomtext}{\vspace*{\dimexpr-\baselineskip-\askreplyboxvskip\relax}\phantom{Hg}}
+
+\begingroup%
+  \catcode`P=12 \catcode`T=12 \lowercase{\endgroup
+  \def\askreplysplitbefore#1{%
+    \expandafter\askreply@strip@pt\expandafter\@askreplysplitbefore\the\dimexpr#1PT\relax\@nil
+  }
+  \def\askreplyssplitafter#1{%
+    \expandafter\askreply@strip@pt\expandafter\@askreplysplitafter\the\dimexpr#1PT\relax\@nil
+  }
+  \def\@askreplysplitbefore#1.#2.#3PT\@nil{#1}
+  \def\@askreplysplitafter#1.#2.#3PT\@nil{#2}
+  \def\askreply@strip@pt#1#2PT#3\@nil{#1#2..PT\@nil}
+} % balance the open brace after \lowercase
+
+\newcommand\askreplytwodigits[1]{%
+  \ifnum#1<10 0#1\else #1\fi
+}
+
+\newtoggle{askreply@points}
+\@ifpackageloaded{texjazz-assignpoints}%
+  {\toggletrue{askreply@points}}{\togglefalse{askreply@points}}
+
+
+%---------------------------------------------------------------------------------------------------
+%-- Defining the different environments with options (PGFKeys and l3keys2e system)
+%---------------------------------------------------------------------------------------------------
+
+%-- Managing key-value options of commands (PGFKeys)
+%---------------------------------------------------
+
+%- https://tex.stackexchange.com/questions/521011/how-is-a-pgf-key-defined/
+\newif\ifaskreply@display\askreply@displaytrue %or display/.default=true
+\newif\ifaskreply@storing\askreply@storingtrue %or storing/.default=true
+\newif\ifaskreply@list\askreply@listtrue %or list/.default=true
+
+\pgfkeys{%
+  /askreply/.is family, /askreply/.cd,
+  display/.is if=askreply@display,
+  %display/.default=true,% DOES NOT WORK! WHY?
+  storing/.is if=askreply@storing,
+  %storing/.default=true,% DOES NOT WORK! WHY?
+  list/.is if=askreply@list,
+  %list/.default=true,% DOES NOT WORK! WHY?
+  title/.store in=\askreply@title,
+  title=,
+  level/.is choice,
+  level/basic/.code=\def\askreply@level{basic},
+  level/intermediate/.code=\def\askreply@level{intermediate},
+  level/advanced/.code=\def\askreply@level{advanced},
+  level/.default=\def\askreply@level{},
+  before skip/.store in=\askreply@beforeskip,
+  before skip=6pt,
+  after skip/.store in=\askreply@afterskip,
+  after skip=6pt,
+  text color/.store in=\askreply@textcolor,
+  text color=black,
+  points/.store in=\askreply@editpoints,
+  points=,
+  symbol/.store in=\askreply@envsymbol,
+  symbol=,
+  ID/.store in=\askreply@ID,
+  ID=,
+}
+
+\newenvironment{askreplybox}{%
+  %\centering%
+  \list{}{%
+    \leftmargin\askreplyboxmargins%
+    \rightmargin\leftmargin%
+    \listparindent\askreplyparindent%
+    \itemindent\askreplyparindent%
+    \parsep\parskip%
+  }% 
+  \item\relax%
+}{\endlist}
+
+%- Box height measurement
+\newlength{\askreply@detect@boxheight}
+\newtcolorbox{askreply@measurebox}[2][]{% From http://tex.stackexchange.com/questions/203194/
+  blank,%show bounding box, parbox=false,
+  overlay={\xdef#2{\tcb@height}},
+  #1
+}
+
+%- https://tex.stackexchange.com/questions/428462/[...]
+%-    [...]how-can-i-dynamically-set-the-box-height-to-the-max-height-of-a-group-of-boxes
+
+% Backend boxmaker
+%\long\def\askreply@box#1#2#3{%
+%  \tikz\node[draw, line width=.4pt, inner sep=2pt,outer sep=0pt,align=left,minimum width=#2,minimum height=#3]
+%{\parbox{\dimexpr#2-4pt}{\raggedright\small#1}};}
+
+% User-level boxmaker
+%\long\def\nodebox#1#2#3{\ABC@box{#1}{#2}{#3}\kern-.4pt}% kern used to horizontally shift boxes back by stroke width of frame
+
+%\newdimen\nodeboxminHT
+%\nodeboxminHT=1cm\relax
+
+%\NewEnviron{formrow}{%
+%  \leavevmode\unskip\par\sbox\@tempboxa{\BODY}\nodeboxminHT=\the\ht\@tempboxa\BODY\ignorespaces}
+
+
+
+%-- Generic single and multiple MCQs definitions (OCG/OCMD PDF: `ocgx2` package)
+%-------------------------------------------------------------------------------
+
+%- From: https://tex.stackexchange.com/questions/486148/[...]
+%-          [...]avoid-passing-an-empty-optional-argument-an-environment-with-verbatim-content
+%-       https://tex.stackexchange.com/questions/490706/[...]
+%-          [...]ocgx2-verify-and-reset-of-multiple-choice-questions-with-ocgs
+%-       https://tex.stackexchange.com/questions/493987/[...]
+%-          [...]ocgx2-xparse-expl3-splitting-comma-separated-ocmd-ocgs-lists-of-arguments-for
+
+%-----------------------------
+%-- ESSENTIAL! ONLY USE A POINT AS OCG SEPARATOR: ERROR WITH COLON AND @ --> WHY? (French spaces?)
+%-----------------------------
+
+%- Only a step for single solution MCQs: proposal button
+
+\NewDocumentCommand{\quizSingleButton}{m}{% Based on AG's \quizButton command
+  % Syntax − #1: id choice
+  % Action on click: toggle myself (choice layer), hide verifcation layer
+  \stepcounter{mcqproposal}%
+  \stepcounter{mcqquiztotal}%
+  \setlength{\quizcheckboxwidth}{\widthof{\faIcon[regular]{circle}}}%
+  \makebox[\quizcheckboxwidth][c]{%
+    %\actionsocg{#1}{}{verify:\thequizquestion}{\faIcon[regular]{circle}}%
+    \actionsocg{#1}{}{verify.\thequiz.\thequizquestion}{\faIcon[regular]{circle}}%
+  }%
+  %\begin{ocg}[radiobtngrp=choice:\thequizquestion]{#1}{#1}{off}% choice layer
+  \begin{ocg}[radiobtngrp=choice.\thequiz.\thequizquestion]{#1}{#1}{off}% choice layer
+    %\makebox[\widthof{\faCircleThin}]{\textcolor{green!60!black}{\faCheck}}%
+    %\makebox[\quizcheckboxwidth]{\textcolor{green!60!black}{\faIcon[solid]{dot-circle}}}%
+    \hspace*{-\quizcheckboxwidth}%
+    \makebox[\widthof{\faIcon[regular]{circle}}][c]{\textcolor{green!60!black}{\faDotCircle}}%
+    \hspace*{-\quizcheckboxwidth}%
+    \makebox[\quizcheckboxwidth][c]{\textcolor{askreplyfirstcolor}{\faIcon[regular]{circle}}}%
+  \end{ocg}%
+}
+
+\NewDocumentCommand{\quizSingleButtonDemo}{m}{% Based on AG's \quizButton command
+  % Syntax − #1: id choice
+  % Action on click: toggle myself (choice layer), hide verifcation layer
+  \stepcounter{mcqproposaldemo}%
+  \stepcounter{mcqquiztotaldemo}%
+  \setlength{\quizcheckboxwidth}{\widthof{\faIcon[regular]{circle}}}%
+  \makebox[\quizcheckboxwidth][c]{%
+    %\actionsocg{#1}{}{verify:\thequizquestion}{\faIcon[regular]{circle}}%
+    \actionsocg{#1}{}{verify.\thequizdemo.\themcqdemo}{\faIcon[regular]{circle}}%
+  }%
+  \begin{ocg}[radiobtngrp=choice.\thequizdemo.\themcqdemo]{#1}{#1}{off}% choice layer
+    \hspace*{-\quizcheckboxwidth}%
+    \makebox[\widthof{\faIcon[regular]{circle}}][c]{\textcolor{green!60!black}{\faDotCircle}}%
+    \hspace*{-\quizcheckboxwidth}%
+    \makebox[\quizcheckboxwidth][c]{\textcolor{askreplyfirstcolor}{\faIcon[regular]{circle}}}%
+  \end{ocg}%
+}
+
+%- Defining a proposition for single solution MCQ
+
+\NewDocumentCommand{\mcqproposalSingle}{o m}{%
+  % Syntax − #1 = more tcbox options
+  %          #2 = statement proposal
+  \begin{tcolorbox}[%
+    breakable, enhanced,
+    notitle, colframe=black!60, colback=white,
+    boxrule=0.2pt, arc=0.4pt, boxsep = 0pt,
+    left = 4pt, right = 4pt,
+    top = 4pt, bottom = 4pt,
+    before skip=4pt, after skip=4pt,
+    IfValueTF={#1}{#1}{},% More options
+    ]
+    \parbox[t]{16pt}{%
+      \hspace*{2pt}%
+      %\quizSingleButton{mcqproposalref:\thequizquestion:\themcqproposal}
+      \quizSingleButton{mcqproposalref.\thequiz.\thequizquestion.\themcqproposal}
+    }%
+    \parbox[t]{\linewidth-16pt}{#2}%
+  \end{tcolorbox}%
+}
+
+\NewDocumentCommand{\mcqproposalSingleDemo}{o m}{%
+  % Syntax − #1 = more tcbox options
+  %          #2 = statement proposal
+  \begin{tcolorbox}[%
+    breakable, enhanced,
+    notitle, colframe=black!60, colback=white,
+    boxrule=0.2pt, arc=0.4pt, boxsep = 0pt,
+    left = 4pt, right = 4pt,
+    top = 4pt, bottom = 4pt,
+    before skip=4pt, after skip=4pt,
+    IfValueTF={#1}{#1}{},% More options
+    ]
+    \parbox[t]{16pt}{%
+      \hspace*{2pt}%
+      \quizSingleButtonDemo{mcqproposalref.\thequizdemo.\themcqdemo.\themcqproposaldemo}
+    }%
+    \parbox[t]{\linewidth-16pt}{#2}%
+  \end{tcolorbox}%
+}
+
+%- Only a step for multiple solution MCQs (based on AG's \quizButton command)
+
+\NewDocumentCommand{\quizMultipleButton}{m}{%
+  % Syntax − #1: choice id for answering proposal
+  % Action on click: toggle myself (choice layer), hide verifcation layer
+  \stepcounter{mcqproposal}%
+  \stepcounter{mcqquiztotal}%
+  \setlength{\quizcheckboxwidth}{\widthof{\faIcon[regular]{square}}}%
+  \makebox[\quizcheckboxwidth][c]{%
+    %\actionsocg{#1}{}{verify:\thequizquestion}{\faIcon[regular]{square}}%
+    \actionsocg{#1}{}{verify.\thequiz.\thequizquestion}{\faIcon[regular]{square}}%
+  }%
+  %\makebox[0pt][l]{\actionsocg{#1}{}{verify:\thequizquestion}{\faSquareO}}%
+  \begin{ocg}{#1}{#1}{off}% choice layer
+    %\makebox[\widthof{\faSquareO}]{\textcolor{green!60!black}{\faCheck}}%
+    \hspace*{-\quizcheckboxwidth}%
+    \makebox[\quizcheckboxwidth][c]{\textcolor{green!60!black}{\faCheckSquare}}%
+    \hspace*{-\quizcheckboxwidth}%
+    \makebox[\quizcheckboxwidth][c]{\textcolor{askreplyfirstcolor}{\faIcon[regular]{square}}}%
+  \end{ocg}%
+}
+
+\NewDocumentCommand{\quizMultipleButtonDemo}{m}{%
+  % Syntax − #1: choice id for answering proposal
+  % Action on click: toggle myself (choice layer), hide verifcation layer
+  \stepcounter{mcqproposaldemo}%
+  \stepcounter{mcqquiztotaldemo}%
+  \setlength{\quizcheckboxwidth}{\widthof{\faIcon[regular]{square}}}%
+  \makebox[\quizcheckboxwidth][c]{%
+    \actionsocg{#1}{}{verify.\thequizdemo.\themcqdemo}{\faIcon[regular]{square}}%
+  }%
+  \begin{ocg}{#1}{#1}{off}% choice layer
+    \hspace*{-\quizcheckboxwidth}%
+    \makebox[\quizcheckboxwidth][c]{\textcolor{green!60!black}{\faCheckSquare}}%
+    \hspace*{-\quizcheckboxwidth}%
+    \makebox[\quizcheckboxwidth][c]{\textcolor{askreplyfirstcolor}{\faIcon[regular]{square}}}%
+  \end{ocg}%
+}
+
+%- Defining a proposition for multiple solution MCQ
+
+\NewDocumentCommand{\mcqproposalMultiple}{o m}{%
+  % Syntax − #1 = more tcbox options
+  %          #2 = answering proposal/statement
+  \begin{tcolorbox}[%
+    breakable, enhanced,
+    notitle, colframe=black!60, colback=white,
+    boxrule=0.2pt, arc=0.4pt, boxsep = 0pt,
+    left = 4pt, right = 4pt,
+    top = 4pt, bottom = 4pt,
+    before skip=4pt, after skip=4pt,
+    IfValueTF={#1}{#1}{},% More options
+    ]
+    \parbox[t]{16pt}{%
+      \hspace*{2pt}%
+      %\quizMultipleButton{mcqproposalref:\thequizquestion:\themcqproposal}%
+      \quizMultipleButton{mcqproposalref.\thequiz.\thequizquestion.\themcqproposal}%
+    }%
+    \parbox[t]{\linewidth-16pt}{#2}%
+  \end{tcolorbox}%
+}
+
+\NewDocumentCommand{\mcqproposalMultipleDemo}{o m}{%
+  % Syntax − #1 = more tcbox options
+  %          #2 = answering proposal/statement
+  \begin{tcolorbox}[%
+    breakable, enhanced,
+    notitle, colframe=black!60, colback=white,
+    boxrule=0.2pt, arc=0.4pt, boxsep = 0pt,
+    left = 4pt, right = 4pt,
+    top = 4pt, bottom = 4pt,
+    before skip=4pt, after skip=4pt,
+    IfValueTF={#1}{#1}{},% More options
+    ]
+    \parbox[t]{16pt}{%
+      \hspace*{2pt}%
+      \quizMultipleButtonDemo{mcqproposalref.\thequizdemo.\themcqdemo.\themcqproposaldemo}%
+    }%
+    \parbox[t]{\linewidth-16pt}{#2}%
+  \end{tcolorbox}%
+}
+
+%--- Note: Splitting a list of arguments
+%---------------------------------------
+%- See our review and especially Marcel Kruger's answer (LaTeX3 syntax) in:
+%-   https://tex.stackexchange.com/questions/493987/[...]
+%-     [...]ocgx2-xparse-expl3-splitting-comma-separated-ocmd-ocgs-lists-of-arguments-for
+%- See also, for example, Enrico Gregorio's and David Carlisle's answers:
+%-   https://tex.stackexchange.com/questions/110898/package-xparse-splitlist-last-token
+%-   https://tex.stackexchange.com/questions/348042/splitlist-on-several-delimiters
+%- Without expl3:
+%-   https://tex.stackexchange.com/questions/584918/command-with-arguments-separated-by-comma-ii
+%-----
+
+%- Setting OCGs reference names: LaTeX3 syntax because of its use by the `ocgx2` package
+
+\NewDocumentCommand{\askreplymcqArgsIds}{m}{%
+  %mcqproposalref:\thequizquestion:#1%
+  mcqproposalref.\thequiz.\thequizquestion.#1%
+}
+
+\NewDocumentCommand{\askreplymcqArgsIdsCheck}{m}{%
+  mcqproposalref.\thequiz.\thequizquestion.#1%
+}
+
+\NewDocumentCommand{\askreplymcqArgsIdsDemo}{m}{%
+  mcqproposalref.\thequizdemo.\themcqdemo.#1%
+}
+
+%\tikzset{%
+%	quizbutton/.style={
+%		shape=rectangle, rounded corners=1pt,
+%		text=black, draw=gray!90,
+%		top color=gray!15!white, bottom color=gray!75,
+%		inner xsep=6pt, inner ysep=2pt,
+%	},
+%}
+\tikzset{%
+  button/.style={%
+    minimum width=15mm, 
+    rounded corners,  
+    draw=white!50!black!100,  
+    bottom color=white,
+  }
+}
+
+\newcounter{trialnumber}[quizquestion]
+\newcounter{mcqtrialnumber}[quizquestion]
+\newcounter{mcqtrialfalse}[quizquestion]
+\newcounter{mcqtrialtrue}[quizquestion]
+
+
+\NewDocumentCommand{\mcqchecktrial}{ }{%
+  \begin{tikzpicture}
+    \node[quizbutton=askreplybuttongray, 
+          switch ocg={checktrial.\thequiz.\thequizquestion.1, 
+                      checktrial.\thequiz.\thequizquestion.2}] 
+      (checksolutionbutton0) {\phantom{\strut\scriptsize\lightbf{\textsc{\sffamily Check 1}}}};
+    \begin{scope}[ocg={name=checktrial.\thequiz.\thequizquestion.1, 
+                         ref=checktrial.\thequiz.\thequizquestion.1, 
+                         visibility=on, 
+                         %opts={radiobtngrp=myRadioButtons}%
+                      }]
+      \node[quizbutton=askreplybuttongray,
+            %show ocg=checktrial.\thequiz.\thequizquestion.2,
+            ] at (checksolutionbutton0)
+        {\strut\scriptsize\lightbf{\textsc{\sffamily Check 1}}};
+    \end{scope}
+    \begin{scope}[ocg={name=checktrial.\thequiz.\thequizquestion.2, 
+                        ref=checktrial.\thequiz.\thequizquestion.2, 
+                        visibility=off, 
+                        %opts={radiobtngrp=myRadioButtons}%
+                      }]
+      \node[quizbutton=askreplybuttongray, 
+            %show ocg=checktrial.\thequiz.\thequizquestion.1,
+            ] at (checksolutionbutton0)
+        {\strut\scriptsize\lightbf{\textsc{\sffamily Check 2}}};
+    \end{scope}
+%        \begin{scope}[ocg={name=OCG 3, ref=3, visibility=off, opts={radiobtngrp=myRadioButtons}}]
+%          \node[button, show ocg=4] at (checksolutionbutton0) {Button 3};
+%        \end{scope}
+%        \begin{scope}[ocg={name=OCG 4, ref=4, visibility=off, opts={radiobtngrp=myRadioButtons}}]
+%          \node[button, show ocg=1] at (checksolutionbutton0) {Button 4};
+%        \end{scope}
+  \end{tikzpicture}
+}
+
+%- Defining a sequence for storing the "massaged" items
+
+\ExplSyntaxOn
+
+\cs_new_protected:Npn \askreplymcq_process_list:Nn #1 #2
+  {
+    % clear the sequence
+    \seq_clear:N #1
+    % cycle through the arguments, storing "\mcqArgsIds{<arg>}" in the sequence
+    \clist_map_inline:nn { #2 }
+      {
+        % Here :Nx instead of :Nn ensures that \askreplymcqArgsIds
+        % is actually evaluated instead of passed as-is
+        \seq_put_right:Nx #1 { \askreplymcqArgsIds{##1} }
+      }
+  }
+
+\cs_new_protected:Npn \askreplymcqcheck_process_list:Nn #1 #2
+  {
+    % clear the sequence
+    \seq_clear:N #1
+    % cycle through the arguments, storing "\mcqArgsIds{<arg>}" in the sequence
+    \clist_map_inline:nn { #2 }
+      {
+        % Here :Nx instead of :Nn ensures that \askreplymcqArgsIds
+        % is actually evaluated instead of passed as-is
+        \seq_put_right:Nx #1 { \askreplymcqArgsIdsCheck{##1} }
+      }
+  }
+
+\cs_new_protected:Npn \askreplymcqdemo_process_list:Nn #1 #2
+  {
+    % clear the sequence
+    \seq_clear:N #1
+    % cycle through the arguments, storing "\mcqArgsIdsDemo{<arg>}" in the sequence
+    \clist_map_inline:nn { #2 }
+      {
+        % Here :Nx instead of :Nn ensures that \askreplymcqArgsIdsDemo
+        % is actually evaluated instead of passed as-is
+        \seq_put_right:Nx #1 { \askreplymcqArgsIdsDemo{##1} }
+      }
+  }
+
+%- Defining a "Verify" button both for single and multiple MCQs
+
+\seq_new:N \l_correct_seq
+\seq_new:N \l_wrong_seq
+
+\cs_new_protected:Npn \askreplymcq__verify:nn #1 #2
+  {% ONLY USE POINT AS SEPARATOR: ERROR WITH COLON AND @ --> WHY?
+    \stepcounter{mcqtrialnumber}
+    \showocg{verify.\thequiz.\thequizquestion}{%
+      \begin{tikzpicture}
+        \node[quizbutton=askreplybuttongray] (checksolutionbutton)
+          {\strut\scriptsize\lightbf{\textsc{\sffamily\quizverifyname}}};%
+      \end{tikzpicture}%
+    }
+    \begin{ocg}{verify.\thequiz.\thequizquestion}{verify.\thequiz.\thequizquestion}{off}% verification layer
+      \makebox[0pt][l]{%
+        \begin{ocmd}{\Not{\And{#1,\Not{\Or{#2}}}}}% "wrong" layer (OCMD)
+          \hspace*{0.25em}%
+          \raisebox{5pt}{\textcolor{red!60!black}{\faTimes}}%Wrong.
+        \end{ocmd}%
+      }%
+      \begin{ocmd}{\And{#1,\Not{\Or{#2}}}}% "correct" layer (OCMD)
+        \hspace*{0.25em}%
+        \raisebox{5pt}{\textcolor{green!60!black}{\faCheck}}%Correct.
+      \end{ocmd}%
+    \end{ocg}%
+  }
+
+\cs_new_protected:Npn \askreplymcq__check:nn #1 #2
+  {% ONLY USE POINT AS SEPARATOR: ERROR WITH COLON AND @ --> WHY?
+    %\begin{ocg}[radiobtngrp=mcqtrials]%
+    %  {check.\thequiz.\thequizquestion.trial0}%
+    %  {check.\thequiz.\thequizquestion.trial0}{on}% first trial layer
+    \showocg{check.\thequiz.\thequizquestion}{%
+      \begin{tikzpicture}
+        \node[quizbutton=askreplybuttongray] (checkbutton)
+          {\strut\scriptsize\lightbf{\textsc{\sffamily Check}}};%
+      \end{tikzpicture}%
+    }
+    \begin{ocg}{check.\thequiz.\thequizquestion}%
+      {check.\thequiz.\thequizquestion}{off}% verification layer
+      \makebox[0pt][l]{%
+        \begin{ocmd}{\Not{\And{#1,\Not{\Or{#2}}}}}% "wrong" layer (OCMD)
+          \hspace*{0.25em}%
+          \raisebox{5pt}{\textcolor{red!60!black}{\faTimes}}%Wrong.
+        \end{ocmd}%
+      }%
+      %\makebox[0pt][l]{%
+        \begin{ocmd}{\And{#1,\Not{\Or{#2}}}}% "correct" layer (OCMD)
+          \hspace*{0.25em}%
+          \raisebox{5pt}{\textcolor{green!60!black}{\faCheck}}%Correct.
+        \end{ocmd}%
+      %}
+    \end{ocg}%
+    %\pyc{trial=trial+1}
+    \makebox[0pt][l]{\actionsocg{trialstep1}{}{trialstep2,trialstep3}{\textcolor{black}{\faCircle}}}%
+    \begin{ocg}{trialstep1}{trialstep1}{off}% choice layer
+	    \makebox[\widthof{\faCircle}]{\textcolor{red}{\faCircle}}%
+	    \stepcounter{trialnumber}\thetrialnumber
+    \end{ocg}%
+    \makebox[0pt][l]{\actionsocg{trialstep2}{trialstep1}{trialstep3}{\textcolor{black}{\faCircle}}}%
+    \begin{ocg}{trialstep2}{trialstep2}{off}% choice layer
+	    \makebox[\widthof{\faCircle}]{\textcolor{red}{\faCircle}}%
+	    \stepcounter{trialnumber}\thetrialnumber
+    \end{ocg}%
+    \makebox[0pt][l]{\actionsocg{trialstep3}{trialstep1,trialstep2}{}{\textcolor{black}{\faCircle}}}%
+    \begin{ocg}{trialstep3}{trialstep3}{off}% choice layer
+    	\makebox[\widthof{\faCircle}]{\textcolor{red}{\faCircle}}%
+    	\stepcounter{trialnumber}\thetrialnumber
+    \end{ocg}%
+    %\py{print(r"\textcolor{red}{\large\faCircle}", trial)}
+    %\showocg{check.\thequiz.\thequizquestion.trial0}{\textcolor{red}{\large\faCircle}}
+    %\end{ocg}
+  }
+
+\cs_new_protected:Npn \askreplymcqdemo__verify:nn #1 #2
+  {
+    %\showocg{verify:\thequizquestion}{%
+    % ONLY USE POINT AS SEPARATOR: ERROR WITH COLON AND @ --> WHY?
+    \showocg{verify.\thequizdemo.\themcqdemo}{%
+      \begin{tikzpicture}
+        \node[quizbutton=askreplybuttongray] (checksolutionbutton)
+          {\strut\scriptsize\lightbf{\textsc{\sffamily\quizverifyname}}};%
+      \end{tikzpicture}%
+    }
+    \begin{ocg}{verify.\thequizdemo.\themcqdemo}{verify.\thequizdemo.\themcqdemo}{off}% verification layer
+      \makebox[0pt][l]{%
+        \begin{ocmd}{\Not{\And{#1,\Not{\Or{#2}}}}}% "wrong" layer (OCMD)
+          \hspace*{0.25em}%
+          \raisebox{5pt}{\textcolor{red!60!black}{\faTimes}}%Wrong.
+        \end{ocmd}%
+      }%
+      \begin{ocmd}{\And{#1,\Not{\Or{#2}}}}% "correct" layer (OCMD)
+        \hspace*{0.25em}%
+        \raisebox{5pt}{\textcolor{green!60!black}{\faCheck}}%Correct.
+      \end{ocmd}%
+    \end{ocg}%
+    
+  }
+
+\cs_generate_variant:Nn \askreplymcq__verify:nn {ff}
+
+\cs_generate_variant:Nn \askreplymcq__check:nn {ff}
+
+\cs_generate_variant:Nn \askreplymcqdemo__verify:nn {ff}
+
+\NewDocumentCommand{\mcqverify}{ m m }{%
+  % Syntax − #1: list of OCG ids of correct/required answer(s), comma separated
+  %          #2: list of OCG ids of wrong answer(s), comma separated
+  \askreplymcq_process_list:Nn \l_correct_seq { #1 }% Save OCMD IDs as LaTeX3 seq variable
+  \askreplymcq_process_list:Nn \l_wrong_seq { #2 }% Save OCMD IDs as LaTeX3 seq variable
+  \askreplymcq__verify:ff { \seq_use:Nn \l_correct_seq {,} } { \seq_use:Nn \l_wrong_seq {,} }
+}
+
+\NewDocumentCommand{\mcqcheck}{ m m }{%
+  % Syntax − #1: list of OCG ids of correct/required answer(s), comma separated
+  %          #2: list of OCG ids of wrong answer(s), comma separated
+  \askreplymcqcheck_process_list:Nn \l_correct_seq { #1 }% Save OCMD IDs as LaTeX3 seq variable
+  \askreplymcqcheck_process_list:Nn \l_wrong_seq { #2 }% Save OCMD IDs as LaTeX3 seq variable
+  \askreplymcq__check:ff { \seq_use:Nn \l_correct_seq {,} } { \seq_use:Nn \l_wrong_seq {,} }
+}
+
+\NewDocumentCommand{\mcqverifydemo}{ m m }{%
+  % Syntax − #1: list of OCG ids of correct/required answer(s), comma separated
+  %          #2: list of OCG ids of wrong answer(s), comma separated
+  \askreplymcqdemo_process_list:Nn \l_correct_seq { #1 }% Save OCMD IDs as LaTeX3 seq variable
+  \askreplymcqdemo_process_list:Nn \l_wrong_seq { #2 }% Save OCMD IDs as LaTeX3 seq variable
+  \askreplymcqdemo__verify:ff { \seq_use:Nn \l_correct_seq {,} } { \seq_use:Nn \l_wrong_seq {,} }
+}
+
+\ExplSyntaxOff
+
+%- Defining a "Reset" button both for single and multiple MCQs: "old fashion" but works
+
+\NewDocumentCommand{\mcqreset}{}{%
+  \def\ocglistreset{}%
+  \xdef\ocglistreset{%
+    %\ocglistreset\space verify.\thequiz.\thequizquestion\space showanswer.\thequiz.\thequizquestion}%
+    \ocglistreset\space verify.\thequiz.\thequizquestion}%
+  \foreach \X in {1,...,\value{mcqquiztotal}} {%
+    %\xdef\ocglistreset{\ocglistreset\space mcqproposalref:\thequizquestion:\X}%
+    \xdef\ocglistreset{\ocglistreset\space mcqproposalref.\thequiz.\thequizquestion.\X}%
+  }%
+  %\ocglistreset
+  \hideocg{\ocglistreset}{%
+    \begin{tikzpicture}
+      \node[quizbutton=askreplybuttongray] (resetbutton)
+        {\strut\scriptsize\textsf{\textsc{\lightbf{\quizresetname}}}};
+    \end{tikzpicture}%
+  }%
+}
+
+\NewDocumentCommand{\mcqresetcheck}{}{%
+  \def\ocglistresetcheck{}%
+  \xdef\ocglistresetcheck{%
+    \ocglistresetcheck, check.\thequiz.\thequizquestion}%
+  \foreach \X in {1,...,\value{mcqquiztotal}} {%
+    %\xdef\ocglistreset{\ocglistreset\space mcqproposalref.\thequiz.\thequizquestion.\X}%
+    \xdef\ocglistresetcheck{\ocglistresetcheck, mcqproposalref.\thequiz.\thequizquestion.\X}%
+  }%
+  %\ocglistreset
+  \hideocg{\ocglistresetcheck}{%
+    \begin{tikzpicture}
+      \node[quizbutton=askreplybuttongray] (resetbutton)
+        {\strut\scriptsize\textsf{\textsc{\lightbf{Reset}}}};
+    \end{tikzpicture}%
+  }%
+}
+
+\NewDocumentCommand{\mcqresetdemo}{}{%
+  \def\ocglistreset{}%
+  \xdef\ocglistreset{%
+    \ocglistreset\space verify.\thequizdemo.\themcqdemo\space showanswer.\thequizdemo.\themcqdemo}%
+  \foreach \X in {1,...,\value{mcqquiztotaldemo}} {%
+    \xdef\ocglistreset{\ocglistreset\space mcqproposalref.\thequizdemo.\themcqdemo.\X}%
+  }%
+  \hideocg{\ocglistreset}{%
+    \begin{tikzpicture}
+      \node[quizbutton=askreplybuttongray] (resetbutton)
+        {\strut\scriptsize\textsf{\textsc{\lightbf{\quizresetname}}}};
+    \end{tikzpicture}%
+  }%
+}
+
+%- Defining the "Reset" button (both for single and multiple MCQs)
+
+\ExplSyntaxOn
+\NewDocumentCommand{\mcqresetButton}{m}{% AG's definition (LaTeX3): to be adapted (see \mcqreset)
+  % Syntax − #1: list of OCG ids, comma separated
+  \clist_set:Nn\l_tmpa_clist{#1} % save OCG ids as LaTeX3 clist variable
+  \hideocg{\clist_use:Nn\l_tmpa_clist{~}}{\fbox{\strut\sffamily\quizresetname}}%
+}
+\ExplSyntaxOff
+
+%- Defining a "Show/Hide answer" button both for single and multiple MCQs
+
+\NewDocumentCommand{\mcqdisplayanswer}{ s O{b} m D(){6pt,12pt} }{%
+  % Syntax − #1: switch between answer in the margin (no star) and as tooltip (star)
+  %          #2: position [b]/[c]/[t] for answer in the margin
+  %          #3: explanation text to display
+  %          #4: position control (<xshift-length>,<yshift-length>) for answer in as tooltip
+  \makebox[0pt][l]{%
+    %\actionsocg{showanswer:\thequizquestion}{}{verify:\thequizquestion}{%
+    %\actionsocg{showanswer.\thequiz:\thequizquestion}{}{verify:\thequizquestion}{%
+    \actionsocg{showanswer.\thequiz.\thequizquestion}{}{verify.\thequiz.\thequizquestion}{%
+      \begin{tikzpicture}
+        \node[quizbutton=askreplybuttongray] (displayshowanswerbutton)
+          {\strut\scriptsize\textsf{\textsc{\lightbf{\quizshowanswername}}}};%
+      \end{tikzpicture}%
+    }%
+  }%
+  \begin{ocg}{showanswer.\thequiz.\thequizquestion}%
+             {showanswer.\thequiz.\thequizquestion}{off}% show/hide answer layer
+    \makebox[\quizanswerbuttonwidth][l]{%
+      \begin{tikzpicture}
+        \node[quizbutton={black!60!white}] (displayhideanswerbutton)
+          {\strut\scriptsize\textsf{\textsc{\lightbf{\quizhideanswername}}}};%
+      \end{tikzpicture}%
+    }%
+    %\IfBooleanTF{#1}
+    %  {\mcqtooltip{#3}(#4)}%
+    %  {\mcqmarginbox[#2]{#3}}%
+    \IfBooleanTF{#1}
+      {\mcqtooltip{#3}(#4)}%
+      {\ifbool{@twoside}%
+        {\mcqmarginbox[#2]{#3}}%
+        {\ifbool{@reversemargin}%
+          {\mcqleftmarginbox[#2]{#3}}%
+          {\mcqrightmarginbox[#2]{#3}}%
+        }%
+      }%
+  \end{ocg}
+}
+
+\NewDocumentCommand{\mcqdisplayanswerdemo}{ s O{b} m D(){6pt,12pt} }{%
+  % Syntax − #1: switch between answer in the margin (no star) and as tooltip (star)
+  %          #2: position [b]/[c]/[t] for answer in the margin
+  %          #3: explanation text to display
+  %          #4: position control (<xshift-length>,<yshift-length>) for answer in as tooltip
+  \makebox[0pt][l]{%
+    \actionsocg{showanswer.\thequizdemo.\themcqdemo}{}{verify.\thequizdemo.\themcqdemo}{%
+      \begin{tikzpicture}
+        \node[quizbutton=askreplybuttongray] (displayshowanswerbutton)
+          {\strut\scriptsize\textsf{\textsc{\lightbf{\quizshowanswername}}}};%
+      \end{tikzpicture}%
+    }%
+  }%
+  \begin{ocg}{showanswer.\thequizdemo.\themcqdemo}{showanswer.\thequizdemo.\themcqdemo}{off}% show/hide answer layer
+    \makebox[\quizanswerbuttonwidth][l]{%
+      \begin{tikzpicture}
+        \node[quizbutton={black!60!white}] (displayhideanswerbutton)
+          {\strut\scriptsize\textsf{\textsc{\lightbf{\quizhideanswername}}}};%
+      \end{tikzpicture}%
+    }%
+    \IfBooleanTF{#1}
+      {\mcqtooltip{#3}(#4)}%
+      {\mcqmarginbox[#2]{#3}}%
+  \end{ocg}
+}
+
+%- Defining a macro to display the answer in the margin
+
+\newcommand\mcqtikzmark[1]{%
+  \tikz[remember picture,overlay]\node[inner xsep=0pt,outer sep=0pt] (#1) {};}
+
+\newlength{\quiztrianglexshift}
+\newlength{\quizuppertrianglecorner}
+\newlength{\quizboxhshift}
+\newlength{\quizboxvshift}
+\newlength{\quiznoteheight}
+
+\newcommand\quizside{}
+\newcommand\quizotherside{}
+\newcommand\quizpointeranchor{}
+\newcommand\quizboxanchor{}
+
+\newcounter{mcqdisplaycount}
+
+%\NewDocumentCommand{\mcqmarginbox}{O{b} O{askreplythirdcolor} O{\quizexplanationname} m}{%
+\NewDocumentCommand{\mcqmarginbox}{O{b} m}{%
+  \checkoddpage
+  \ifoddpageoroneside
+    \setlength\quiztrianglexshift{-3pt}%
+    \setlength\quizboxhshift{\marginparsep}% Original setting (Gonzalo Medina): see \caution
+    %\addtolength\quizboxhshift{\marginparsep}% Why? Side effect of `tcolorbox` package?
+    \addtolength\quizboxhshift{16pt}% Because inside two tcboxes: quiz + question -> leftsep=10pt+6pt
+    \addtolength\quizboxhshift{16pt}% Because inside two tcboxes: quiz + question -> rightsep=10pt+6pt
+    %\addtolength\quizboxhshift{3pt}% Adding quiztrianglexshift
+    \addtolength\quizboxhshift{-3pt}% Adding quiztrianglexshift
+    \addtolength\quizboxhshift{-0.4pt}% Subtracting 0.5 box linewidth (thick = 0.8pt): see \tikz below
+    \renewcommand{\quizside}{west}%
+    \renewcommand{\quizotherside}{east}%
+  \else
+    \setlength\quiztrianglexshift{3pt}%
+    \setlength\quizboxhshift{-\marginparsep}%
+    \renewcommand{\quizside}{east}%
+    \renewcommand{\quizotherside}{west}%
+  \fi%
+  \settoheight{\quiznoteheight}{%
+    \ifstrempty{#2}%
+      {\parbox{\marginparwidth-8pt-0.8pt}{%
+        \footnotesize\ttfamily Sorry, no answer available}}%
+      {\parbox{\marginparwidth-8pt-0.8pt}{\footnotesize #2}}%
+  }% thick=0.8pt
+  \stepcounter{mcqdisplaycount}%
+  \mcqtikzmark{\themcqdisplaycount}%
+  \if#1b\relax
+    \renewcommand\quizpointeranchor{mcqdisplaycount\themcqdisplaycount.south \quizside}%
+    \renewcommand\quizboxanchor{south \quizside}%
+    \setlength\quizboxvshift{\quiznoteheight}%
+    \addtolength\quizboxvshift{-.6\baselineskip}% Adjust the vertical shift with the text line
+    \setlength\quizuppertrianglecorner{13pt}%
+  \else
+    \if#1t\relax
+      \renewcommand\quizpointeranchor{mcqdisplaycount\themcqdisplaycount.north \quizside}%
+      \renewcommand\quizboxanchor{north \quizside}%
+      \setlength\quizboxvshift{-\quiznoteheight}%
+      \addtolength\quizboxvshift{.6\baselineskip}% Adjust the vertical shift with the text line
+      \setlength\quizuppertrianglecorner{-7pt}%
+    \else
+      \if#1c\relax
+        \renewcommand\quizpointeranchor{mcqdisplaycount\themcqdisplaycount.\quizside}%
+        \renewcommand\quizboxanchor{\quizside}%
+        %\setlength\quizboxvshift{\baselineskip}% No vertical shift, just centered with the text line
+        % We try here to align the bottom margin box with the one of the quiz question tcbox
+        %\addtolength\quizboxvshift{\quiznoteheight}% Empirical/test value
+        %\addtolength\quizboxvshift{-4pt}% bottomsep = 4pt
+        \setlength\quizuppertrianglecorner{3pt}%
+      \fi%
+    \fi%
+  \fi%
+  \marginnote{%
+    \begin{tikzpicture}[remember picture, overlay]
+      \node[draw=askreplythirdcolor, line width=0.8pt, anchor=\quizside,
+            xshift=\quizboxhshift, yshift=\quizboxvshift, inner sep=4pt]
+        (mcqdisplaycount\themcqdisplaycount)
+        at ([yshift=3pt]current page text area.\quizotherside|-\themcqdisplaycount)
+        {%
+          \ifstrempty{#2}%
+            {\parbox{\marginparwidth-8pt-0.8pt}{%
+              \footnotesize\ttfamily Sorry, no answer available}}%
+            {\parbox{\marginparwidth-8pt-0.8pt}{\vskip4pt\footnotesize #2\vskip2pt}}%
+        };% thick=0.8pt
+      \node[fill=white, font=\color{askreplythirdcolor}\sffamily, anchor=west,
+            inner sep=2pt, xshift=7pt, yshift=0pt]
+        at (mcqdisplaycount\themcqdisplaycount.north west)
+        {\small\enspace\textcolor{black}{\textsc{\footnotesize\quizexplanationname}}\enspace};
+      \fill[askreplythirdcolor]
+        ([yshift=\quizuppertrianglecorner]\quizpointeranchor) --
+        ([yshift=\quizuppertrianglecorner-3pt,xshift=\quiztrianglexshift]\quizpointeranchor) --
+        ([yshift=\quizuppertrianglecorner-6pt]\quizpointeranchor) -- cycle;
+    \end{tikzpicture}%
+  }%
+}
+
+\NewDocumentCommand{\mcqrightmarginbox}{ O{b} m }{%
+  \setlength\quiztrianglexshift{-3pt}%
+  \setlength\quizboxhshift{\marginparsep}%
+  \renewcommand{\quizside}{west}%
+  \renewcommand{\quizotherside}{east}%
+  \settoheight{\quiznoteheight}{\parbox{\marginparwidth-8pt}{\footnotesize#2}}%
+  \stepcounter{mcqdisplaycount}%
+  \mcqtikzmark{\themcqdisplaycount}%
+  \if#1b\relax
+    \renewcommand\quizpointeranchor{mcqdisplaycount\themcqdisplaycount.south \quizside}%
+    \renewcommand\quizboxanchor{south \quizside}%
+    \setlength\quizboxvshift{\quiznoteheight}%
+    \addtolength\quizboxvshift{-.6\baselineskip}% Adjust the vertical shift with the text line
+    \setlength\quizuppertrianglecorner{13pt}%
+  \else
+    \if#1t\relax
+      \renewcommand\quizpointeranchor{mcqdisplaycount\themcqdisplaycount.north \quizside}%
+      \renewcommand\quizboxanchor{north \quizside}%
+      \setlength\quizboxvshift{-\quiznoteheight}%
+      \addtolength\quizboxvshift{.6\baselineskip}% Adjust the vertical shift with the text line
+      \setlength\quizuppertrianglecorner{-7pt}%
+    \else
+      \if#1c\relax
+        \renewcommand\quizpointeranchor{mcqdisplaycount\themcqdisplaycount.\quizside}%
+        \renewcommand\quizboxanchor{\quizside}%
+        %\setlength\quizboxvshift{\baselineskip}% No vertical shift, just centered with the text line
+        \setlength\quizuppertrianglecorner{3pt}%
+      \fi%
+    \fi%
+  \fi%
+  \marginnote{%
+    \begin{tikzpicture}[remember picture, overlay]
+      \node[draw=askreplythirdcolor, thick, anchor=\quizside, 
+            xshift=\quizboxhshift, yshift=\quizboxvshift, inner sep=4pt]
+        (mcqdisplaycount\themcqdisplaycount)
+        at ([yshift=3pt]current page text area.\quizotherside|-\themcqdisplaycount)
+        {%
+          \ifstrempty{#2}%
+            {\parbox{\marginparwidth-8pt-0.8pt}{%
+              \footnotesize\ttfamily Sorry, no answer available}}%
+            {\parbox{\marginparwidth-8pt-0.8pt}{\vskip4pt\footnotesize #2\vskip2pt}}%
+        };% thick=0.8pt
+      \node[fill=white, font=\color{askreplythirdcolor}\sffamily, anchor=west,
+            inner sep=2pt, xshift=7pt, yshift=0pt]
+        at (mcqdisplaycount\themcqdisplaycount.north west)
+        {\small\enspace\textcolor{black}{\textsc{\footnotesize\quizexplanationname}}\enspace};
+      \fill[askreplythirdcolor]
+        ([yshift=\quizuppertrianglecorner]\quizpointeranchor) --
+        ([yshift=\quizuppertrianglecorner-3pt,xshift=\quiztrianglexshift]\quizpointeranchor) --
+        ([yshift=\quizuppertrianglecorner-6pt]\quizpointeranchor) -- cycle;
+    \end{tikzpicture}%
+  }%
+}
+
+\NewDocumentCommand{\mcqleftmarginbox}{ O{b} m }{%
+  \setlength\quiztrianglexshift{3pt}%
+  \setlength\quizboxhshift{-\marginparsep}%
+  \renewcommand{\quizside}{east}%
+  \renewcommand{\quizotherside}{west}%
+  \settoheight{\quiznoteheight}{\parbox{\marginparwidth-8pt}{\footnotesize#2}}%
+  \stepcounter{mcqdisplaycount}%
+  \mcqtikzmark{\themcqdisplaycount}%
+  \if#1b\relax
+    \renewcommand\quizpointeranchor{mcqdisplaycount\themcqdisplaycount.south \quizside}%
+    \renewcommand\quizboxanchor{south \quizside}%
+    \setlength\quizboxvshift{\quiznoteheight}%
+    \addtolength\quizboxvshift{-.6\baselineskip}% Adjust the vertical shift with the text line
+    \setlength\quizuppertrianglecorner{13pt}%
+  \else
+    \if#1t\relax
+      \renewcommand\quizpointeranchor{mcqdisplaycount\themcqdisplaycount.north \quizside}%
+      \renewcommand\quizboxanchor{north \quizside}%
+      \setlength\quizboxvshift{-\quiznoteheight}%
+      \addtolength\quizboxvshift{.6\baselineskip}% Adjust the vertical shift with the text line
+      \setlength\quizuppertrianglecorner{-7pt}%
+    \else
+      \if#1c\relax
+        \renewcommand\quizpointeranchor{mcqdisplaycount\themcqdisplaycount.\quizside}%
+        \renewcommand\quizboxanchor{\quizside}%
+        %\setlength\quizboxvshift{\baselineskip}% No vertical shift, just centered with the text line
+        \setlength\quizuppertrianglecorner{3pt}%
+      \fi%
+    \fi%
+  \fi%
+  \marginnote{%
+    \begin{tikzpicture}[remember picture, overlay]
+      \node[draw=askreplythirdcolor, thick, anchor=\quizside, 
+            xshift=\quizboxhshift, yshift=\quizboxvshift, inner sep=4pt]
+        (mcqdisplaycount\themcqdisplaycount)
+        at ([yshift=3pt]current page text area.\quizotherside|-\themcqdisplaycount)
+        {%
+          \ifstrempty{#2}%
+            {\parbox{\marginparwidth-8pt-0.8pt}{%
+              \footnotesize\ttfamily Sorry, no answer available}}%
+            {\parbox{\marginparwidth-8pt-0.8pt}{\vskip4pt\footnotesize #2\vskip2pt}}%
+        };% thick=0.8pt
+      \node[fill=white, font=\color{askreplythirdcolor}\sffamily, anchor=west,
+            inner sep=2pt, xshift=7pt, yshift=0pt]
+        at (mcqdisplaycount\themcqdisplaycount.north west)
+        {\small\enspace\textcolor{black}{\textsc{\footnotesize\quizexplanationname}}\enspace};
+      \fill[askreplythirdcolor]
+        ([yshift=\quizuppertrianglecorner]\quizpointeranchor) --
+        ([yshift=\quizuppertrianglecorner-3pt,xshift=\quiztrianglexshift]\quizpointeranchor) --
+        ([yshift=\quizuppertrianglecorner-6pt]\quizpointeranchor) -- cycle;
+    \end{tikzpicture}%
+  }%
+}
+
+
+
+%- Defining "tooltip" commands to display answers (the margin displaying is not always relevant)
+
+%--- Note: How to define tooltips
+%--------------------------------
+%- For the moment being (fall 2019), only AR and Evince viewer supports tooltips (like for OCGs).
+%- From: https://tex.stackexchange.com/questions/155518/tooltip-that-works-with-all-pdf-readers
+%- Important update: since spring 2020 OCG, OCMG and JavaScript are supported by Okular!
+%- See: https://tex.stackexchange.com/questions/235139/using-the-animate-package-without-adobe
+%-----
+
+\ExplSyntaxOn
+\let\askreplytpPdfLink\pbs_pdflink:nn
+\let\askreplycListSet\clist_set:Nn
+\let\askreplycListItem\clist_item:Nn
+\ExplSyntaxOff
+
+\newsavebox\askreplytiptext
+\newcounter{askreplytcnt}
+
+\newlength{\askreplywhatsleft}
+\newlength{\askreplytipshift}
+
+\NewDocumentCommand{\mcqtooltip}{ m D(){0pt,0pt} }{%
+  \leavevmode%
+  \sbox\askreplytiptext{%
+    \tcbox[enhanced, colframe=askreplythirdcolor, colback=white, boxrule=0.8pt,
+           attach boxed title to top left={xshift=7pt, yshift=-\tcboxedtitleheight/2},
+           boxed title style={boxrule=0pt,colframe=white,colback=white,
+             boxsep=0pt, top=4pt, bottom=4pt},
+           coltitle=black, %toptitle=9pt, bottomtitle=0pt,
+           title=\quizexplanationname, fonttitle=\footnotesize\scshape\sffamily,
+           boxsep=2pt, left=2pt, right=2pt, top=5pt, bottom=2pt, sharp corners]{%
+      \ifstrempty{#1}
+        {\parbox{\marginparwidth-8pt-0.8pt}{\footnotesize\ttfamily Sorry, no answer available}}%
+        {\parbox{\marginparwidth-8pt-0.8pt}{\footnotesize #1}}%
+    }%
+  }%
+  \askreplycListSet\askreplytpOffsets{#2}%
+  \edef\askreplytwd{\the\wd\askreplytiptext}%
+  \edef\askreplytht{\the\ht\askreplytiptext}%
+  \edef\askreplytdp{\the\dp\askreplytiptext}%
+  \askreplytipshift=0pt%
+  %OCG-based (that is, all non-draggable) boxes should not extend beyond the
+  %current column as they may get overlaid by text in the neighbouring column
+  %\setlength\askreplywhatsleft{\linegoal}%
+  %\ifdim\askreplywhatsleft<\dimexpr\askreplytwd+\askreplycListItem\askreplytpOffsets{1}\relax%
+  %  \setlength\askreplytipshift{\askreplywhatsleft-\twd-\askreplycListItem\askreplytpOffsets{1}}%
+  %\fi%
+  \raisebox{\heightof{#1}+\askreplytdp+\askreplycListItem\askreplytpOffsets{2}}[0pt][0pt]{%
+    \makebox[0pt][l]{%
+      \hspace{\dimexpr\askreplytipshift+\askreplycListItem\askreplytpOffsets{1}\relax}%
+      \usebox{\askreplytiptext}%
+    }%
+  }%
+}
+
+\NewDocumentCommand{\mcqtooltiporiginal}% Simplified version for Evince (and AR and new Okular)
+  { O{\ifdefined\@linkcolor\@linkcolor\else blue\fi} m O{yellow!20} m O{0pt,0pt} }{%
+  \leavevmode%
+  %for variants with two and more stars, put tip box on a PDF Layer (OCG)
+  \ocgbase@new@ocg{askreplytipOCG.\theaskreplytcnt}{%
+    /Print<</PrintState/OFF>>/Export<</ExportState/OFF>>%
+  }{false}%
+  \xdef\askreplytpTipOcg{\ocgbase@last@ocg}%
+  %prevent simultaneous visibility of multiple non-draggable tooltips
+  \ocgbase@add@ocg@to@radiobtn@grp{askreplytool@tips}{\ocgbase@last@ocg}%
+  \askreplytpPdfLink{%
+    /Subtype/Link/Border[0 0 0]/A <</S/SetOCGState/State [/Toggle \askreplytpTipOcg]>>
+  }{\textcolor{#1}{#2}}%
+  \sbox\askreplytiptext{%
+    \ocgbase@oc@bdc{\askreplytpTipOcg}%
+    \ocgbase@open@stack@push{\askreplytpTipOcg}%
+    %\fcolorbox{black}{#3}{#4}%
+    \tcbox[colframe=black,colback=#3,size=fbox,arc=1ex,sharp corners=southwest]{#4}%
+    \ocgbase@oc@emc\ocgbase@open@stack@pop\askreplytpNull%
+  }%
+  \askreplycListSet\askreplytpOffsets{#5}%
+  \edef\askreplytwd{\the\wd\askreplytiptext}%
+  \edef\askreplytht{\the\ht\askreplytiptext}%
+  \edef\askreplytdp{\the\dp\askreplytiptext}%
+  \askreplytipshift=0pt%
+  %OCG-based (that is, all non-draggable) boxes should not extend beyond the
+  %current column as they may get overlaid by text in the neighbouring column
+  \setlength\askreplywhatsleft{\linegoal}%
+  \ifdim\askreplywhatsleft<\dimexpr\askreplytwd+\cListItem\askreplytpOffsets{1}\relax%
+    \setlength\askreplytipshift{\whatsleft-\twd-\askreplycListItem\askreplytpOffsets{1}}%
+  \fi%
+  \raisebox{\heightof{#2}+\askreplytdp+\askreplycListItem\askreplytpOffsets{2}}[0pt][0pt]{%
+    \makebox[0pt][l]{%
+      \hspace{\dimexpr\askreplytipshift+\askreplycListItem\askreplytpOffsets{1}\relax}%
+      \usebox{\askreplytiptext}%
+    }%
+  }%
+  \stepcounter{askreplytcnt}%
+}
+
+%- Setting the user level environments (see below in case `assignpoints' package is loaded or not)
+%-------------------------------------------------------------------------------------------------
+
+%- LaTeX2e way, see:
+%- https://tex.stackexchange.com/questions/9035/[...]
+%-    [...]how-to-pass-an-optional-argument-to-an-environment-with-verbatim-content
+
+%- Setting the display of exercise levels: none, basic, intermediate and advanced
+
+\newtoggle{askreply@level@display@on}
+
+\NewDocumentCommand{\askreply@level@display}{  }{
+  \iftoggle{askreply@level@display@on}{%
+    \node[xshift=8pt, inner sep=0pt, minimum size=2.5mm, circle, %radius=4mm, 
+          ball color=\asreply@firstlevel@color] (firstlevel) at (frame.east) {};
+    \node[circle, inner sep=0pt, minimum size=2.5mm, %radius=4mm, 
+          right=1pt of firstlevel, ball color=\asreply@secondlevel@color] (secondlevel) {};
+    \node[circle, inner sep=0pt, minimum size=2.5mm, %radius=4mm, 
+          right=1pt of secondlevel, ball color=\asreply@thirdlevel@color] (thirdlevel) {};
+  }{}%\node[xshift=16pt, circle, radius=2pt, ball color=firstcolor] (firstlevel) at (frame.east) {};}%
+}
+
+\AtBeginEnvironment{exercise}{\small}
+\AtBeginEnvironment{quiz}{\small}
+\AtBeginEnvironment{solution}{\small}
+
+\newcommand\askreplytikzmark[1]{%
+  \tikz[remember picture,overlay]\node (#1) {\phantom{Hg}};%
+}
+\newlength{\exerciseheight}
+%\newlength{\askreply@detect@boxheight}
+
+\newcommand\connect[3]{%
+\tikz[remember picture,overlay]
+  \pgfextracty{\global#1}{\pgfpointanchor{#2}{north}}
+  \pgfextracty{\pgf@ya}{\pgfpointanchor{#3}{south}}
+  \pgfmathadd{#1}{\pgf@ya}
+  \let#1\pgfmathresult
+  %\setlength{exerciseheight}{\pgfmathresult}
+  %\addtolength{\exerciseheight}{-\pgf@ya}
+  \draw[->,red,>=latex] (#2.north) -- (#3.south);%
+  %Out: \the#1
+}
+\newcommand\getheightofnode[2]{
+    \pgfextracty{#1}{\pgfpointanchor{#2}{north}}
+    \pgfextracty{\pgf@ya}{\pgfpointanchor{#2}{south}}
+    \addtolength{#1}{-\pgf@ya}
+}
+
+\newlength{\parline}
+\newlength{\paroutindent}
+\newlength{\lineheight}
+\setlength{\lineheight}{\heightof{abcdefghijklmnoprstuvwxyz}}
+
+\newcommand{\mycountlines}[1]{%
+    \setlength{\paroutindent}{\expandafter\parindent}
+    \setlength{\parline}{\heightof{\noindent\begin{minipage}{\linewidth}%
+                \setlength{\parindent}{\paroutindent}#1\end{minipage}}}%
+    \pgfmathparse{round(\parline / (0.9*\lineheight))}
+    #1\par \noindent \texttt{line count: (\pgfmathresult)}
+}
+
+%- https://tex.stackexchange.com/questions/402779/[...]
+%-    [...]how-can-i-calculate-a-number-of-lines-needed-to-fit-the-text/
+\newcounter{askreplycountlines}
+\newcommand{\askreplynumberoflines}[2][\linewidth]{% #1=width (optional), #2=text
+  \bgroup  
+  \hsize=#1\relax
+  \clubpenalty=0
+  \widowpenalty=0
+  \displaywidowpenalty=0
+  \predisplaypenalty=0
+  \postdisplaypenalty=0
+  \interlinepenalty=0
+  \setbox0=\vbox{#2}%
+  \setcounter{askreplycountlines}{0}%
+  \loop\ifdim\ht0>0pt
+    \stepcounter{askreplycountlines}%
+    \setbox1=\vsplit0 to 0pt
+  \repeat
+\egroup}% \theaskreplycountlines
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------ Typical usage
+%-
+%- Exercise environment
+%----------------------
+%- \begin{exercise}[<options comma separated>]
+%-   Stuff...
+%-   \begin{subexercise}[<tcolorbox options>]{<optional title>}
+%-     Stuff...
+%-   \end{subexercise}
+%-   \begin{subexercise}[<tcolorbox options>]{<optional title>}
+%-     Stuff...
+%-   \end{subexercise}
+%-   Stuff...
+%- \end{exercise}
+%- Options: display=true/false (default=true) ; storing=true/false (default=true)
+%-          list=true/false (default=true) adding a entry in the list of exercises
+%-          title={<optional title>} (no default), before skip=<length>, after skip=<length>, 
+%-          level=<basic>/<intermediate>/<advanced> (no default)
+%-
+%- Solution environment
+%----------------------
+%- \begin{solution}[<options comma separated>]
+%-   Stuff...
+%-   \begin{subsolution}[<tcolorbox options>]
+%-     Stuff...
+%-   \end{subsolution}
+%-   \begin{subsolution}[<tcolorbox options>]
+%-     Stuff...
+%-   \end{subsolution}
+%-   Stuff...
+%- \end{solution}
+%- Options: display=true/false (default=true) ; storing=true/false (default=true)
+%-          ID=<number of the exercise> (no default), before skip=<length>, after skip=<length>
+%- The solution ID number is automatically set in the sequence of the exercises. But in case 
+%- an exercise has no solution, one must restart the sequence with the correct ID number.
+%-
+%- Quiz environment
+%------------------
+%- \begin{quiz}[<options comma separated>]
+%- \begin{quizquestion}<#1>[#2]{#3}{#4}{#5}(#6)<#7> (see below)
+%-   \mcqprosal{stuff}
+%-   etc.
+%- \end{quizquestion}
+%- \begin{quizquestion*}<#1>[#2]{#3}{#4}{#5}(#6)<#7> (see below)
+%-   \mcqprosal{stuff}
+%-   etc.
+%- \end{quizquestion*}
+%- \end{quiz}
+%- Options: display=true/false (default=true) ; storing=true/false (default=true)
+%-          list=true/false (default=true) adding a entry in the list of quizzes
+%-          title={<optional title>} (no default), before skip=<length>, after skip=<length>
+%-
+%- Quizquestion environment (multiple answers)
+%---------------------------------------------
+%- Usage − <#1> = Optional way to display the answer, in the margin (default) or as tooltip
+%          [#2] = Positionning the answer box: at [b] bottom (default), [c] centered or [t] top
+%          {#3} = Mandatory correct answer numbers comma separated
+%          {#4} = Mandatory wrong answer numbers comma separated
+%          {#5} = Optional title
+%          (#6) = Optional coordinates correction for positionning the answer (<dimx>,<dimy>)
+%          <#7> = Optional explanation text of the answer (usually given ;-)
+%- \begin{quizquestion}<#1>[#2]{#3}{#4}{#5}(#6)<#7>
+%-   \mcqproposal{stuff-one>}
+%-   \mcqproposal{stuff-two>}
+%-   \mcqproposal{stuff-three>}
+%-   \mcqproposal{stuff-four>}
+%-   etc.
+%- \end{quizquestion}
+%-
+%- Quizquestion* environment (single exclusive answer)
+%-----------------------------------------------------
+%- Usage − <#1> = Optional way to display the answer, in the margin (default) or as tooltip
+%          [#2] = Positionning the answer box: at [b] bottom (default), [c] centered or [t] top
+%          {#3} = Mandatory correct answer number (only one)
+%          {#4} = Mandatory wrong answer numbers comma separated
+%          {#5} = Optional title
+%          (#6) = Optional coordinates correction for positionning the answer (<dimx>,<dimy>)
+%          <#7> = Optional explanation text of the answer (usually given ;-)
+%- \begin{quizquestion*}<#1>[#2]{#3}{#4}{#5}(#6)<#7>
+%-   \mcqproposal{stuff-one>}
+%-   \mcqproposal{stuff-two>}
+%-   \mcqproposal{stuff-three>}
+%-   \mcqproposal{stuff-four>}
+%-   etc.
+%- \end{quizquestion*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\iftoggle{askreply@points}{% With `assignpoints' package
+  %
+  %- Exercise environment
+  %----------------------
+  \RenewDocumentEnvironment{exercise}{  }{%
+    \catcode`\^^M=\active
+    \@ifnextchar[%
+      {\catcode`\^^M=5 \exercise@start}
+      {\catcode`\^^M=5 \exercise@start[]}
+  }{%
+    \endVerbatimOut%
+    %\VerbatimInput{\askreply@outfilename}%
+    %\settototalheight{\askreply@detect@boxheight}{%
+    %  \parbox{\linewidth}{%
+    %    \input{\exercisesdir\jobname-exercise-body-\askreplytwodigits{\theexercise}.ltx}
+    %  }%
+    %}
+    \ifaskreply@display
+      \ifdefstring{\askreply@level}{basic}%
+        {%
+          \toggletrue{askreply@level@display@on}%
+          \gdef\asreply@firstlevel@color{askreplythirdcolor}%
+          \gdef\asreply@secondlevel@color{lightgray}%
+          \gdef\asreply@thirdlevel@color{lightgray}%
+          %\marginnote{level=basic}%
+        }%
+        {\ifdefstring{\askreply@level}{intermediate}%
+          {%
+            \toggletrue{askreply@level@display@on}%
+            \gdef\asreply@firstlevel@color{lightgray}%
+            \gdef\asreply@secondlevel@color{askreplythirdcolor}%
+            \gdef\asreply@thirdlevel@color{lightgray}%            
+            %\marginnote{level=intermediate}%
+          }%
+          {\ifdefstring{\askreply@level}{advanced}%
+              {%
+                \toggletrue{askreply@level@display@on}%
+                \gdef\asreply@firstlevel@color{lightgray}%
+                \gdef\asreply@secondlevel@color{lightgray}%
+                \gdef\asreply@thirdlevel@color{askreplythirdcolor}%            
+                %\marginnote{level=advanced}%
+              }%
+              {}%\marginnote{level=none}}%
+          }%
+        }%
+      \begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip]
+        % Empty versus non-empty exercise title
+        \iftoggle{assignpoints@checkemptystring}%
+          {\strut\textsf{\lightbf{\normalsize\exercisename\space\currentexercisenumber}}%
+              \hfill\textsf{\lightbf{\small\displaypoints*[exercise]{\currentexercisenumber}}}%
+          }%
+          {\strut\textsf{\lightbf{\normalsize\scshape\exercisename\space\currentexercisenumber}}%
+             \textsf{\lightbf{\normalsize\scshape\enspace\textemdash\enspace\currentexercisetitle}}%
+             \hfill\textsf{\lightbf{%
+               \small\scshape\displaypoints*[exercise]{\currentexercisenumber}}}%
+          }%
+      \end{tcolorbox}\nobreak%\nopagebreak?
+      \askreplybox
+        \tikzpagelayer{\@askreplytikzframebox{askreplyframedbox, fill=black!6}{askreplyfirstcolor}}%
+          \input{\exercisesdir\jobname-exercise-body-\askreplytwodigits{\theexercise}.ltx}%
+          \askreplynumberoflines{%
+            \let\pointsoriginal\points% Not to count points twice
+            \let\points\phantom%
+            \input{\exercisesdir\jobname-exercise-body-\askreplytwodigits{\theexercise}.ltx}%
+            \let\points\pointsoriginal
+          }%
+          %NoL: \theaskreplycountlines
+          \par\phantomtext%
+          %\vspace{-.5\baselineskip}%
+          \ifdefempty{\solutionID}%
+            {\ifnumequal{\theaskreplycountlines}{1}{\par\vspace{-0.6\baselineskip}}{}}%
+            {\par\hfill\raisebox{-2.5pt}{%
+                 \textcolor{askreplysecondcolor}{%
+                   %SolutionID: \solutionID\quad%
+                   \itshape\footnotesize{\normalfont\faSquare}%
+                     \enspace Solution\space page~\pageref{solution:\solutionID}%
+                     %\enspace Solution page~\pageref{solution:\theexercise}%
+                 }}%
+            }%
+        \endtikzpagelayer
+        %\par\vspace{\dimexpr.5\baselineskip\relax}%
+      \endaskreplybox
+      %\zsaveposy{stopexercise}
+      %Space: \the\dimexpr\zposy{startexercise}sp-\zposy{stopexercise}sp\relax
+      \vspace{\askreply@afterskip}%
+    \fi
+    \ifaskreply@storing
+      \ifx\askreply@title\empty%
+        \askreply@filecopytoenv%
+          {\askreply@outfilename}%{\exercisesdir\jobname-exercise-body-\askreplytwodigits{\theexercise}.ltx}%
+          {\exercisesdir\jobname-exercise-\askreplytwodigits{\theexercise}.env}%
+          {\string\begin{exercise}}%
+          {\string\end{exercise}}%
+          {\string[storing=false]}%
+      \else
+        \askreply@filecopytoenv%
+          {\exercisesdir\jobname-exercise-body-\askreplytwodigits{\theexercise}.ltx}%
+          {\exercisesdir\jobname-exercise-\askreplytwodigits{\theexercise}.env}%
+          {\string\begin{exercise}}%
+          {\string\end{exercise}}%
+          {\string[storing=false, title=\askreply@title]}%
+      \fi
+    \fi
+    \ifaskreply@list
+      \addcontentsline{loe}{exercise}{\protect\numberline{\theexercise}\currentexercisetitle}%
+    \fi
+    \setcounter{assignpoints@maxsubexercisecount}{\theassignpoints@subexercisecount}%
+    \assignpoints@storevaluetoaux%
+      {\assignpointsprefix{exercise}@exercisetitle}%
+      {\theassignpoints@exercisecount}%
+      {\currentexercisetitle}%
+    \assignpoints@storevaluetoaux%
+      {\assignpointsprefix{exercise}@numberofsubexercises}%
+      {\theassignpoints@exercisecount}%
+      {\theassignpoints@maxsubexercisecount}%
+    \assignpoints@storevaluetoaux%
+      {\assignpointsprefix{exercise}@points}%
+      {\theassignpoints@exercisecount}%
+      {\strip@pt\assignpoints@currentexercisepoints}% https://tex.stackexchange.com/questions/2810/
+    \global\boolfalse{assignpoints@inexercise}%
+    \togglefalse{assignpoints@checkemptystring}%
+    \togglefalse{askreply@level@display@on}%
+  }
+  \def\exercise@start[#1]{%
+    \pgfkeys{/askreply/.cd, #1}%
+    \ifbool{assignpoints@inexercise}%
+      {\PackageError{assignpoints}{You cannot nest exercise environments}}%
+      {}%
+    \ifbool{assignpoints@exercise@layoutdefined}{}{%
+      \PackageError{assignpoints}%
+        {Option `customlayout' requires you to define an exercise layout using
+        at least `\string\AtBeginExercise{...}'}%
+    }%
+    \global\booltrue{assignpoints@inexercise}%
+    \stepcounter{exercise}%
+    \getenvID[exercise]{\theexercise}%
+    \getenvID[solution]{\theexercise}%
+    \hypersetup{unicode, pdfborder=0 0 0, linkcolor=askreplyfirstcolor}%
+    %\label{exercise:\theassignpoints@exercisecount}
+    \phantomsection\label{exercise:\theexercise}% To have correct \pageref link (see TeX.SX/49061)
+    \setlength{\assignpoints@currentexercisepoints}{0pt}%
+    \global\assignpoints@currentexercisepoints=\assignpoints@currentexercisepoints%
+    \ifx\askreply@title\@empty% WORKS!
+      %\textbf{TRUE}
+      \toggletrue{assignpoints@checkemptystring}%
+    \else%
+      %\textbf{FALSE}
+      \togglefalse{assignpoints@checkemptystring}%
+      \renewcommand{\currentexercisetitle}{\askreply@title}%
+    \fi%
+    %\renewcommand{\currentexercisetitle}{\askreply@title}%
+    %\ifstrempty{\currentexercisetitle}% DOES NOT WORK! WHY?
+    %  {\toggletrue{assignpoints@checkemptystring}\textbf{TRUE}}%
+    %  {\togglefalse{assignpoints@checkemptystring}\textbf{FALSE}}%
+    %\ifnum\c@exercise=0
+    %  \setcounter{assignpoints@exercisecount}{0}% Exercise 0 is for example
+    %  \setcounter{assignpoints@totalexercisecount}{0}%    
+    %\else
+      \stepcounter{assignpoints@exercisecount}% Starting the numbering from "1"
+      \stepcounter{assignpoints@totalexercisecount}%
+    %\fi
+    \ifcsname assignpoints@exercise@numberofsubexercises@\currentexercisenumber\endcsname%
+      \renewcommand{\numberofsubexercises}{%
+        \assignpoints@readvaluefromaux{exercise}{numberofsubexercises@\currentexercisenumber}}%
+    \fi%
+    \ifx\askreply@envsymbol\@empty%
+      \renewcommand{\envsymbol}{%
+        \normalfont\faIcon{laptop-code}}% \faIcon{feather-alt}} \faPenFancy \faMarker
+    \else%
+      \renewcommand{\envsymbol}{\normalfont\askreply@envsymbol}%
+    \fi%
+    \settowidth{\envsymbolwidth}{\normalfont\large\envsymbol}%
+    \def\askreply@outfilename{%
+      \exercisesdir\jobname-exercise-body-\askreplytwodigits{\theexercise}.ltx}%
+    \VerbatimOut{\askreply@outfilename}%
+  }
+  \NewDocumentEnvironment{exercise*}{ o }{% Solely (no reference) or demonstration exercise
+    \pgfkeys{/askreply/.cd, #1}%
+    \hypersetup{unicode, pdfborder=0 0 0, linkcolor=askreplyfirstcolor}%
+    \ifx\askreply@title\@empty% WORKS!
+      \toggletrue{assignpoints@checkemptystring}%
+    \else
+      \togglefalse{assignpoints@checkemptystring}%
+      \renewcommand{\currentexercisetitle}{\askreply@title}%
+    \fi
+    \ifx\askreply@envsymbol\@empty
+      \renewcommand{\envsymbol}{%
+        \normalfont\faIcon{laptop-code}}% \faIcon{feather-alt}} \faPenFancy \faMarker
+    \else
+      \renewcommand{\envsymbol}{\normalfont\askreply@envsymbol}%
+    \fi
+    \settowidth{\envsymbolwidth}{\normalfont\large\envsymbol}%
+    \ifdefstring{\askreply@level}{basic}%
+      {%
+        \toggletrue{askreply@level@display@on}%
+        \gdef\asreply@firstlevel@color{askreplythirdcolor}%
+        \gdef\asreply@secondlevel@color{lightgray}%
+        \gdef\asreply@thirdlevel@color{lightgray}%
+      }%
+      {\ifdefstring{\askreply@level}{intermediate}%
+        {%
+          \toggletrue{askreply@level@display@on}%
+          \gdef\asreply@firstlevel@color{lightgray}%
+          \gdef\asreply@secondlevel@color{askreplythirdcolor}%
+          \gdef\asreply@thirdlevel@color{lightgray}%            
+        }%
+        {\ifdefstring{\askreply@level}{advanced}%
+            {%
+              \toggletrue{askreply@level@display@on}%
+              \gdef\asreply@firstlevel@color{lightgray}%
+              \gdef\asreply@secondlevel@color{lightgray}%
+              \gdef\asreply@thirdlevel@color{askreplythirdcolor}%            
+            }%
+            {}% level=none
+        }%
+      }%
+    \begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip]
+      % Empty versus non-empty exercise title
+      \iftoggle{assignpoints@checkemptystring}%
+        {\strut\textsf{\textsc{\lightbf{%
+          \normalsize\exercisename\hfill{\small\askreply@editpoints}}}}}%
+        {\strut\textsf{\textsc{\lightbf{%
+          \normalsize\currentexercisetitle\hfill{\small\askreply@editpoints}}}}}%
+    \end{tcolorbox}\nobreak%\nopagebreak?
+    \askreplybox%
+      \tikzpagelayer{\@askreplytikzframebox{askreplyframedbox, fill=black!6}{askreplyfirstcolor}}%
+        \small
+  }{%
+        \par\phantomtext%
+        %\par\vspace{-0.5\baselineskip}%
+      \endtikzpagelayer
+      %\par\vspace{\baselineskip}%
+    \endaskreplybox
+    \vspace{\askreply@afterskip}%
+    \togglefalse{assignpoints@checkemptystring}%
+    \togglefalse{askreply@level@display@on}%
+  }
+  %
+  %- Subexercise environment
+  %-------------------------
+  \AtBeginSubexercise{\begin{tcolorbox}[subexercisepoints]}
+  \AtEndSubexercise{\end{tcolorbox}}
+  \RenewDocumentEnvironment{subexercise}{ O{} }{%
+    \pgfkeys{/askreply/.cd, #1}%
+    \ifbool{assignpoints@insubexercise}%
+      {\PackageError{assignpoints}{You cannot nest subexercise environments}}%
+      {}%
+    \ifbool{assignpoints@subexercise@layoutdefined}{}{%
+      \PackageError{assignpoints}{Option `customlayout' requires you to define a subexercise
+                                  layout using at least `\string\AtBeginSubexercise{...}'}
+    }%
+    \global\booltrue{assignpoints@insubexercise}%
+    \setlength{\assignpoints@currentsubexercisepoints}{0pt}%
+    \global\assignpoints@currentsubexercisepoints=\assignpoints@currentsubexercisepoints%
+    \ifx\askreply@title\@empty
+      \toggletrue{assignpoints@checkemptystring}%
+    \else
+      \togglefalse{assignpoints@checkemptystring}%
+      \renewcommand{\currentsubexercisetitle}{\askreply@title}%
+    \fi
+    \stepcounter{assignpoints@subexercisecount}% Starting the numbering from "1"
+    \exercisepoints@sub@begin%
+    %\begin{tcolorbox}[subexercisepoints, #1]
+  }{%
+    %\end{tcolorbox}%
+    \exercisepoints@sub@end%
+    \assignpoints@storevaluetoaux%
+      {\assignpointsprefix{subexercise}@title}%
+      {\theassignpoints@exercisecount.\theassignpoints@subexercisecount}%
+      {\currentsubexercisetitle}%
+    \assignpoints@storevaluetoaux%
+      {\assignpointsprefix{exercise}@points}%
+      {\theassignpoints@exercisecount.\theassignpoints@subexercisecount}%
+      {\strip@pt\assignpoints@currentsubexercisepoints}% https://tex.stackexchange.com/questions/2810/
+    \global\boolfalse{assignpoints@insubexercise}%
+    \togglefalse{assignpoints@checkemptystring}%
+  }
+  %
+  %- Solution environment
+  %----------------------
+  \RenewDocumentEnvironment{solution}{  }{%
+    \catcode`\^^M=\active
+    \@ifnextchar[%
+        {\catcode`\^^M=5 \solution@start}
+        {\catcode`\^^M=5 \solution@start[]}
+  }{%
+    \endVerbatimOut%
+    %\VerbatimInput{\askreply@outfilename}%
+    \ifaskreply@display
+      %\vspace{\askreply@beforeskip}%
+      \begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip,
+                        colback=askreplysecondcolor!75!black, colframe=askreplysecondcolor]
+        % Empty versus non-empty solution title
+        \ifstrempty{\currentexercisetitle}%
+          {\strut\textsf{\lightbf{%
+            \normalsize\scshape\solutionname\space\theassignpoints@solutioncount\space}}%
+              \hfill{\small(\exercisenamenocap\space\hyperlink{\exerciseID}{\thesolution},\space%
+              page\space\pageref{exercise:\thesolution})}%
+          }%
+          {\strut\textsf{\lightbf{%
+             \normalsize\scshape\solutionname\space\theassignpoints@solutioncount\space}}%
+              \textsf{\lightbf{%
+                \normalsize\scshape\enspace\textemdash\enspace\currentexercisetitle\space}}%
+              \textsf{\lightbf{\enspace{\small(page\space\pageref{exercise:\thesolution})}}}%
+              \hfill\textsf{\lightbf{\small\scshape%
+                \displaypoints*[exercise]{\theassignpoints@solutioncount}}}%
+          }%
+      \end{tcolorbox}\nobreak%\nopagebreak?
+      \askreplybox%
+        \tikzpagelayer{\@askreplytikzframebox{askreplyframedbox, fill=black!6}{askreplysecondcolor}}%
+          \input{\exercisesdir\jobname-solution-body-\askreplytwodigits{\thesolution}.ltx}
+          \askreplynumberoflines{\input{\askreply@outfilename}}%
+          %NoL: \theaskreplycountlines
+          \ifnumequal{\theaskreplycountlines}{1}{\par\vspace{0.4\baselineskip}}{}%
+          \par\phantomtext%
+        \endtikzpagelayer
+      \endaskreplybox
+      \vspace{\askreply@afterskip}%
+    \fi
+    \ifaskreply@storing
+      \askreply@filecopytoenv%
+        {\exercisesdir\jobname-solution-body-\askreplytwodigits{\thesolution}.ltx}%
+        {\exercisesdir\jobname-solution-\askreplytwodigits{\thesolution}.env}%
+        {\string\begin{solution}}%
+        {\string\end{solution}}%
+        {\string[storing=false]}%
+    \fi
+    %\ifx\askreply@ID\empty%
+      \askreply@storevaluetoaux{exercise@solutionID}{\thesolution}{ID:\thesolution}%
+    %\else
+    %  \askreply@storevaluetoaux{exercise@solutionID}{\askreply@ID}{ID:\askreply@ID}%
+    %\fi
+    \global\boolfalse{assignpoints@insolution}%
+  }
+  \def\solution@start[#1]{%
+    \pgfkeys{/askreply/.cd, #1}%
+    \ifbool{assignpoints@insolution}%
+      {\PackageError{assignpoints}{You cannot nest solution environments}}%
+      {}%
+    \ifbool{assignpoints@solution@layoutdefined}{}{%
+      \PackageError{assignpoints}%
+        {Option `customlayout' requires you to define an solution layout using
+        at least `\string\AtBeginSolution{...}'}%
+    }%
+    \global\booltrue{assignpoints@insolution}%
+    \ifx\askreply@ID\empty%
+      %\ifnumequal{\value{solution}}{\value{exercise}}%
+      %  {\setcounter{solution}{\value{exercise}}}%
+      %  {%
+      %    \ifnumless{\value{solution}}{\value{exercise}}%
+      %      {\setcounter{solution}{\value{exercise}}}%
+      %      {\PackageWarning{askreply}{The solution counter must be set with ID}}%
+      %  }%
+      %\getenvID[exercise]{\thesolution}%
+      \stepcounter{solution}%
+      \getenvID[solution]{\thesolution}%
+    \else
+      %\getenvID[exercise]{\thesolution}%
+      \setcounter{solution}{\askreply@ID}%
+      \getenvID[solution]{\thesolution}%
+    \fi
+    \stepcounter{solutionnumber}%
+    \hypersetup{unicode, pdfborder=0 0 0, linkcolor=white}%
+    %\hypertarget{\solutionID}{}%
+    \phantomsection\label{solution:\solutionID}%
+    \ifx\askreply@envsymbol\@empty
+      \renewcommand{\envsymbol}{\normalfont\faLightbulb}%
+    \else
+      \renewcommand{\envsymbol}{\normalfont\askreply@envsymbol}%
+    \fi
+    \settowidth{\envsymbolwidth}{\normalfont\large\envsymbol}%
+    %\par\vspace{\baselineskip}
+    \ifbool{assignpoints@inexercise}
+      {\setcounter{assignpoints@solutioncount}{\theassignpoints@exercisecount}}%
+      {\setcounter{assignpoints@solutioncount}{\thesolution}}
+    %- Adding a "hard" solution reference (not a label but having the same functionality)
+    %- The aim is to have control on the display if there is no reference
+    \assignpoints@storevaluetoaux%
+      {\assignpointsprefix{solution}@reference}%
+      {\theassignpoints@solutioncount}%
+      {\theassignpoints@solutioncount}%
+    \gettitle[exercise]{\theassignpoints@solutioncount}%
+    \def\askreply@outfilename{%
+      \exercisesdir\jobname-solution-body-\askreplytwodigits{\thesolution}.ltx}%
+    \VerbatimOut{\askreply@outfilename}%
+  }
+  \NewDocumentEnvironment{solution*}{ o }{% Solely (no reference) or demonstration exercise
+    \pgfkeys{/askreply/.cd, #1}%
+    \hypersetup{unicode, pdfborder=0 0 0, linkcolor=askreplyfirstcolor}%
+    \ifx\askreply@title\@empty% WORKS!
+      \toggletrue{assignpoints@checkemptystring}%
+    \else
+      \togglefalse{assignpoints@checkemptystring}%
+      \renewcommand{\currentexercisetitle}{\askreply@title}%
+    \fi
+    \ifx\askreply@envsymbol\@empty
+      \renewcommand{\envsymbol}{\normalfont\faLightbulb}%
+    \else
+      \renewcommand{\envsymbol}{\normalfont\askreply@envsymbol}%
+    \fi
+    \settowidth{\envsymbolwidth}{\normalfont\large\envsymbol}%
+    \ifdefstring{\askreply@level}{basic}%
+      {%
+        \toggletrue{askreply@level@display@on}%
+        \gdef\asreply@firstlevel@color{askreplythirdcolor}%
+        \gdef\asreply@secondlevel@color{lightgray}%
+        \gdef\asreply@thirdlevel@color{lightgray}%
+      }%
+      {\ifdefstring{\askreply@level}{intermediate}%
+        {%
+          \toggletrue{askreply@level@display@on}%
+          \gdef\asreply@firstlevel@color{lightgray}%
+          \gdef\asreply@secondlevel@color{askreplythirdcolor}%
+          \gdef\asreply@thirdlevel@color{lightgray}%            
+        }%
+        {\ifdefstring{\askreply@level}{advanced}%
+            {%
+              \toggletrue{askreply@level@display@on}%
+              \gdef\asreply@firstlevel@color{lightgray}%
+              \gdef\asreply@secondlevel@color{lightgray}%
+              \gdef\asreply@thirdlevel@color{askreplythirdcolor}%            
+            }%
+            {}% level=none
+        }%
+      }%
+    \begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip,
+                      colback=askreplysecondcolor!75!black, colframe=askreplysecondcolor]
+    %\begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip]
+      % Empty versus non-empty exercise title
+      \iftoggle{assignpoints@checkemptystring}%
+        {\strut\textsf{\textsc{\lightbf{%
+          \solutionname\hfill{\small\askreply@editpoints}}}}}%
+        {\strut\textsf{\textsc{\lightbf{%
+          \currentexercisetitle\hfill{\small\askreply@editpoints}}}}}%
+    \end{tcolorbox}\nobreak%\nopagebreak?
+    \askreplybox%
+      \tikzpagelayer{\@askreplytikzframebox{askreplyframedbox, fill=black!6}{askreplyfirstcolor}}%
+        \small
+  }{%
+        \par\phantomtext%
+        %\vspace{-.5\baselineskip}%
+      \endtikzpagelayer
+      %\par\vspace{\dimexpr.5\baselineskip\relax}%
+    \endaskreplybox
+    \vspace{\askreply@afterskip}%
+    \togglefalse{assignpoints@checkemptystring}%
+    \togglefalse{askreply@level@display@on}%
+  }
+  %- Subsolution environment
+  %-------------------------
+  \AtBeginSubsolution{\begin{tcolorbox}[subsolutionpoints]}
+  \AtEndSubsolution{\end{tcolorbox}}
+  \RenewDocumentEnvironment{subsolution}{ O{} }{%
+    \ifbool{assignpoints@insubsolution}%
+      {\PackageError{assignpoints}{You cannot nest `subsolution' environments}}%
+      {}%
+    \ifbool{assignpoints@subsolution@layoutdefined}{}{%
+      \PackageError{assignpoints}%
+        {Option `customlayout' requires you to define an `subsolution' layout using
+        at least `\string\AtBeginSubsolution{...}'}%
+    }%
+    \global\booltrue{assignpoints@insubsolution}%
+    \stepcounter{assignpoints@subsolutioncount}%
+    \gettitle[subexercise]{\theassignpoints@solutioncount.\theassignpoints@subsolutioncount}%  
+    \solutionpoints@subsolution@begin
+    %\begin{tcolorbox}[subsolutionpoints, #1]
+  }{%
+    %\end{tcolorbox}%
+    \solutionpoints@subsolution@end%
+    \global\boolfalse{assignpoints@insubsolution}%
+  }
+  %- Quiz environment
+  %------------------
+  \RenewDocumentEnvironment{quiz}{ }{%
+    \catcode`\^^M=\active
+    \@ifnextchar[%
+    {\catcode`\^^M=5 \quiz@start}
+    {\catcode`\^^M=5 \quiz@start[]}
+  }{%
+    \endVerbatimOut%
+    %\VerbatimInput{\askreply@outfilename}%
+    \ifaskreply@display
+      \begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip,
+                        colupper=askreplysecondcolor, colback=black!15, colframe=black!50]
+        % Empty versus given quiz title
+        \iftoggle{assignpoints@checkemptystring}%
+          {\strut\lightbf{\sffamily\quizname\space\currentquiznumber}%
+              \hfill{\small\normalfont\sffamily\displaypoints*[quiz]{\currentquiznumber}}%
+          }%
+          {\strut\textsf{\lightbf{\normalsize\scshape\quizname\space\currentquiznumber\space}}%
+              \textsf{\lightbf{\normalsize\scshape\enspace\textemdash\enspace\currentquiztitle}}%
+              \hfill\textsf{\lightbf{\small\scshape%
+                \displaypoints*[quiz]{\currentquiznumber}}}%
+          }%
+      \end{tcolorbox}\nobreak%\nopagebreak?
+      \askreplybox%
+        %\vspace{-.5\baselineskip}
+        \tikzpagelayer{\@askreplytikzquizframebox{askreplyframedbox, fill=white, draw=black!50}}%
+          \input{\quizzesdir\jobname-quiz-body-\askreplytwodigits{\thequiz}.ltx}%
+          \askreplynumberoflines{% Not to count the points twice
+            \let\pointsoriginal\points
+            \let\points\phantom%
+            \input{\quizzesdir\jobname-quiz-body-\askreplytwodigits{\thequiz}.ltx}%
+            \let\points\pointsoriginal
+          }%
+          %NoL: \theaskreplycountlines
+          %\askreplynumberoflines{\input{\askreply@outfilename}}%
+          \par\phantomtext%
+          \ifnumgreater{\theaskreplycountlines}{1}{}{\par\vspace{-0.6\baselineskip}}%
+        \endtikzpagelayer
+        %\par\vspace{\dimexpr.5\baselineskip\relax}%
+      \endaskreplybox
+      \vspace{\askreply@afterskip}%
+    \fi
+    \ifaskreply@storing
+      \ifx\askreply@title\empty%
+        \askreply@filecopytoenv%
+          {\quizzesdir\jobname-quiz-body-\askreplytwodigits{\thequiz}.ltx}%
+          {\quizzesdir\jobname-quiz-\askreplytwodigits{\thequiz}.env}%
+          {\string\begin{quiz}}%
+          {\string\end{quiz}}%
+          {\string[storing=false]}%
+      \else
+        \askreply@filecopytoenv%
+          {\quizzesdir\jobname-quiz-body-\askreplytwodigits{\thequiz}.ltx}%
+          {\quizzesdir\jobname-quiz-\askreplytwodigits{\thequiz}.env}%
+          {\string\begin{quiz}}%
+          {\string\end{quiz}}%
+          {\string[storing=false, title={\askreply@title}]}%
+      \fi
+    \fi
+    \assignpoints@storevaluetoaux%
+      {\assignpointsprefix{quiz}@quiztitle}%
+      {\theassignpoints@quizcount}%
+      {\currentquiztitle}%
+    \assignpoints@storevaluetoaux%
+      {\assignpointsprefix{quiz}@points}%
+      {\theassignpoints@quizcount}%
+      {\strip@pt\assignpoints@currentquizpoints}% https://tex.stackexchange.com/questions/2810/
+    \askreply@storevaluetoaux{quiz@quizID}{\thequiz}{ID:\thequiz}%
+    %\askreply@storevaluetoaux{quiz@quiztitle}{\thequiz}{\currentquiztitle}%
+    %\togglefalse{assignpoints@checkemptystring}%
+    \global\boolfalse{assignpoints@inquiz}%
+    \togglefalse{assignpoints@checkemptystring}%
+    \ifaskreply@list
+      \addcontentsline{loq}{quiz}{\protect\numberline{\thequiz}\currentquiztitle}%
+    \fi
+  }
+  \def\quiz@start[#1]{%
+    \pgfkeys{/askreply/.cd, #1}%
+    \ifbool{assignpoints@inquiz}%
+      {\PackageError{assignpoints}{You cannot nest quiz environments}}%
+      {}%
+    \ifbool{assignpoints@quiz@layoutdefined}{}{%
+      \PackageError{assignpoints}%
+        {Option `customlayout' requires you to define a quiz layout using
+        at least `\string\AtBeginQuiz{...}'}
+    }%
+    \global\booltrue{assignpoints@inquiz}%
+    \stepcounter{quiz}%
+    \getenvID[quiz]{\thequiz}%
+    %\getenvID[answer]{\thequiz}%
+    \hypersetup{unicode, pdfborder=0 0 0, linkcolor=askreplyfirstcolor}%
+    \phantomsection\label{quiz:\thequiz}% To have correct \pageref link (see TeX.SX/49061)
+    \setlength{\assignpoints@currentquizpoints}{0pt}%
+    \global\assignpoints@currentquizpoints=\assignpoints@currentquizpoints%
+    \ifx\askreply@title\@empty% WORKS!
+      %\textbf{TRUE}
+      \toggletrue{assignpoints@checkemptystring}%
+    \else
+      %\textbf{FALSE}
+      \togglefalse{assignpoints@checkemptystring}%
+      \renewcommand{\currentquiztitle}{\askreply@title}%
+    \fi
+    \stepcounter{assignpoints@quizcount}%
+    \stepcounter{assignpoints@totalquizcount}%
+    \ifcsname assignpoints@quiz@numberofquestions@\currentquiznumber\endcsname%
+      \renewcommand{\numberofquestions}{%
+        \assignpoints@readvaluefromaux{quiz}{numberofquestions@\currentquiznumber}}%
+    \fi
+    \ifx\askreply@envsymbol\@empty
+      \renewcommand{\envsymbol}{\normalfont\faList}%
+    \else
+      \renewcommand{\envsymbol}{\normalfont\askreply@envsymbol}%
+    \fi
+    \settowidth{\envsymbolwidth}{\large\envsymbol}%
+    \def\askreply@outfilename{\quizzesdir\jobname-quiz-body-\askreplytwodigits{\thequiz}.ltx}%
+    \VerbatimOut{\askreply@outfilename}%
+  }
+  \NewDocumentEnvironment{quiz*}{ o }{% Solely (no reference) or demonstration exercise
+    \pgfkeys{/askreply/.cd, #1}%
+    \hypersetup{unicode, pdfborder=0 0 0, linkcolor=askreplyfirstcolor}%
+    \stepcounter{quizdemo}
+    \ifx\askreply@title\@empty% WORKS!
+      \toggletrue{assignpoints@checkemptystring}%
+    \else
+      \togglefalse{assignpoints@checkemptystring}%
+      \renewcommand{\currentquiztitle}{\askreply@title}%
+    \fi
+    \ifx\askreply@envsymbol\@empty
+      \renewcommand{\envsymbol}{\normalfont\faList}%
+    \else
+      \renewcommand{\envsymbol}{\normalfont\askreply@envsymbol}%
+    \fi
+    \settowidth{\envsymbolwidth}{\normalfont\large\envsymbol}%
+    \begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip,
+                      colupper=askreplysecondcolor, colback=black!15, colframe=black!50]
+      % Empty versus non-empty quiz title
+      \iftoggle{assignpoints@checkemptystring}%
+        {\strut\textsf{\textsc{\lightbf{\quizname\hfill\small\askreply@editpoints}}}}%
+        {\strut\textsf{\textsc{\lightbf{\quizname\space\@Alph{\thequizdemo}%
+          \enspace\textemdash\enspace\currentquiztitle\hfill{\small\askreply@editpoints}}}}%
+        }%
+    \end{tcolorbox}\nobreak%\nopagebreak?
+    \askreplybox
+      %\vspace{-.5\baselineskip}
+      \tikzpagelayer{\@askreplytikzquizframebox{askreplyframedbox, fill=white, draw=black!50}}
+        \small
+  }{%
+        \par\phantomtext%
+      \endtikzpagelayer
+      \par\vspace{\dimexpr.5\baselineskip\relax}%
+    \endaskreplybox
+    \vspace{\askreply@afterskip}%
+    \togglefalse{assignpoints@checkemptystring}%
+  }
+  %- Quizquestion environment (multiple answers)
+  %---------------------------------------------
+  %- Usage − <#1> = Optional way to display the answer, in the margin (default) or as tooltip
+  %          [#2] = Positionning the answer box: at [b] bottom (default), [c] centered or [t] top
+  %          {#3} = Mandatory correct answer numbers comma separated
+  %          {#4} = Mandatory wrong answer numbers comma separated
+  %          {#5} = Optional title
+  %          (#6) = Optional coordinates correction for positionning the answer (<dimx>,<dimy>)
+  %          <#7> = Optional explanation text of the answer (usually given ;-)
+  \RenewDocumentEnvironment{quizquestion}{ D<>{margin} O{b} m m G{} D(){6pt,12pt} D<>{} }%
+    {
+      \stepcounter{quizquestion}%
+      \pyc{trial=0}%
+      \label{quizquestion:\thequiz.\thequizquestion}%
+      \ifbool{assignpoints@inquizquestion}%
+        {\PackageError{assignpoints}{You cannot nest quizquestion environments}}%
+        {}%
+      \global\booltrue{assignpoints@inquizquestion}%
+      \setlength{\assignpoints@currentquizquestionpoints}{0pt}%
+      \global\assignpoints@currentquizquestionpoints=\assignpoints@currentquizquestionpoints%
+      \renewcommand{\currentquizquestiontitle}{#5}%
+      \ifstrempty{#5}%
+        {\toggletrue{assignpoints@checkemptystring}}%
+        {\togglefalse{assignpoints@checkemptystring}}%
+      \stepcounter{assignpoints@quizquestioncount}%
+      \let\mcqproposal\mcqproposalMultiple%
+      \begin{tcolorbox}[quizquestionpoints]
+    }
+    {%
+      \mcqverify{#3}{#4}\hspace{0.1\linewidth}%
+      \ifdimless{\marginparwidth}{118pt}% 41 mm = 116.2204 pt / 42 mm = 119.0550 pt
+        {\mcqdisplayanswer*[#2]{#7}(#6)}% Display as tooltip
+        {\ifstrequal{#1}{margin}%
+          {\mcqdisplayanswer[#2]{#7}(#6)}% Display answer in the margin
+          {\ifstrequal{#1}{tooltip}%
+            {\mcqdisplayanswer*[#2]{#7}(#6)}% Display as tooltip
+            {\PackageWarning{askreply}%
+              {Key `#1' is not recognised. It has been set as `tooltip'}%
+             \mcqdisplayanswer*[#2]{#7}(#6)% Display as tooltip
+            }
+          }
+        }%
+      %\quad\mcqchecktrial%
+      %\quad\mcqcheck{#3}{#4}%
+      %\hfill\mcqresetcheck%
+      \hfill\mcqreset%
+      \end{tcolorbox}%
+      \assignpoints@storevaluetoaux%
+        {\assignpointsprefix{quiz}@points}%
+        {\theassignpoints@quizcount.\theassignpoints@quizquestioncount}%
+        {\strip@pt\assignpoints@currentquizquestionpoints}%
+      \askreply@storevaluetoaux{quiz@quizquestiontitle}%
+        {\thequizquestion}{\currentquizquestiontitle}%
+      \global\boolfalse{assignpoints@inquizquestion}%
+      \togglefalse{assignpoints@checkemptystring}%
+    }
+  %- Quizquestion* environment (single exclusive answer)
+  %-----------------------------------------------------
+  %- Usage − <#1> = Optional way to display the answer, in the margin (default) or as tooltip
+  %          [#2] = Positionning the answer box: at [b] bottom (default), [c] centered or [t] top
+  %          {#3} = Mandatory correct answer number (only one)
+  %          {#4} = Mandatory wrong answer numbers comma separated
+  %          {#5} = Optional title
+  %          (#6) = Optional coordinates correction for positionning the answer (<dimx>,<dimy>)
+  %          <#7> = Optional explanation text of the answer (usually given ;-)
+  \NewDocumentEnvironment{quizquestion*}{ D<>{margin} O{b} m m G{} D(){6pt,12pt} D<>{} }%
+    {
+      \stepcounter{quizquestion}%
+      \label{quizquestion:\thequiz.\thequizquestion}%
+      \ifbool{assignpoints@inquizquestion}%
+        {\PackageError{assignpoints}{You cannot nest quizquestion environments}}%
+        {}%
+      \global\booltrue{assignpoints@inquizquestion}%
+      \setlength{\assignpoints@currentquizquestionpoints}{0pt}%
+      \global\assignpoints@currentquizquestionpoints=\assignpoints@currentquizquestionpoints%
+      \renewcommand{\currentquizquestiontitle}{#5}%
+      \ifstrempty{#5}%
+        {\toggletrue{assignpoints@checkemptystring}}%
+        {\togglefalse{assignpoints@checkemptystring}}%
+      \stepcounter{assignpoints@quizquestioncount}%
+      \let\mcqproposal\mcqproposalSingle%
+      \begin{tcolorbox}[quizquestionpoints]
+    }
+    {
+      \mcqverify{#3}{#4}\hspace{0.1\linewidth}%
+      \ifdimless{\marginparwidth}{118pt}% 41 mm = 116.2204 pt / 42 mm = 119.0550 pt
+        {\mcqdisplayanswer*[#2]{#7}(#6)}% Display as tooltip
+        {\ifstrequal{#1}{margin}%
+          {\mcqdisplayanswer[#2]{#7}(#6)} % Display answer in the margin
+          {\ifstrequal{#1}{tooltip}%
+            {\mcqdisplayanswer*[#2]{#7}(#6)}% Display as tooltip
+            {\PackageWarning{askreply}%
+              {Key\space `#1'\space is\space not\space recognised.\space
+              It\space has\space been\space set\space as\space `tooltip'}%
+             \mcqdisplayanswer*[#2]{#7}(#6)% Display as tooltip
+            }
+          }
+        }%
+      \hfill\mcqreset%
+      \end{tcolorbox}%
+      \assignpoints@storevaluetoaux%
+        {\assignpointsprefix{quiz}@points}%
+        {\theassignpoints@quizcount.\theassignpoints@quizquestioncount}%
+        {\strip@pt\assignpoints@currentquizquestionpoints}%
+      \askreply@storevaluetoaux{quiz@quizquestiontitle}%
+        {\thequizquestion}{\currentquizquestiontitle}%
+      \global\boolfalse{assignpoints@inquizquestion}%
+      \togglefalse{assignpoints@checkemptystring}%
+    }
+  %- Quizquestion environment (multiple answers)
+  %---------------------------------------------
+  %- Usage − <#1> = Optional way to display the answer, in the margin (default) or as tooltip
+  %          [#2] = Positionning the answer box: at [b] bottom (default), [c] centered or [t] top
+  %          {#3} = Mandatory correct answer numbers comma separated
+  %          {#4} = Mandatory wrong answer numbers comma separated
+  %          {#5} = Optional title
+  %          (#6) = Optional coordinates correction for positionning the answer (<dimx>,<dimy>)
+  %          <#7> = Optional explanation text of the answer (usually given ;-)
+  %- Quiz question demo environment (single exclusive answer)
+  \NewDocumentEnvironment{mcqdemo}{ D<>{margin} O{b} m m G{} D(){6pt,12pt} D<>{} }%
+    {
+      \stepcounter{mcqdemo}%
+      \renewcommand{\currentquizquestiontitle}{#5}%
+      \ifstrempty{#5}%
+        {\toggletrue{assignpoints@checkemptystring}}%
+        {\togglefalse{assignpoints@checkemptystring}}%
+      \let\mcqproposal\mcqproposalMultipleDemo%
+      \begin{tcolorbox}[mcqdemo]
+    }
+    {
+      \mcqverifydemo{#3}{#4}\hspace{0.1\linewidth}%
+      \ifdimless{\marginparwidth}{118pt}% 41 mm = 116.2204 pt / 42 mm = 119.0550 pt
+        {\mcqdisplayanswerdemo*[#2]{#7}(#6)}% Display as tooltip
+        {\ifstrequal{#1}{margin}%
+          {\mcqdisplayanswerdemo[#2]{#7}(#6)} % Display answer in the margin
+          {\ifstrequal{#1}{tooltip}%
+            {\mcqdisplayanswerdemo*[#2]{#7}(#6)}% Display as tooltip
+            {\PackageWarning{askreply}%
+              {Key\space `#1'\space is\space not\space recognised.\space
+              It\space has\space been\space set\space as\space `tooltip'}%
+             \mcqdisplayanswerdemo*[#2]{#7}(#6)% Display as tooltip
+            }
+          }
+        }%
+      \hfill\mcqresetdemo%
+      \end{tcolorbox}%
+      \togglefalse{assignpoints@checkemptystring}%
+    }
+  %----------------------------------------------------------
+  %- Usage − <#1> = Optional way to display the answer, in the margin (default) or as tooltip
+  %          [#2] = Positionning the answer box: at [b] bottom (default), [c] centered or [t] top
+  %          {#3} = Mandatory correct answer number (only one)
+  %          {#4} = Mandatory wrong answer numbers comma separated
+  %          {#5} = Optional title
+  %          (#6) = Optional coordinates correction for positionning the answer (<dimx>,<dimy>)
+  %          <#7> = Optional explanation text of the answer (usually given ;-)
+  \NewDocumentEnvironment{mcqdemo*}{ D<>{margin} O{b} m m G{} D(){6pt,12pt} D<>{} }%
+    {
+      \stepcounter{mcqdemo}%
+      \renewcommand{\currentquizquestiontitle}{#5}%
+      \ifstrempty{#5}%
+        {\toggletrue{assignpoints@checkemptystring}}%
+        {\togglefalse{assignpoints@checkemptystring}}%
+      \let\mcqproposal\mcqproposalSingleDemo%
+      \begin{tcolorbox}[mcqdemo]
+    }
+    {
+      \mcqverifydemo{#3}{#4}\hspace{0.1\linewidth}%
+      \ifdimless{\marginparwidth}{118pt}% 41 mm = 116.2204 pt / 42 mm = 119.0550 pt
+        {\mcqdisplayanswerdemo*[#2]{#7}(#6)}% Display as tooltip
+        {\ifstrequal{#1}{margin}%
+          {\mcqdisplayanswerdemo[#2]{#7}(#6)} % Display answer in the margin
+          {\ifstrequal{#1}{tooltip}%
+            {\mcqdisplayanswerdemo*[#2]{#7}(#6)}% Display as tooltip
+            {\PackageWarning{askreply}%
+              {Key\space `#1'\space is\space not\space recognised.\space
+              It\space has\space been\space set\space as\space `tooltip'}%
+             \mcqdisplayanswerdemo*[#2]{#7}(#6)% Display as tooltip
+            }
+          }
+        }%
+      \hfill\mcqresetdemo%
+      \end{tcolorbox}%
+      \togglefalse{assignpoints@checkemptystring}%
+    }
+}{% If `assignpoints` is not loaded, defining "exercises" and "quizzes" environments
+  %- With the following, one is able to assign points, even if they are not displayed
+  %- It can be useful to prepare exercises and solutions in a first step
+  \let\points\vphantom
+  \NewDocumentCommand{\itempoints}{ s m }{%
+    \IfBooleanTF{#1}{\vphantom{#2}}{\vphantom{#2}}
+  }
+  \providecommand{\currentexercisetitle}{}
+  \providecommand{\currentsubexercisetitle}{}
+  \providecommand{\currentquiztitle}{}
+  \providecommand{\currentquizquestiontitle}{}
+  %
+  %- Exercise environment
+  %----------------------
+  \NewDocumentEnvironment{exercise}{  }{%
+    \catcode`\^^M=\active
+    \@ifnextchar[%
+      {\catcode`\^^M=5 \exercise@start}
+      {\catcode`\^^M=5 \exercise@start[]}
+  }{%
+    \endVerbatimOut%
+    \ifaskreply@display
+      \ifdefstring{\askreply@level}{basic}{%
+        \toggletrue{askreply@level@display@on}%
+        \gdef\asreply@firstlevel@color{askreplythirdcolor}%
+        \gdef\asreply@secondlevel@color{lightgray}%
+        \gdef\asreply@thirdlevel@color{lightgray}%
+      }{\ifdefstring{\askreply@level}{intermediate}{%
+          \toggletrue{askreply@level@display@on}%
+          \gdef\asreply@firstlevel@color{lightgray}%
+          \gdef\asreply@secondlevel@color{askreplythirdcolor}%
+          \gdef\asreply@thirdlevel@color{lightgray}%            
+        }{\ifdefstring{\askreply@level}{advanced}{%
+            \toggletrue{askreply@level@display@on}%
+            \gdef\asreply@firstlevel@color{lightgray}%
+            \gdef\asreply@secondlevel@color{lightgray}%
+            \gdef\asreply@thirdlevel@color{askreplythirdcolor}%            
+          }{}%level=none
+        }%
+      }%
+      \begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip]
+        % Empty versus non-empty exercise title
+        \ifdefempty{\currentexercisetitle}%
+          {\strut\lightbf{\exercisename\space\theexercise}}%
+          {\strut\lightbf{\exercisename\space\theexercise%
+              \enspace\textemdash\enspace\currentexercisetitle}%
+          }%
+      \end{tcolorbox}\nobreak%\nopagebreak?
+      \askreplybox
+        \tikzpagelayer{\@askreplytikzframebox{askreplyframedbox, fill=black!6}{askreplyfirstcolor}}
+          \input{\exercisesdir\jobname-exercise-body-\askreplytwodigits{\theexercise}.ltx}
+          \par\phantomtext%
+          \ifdefempty{\solutionID}%
+            {\relax}%
+            {\par\hfill\raisebox{-2.5pt}{%
+                 \textcolor{askreplysecondcolor}{%
+                   \itshape\footnotesize{\normalfont\faSquare}%
+                     \enspace Solution\space page~\pageref{solution:\solutionID}%
+                 }}%
+            }%
+        \endtikzpagelayer
+        \par\vspace{\dimexpr.5\baselineskip\relax}%
+      \endaskreplybox
+      \vspace{\askreply@afterskip}%
+    \fi
+    \ifaskreply@storing
+      \ifx\askreply@title\empty%
+        \askreply@filecopytoenv%
+          {\askreply@outfilename}
+          {\exercisesdir\jobname-exercise-\askreplytwodigits{\theexercise}.env}%
+          {\string\begin{exercise}}%
+          {\string\end{exercise}}%
+          {\string[storing=false]}%
+      \else
+        \askreply@filecopytoenv%
+          {\exercisesdir\jobname-exercise-body-\askreplytwodigits{\theexercise}.ltx}%
+          {\exercisesdir\jobname-exercise-\askreplytwodigits{\theexercise}.env}%
+          {\string\begin{exercise}}%
+          {\string\end{exercise}}%
+          {\string[storing=false, title=\askreply@title]}%
+      \fi
+    \fi
+    \askreply@storevaluetoaux{exercise@exerciseID}{\theexercise}{ID:\theexercise}%
+    \askreply@storevaluetoaux{exercise@exercisetitle}{\theexercise}{\currentexercisetitle}%
+    \ifaskreply@list
+      \addcontentsline{loe}{exercise}{\protect\numberline{\theexercise}\currentexercisetitle}%
+    \fi
+    \togglefalse{askreply@level@display@on}%
+  }
+  \def\exercise@start[#1]{%
+    \pgfkeys{/askreply/.cd, #1}%
+    \stepcounter{exercise}%
+    \getenvID[exercise]{\theexercise}%
+    \getenvID[solution]{\theexercise}%
+    \hypersetup{unicode, pdfborder=0 0 0, linkcolor=askreplyfirstcolor}%
+    \phantomsection\label{exercise:\theexercise}% To have correct \pageref link (see TeX.SX/49061)
+    \ifx\askreply@title\@empty% WORKS!
+    \else
+      \renewcommand{\currentexercisetitle}{\askreply@title}%
+    \fi
+    \renewcommand{\envsymbol}{%
+      \normalfont\faIcon{laptop-code}}% \faIcon{feather-alt}} \faPenFancy \faMarker
+    \settowidth{\envsymbolwidth}{\normalfont\large\envsymbol}%
+    \def\askreply@outfilename{%
+      \exercisesdir\jobname-exercise-body-\askreplytwodigits{\theexercise}.ltx}%
+    \VerbatimOut{\askreply@outfilename}%
+  }
+  %- Subexercise environment
+  %-------------------------
+  \NewDocumentEnvironment{subexercise}{ G{} }
+    {\stepcounter{subexercise}%
+     \renewcommand{\currentsubexercisetitle}{#1}
+     \begin{tcolorbox}[subexercisenopoint]
+   }{\end{tcolorbox}%
+     \askreply@storevaluetoaux{exercise@subexercisetitle}%
+       {\theexercise.\thesubexercise}{\currentsubexercisetitle}%
+  }
+  %
+  %- Solution environment
+  %----------------------
+  \NewDocumentEnvironment{solution}{  }{%
+    \catcode`\^^M=\active
+    \@ifnextchar[%
+        {\catcode`\^^M=5 \solution@start}
+        {\catcode`\^^M=5 \solution@start[]}
+  }{%
+    \endVerbatimOut%
+    \ifaskreply@display
+      \begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip,
+                        colback=askreplysecondcolor!75!black, colframe=askreplysecondcolor]
+        % Empty versus non-empty solution title
+        \ifstrempty{\currentexercisetitle}%
+          {\strut\lightbf{\solutionname\space\theassignpoints@solutioncount\space%
+              \hfill{\small%
+              (\exercisenamenocap\space\hyperlink{\exerciseID}{\thesolution},\space%
+              page\space\pageref{exercise:\thesolution})}}%
+          }%
+          {\strut\lightbf{\solutionname\space\thesolution\space%
+              \enspace\textemdash\enspace\currentexercisetitle\space%
+              \enspace{\small(page\space\pageref{exercise:\thesolution})}}%
+          }%
+      \end{tcolorbox}\nobreak%\nopagebreak?
+      \askreplybox
+        \tikzpagelayer{\@askreplytikzframebox{askreplyframedbox, fill=black!6}{askreplyfirstcolor}}
+          \input{\askreply@outfilename}
+          \par\phantomtext%
+          \vspace*{.5\askreplyboxvskip}%
+        \endtikzpagelayer
+        \par\vspace{\dimexpr.5\baselineskip\relax}%
+      \endaskreplybox
+      \vspace{\askreply@afterskip}%
+    \fi
+    \ifaskreply@storing
+      \askreply@filecopytoenv%
+        {\exercisesdir\jobname-solution-body-\askreplytwodigits{\thesolution}.ltx}%
+        {\exercisesdir\jobname-solution-\askreplytwodigits{\thesolution}.env}%
+        {\string\begin{solution}}%
+        {\string\end{solution}}%
+        {\string[storing=false]}%
+    \fi
+    \askreply@storevaluetoaux{exercise@solutionID}{\thesolution}{ID:\thesolution}%
+  }
+  \def\solution@start[#1]{%
+    \pgfkeys{/askreply/.cd, #1}%
+    \ifx\askreply@ID\empty%
+      \stepcounter{solution}%
+      \getenvID[solution]{\thesolution}%
+    \else
+      \setcounter{solution}{\askreply@ID}%
+      \getenvID[solution]{\thesolution}%
+    \fi
+    \stepcounter{solutionnumber}%
+    \hypersetup{unicode, pdfborder=0 0 0, linkcolor=white}%
+    \phantomsection\label{solution:\solutionID}%
+    \renewcommand{\envsymbol}{\faLightbulb}%
+    \settowidth{\envsymbolwidth}{\normalfont\large\envsymbol}%
+    \getenvtitle[exercise]{\thesolution}%
+    \def\askreply@outfilename{%
+      \exercisesdir\jobname-solution-body-\askreplytwodigits{\thesolution}.ltx}%
+    \VerbatimOut{\askreply@outfilename}%
+  }
+  %- Subsolution environment
+  %-------------------------
+  \NewDocumentEnvironment{subsolution}{ O{} }
+    {\stepcounter{subsolution}%
+     \getenvtitle[subexercise]{\thesolution.\thesubsolution}%
+     \begin{tcolorbox}[subsolutionnopoint]
+   }{\end{tcolorbox}}
+  %- Quiz environment
+  %------------------
+  \NewDocumentEnvironment{quiz}{ }{%
+    \catcode`\^^M=\active
+    \@ifnextchar[%
+    {\catcode`\^^M=5 \quiz@start}
+    {\catcode`\^^M=5 \quiz@start[]}
+  }{%
+    \endVerbatimOut%
+    \ifaskreply@display
+      \begin{tcolorbox}[askreplybackstageboxtitle, before skip=\askreply@beforeskip,
+                        colupper=askreplysecondcolor, colback=black!15, colframe=black!50]
+        % Empty versus non-empty exercise title
+        \ifdefempty{\currentquiztitle}%
+          {\strut\lightbf{\quizname\space\thequiz}}%
+          {\strut\lightbf{\quizname\space\thequiz%
+              \enspace\textemdash\enspace\currentquiztitle}%
+          }%
+      \end{tcolorbox}\nobreak%\nopagebreak?
+      \askreplybox
+        %\vspace{-.5\baselineskip}
+        \tikzpagelayer{\@askreplytikzquizframebox{askreplyframedbox, fill=white, draw=black!50}}
+          \input{\quizzesdir\jobname-quiz-body-\askreplytwodigits{\thequiz}.ltx}
+          \par\phantomtext%
+          %\vspace{-.5\baselineskip}%
+        \endtikzpagelayer
+        \par\vspace{\dimexpr.5\baselineskip\relax}%
+      \endaskreplybox
+      \vspace{\askreply@afterskip}%
+    \fi
+    \ifaskreply@storing
+      \ifx\askreply@title\empty%
+        \askreply@filecopytoenv%
+          {\quizzesdir\jobname-quiz-body-\askreplytwodigits{\thequiz}.ltx}%
+          {\quizzesdir\jobname-quiz-\askreplytwodigits{\thequiz}.env}%
+          {\string\begin{quiz}}%
+          {\string\end{quiz}}%
+          {\string[storing=false]}%
+      \else
+        \askreply@filecopytoenv%
+          {\quizzesdir\jobname-quiz-body-\askreplytwodigits{\thequiz}.ltx}%
+          {\quizzesdir\jobname-quiz-\askreplytwodigits{\thequiz}.env}%
+          {\string\begin{quiz}}%
+          {\string\end{quiz}}%
+          {\string[storing=false, title={\askreply@title}]}%
+      \fi
+    \fi
+    \askreply@storevaluetoaux{quiz@quizID}{\thequiz}{ID:\thequiz}%
+    \askreply@storevaluetoaux{quiz@quiztitle}{\thequiz}{\currentquiztitle}%
+    \ifaskreply@list
+      \addcontentsline{loq}{quiz}{\protect\numberline{\thequiz}\currentquiztitle}%
+    \fi
+  }
+  \def\quiz@start[#1]{%
+    \pgfkeys{/askreply/.cd, #1}%
+    \stepcounter{quiz}%
+    \getenvID[quiz]{\thequiz}%
+    \hypersetup{unicode, pdfborder=0 0 0, linkcolor=askreplyfirstcolor}%
+    \phantomsection\label{quiz:\thequiz}% To have correct \pageref link (see TeX.SX/49061)
+    \ifx\askreply@title\@empty% WORKS!
+    \else
+      \renewcommand{\currentquiztitle}{\askreply@title}%
+    \fi
+    \renewcommand{\envsymbol}{\normalfont\faList}%
+    \settowidth{\envsymbolwidth}{\large\envsymbol}%
+    \def\askreply@outfilename{\quizzesdir\jobname-quiz-body-\askreplytwodigits{\thequiz}.ltx}%
+    \VerbatimOut{\askreply@outfilename}%
+  }
+  %- Quizquestion environment (multiple answers)
+  %---------------------------------------------
+  %- Usage − <#1> = Optional way to display the answer, in the margin (default) or as tooltip
+  %          [#2] = Positionning the answer box: at [b] bottom (default), [c] centered or [t] top
+  %          {#3} = Mandatory correct answer numbers comma separated
+  %          {#4} = Mandatory wrong answer numbers comma separated
+  %          {#5} = Optional title
+  %          (#6) = Optional coordinates correction for positionning the answer (<dimx>,<dimy>)
+  %          <#7> = Optional explanation text of the answer (usually given ;-)
+  \NewDocumentEnvironment{quizquestion}{ D<>{margin} O{b} m m G{} D(){6pt,12pt} D<>{} }%
+    {
+      \stepcounter{quizquestion}%
+      \label{quizquestion:\thequiz.\thequizquestion}%
+      \renewcommand{\currentquizquestiontitle}{#5}%
+      \let\mcqproposal\mcqproposalMultiple%
+      \begin{tcolorbox}[quizquestionnopoint]
+    }
+    {
+      \mcqverify{#3}{#4}\hspace{0.1\linewidth}%
+      \ifdimless{\marginparwidth}{118pt}% 41 mm = 116.2204 pt / 42 mm = 119.0550 pt
+        {\mcqdisplayanswer*[#2]{#7}(#6)}% Display as tooltip
+        {\ifstrequal{#1}{margin}%
+          {\mcqdisplayanswer[#2]{#7}(#6)}% Display answer in the margin
+          {\ifstrequal{#1}{tooltip}%
+            {\mcqdisplayanswer*[#2]{#7}(#6)}% Display as tooltip
+            {\PackageWarning{askreply}%
+              {Key\space `#1'\space is\space not\space recognised.\space
+              It\space has\space been\space set\space as\space `tooltip'}%
+             \mcqdisplayanswer*[#2]{#7}(#6)% Display as tooltip
+            }
+          }
+        }%
+      \hfill\mcqreset%
+      \end{tcolorbox}%
+      \askreply@storevaluetoaux{quiz@quizquestiontitle}%
+        {\thequizquestion}{\currentquizquestiontitle}%
+    }
+  %- Quizquestion* environment (single exclusive answer)
+  %-----------------------------------------------------
+  %- Usage − <#1> = Optional way to display the answer, in the margin (default) or as tooltip
+  %          [#2] = Positionning the answer box: at [b] bottom (default), [c] centered or [t] top
+  %          {#3} = Mandatory correct answer number (only one)
+  %          {#4} = Mandatory wrong answer numbers comma separated
+  %          {#5} = Optional title
+  %          (#6) = Optional coordinates correction for positionning the answer (<dimx>,<dimy>)
+  %          <#7> = Optional explanation text of the answer (usually given ;-)
+  \NewDocumentEnvironment{quizquestion*}{ D<>{margin} O{b} m m G{} D(){6pt,12pt} D<>{} }%
+    {
+      \stepcounter{quizquestion}%
+      \label{quizquestion:\thequiz.\thequizquestion}%
+      \renewcommand{\currentquizquestiontitle}{#5}%
+      \let\mcqproposal\mcqproposalSingle%
+      \begin{tcolorbox}[quizquestionnopoint]
+    }
+    {
+      \mcqverify{#3}{#4}\hspace{0.1\linewidth}%
+      \ifdimless{\marginparwidth}{118pt}% 41 mm = 116.2204 pt / 42 mm = 119.0550 pt
+        {\mcqdisplayanswer*[#2]{#7}(#6)}% Display as tooltip
+        {\ifstrequal{#1}{margin}%
+          {\mcqdisplayanswer[#2]{#7}(#6)} % Display answer in the margin
+          {\ifstrequal{#1}{tooltip}%
+            {\mcqdisplayanswer*[#2]{#7}(#6)}% Display as tooltip
+            {\PackageWarning{askreply}%
+              {Key\space `#1'\space is\space not\space recognised.\space
+              It\space has\space been\space set\space as\space `tooltip'}%
+             \mcqdisplayanswer*[#2]{#7}(#6)% Display as tooltip
+            }
+          }
+        }%
+      \hfill\mcqreset%
+      \end{tcolorbox}%
+      \askreply@storevaluetoaux{quiz@quizquestiontitle}%
+        {\thequizquestion}{\currentquizquestiontitle}%
+    }
+}
+\endinput
+
+%%%%%
+%-- End of `askreply` package
+%%%%%
+
+

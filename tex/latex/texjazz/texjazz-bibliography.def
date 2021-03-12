@@ -1,0 +1,945 @@
+%%
+%% texjazz-bibliography.def
+%%
+%% A LaTeX package to configure the bibliography.
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+%---------------------------------------------------------------------------------------------------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-bibliography.def' and `texjazz-bibliography[-fr].tex' (not yet fully available).
+%---------------------------------------------------------------------------------------------------
+
+%-- File identification
+%----------------------
+
+\ProvidesFile{texjazz-bibliography.def}%
+  [2021/02/04 v0.1a − Configuring the bibliography]
+
+\RequirePackage[% Powerful and up to date extension for bibliography
+  citestyle=authoryear, bibstyle=authoryear, dashed=false, labeldateparts=true,
+  mincitenames=1, minbibnames=1, maxcitenames=2, maxbibnames=99,
+  sorting=nyt, hyperref=true, backend=biber,
+  language=autobib,% See the warning below
+  autolang=other,% Enclose the entry in a hyphenation/extras environment (see langid/langidopts)
+]{biblatex}
+
+%-- Redefining the itemize environment layout for bibliographic fields, mainly abstract
+
+\pretocmd{\printbibliography}{%
+  \renewcommand*{\FrenchLabelItem}{\textcolor{maincolor}{\faCaretRight}}%
+  \setlength{\listindentFB}{0pt}%
+  }{}{}
+
+%-- Customizing bibliography style
+%---------------------------------
+
+%-- WARNING: All modifications have been revised to match the 3.9 biblatex version (2017/12/09)
+
+%----- Useful readings (obviously in addition to the documentation!)
+%- https://tex.stackexchange.com/questions/12806/guidelines-for-customizing-biblatex-styles
+%- https://tex.stackexchange.com/questions/10682/suppress-in-biblatex
+%- https://tex.stackexchange.com/questions/174349/customizing-the-biblatex-style-authoryear
+%-----
+
+%----- Localization bibliographic entries
+%- To have language sensitive typesettings of bibliographic entries, i.e. hyphenation, quotes
+%- (with the csquotes package), space punctuation, key translation such as `editor' or `volume'
+%- given by the "language.lbx" files, several options must be setted:
+%- 1. The language package Babel, or here Polyglossia, must be loaded and set the main and other
+%-    languages (here French and English). See beginning of class § "Document localization language"
+%- 2. The `csquotes' package has to be loaded too (more efficient and recognized by biblatex)
+%- 3. The "langid" of each entry must be set in the bibliographic file "xyz.bib".
+%- 4. The `biblatex' package options `language' and `autolang' must be obviously given (see above).
+%-----
+
+%----- WARNING: Dilemma when setting multilanguage bibliographic entries
+%- The two language options of the biblatex package (doc. §3.1.2.1 p.48) seem to be in conflict.
+%- On one hand, when setting language=auto, i.e. `autobib' + `autocite', and autolang=other, then
+%- the calling citation label adds spurious spaces bullshit after the open and before the closed
+%- parenthesis. On the other hand, when setting language=autobib, citation label is correct
+%- but another spurious space is added before the final dot in the English citations displays.
+%----- ADOPTED SOLUTION
+%- Despite the fact we redefine the calling citation label to suit our needs (between brackets and
+%- with a hyperlink) and that we merely use the \fullcite and derived macros, the choice is here the
+%- second solution. We let BibLaTeX take control of the displays and we take care of the \fullcite
+%- macro definition. This choice is definitely not the best but it works!
+%-----
+
+%-- French and English terms (cf. /opt/texlive/20xy/texmf-dist/tex/latex/biblatex/lbx/french.lbx)
+
+\DefineBibliographyStrings{french}{%
+  urlseen = {consulté le},
+  edition = {éd\adddot\addcomma},
+}
+\DefineBibliographyStrings{english}{%
+  edition = {ed\adddot\addcomma},
+}
+
+\AtEveryBibitem{\clearfield{month}}% Do not show month in the bibliography
+\AtEveryCitekey{\clearfield{month}}% Do not show month in citations
+\AtEveryBibitem{\clearlist{language}}% Do not show language in the bibliography
+\AtEveryCitekey{\clearlist{language}}% Do not show language in citations
+\AtEveryBibitem{\clearfield{doi}}% Do not show DOI in the bibliography
+\AtEveryCitekey{\clearfield{doi}}% Do not show DOI in citations
+
+
+%-- Customizing citation style
+%-----------------------------
+
+%-- Author-year style \parencite command with square brackets instead of parenthesis
+%-- https://tex.stackexchange.com/questions/16765/biblatex-author-year-square-brackets
+
+\newrobustcmd*{\parentexttrack}[1]{%
+  \begingroup
+  \blx@blxinit%
+  \blx@setsfcodes%
+  \blx@bibopenparen#1\blx@bibcloseparen%
+  \endgroup%
+}
+\AtEveryCite{%
+  \let\parentext=\parentexttrack%
+  \let\bibopenparen=\bibopenbracket%
+  \let\bibcloseparen=\bibclosebracket%
+}
+
+%-- Applying a link to authoryear citation labels and moreother almost of the citation calls
+%-- https://tex.stackexchange.com/questions/1687/hyperlink-name-with-biblatex-authoryear
+%-- https://tex.stackexchange.com/questions/15951/hyperlink-name-with-biblatex-authoryear-biblatex
+%-- https://tex.stackexchange.com/questions/387281/how-to-use-biblatex-with-square-brackets-and-hyperref
+
+\DeclareFieldFormat{citehyperref}{%
+  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
+  \bibhyperref{#1}%
+}
+\DeclareFieldFormat{textcitehyperref}{%
+  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
+  \bibhyperref{%
+    #1%
+    \ifbool{cbx:parens}
+      {\bibcloseparen\global\boolfalse{cbx:parens}}
+      {}%
+  }%
+}
+\savebibmacro{cite}
+\savebibmacro{textcite}
+\renewbibmacro*{cite}{%
+  \printtext[citehyperref]{%
+    \restorebibmacro{cite}%
+    \usebibmacro{cite}}%
+}
+\renewbibmacro*{textcite}{%
+  \ifboolexpr{
+    ( not test {\iffieldundef{prenote}} and
+      test {\ifnumequal{\value{citecount}}{1}} )
+    or
+    ( not test {\iffieldundef{postnote}} and
+      test {\ifnumequal{\value{citecount}}{\value{citetotal}}} )
+  }
+  {\DeclareFieldAlias{textcitehyperref}{noformat}}
+  {}%
+  \printtext[textcitehyperref]{%
+    \restorebibmacro{textcite}%
+    \usebibmacro{textcite}%
+  }%
+}
+
+%-- Spurious spaces within brackets of \parencite and multilanguage: the following seems to work
+%-- THE ISSUE COMES FROM THE LANGUAGE=AUTOCITE OPTION OF THE PACKAGE: BULLSHIT! SEE:
+%-- https://tex.stackexchange.com/questions/299050/macro-for-hyperlinked-citation-in-parentheses
+
+%-- Citation de tous les auteurs/éditeurs : redéfinition de \fullcite et \footfullcite
+%-- http://tex.stackexchange.com/questions/126226/fullcite-to-use-maxbibnames-rather-than-maxcitenames
+
+%-- https://tex.stackexchange.com/questions/43196/
+%-- (biblatex-fullcite-produces-different-result-from-bibliography-entry)
+%-- From the above link: "Like bibliography entries and \footfullcite, \fullcite is generated by the
+%-- bibliography driver. The only difference is that \fullcite doesn't set \finentrypunct".
+%-- We can apply edits to the `finentry' bibliography macro to resolve this difference.
+%-- See below: \renewbibmacro*{finentry}{...} (last macro of this bibliographic paragraph)
+
+\DeclareCiteCommand{\fullcite}% Abstract field is redefined: see below last macros of this section
+  %{\usebibmacro{prenote}} ← Original
+  {\defcounter{maxnames}{\blx@maxbibnames}\usebibmacro{prenote}}% ← Modified
+  {\usedriver{\DeclareNameAlias{sortname}{default}}{\thefield{entrytype}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}%
+\pretocmd{\fullcite}{%
+  \llap{\textcolor{secondcolor}{\normalfont\faBook}}}%\faClipboard%\faThumbTack\faPaperclip
+  {}{}
+\DeclareCiteCommand{\footfullcite}[\mkbibfootnote]
+  %{\usebibmacro{prenote}} ← Original
+  {\defcounter{maxnames}{\blx@maxbibnames}\usebibmacro{prenote}}% ← Modified
+  {\usedriver{\DeclareNameAlias{sortname}{default}}{\thefield{entrytype}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}%
+
+%-- Affichage de tous les champs uniquement dans la bibliographie, mais pas dans les citations
+%-- http://tex.stackexchange.com/questions/278890/biblatex-suppressing-urldate-does-not-work-clearfield
+%-- Adapted from \fullcite and generic commands in biblatex.def and in standard.bbx
+
+\DeclareCiteCommand{\jazzfullcite}
+  %{\usebibmacro{prenote}} ← Original
+  {\defcounter{maxnames}{\blx@maxbibnames}\usebibmacro{prenote}}% ← Modified
+  {\usedriver
+    {\DeclareNameAlias{sortname}{default}}%
+    {jazzcite:\thefield{entrytype}}% See doc. p.248: links on titles, but no e-field (URL, DOI...)
+  }%
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+\DeclareBibliographyDriver{jazzcite:article}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author/translator+others}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{title}%
+  \newunit
+  \usebibmacro{journal+issuetitle}%
+  \newunit
+  \usebibmacro{note+pages}%volume+number+eid? Better?
+  \newunit\newblock
+  \usebibmacro{finentry}%
+}
+\DeclareBibliographyDriver{jazzcite:book}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author/editor+others/translator+others}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{maintitle+title}%
+  \newunit\newblock
+  \iffieldundef{maintitle}
+    {\printfield{volume}%
+     \printfield{part}}
+    {}%
+  \newunit
+  \printfield{volumes}%
+  \newunit\newblock
+  \usebibmacro{series+number}%
+  \newunit\newblock
+  \usebibmacro{publisher+location+date}% Reordered and redefined, see below
+  \newunit\newblock
+  %\printfield{note}%
+  %\newunit\newblock
+  \usebibmacro{finentry}%
+}
+\DeclareBibliographyDriver{jazzcite:report}{% Borrowed and adapted from standard.bbx
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{title}%
+  \newunit
+  \printlist{language}%
+  \newunit\newblock
+  \usebibmacro{byauthor}%
+  \newunit\newblock
+  \printfield{type}%
+  \setunit*{\addcomma\addspace}%
+  \printfield{number}%
+  \newunit\newblock
+  \printfield{version}%
+  \newunit
+  \printfield{note}%
+  \newunit\newblock
+  %\usebibmacro{institution+location+date}% ← Original
+  \usebibmacro{institution+location}% ← Modified: see the new definition below
+  \newunit\newblock
+  \usebibmacro{chapter+pages}%
+  \newunit
+  %\setunit*{\addsemicolon\addspace}% ← Added
+  \printfield{pagetotal}%
+  \newunit\newblock
+  \iftoggle{bbx:isbn}
+    {\printfield{isrn}}
+    {}%
+  \newunit\newblock
+  \usebibmacro{doi+eprint+url}%
+  \newunit\newblock
+  \usebibmacro{addendum+pubstate}%
+  \setunit{\bibpagerefpunct}\newblock
+  \usebibmacro{pageref}%
+  \newunit\newblock
+  \iftoggle{bbx:related}
+    {\usebibmacro{related:init}%
+     \usebibmacro{related}}
+    {}%
+  \usebibmacro{finentry}%
+}
+\DeclareBibliographyDriver{jazzcite:inproceedings}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author/editor+others/translator+others}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{maintitle+title}%
+  \newunit\newblock
+  \iffieldundef{maintitle}
+    {\printfield{volume}%
+     \printfield{part}}
+    {}%
+  \newunit
+  \printfield{volumes}%
+  \newunit\newblock
+  \usebibmacro{series+number}%
+  \newunit\newblock
+  \usebibmacro{publisher+location+date}% Reordered and redefined, see below
+  \newunit\newblock
+  \usebibmacro{note+pages}%
+  %\printfield{note}%
+  %\newunit\newblock
+  \usebibmacro{finentry}%
+}
+\DeclareBibliographyDriver{jazzcite:online}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author/editor+others/translator+others}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{title}%
+  \newunit\newblock
+  \printfield{version}%
+  \newunit
+  \printfield{note}%
+  \newunit\newblock
+  \printlist{organization}%
+  \newunit\newblock
+  \usebibmacro{date}%
+  \newunit\newblock
+  \iftoggle{bbx:eprint}
+    {\usebibmacro{eprint}}
+    {}%
+  \newunit\newblock
+  \usebibmacro{url+urldate}%
+  \newunit\newblock
+  \usebibmacro{addendum+pubstate}%
+  \setunit{\bibpagerefpunct}\newblock
+  \usebibmacro{pageref}%
+  \newunit\newblock
+  \iftoggle{bbx:related}
+    {\usebibmacro{related:init}%
+     \usebibmacro{related}}
+    {}%
+  \usebibmacro{finentry}%
+}
+%%%%% TODO TODO → TO BE CONTINUED FOR OTHER DRIVERS IF THE NEED ARISES
+
+
+%- Sélection des champs affichés (ou plutôt non affichés) dans les citations
+%\AtEveryCitekey{%
+  %\clearfield{abstract}% TO BE KNOWN: \fullcite also displays the abstract
+  %\clearfield{doi}%
+  %\clearfield{url}%
+  %\clearfield{urlyear}%
+  %\clearfield{urldate}%
+  %\clearfield{eprint}%
+%}
+
+%-- Personal/adapted macros to print customized citation (\fullcite minus URL, URLdate, etc.)
+
+\newcommand{\jazzcite}[1]{%
+  \AtNextCitekey{%
+    \clearfield{abstract}% No abstract. To also display the abstract, use \fullcite
+    %\clearfield{doi}% Must be set to have hyperlinks on the title field (see below)
+    %\clearfield{url}% Must be set to have hyperlinks on the title field (see below)
+    %\clearfield{urlyear}%
+    %\clearfield{urldate}%
+    %\clearfield{eprint}%
+    \clearfield{edition}%
+    %§\clearfield{pagetotal}%
+    %\clearfield{pages}%
+    \clearfield{addendum}%
+    %\clearfield{isbn}% Must be set to have hyperlinks on the title field (see below)
+    %\clearfield{issn}% Must be set to have hyperlinks on the title field (see below)
+  }
+  %- \unskip or \unspace? See for example: https://tex.stackexchange.com/questions/104034
+  %\unskip\fullcite{#1}% ← \unskip is needed to avoid unwanted extra space before the citation
+  %- Delete the spurious space at end of \fullcite and add a dot as final punctuation: see finentry
+  %\hspace*{-1ex}{.}% ← A really very bad workaround, but it works! ONLY WITH language=autobib
+  \unskip\jazzfullcite{#1}% ← \unskip is needed to avoid unwanted extra space before the citation
+}
+
+\newcommand{\sideCite}[1]{\sidenote{\jazzcite{#1}}}% Just a shortcut alias
+
+%- Redefining \citeauthor command to get a hyperlink to the bibliography. From:
+%-   https://tex.stackexchange.com/questions/75902/[...]
+%-     [...]hyperlinking-author-names-in-biblatex-when-using-citeauthor
+\DeclareCiteCommand{\citeauthor}{% From biblatex.def file
+  \boolfalse{citetracker}%
+  \boolfalse{pagetracker}%
+    \usebibmacro{prenote}%
+  }{\ifciteindex
+      {\indexnames{labelname}}
+      {}%
+    %\printnames{labelname}}% Original
+    \printtext[bibhyperref]{\printnames{labelname}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+%- Redefining \citetitle command to get a hyperlink to the bibliography. From:
+%-   https://tex.stackexchange.com/questions/75902/[...]
+%-     [...]hyperlinking-author-names-in-biblatex-when-using-citeauthor
+\DeclareCiteCommand{\citetitle}{% From biblatex.def file
+  \boolfalse{citetracker}%
+  \boolfalse{pagetracker}%
+    \usebibmacro{prenote}%
+  }{\ifciteindex
+      {\indexfield{indextitle}}
+      {}%
+    %\printfield[citetitle]{labeltitle}}% Original
+    \printtext[bibhyperref]{\printfield[citetitle]{title}}}% Full title, not shorthand
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+%- Defining a command to print title and subtitle within quotes (\citetile command gives only tile)
+%- and to get a hyperlink to the bibliography
+\DeclareCiteCommand{\titlecite}{%
+  \boolfalse{citetracker}%
+  \boolfalse{pagetracker}%
+    \usebibmacro{prenote}%
+  }{\ifciteindex{\indexfield{indextitle}}{}%
+    \mkbibquote{%
+      \printtext[bibhyperref]{%
+        %\printfield[citetitle]{labeltitle}}% Original
+        \printfield[citetitle]{title}%
+        \iffieldundef{subtitle}{}{%
+          \adddotspace\mkbibitalic{\printfield[subtitle]{subtitle}}%
+        }%
+      }%
+    }%
+  }
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+%- Defining a command to print title and subtitle without quotes and hyperlink to the bibliography
+\DeclareCiteCommand*{\titlecite}{%
+  \boolfalse{citetracker}%
+  \boolfalse{pagetracker}%
+    \usebibmacro{prenote}%
+  }{\ifciteindex{\indexfield{indextitle}}{}%
+    %\printfield[citetitle]{labeltitle}}% Original
+    \printfield[citetitle]{title}%
+    \iffieldundef{subtitle}{}{%
+      \adddotspace\mkbibitalic{\printfield[subtitle]{subtitle}}%
+    }%
+  }
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+%- Like \titlecite command, but with a direct hyperlink (URL) to the document (Web or local tree)
+\NewDocumentCommand{\jazztitlecite}{o m}{%
+  \IfValueTF{#1}{%
+    \mkbibquote{\href{#1}{\titlecite*{#2}}}%
+  }{%
+    \titlecite{#2}%
+  }%
+}
+
+
+%-- Hyperref warning: "Suppressing link with empty target on input line xx"
+%-- https://tex.stackexchange.com/questions/345764/
+
+%\let\oldpageref\pageref
+%\renewcommand{\pageref}{\oldpageref*}
+
+
+%-- Customizing bibliography style
+%---------------------------------
+
+\setlength{\bibitemsep}{2pt}% Vertical separation between bibitems
+\setlength{\bibhang}{\parindent}% Horizontal hang of entries (not with \fullcite macro, WHY?)
+
+%-- Rajout d'un bloc d'appel de citation devant chaque entrée
+%-- http://tex.stackexchange.com/questions/11827/adding-an-authoryear-block-at-the-beginning-of-entries
+
+\newcounter{jazzmaxcitenames}
+\AtBeginDocument{%
+  \setcounter{jazzmaxcitenames}{\value{maxnames}}%
+}
+\renewbibmacro*{begentry}{%
+  %\hspace*{-1ex}%\unskip% ← \unskip is needed to avoid unwanted extra space before the citation
+  \printtext[brackets]{%
+    \begingroup
+    \defcounter{maxnames}{\value{jazzmaxcitenames}}%
+    %\printnames{labelname}% ← Original
+    \printtext[bibhyperref]{%
+      \printnames{labelname}% ← Having a hyperlink on author (not only year)
+      \setunit{\nameyeardelim}% Original and general
+      %\usebibmacro{cite:labelyear+extrayear}% ← Original: Deprecated since v.3.8 2017-11-04
+      \usebibmacro{cite:labeldate+extradate}% New names since v.3.8 (see: authoryear.cbx file)
+    }%
+    \endgroup
+    }%
+  \addspace\textemdash\addspace% OK, may be also \quad or simple \addspace
+}
+
+%-- Nom-prénom pour tous les auteurs (par défaut Nom-Prénom / Prénom-Nom)
+
+%- Prénom + Nom ou Nom + Prénom (forename/last name)
+%- http://tex.stackexchange.com/questions/244047/biblatex-different-name-order-for-author-editor
+%\DeclareNameAlias{sortname}{last-first}% This yelds to be deprecated: `family-given' instead
+%\DeclareNameAlias{sortname}{first-last}% This yelds to be deprecated: `given-family' instead
+\DeclareNameAlias{sortname}{given-family}% It works but not availiable in the documentation...
+% See: https://tex.stackexchange.com/questions/299036/biblatex-3-3-name-formatting
+%      https://tex.stackexchange.com/questions/151820/how-to-reverse-name-and-first-name
+\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}% Smallcaps for family name
+\renewcommand*{\revsdnamepunct}{}% no comma between lastname and firstname
+
+%-- Remove the parentheses around the year in authoryear style
+
+%\xpatchbibmacro{date+extrayear}{% Deprecated since v.3.8 2017-11-04 and renamed to `extradate'
+\xpatchbibmacro{date+extradate}{% This patch is working with the new date+extradate field
+  \printtext[parens]%
+}{%
+  \setunit{\addcomma\space}%\setunit{\addperiod\space}%
+  \printtext%
+}{}{}
+
+%-- Delimiters
+
+%- Commas as separators
+%\renewcommand*{\newunitpunct}{\addcomma\space}
+
+%- Comma instead of colon as location separator
+%\xpatchbibmacro{publisher+location+date}{\addcolon}{\addcomma}{}{}
+
+%- Between author/editor and the year by author-year citation styles
+\renewcommand*{\nameyeardelim}{\addcomma\space}% default = interword space
+%\renewcommand*{\postnotedelim}{\space\textendash\space}% default = comma + space
+
+%- Champ des auteurs : tiret cadratin après la liste des auteurs (default = \addcomma)
+\renewcommand*{\labelnamepunct}{\space\textemdash\space}
+
+%\renewcommand*{\nametitledelim}{\textcolor{violet}{\space\textemdash\space}}
+
+%- From: https://tex.stackexchange.com/questions/163966/citation-style-pages-punctuation
+%\bibpagespunct% separator printed before the pages field
+%\renewcommand*{\postnotedelim}{!\textemdash{}\space}
+%\bibpagerefpunct% separator printed before the pageref field
+
+%\renewcommand*{\bibpagespunct}{%
+%  \ifentrytype{article}{%
+%    \iffieldundef{volume}{\addcomma\space}{\addcolon\space}%
+%  }{\addperiod\addspace}%
+%}
+
+%-- Prefixes for journal/book volume, number and pages (article)
+
+%\DeclareFieldFormat[article]{journaltitle}{#1}
+\DeclareFieldFormat[article]{volume}{vol.~#1}
+\DeclareFieldFormat[article]{number}{n°#1}
+\DeclareFieldFormat[article]{pages}{pp.~#1}
+
+%\DeclareFieldFormat{pages}{\mkpageprefix[bookpagination]{#1}}% From biblatex.def file
+%\DeclareFieldFormat{pagetotal}{\mkpagetotal[bookpagination]{#1}}% From biblatex.def file
+
+%\DeclareFieldFormat{page}{p. #1}% French prefix for the `page` field in the bibliography
+%\DeclareFieldFormat{pages}{pp. #1}% French prefix for the `pages` field in the bibliography
+
+%\DeclareFieldFormat[book]{pagetotal}{\space\textemdash{}\space#1 pages}
+\DeclareFieldFormat[book]{pagetotal}{\mkpagetotal[bookpagination]{#1~pages}}
+\DeclareFieldFormat[report]{pagetotal}{\mkpagetotal[bookpagination]{#1~pages}}
+
+%\DeclareFieldFormat{postnote}{#1}
+%\DeclareFieldFormat{multipostnote}{#1}
+
+%-- Comma instead period after "byeditor+others" bibmacro (with a patch)
+
+\xpatchbibmacro{byeditor+others}% Original macro in `biblatex.def' file
+  {\newunit}
+  {\addcomma\space}
+  {}
+  {\ClassWarning{texjazz-handbook.cls}{Bibliography customizing:\MessageBreak
+    Failed to change punctuation at end of editor names.}}
+
+%-- Comma before and after journal volume
+%-- https://tex.stackexchange.com/questions/11677/biblatex-custom-articles-and-books
+%-- https://tex.stackexchange.com/questions/6743/biblatex-changing-the-order-of-entries
+
+\renewbibmacro*{volume+number+eid}{%
+  \setunit*{\addcomma\space}% NEW
+  \printfield{volume}%
+  \setunit*{\addcomma\space}% NEW
+  \printfield{number}%
+  \setunit{\addcomma\space}%
+  \printfield{eid}%
+}
+
+%-- Just make sure that the page range field is displayed before the note one.
+%-- The "note+page" bibmacro is only defined for article type (see "standard.bbx" file)
+
+\renewbibmacro*{note+pages}{% Seems to be OK → TODO: verify if there is no side effect
+  %\printfield{note}% ← deleted
+  \setunit{\bibpagespunct}%
+  \printfield{pages}%
+  \newunit%
+  \printfield{note}% ← added
+}
+
+%-- No "in:" before journal or proceedings name of the articles
+%-- https://tex.stackexchange.com/questions/10682/suppress-in-biblatex
+
+\renewbibmacro{in:}{%
+  %--- Tests non concluants pour le moment... À suivre
+  %\ifentrytype{article}{}{\printtext{\bibstring{in}:\addthinspace}}%\addcolon
+  %\ifentrytype{article}{}{\printtext{\bibstring{in}\intitlepunct\hspace*{-0.5em}}}
+  %---
+  %\ifentrytype{article}{}{\printtext{\bibstring{in}\intitlepunct}}
+  \ifboolexpr{%
+    test {\ifentrytype{article}}%
+    or
+    test {\ifentrytype{inproceedings}}%
+  }{}{\printtext{\bibstring{in}\intitlepunct}}%
+}
+
+%-- A smaller font for URL display (see doc. p.120 for the \mkbibacro macro)
+
+\DeclareFieldFormat{url}{\mkbibacro{URL}\addcolon\space\small\url{#1}}
+%\DeclareFieldFormat{url}{\newline\mkbibacro{URL}\addcolon\space\footnotesize\url{#1}}% à la ligne
+%\DeclareFieldFormat{urldate}{\footnotesize\mkbibparens{\bibstring{urlseen}\space#1}}
+
+%-- URL + URLdate after a line break
+%-- http://tex.stackexchange.com/questions/27953/linebreak-before-url-with-biblatex-alphabetic
+
+%\renewbibmacro*{url+urldate}{%
+%  \printfield[url]{url}%
+%  \iffieldundef{urlyear}{}
+%  {\setunit*{\addspace}%
+%  \printtext[urldate]{\printurldate}}}
+
+%-- Présentation par blocs (URL, DOI, etc.), uniquement dans la bibliographie
+%-- cf. http://tex.stackexchange.com/questions/29802/biblatex-and-new-line-for-doi-url-and-eprint
+%-- Nouveau bloc (\setunit is an alternative to \newunit that allows to set punctuation instead of
+%-- \newunitpunct (which is typically a period plus a space)
+
+\newbibmacro*{bbx:parunit}{%
+  \ifbibliography{%
+    \setunit{\bibpagerefpunct}\newblock
+    \usebibmacro{pageref}%
+    \clearlist{pageref}%
+    \setunit{\adddot\par\nobreak}%
+  }{}%
+}
+\renewbibmacro*{doi+eprint+url}{%
+  \usebibmacro{bbx:parunit}% Added
+  \iftoggle{bbx:doi}
+    {\printfield{doi}}
+    {}%
+  \iftoggle{bbx:eprint}
+    {\usebibmacro{eprint}}
+    {}%
+  %\iftoggle{bbx:url}% !!! USELESS IF LINKED TO THE TITLE !!!
+  %  {\usebibmacro{url+urldate}}
+  %  {\small\usebibmacro{url+urldate}}
+  %  {}%
+}
+%- eprint
+\renewbibmacro*{eprint}{%
+  \usebibmacro{bbx:parunit}% Added
+  \iffieldundef{eprinttype}
+    {\printfield{eprint}}
+    {\printfield[eprint:\strfield{eprinttype}]{eprint}}%
+}
+% URL + Date !!! USELESS IF LINKED TO THE TITLE !!!
+%\renewbibmacro*{url+urldate}{%
+%  \usebibmacro{bbx:parunit}% Added
+%  \printfield{url}%
+%  \iffieldundef{urlyear}
+%    {}
+%    {\setunit*{\addspace}%
+%     %\printtext[urldate]{\printurldate}}}% rajoute deux fois le label why?
+%     \footnotesize\printtext{\printurldate}}}
+
+%-- New bibmacro for only institution+location insted of institution+location+date (see report)
+
+\newbibmacro*{institution+location}{% Borrowed and adapted from standard.bbx: deleting date macro
+  %--- Original
+  %\printlist{location}
+  %\iflistundef{institution}
+    %{\setunit*{\addcomma\space}}
+    %{\setunit*{\addcolon\space}}%
+  %\printlist{institution}%
+  %\setunit*{\addcomma\space}%
+  %\usebibmacro{date}%
+  %\newunit
+  %--- Modified
+  \iflistundef{institution}
+    {\setunit*{\adddot\space}}
+    {\setunit*{\adddot\space}}%
+  \printlist{institution}%
+  \iflistundef{location}
+    {\setunit*{\addcomma\space}}
+    {\setunit*{\addcolon\space}}%
+  \printlist{location}%
+  \newunit
+}
+
+%-- Reordering the electronic references at the end of bibitem (url, doi...)
+%-- https://tex.stackexchange.com/questions/46804/can-i-reorder-the-fields-in-a-biblatex-bibliography
+%-- https://tex.stackexchange.com/questions/6743/biblatex-changing-the-order-of-entries
+
+\newbibmacro*{addendum+pubstate+pageref}{%
+  \usebibmacro{addendum+pubstate}%
+  \clearfield{addendum}%
+  \clearfield{pubstate}%
+  \setunit{\bibpagerefpunct}\newblock
+  \usebibmacro{pageref}%
+  \clearlist{pageref}%
+  \newunit\newblock%
+}
+\xpretobibmacro{doi+eprint+url}{\usebibmacro{addendum+pubstate+pageref}}{}{}
+\xpretobibmacro{eprint}{\usebibmacro{addendum+pubstate+pageref}}{}{}
+\xpretobibmacro{url+urldate}{\usebibmacro{addendum+pubstate+pageref}}{}{}
+
+%\newbibmacro{string+doi}[1]{%
+%  \iffieldundef{doi}{#1}{\href{http://dx.doi.org/\thefield{doi}}{#1}}
+%}
+%\DeclareFieldFormat{title}{\usebibmacro{string+doi}{\mkbibemph{#1}}}
+%\DeclareFieldFormat[article]{title}{\usebibmacro{string+doi}{\mkbibquote{#1}}}
+%\DeclareFieldFormat{title}{\mkbibquote{\textit{#1}\isdot}}
+
+%-- Linked title to the URL, DOI, and WorldCat search depending on their presence in the .bib file
+%-- Hyperlien sur le titre renvoyant aux URL, DOI, WorldCat selon leur présence dans le fichier .bib
+%-- http://tex.stackexchange.com/questions/48400/biblatex-make-title-hyperlink-to-dois-url-or-isbn
+%-- http://tex.stackexchange.com/questions/23832/biblatex-make-title-hyperlink-to-doi-url-if-available
+
+%- URL prefix for WorldCat query
+\def\worldcatsearch{http://www.worldcat.org/search?qt=worldcat_org_all&q=}
+
+%- First approach: \newbibmacro
+\newbibmacro{string+url+doi+issn+isbn}[1]{%
+  \iffieldundef{url}{%
+    \iffieldundef{doi}{%
+      \iffieldundef{isbn}{%
+        \iffieldundef{issn}{%
+          #1%
+        }{%
+          \href{\worldcatsearch\thefield{issn}}{#1}%
+          %\href{http://books.google.com/books?vid=ISSN\thefield{issn}}{#1}%
+        }%
+      }{%
+        \href{\worldcatsearch\thefield{isbn}}{#1}%
+        %\href{http://books.google.com/books?vid=ISBN\thefield{isbn}}{#1}%
+      }%
+    }{%
+      \href{http://dx.doi.org/\thefield{doi}}{#1}%
+    }%
+  }{%
+    \href{\thefield{url}}{#1}%
+  }%
+}
+
+%-- Putting title field inside quotation mark (with the csquotes package for language dependency)
+
+%- All driver options are:
+%- [article,book,booklet,collectioninbook,incollection,inproceedings,manual,misc,online,patent,
+%-  periodical,proceedings,report,thesis,unpublished]
+\DeclareFieldFormat[%
+  article,book,inproceedings,online,report,video%
+  ]{title}{%
+  \usebibmacro{string+url+doi+issn+isbn}{\mkbibquote{\mkbibitalic{#1}}}%
+}
+%\DeclareFieldFormat[article,inbook,incollection,inproceedings,patent,thesis,unpublished]{title}{%
+%  \mkbibquote{#1\isdot}%
+%}
+
+
+%-- Patching/redefining title bibmacro to change the punctuation (comma instead of period)
+%-- See definition in "biblatex.def": https://tex.stackexchange.com/questions/194557/
+%-- (no-period-between-article-name-and-journal-article-only-authoryear-ibid)
+
+%\xpatchbibmacro{title}% From biblatex.def file
+%  {\printfield[titlecase]{subtitle}}
+%  {\printfield[titlecase]{subtitle}
+%    \ifentrytype{online}{\addperiod}{\addcomma\space}% OK
+%    %\ifentrytype{article}{\addcolon}{}% OK
+%    %\ifentrytype{book}{\addsemicolon}{}% OK
+%  }{}{}%
+
+%- Redefining the `title' bibmacro may be more direct and flexible for further modifications
+\renewbibmacro*{title}{%
+  \ifboolexpr{ test {\iffieldundef{title}} and test {\iffieldundef{subtitle}} }
+    {}{%
+      \printtext[title]{%
+        \printfield[titlecase]{title}%
+        \setunit{\subtitlepunct}%
+        \printfield[titlecase]{subtitle}%
+        %\ifentrytype{online}{\addperiod}{\addcomma\space}% If title inside quotes
+      }%
+      \newunit%
+      \ifentrytype{online}{\addperiod}{\addcomma\space}%
+      %\ifentrytype{online}{\setunit{\addperiod}}{\setunit{\addcomma\space}}%
+    }%
+  \printfield{titleaddon}%
+}
+
+%\DeclareFieldFormat[article,book,incollection]{title}{%
+%  \usebibmacro{string+doi+url+issn+isbn}{\mkbibitalic{#1}}
+%}
+
+%---
+%- Second approach: defining and applying a new format `linked'
+% Define new format that applies a hypertext reference
+%\DeclareFieldFormat{linked}{%
+%  \ifboolexpr{ test {\ifhyperref} and not test {\ifentrytype{online}} }
+%    {\iffieldundef{doi}
+%      {\iffieldundef{url}
+%        {\iffieldundef{isbn}
+%          {\iffieldundef{issn}
+%              {#1}
+%          {\href{\worldcatsearch\thefield{issn}}{#1}}}
+%        {\href{\worldcatsearch\thefield{isbn}}{#1}}}
+%      {\href{\thefieldfirstword{url}}{#1}}}
+%    {\href{http://dx.doi.org/\thefield{doi}}{#1}}}
+%  {#1}}
+% Define new command that returns the first word of a given field
+%\def\thefieldfirstword#1{%
+%  \expandafter\expandafter
+%  \expandafter\firstword
+%  \expandafter\expandafter
+%  \expandafter{\csname abx@field@#1\endcsname}}
+%\def\firstword#1{\firstword@i#1 \@nil}
+%\def\firstword@i#1 #2\@nil{#1}
+% Declaring several fields in file.bib, i.e. with URL:
+% url = {http://www.chicagomanualofstyle.org http://www.chicagomanualofstyle.org/16/contents.html},
+%---
+%- Below is the original application of the second approach to hyperlinked title and subtitle
+% Redefine url format to print only first URL, omit URL prefix
+%\DeclareFieldFormat{url}{\url{\firstword{#1}}}
+%\renewbibmacro*{title}{% Based on generic definition from biblatex.def
+%  \ifboolexpr{ test {\iffieldundef{title}} and test {\iffieldundef{subtitle}} }
+%    {}
+%    {\printtext[title]{\printtext[linked]{%
+%      \printfield[titlecase]{title}%
+%      \setunit{\subtitlepunct}%
+%      \printfield[titlecase]{subtitle}}}%
+%    \newunit}%
+%  \printfield{titleaddon}}
+%\renewbibmacro*{periodical}{% Based on generic definition from biblatex.def
+%  \iffieldundef{title}
+%    {}
+%    {\printtext[title]{\printtext[linked]{%
+%      \printfield[titlecase]{title}%
+%      \setunit{\subtitlepunct}%
+%      \printfield[titlecase]{subtitle}}}}}
+%- The `library' field is not enabled in the standard styles => redef. "addendum+pubstate",
+%- if needed: http://tex.stackexchange.com/questions/243340/include-call-number-for-books-in-reference
+%- For example:
+%\renewbibmacro*{addendum+pubstate}{%
+%  \printfield{addendum}%
+%  \newunit\newblock
+%  \printfield{pubstate}%
+%  \newunit\newblock
+%  \printfield{library}}
+%---
+
+%-- Linked publisher name with library field: applying the second approach
+
+\DeclareFieldFormat{linkedpublisher}{%
+  \ifboolexpr{ test {\ifhyperref} and not test {\ifentrytype{online}} }
+  {\iflistundef{publisher}{#1}{\href{\thefield{library}}{#1}}}
+  {#1}%
+}
+%\DeclareFieldFormat{library}{\bibstring{library}\addcolon\space #1}
+%\DeclareFieldFormat{publisher}{\url{\firstword{#1}}}
+%\DeclareFieldFormat{publisher}{\url{#1}}
+
+%-- Moving the pagetotal field (used by the book driver and others) in the "standard.bbx" file
+%-- https://tex.stackexchange.com/questions/269999/biblatex-biber-put-series-volume-and-number-at-the-end
+
+\newcommand*\patchpagetotalfield[1]{%
+  \xpatchbibdriver{#1}
+  {\newunit\printfield{pagetotal}}
+  {}
+  {}
+  {\ClassWarning{texjazz-handbook.cls}{Bibliography customizing:\MessageBreak
+    Failed to remove pagetotal field from driver #1.}}
+}
+\patchpagetotalfield{book}
+\patchpagetotalfield{booklet}
+\patchpagetotalfield{collection}
+\patchpagetotalfield{manual}
+\patchpagetotalfield{proceedings}
+%\patchpagetotalfield{report}
+\patchpagetotalfield{thesis}
+
+%- Reordering, linking publisher and adding the pagetotal field to the publisher+location+date macro
+\renewbibmacro*{publisher+location+date}{% Based on generic definition from `standard.bbx'
+  %\printlist{location}% ← Removed
+  \iflistundef{publisher}
+    {\setunit*{\addcomma\space}}% ← Original: {\setunit*{\addcomma\space}}
+    {\setunit*{\addcomma\space}}% ← Original: {\setunit*{\addcolon\space}}%
+  \printtext[linkedpublisher]{\printlist{publisher}}% ← Original: \printlist{publisher}%
+  \setunit*{\addcomma\space}%
+  \printlist{location}% ← Added
+  \setunit*{\addcomma\space}% ← Added
+  \printfield{pagetotal}% ← Added
+  \usebibmacro{date}%
+  \newunit%
+}
+
+%-- Setting the separation between bibitem and addendum (isbn/issn, addendum, etc.)
+
+\newcommand*\patchbibitemsep[1]{%
+  \xpatchbibdriver{#1}
+  {\newunit\newblock\iftoggle{bbx:isbn}}
+  {\setunit{\addspace\textemdash\addspace}\newblock\iftoggle{bbx:isbn}}
+  {}
+  {\ClassWarning{texjazz-handbook.cls}{Bibliography customizing:\MessageBreak
+    Failed to add emdash at end of bibitem for driver #1.}}
+}
+\patchbibitemsep{article}\patchbibitemsep{book}\patchbibitemsep{collection}
+\patchbibitemsep{inbook}\patchbibitemsep{incollection}\patchbibitemsep{inproceedings}
+\patchbibitemsep{manual}\patchbibitemsep{periodical}
+\patchbibitemsep{proceedings}\patchbibitemsep{report}\patchbibitemsep{thesis}
+
+%-- Rajout et mise en forme du champ de résumé/quatrième de couverture s'il existe (en fin d'entrée)
+%-- https://tex.stackexchange.com/questions/301993/create-custom-note-environment-with-tcolorbox
+
+\newlength{\bibabstractWidth}
+\setlength{\bibabstractWidth}{0pt}
+\newcommand*{\bibabstractTagColor}{secondcolor}
+
+\DeclareFieldFormat{abstract}{%
+  \begin{tcolorbox}[
+    enhanced jigsaw, % better frame drawing
+    %borderline west={2pt}{0pt}{red}, % straigh vertical line at the left edge
+    %sharp corners, % No rounded corners
+    boxrule=0pt, % no real frame,
+    breakable, notitle,
+    fontupper={\fontsize{8.5pt}{10pt}\selectfont\itshape},%\footnotesize\itshape,
+    halign=justify,
+    colback=darkgray!20, colframe=firstcolor,
+    boxrule=0pt, leftrule=1mm, arc=0pt, boxsep=0pt,
+    left=4pt, right=4pt, top=4pt, bottom=4pt,
+    beforeafter skip=2pt,% left skip=\settowidth{\normalfont\faTags\quad},
+    before upper=\llap{\textcolor{\bibabstractTagColor}{\normalfont\faTags}%
+                       \hspace*{1.25em}\vspace*{-\baselineskip}},
+    width=\linewidth-\bibabstractWidth,
+    enlarge left by=\bibabstractWidth,
+    %show bounding box,
+    ]#1
+  \end{tcolorbox}
+}
+\renewbibmacro*{finentry}{%
+  \iffieldundef{abstract}
+    {\finentry\addperiod}% Adding a final dot for the \fullcite macro too
+    {\ifboolexpr{ test {\ifcitation} }
+      {\setlength{\bibabstractWidth}{\parindent}%
+       \renewcommand*{\bibabstractTagColor}{firstcolor}%
+       \printfield{abstract}\nopunct\finentry}% If citation (\fullcite) lesser \linewidth (for tag)
+      {\printfield{abstract}\nopunct\finentry}% No spurious last dot added after the abstract field
+    }%
+}
+
+\endinput
+
+
+

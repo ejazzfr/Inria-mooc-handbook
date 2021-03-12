@@ -1,0 +1,1652 @@
+%%
+%% texjazz-coding.def
+%%
+%% A LaTeX file to embbed code programming listings.
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+%---------------------------------------------------------------------------------------------------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-coding.def' and `texjazz-coding[-fr].tex' (not yet fully available).
+%---------------------------------------------------------------------------------------------------
+
+%-- File identification
+%----------------------
+
+\ProvidesFile{texjazz-coding.def}%
+  [2021/02/06 v0.1a − Displaying computer programming codes]
+
+%-- Document management
+%----------------------
+
+%- The "lightboldfont" comes from textjazz-handbook
+\ifcsdef{lightboldfont}{}{\let\lightboldfont\bfseries}
+
+%- The "coding@article" comes from textjazz-handbook "doc@article"
+\newbool{coding@article}
+\ifcsdef{chapter}{\boolfalse{coding@article}}{\booltrue{coding@article}}
+\newbool{coding@appendixchapter}
+\ifcsdef{appendixchapter}{\booltrue{coding@appendixchapter}}{\boolfalse{coding@appendixchapter}}
+
+
+%-- Defining "(La)TeX" listing styles to be used for documentation (with `listings' package)
+%-------------------------------------------------------------------------------------------
+
+%- New colors
+\definecolor{texcsdoccolor}{RGB}{119, 41, 83}% From Radiant-MATE theme: #772953 or other : RGB(172,53,53) #ac3535
+\definecolor{emphdoccolor}{RGB}{38, 107, 189}% approximative Crayola NavyBlue -> #266BBD, the real one is #0066CC
+%\definecolor{commentdoccolor}{RGB}{59, 125, 37}% #3B7D25 Kind of green
+%\definecolor{commentdoccolor}{RGB}{118, 111, 100}% "Bis" kind of brown #766f64
+\definecolor{commentdoccolor}{RGB}{118, 94, 47}% "Café au lait" / #785e2f
+\definecolor{keyworddoccolor}{RGB}{128, 128, 0}% #808000 Olive #c0be51 espèce de jaune-vert
+\definecolor{stringdocstyle}{RGB}{153, 0, 0}% #990000 redb-brown
+
+%-- Displaying listings, commands and environments (language styles defined with `listings` package)
+%-------------------------------------------------
+
+%\RequirePackage{listings}% Also loaded by the `tcolorbox' package
+
+\InputIfFileExists{texjazz-listings.def}% Code keywors, etc. HTML, PHP, Javascript, Java, etc.
+  {\typeout{*** The texjazz-listings.def file has been loaded successfully ***}}%
+  {\PackageError{texjazz-coding}{*** The TeXjazz listings file is required ***}}
+
+\InputIfFileExists{texjazz-ltxlistings.def}% General LaTeX commands style and our own packages
+  {\typeout{*** The texjazz-ltxlistings.def file has been loaded successfully ***}}%
+  {\PackageError{texjazz-coding}{*** The TeXjazz ltxlistings file is required ***}}
+
+%-- Displaying code listings (with minted)
+%---------------------------
+
+%\ifbool{coding@article}% Creates a "listing" floating environment
+%  {\PassOptionsToPackage{section,newfloat=true}{minted}}%
+%  {\PassOptionsToPackage{chapter,newfloat=true}{minted}}
+%\RequirePackage{minted}% Also loaded by the `tcolorbox' package
+
+%- Setting minted style globally with the home-made "jazzcode.py" Pygments style
+\IfFileExists{/usr/lib/python3/dist-packages/pygments/styles/jazzcode.py}%
+  {\usemintedstyle{jazzcode}\typeout{*** The jazzcode.py style has been loaded successfully ***}}%
+  {\usemintedstyle{default}}
+
+%-- New environments for code programming environments
+%-----------------------------------------------------
+
+\DeclareFloatingEnvironment[% Code environment: defined to easily use \captionof and wrapfig
+  fileext=loc,
+  listname={List of Codes},
+  name=code,
+  placement=hbt,
+  within=none,
+]{code}
+
+\ifbool{doc@english}{%
+  \renewcommand{\codename}{Code}% \renewcommand if already defined with the 'newfloat' package
+  \renewcommand{\listingscaption}{Listing}% \renewcommand if already defined with 'minted'
+  \renewcommand{\lstlistingname}{Listing}% \renewcommand: already defined by 'listings'
+  \renewcommand{\listcodename}{List of Codes}% \renewcommand: already defined with 'newfloat'
+  \renewcommand{\listoflistingscaption}{List of Listings}% Already defined by 'minted'
+  \renewcommand{\lstlistlistingname}{List of Listings}% \renewcommand: already defined by 'listings'
+  \newcommand{\listingname}{Listing}%
+  %\renewcommand{\listlistingname}{List of Listings}%
+}{\renewcommand{\codename}{Code}% \renewcommand if already defined with the 'newfloat' package
+  \renewcommand{\listingscaption}{Listing}% \renewcommand if already defined with 'minted'
+  \renewcommand{\lstlistingname}{Listing}% \renewcommand: already defined by 'listings'
+  \renewcommand{\listcodename}{Liste des codes}% \renewcommand: already defined with 'newfloat'
+  \renewcommand{\listoflistingscaption}{Liste des listings}% Already defined by 'minted'
+  \renewcommand{\lstlistlistingname}{Liste des listings}% \renewcommand: already defined by 'listings'
+  \newcommand{\listingname}{Listing}%
+  %\renewcommand{\listlistingname}{Liste des listings}%
+}
+
+%- Defining a new bookmark command referring to the absolute page number (Martin Scharrer)
+%- https://tex.stackexchange.com/questions/11962/how-to-determine-current-page-number
+\newcommand{\codingpagebookmark}[3][]{%
+  \zlabel{#2}%
+  \bookmark[page=\zref@extractdefault{#2}{abspage}{1},#1]{#3}%
+}
+
+\ifbool{coding@article}{%
+  \renewcommand{\listofcodes}{% \renewcommand if defined with the 'newfloat' package
+    \section*{\listcodename}
+    \@starttoc{loc}
+  }
+  \renewcommand{\listoflistings}{% \renewcommand if defined with the 'newfloat' package
+    \section*{\listlistingname}
+    \@starttoc{lol}
+  }
+}{\renewcommand{\listofcodes}{% \renewcommand if defined with the 'newfloat' package
+    \chapter*{\listcodename}
+    \@starttoc{loc}
+  }
+  \renewcommand{\listoflistings}{% \renewcommand if defined with the 'newfloat' package
+    \chapter*{\listlistingname}
+    \@starttoc{lol}
+  }
+  %- Bookmark for the list of codes
+  \pretocmd{\listofcodes}{%
+    \if@openright\cleardoublepage\else\clearpage\fi%
+    \label{locbookmark}
+    \codingpagebookmark[level=0]{locbookmark}{\listcodename}%
+  }{}{}%
+  %- Bookmark for the list of listings
+  \pretocmd{\listoflistings}{%
+    \if@openright\cleardoublepage\else\clearpage\fi%
+    \label{lolbookmark}
+    \codingpagebookmark[level=0]{lolbookmark}{\listlistingname}%
+  }{}{}%
+}
+
+%-- Caption setups for code programming environements
+%----------------------------------------------------
+
+%-- Format des légendes / Captions formating
+
+%- Caption layout
+\newcommand{\codingcaptionlayout}{%
+  \raisebox{-.25\baselineskip}{\tikz\fill[secondcolor] (0,0) rectangle (1mm, \baselineskip);}%
+}
+
+%- Defining a 'jazz coding caption' style
+\DeclareCaptionLabelFormat{jazzcodingcaptionlabelfmt}{% name=#1 and number=#2
+  \codingcaptionlayout\enspace\textcolor{black!80}{\textsc{#1}}\space#2%
+}
+\DeclareCaptionLabelSeparator{jazzcodingcaptionlabelsep}{% "French" label separator
+  %\textcolor{secondcolor}{\enspace\textemdash{}\enspace}%
+  \space\textcolor{secondcolor}{\textemdash}\space%
+}
+\DeclareCaptionTextFormat{jazzcodingcaptiontext}{%
+  \color{black}#1%\hskip 1pt #1%
+}
+\DeclareCaptionStyle{jazzcodingcaptionstyle}{%
+  labelsep=jazzcodingcaptionlabelsep,
+  labelformat=jazzcodingcaptionlabelfmt,
+  textformat=jazzcodingcaptiontext,
+  format=hang,
+  % format=plain,
+  singlelinecheck=false,
+  justification=justified,
+  %indention={1mm+0.5em},% layout width + \enspace
+  font=footnotesize,
+  labelfont=sf,
+  textfont=it,
+  width=\linewidth,
+  list=true,
+  skip=5pt,
+  %hypcap=true, %hypcapspace=\baselineskip,
+}
+
+%- Package loading is done in main class, e.g TeXjazz-handbook or TeXjazz-doc
+\captionsetup[code]{% Code
+  style=jazzcodingcaptionstyle, position=top,% justification=justified,
+  width=\linewidth,
+  %aboveskip=\parskip, skip=8pt% belowskip=8pt
+}
+%- For the time being, please do not use "listing" environment inside "exercise" environments:
+%- the captions are not yet correctly implemented. Use "code" and "code*" environments.
+%- However, you can use the "listingbox" environment as such.
+\captionsetup[listing]{% Listing − The listing environment is defined by the `minted' package
+  style=jazzcodingcaptionstyle, position=top,% justification=justified,
+  width=\linewidth,
+  %aboveskip=\parskip, skip=8pt% belowskip=8pt
+}
+
+%-- LaTeX listings, commands and environments
+%--------------------------------------------
+
+%- There is a kind of bug, see:
+%- https://tex.stackexchange.com/questions/529976/[...]
+%-    [...]tcblisting-with-one-optional-argument-which-has-a-default-value-not-working-ev
+\NewTCBListing{lstlatex}{ !O{lstlatexstyle} !G{none} }{% Workraound by Thomas F. Strum
+  enhanced, breakable, 
+  boxsep=0pt,
+  top=0pt, bottom=0pt,% middle = 2pt,% additional to boxsep
+  left=4pt, right=4pt,
+  rounded corners, arc=2pt,% Default: arc=1mm
+  boxrule=0.8pt,
+  colback=black!2, 
+  colupper=black, 
+  colframe=firstcolor,
+  lowerbox=ignored,
+  before skip=4pt,
+  after skip=4pt,
+  listing only, 
+  listing engine=listings,
+  listing options={
+    style=#1,
+    numbers=#2,% numbers=left
+    %basicstyle=\small\ttfamily,
+    escapeinside=§§,
+  },
+  notitle,
+  %\IfValueTF={#1}{#1}{},
+}
+
+%- Cf. https://tex.stackexchange.com/questions/396660/ and doc. v.4.30 p.46
+\NewTCBListing{lstfullwidth}{ !O{lstlatexstyle} !G{none} !O{0.5}}{%
+  enhanced, 
+  breakable,
+  %blank,
+  %check odd page, 
+  %toggle left and right, 
+  grow to left by=#3\marginparwidth+\marginparsep, 
+  %toggle enlargement=evenpage, 
+  notitle after break,
+  %nobeforeafter,
+  boxsep=0.8pt,
+  colback=black!2, 
+  colupper=black, 
+  colframe=firstcolor,
+  %fuzzy halo=1.2pt with gray,
+  lowerbox=ignored,
+  before skip=4pt,
+  after skip=4pt,
+  top=0pt, bottom=0pt,% middle = 2pt,% additional to boxsep
+  left=4pt, right=4pt,
+  arc=2pt,% Default: arc=1mm
+  listing only, 
+  listing engine=listings,
+  listing options={
+    %language={[LaTeX]TeX},
+    style=#1,
+    numbers=#2,% numbers=left
+    escapeinside=§§,
+  },
+  %IfValueTF={#1}{#1}{}% More options comma separated
+}
+
+%-- Resetting the display of code lines numbering column
+
+\renewcommand{\theFancyVerbLine}{% See `minted' documentation
+  %\sffamily\textcolor[rgb]{0.5,0.5,1.0}{\scriptsize\oldstylenums{\arabic{FancyVerbLine}}}}
+  %\ttfamily\textcolor{black!50}{\tiny\oldstylenums{\arabic{FancyVerbLine}}}}%\listingfont
+  \normalfont\textcolor{black!80}{\tiny\oldstylenums{\arabic{FancyVerbLine}}}%
+}
+
+%-- Defining new `tcolorbox' keys to set the `minted' options easily within a `tcblisting', see:
+%--   https://tex.stackexchange.com/questions/124657/combine-minted-and-tcolorbox − Thomas F. Sturm
+
+%-- The solution just below is given in case one wants to have a different environment for each code
+%-- language, e.g. \begin{python} ... \end{python} (it calls \newminted command from `minted' pkg)
+
+\newbool{jazz@code@eachcode@environment}
+
+\ifbool{jazz@code@eachcode@environment}{%
+  %- Defining new language code environments (not useful here: argument of "code" environment)
+  \newcommand{\jazzmintedcode}[4]{% With this way, a "<code-language>" environment is created
+    % Usage − [<environment-name-tcbpgfkeyvalue>]; {<minted-language>}; {<minted-options>}
+    \newminted[#1]{#2}{#3}% It defines a #1=<name> environment
+    % Usage − [<environment-name>]; {<minted-language>}; {<minted-options>} (cf. `minted' doc.)
+    \tcbset{%
+      jazz minted code layout/#1/.style = {%
+        code={\renewcommand{\codesymbol}{#4}},
+        minted language=#2,
+        minted options={#3}%
+      }%
+    }%
+  }
+  %- Setting each language code environment
+  \jazzmintedcode{python}{python}{% Defining a "python" environment and setting the layout
+    tabsize=2, fontsize=\small, breaklines, autogobble,
+    linenos=true, numbersep=4pt, xleftmargin=0pt, python3%
+  }{\faPython}
+  \jazzmintedcode{bash}{bash}{tabsize=2, fontsize=\small}{\faCode}% \mfShell or \mfScript?
+  \jazzmintedcode{text}{text}{tabsize=2, fontsize=\small}{\faCode}% \mfShell or \mfScript?
+}{}
+
+%-- The second solution below is defining new "tcb-pgfkeys" for the language and layout options
+
+%- Code language symbols definitions
+\newcommand{\codesymbol}{\faCode}
+\newlength{\codesymbolheight}
+\newlength{\codesymbolwidth}
+
+%- Setting up new tcb/pgf keys for the code layout options
+\tcbset{
+  code box layout/.style={%
+    enhanced,
+    breakable,
+    colback=black!5,
+    colframe=firstcolor,
+    boxsep=0pt,
+    top=4pt, bottom=4pt,% middle = 2pt,% additional to boxsep
+    arc=2pt,% Default: arc=1mm
+    % outer arc=0pt,% No default: outer arc=unset
+    boxrule=0.6pt,
+    drop fuzzy shadow,
+  },
+  minted preset options/.style={% Defined to not erase but append other `minted` options
+    minted options={%
+      tabsize=2, breaklines, autogobble, 
+      fontsize=\small, xleftmargin=0pt, 
+      escapeinside=§§, %texcl=true, 
+      #1}
+  },
+  code layout/.style={%
+    listing only,
+    listing engine=minted,
+    %minted style=murphy,% Set "spyder"/"eclipse" styles or an own style (between default and trac)
+    %minted style=jazzcode,% Set "spyder"/"eclipse" styles or an own style (between default and trac)
+    %minted style=xcode,% Set "spyder"/"eclipse" styles or an own style (between default and trac)
+  },
+  %code symbol/.is choice,
+  %code symbol/.default=\faCode,
+  code symbol/.style={%
+    %- Caution! With `fontmfizz' package, a trailing space seems to be introduced after icons
+    %- Please take care to use `fontawesome' packages instead, e.g.: \faPython vs \mfPython
+    code={%
+      \renewcommand{\codesymbol}{#1}%
+      \settoheight{\codesymbolheight}{\large\codesymbol}%
+      \settowidth{\codesymbolwidth}{\large\codesymbol}%
+    },
+    underlay={%
+      \begin{tcbinvclipframe}
+        \node[%xshift=-0.5\marginparsep,% middle of the margin separation
+              xshift=(-0.5\codesymbolwidth-4pt),% always at top left of the frame
+              yshift=(-0.5\codesymbolheight-1.2pt)]% 0.6pt = boxrule => 2*boxrule = 1.2pt
+          at (frame.north west) {% \codesymbol has been defined above with \caption
+            \textcolor{firstcolor}{\large\codesymbol}%
+            %\setlength{\fboxsep}{0pt}\fbox{\textcolor{firstcolor}{\large\codesymbol}}%
+          };%
+      \end{tcbinvclipframe}
+    },
+  },
+  code symbol only at title/.style={%
+    %- Caution! With `fontmfizz' package, a trailing space seems to be introduced after icons
+    %- Please take care to use `fontawesome' packages instead, e.g.: \faPython vs \mfPython
+    code={%
+      \renewcommand{\codesymbol}{#1}%
+      \settoheight{\codesymbolheight}{\large\codesymbol}%
+      \settowidth{\codesymbolwidth}{\large\codesymbol}%
+    },
+    %- https://tex.stackexchange.com/questions/511005/[...]
+    %-    [...]tcolorbox-break-and-icon-only-at-the-left-of-the-title
+    overlay unbroken app={%
+      \begin{tcbinvclipframe}
+        \node[%xshift=-0.5\marginparsep,% middle of the margin separation
+              xshift=(-0.5\codesymbolwidth-4pt),% always at top left of the frame
+              yshift=(-0.5\codesymbolheight-1.2pt)]% 0.6pt = boxrule => 2*boxrule = 1.2pt
+          at (frame.north west) {% \codesymbol has been defined above with \caption
+            \textcolor{firstcolor}{\large\codesymbol}%
+            %\setlength{\fboxsep}{0pt}\fbox{\textcolor{firstcolor}{\large\codesymbol}}%
+          };%
+      \end{tcbinvclipframe}
+    },
+    overlay first app={%
+      \begin{tcbinvclipframe}
+        \node[%xshift=-0.5\marginparsep,% middle of the margin separation
+              xshift=(-0.5\codesymbolwidth-4pt),% always at top left of the frame
+              yshift=(-0.5\codesymbolheight-1.2pt)]% 0.6pt = boxrule => 2*boxrule = 1.2pt
+          at (frame.north west) {% \codesymbol has been defined above with \caption
+            \textcolor{firstcolor}{\large\codesymbol}%
+            %\setlength{\fboxsep}{0pt}\fbox{\textcolor{firstcolor}{\large\codesymbol}}%
+          };%
+      \end{tcbinvclipframe}
+    },
+  },
+  code symbol no flag/.style={%
+    %- Caution! With `fontmfizz' package, a trailing space seems to be introduced after icons
+    %- Please take care to use `fontawesome' packages instead, e.g.: \faPython vs \mfPython
+    code={%
+      \renewcommand{\codesymbol}{#1}%
+      \settoheight{\codesymbolheight}{\large\codesymbol}%
+      \settowidth{\codesymbolwidth}{\large\codesymbol}%
+    },
+  },
+  numbering lines/.is choice,
+  numbering lines/.default=true,
+  numbering lines/true/.style={
+    left=16pt, right=2pt,% additional to boxsep
+    minted preset options={% To be added here not to erase the previous `minted` options setting
+      linenos=true, numbersep=8pt, escapeinside=§§,
+    },
+    underlay={%
+      \begin{tcbclipinterior}
+        \fill[color=black!15]
+          (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+      \end{tcbclipinterior}
+    },
+  },
+  numbering lines/false/.style={
+    left=4pt, right=2pt,% additional to boxsep
+    minted preset options={% To be added here not to erase the previous `minted` options setting
+      linenos=false, numbersep=4pt, escapeinside=§§,
+    },
+    underlay={%
+      \begin{tcbclipinterior}
+        \fill[color=tcbcolback]
+          (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+      \end{tcbclipinterior}
+    },
+  },
+}
+
+%\NewDocumentCommand{\jazzmintedlanguage}{ m m o }{% Useless because erase the last `minted` options
+\newcommand{\jazzmintedlanguage}[2]{%
+  \tcbset{%
+    %- Setting the language code option with a corresponding symbol at frame front
+    code language/#1/.style={%
+      minted language=#1,
+      code symbol only at title=#2,
+      %IfValueTF={#3}{%
+      %  minted options={#3}% More code layout options, e.g. +python3 − NO! ERASE PREVIOUS SETTINGS
+      %}{},
+    }%
+  }%
+}
+
+%- Initializing the code language and layout options
+\jazzmintedlanguage{python}{\xfaPython}%\mfUbuntu\faPython
+%\jazzmintedlanguage{python}{\faPython}[python3]
+%\jazzmintedlanguage{java}{\bfseries\faJava}% \mfJavaBold
+\jazzmintedlanguage{java}{\xfaJavaBold}% \xfaJava\mfJavaBold\faJava\faJava
+\jazzmintedlanguage{javascript}{\faJs}
+\jazzmintedlanguage{cpp}{\xfaCplusplus}
+\jazzmintedlanguage{c}{\xfaC}
+
+\newcommand{\jazzmintedlanguagenosymbol}[2]{% No symbol in margin, but in List of Codes
+  \tcbset{%
+    %- Setting the language code option without a corresponding symbol at frame front
+    code language no symbol/#1/.style={%
+      minted language=#1,
+      code symbol no flag=#2,
+    }%
+  }%
+}
+\jazzmintedlanguagenosymbol{python}{\xfaPython}%\mfUbuntu\faPython
+%\jazzmintedlanguagenosymbol{python}{\faPython}[python3]
+%\jazzmintedlanguagenosymbol{java}{\bfseries\faJava}% \mfJavaBold
+\jazzmintedlanguagenosymbol{java}{\xfaJavaBold}% \xfaJava\mfJavaBold\faJava\faJava
+\jazzmintedlanguagenosymbol{javascript}{\faJs}
+\jazzmintedlanguagenosymbol{cpp}{\xfaCplusplus}
+\jazzmintedlanguagenosymbol{c}{\xfaC}
+
+\AtBeginEnvironment{listing}{%
+  \LetLtxMacro\originalcaption\caption%
+  \RenewDocumentCommand{\caption}{ o m O{\codesymbol} }{%
+    \IfValueTF{#1}{
+      \IfValueTF{#3}%
+        {\originalcaption[#1\enspace\textcolor{secondcolor}{\normalfont\small#3}]{#2}}%
+        {\originalcaption[#1]{#2}}%
+    }{\IfValueTF{#3}%
+        {\originalcaption[#2\enspace\textcolor{secondcolor}{\normalfont\small#3}]{#2}}%
+        {\originalcaption[#2]{#2}}%
+    }%
+  }
+}
+
+\AtBeginEnvironment{code}{%
+  \LetLtxMacro\originalcaption\caption%
+  \RenewDocumentCommand{\caption}{ o m O{\codesymbol} }{%
+    \IfValueTF{#1}{
+      \IfValueTF{#3}%
+        {\originalcaption[#1\enspace\textcolor{secondcolor}{\normalfont\small#3}]{#2}}%
+        {\originalcaption[#1]{#2}}%
+    }{\IfValueTF{#3}%
+        {\originalcaption[#2\enspace\textcolor{secondcolor}{\normalfont\small#3}]{#2}}%
+        {\originalcaption[#2]{#2}}%
+    }%
+  }
+}
+
+\AtBeginEnvironment{code*}{% #1 = list of codes
+  \LetLtxMacro\originalcaption\caption%
+  \RenewDocumentCommand{\caption}{ o m O{\codesymbol} }{%
+    \IfValueTF{#1}{
+      \IfValueTF{#3}%
+        {\originalcaption[#1\enspace\textcolor{secondcolor}{\normalfont\small#3}]{#2}}%
+        {\originalcaption[#1]{#2}}%
+    }{\IfValueTF{#3}%
+        {\originalcaption[#2\enspace\textcolor{secondcolor}{\normalfont\small#3}]{#2}}%
+        {\originalcaption[#2]{#2}}%
+    }%
+  }
+}
+
+%-- Shebang commands (escaped because a comment character as first character leads to an error)
+
+\definecolor{pyshebangcolor}{RGB}{119, 41, 83}% HTML: 772953 (radiant MATE)
+\gdef\pyshebang{\color{pyshebangcolor}\bfseries\itshape\ttfamily\#{!}/usr/bin/env python3}
+
+\definecolor{pyfirstcommentcolor}{RGB}{64, 128, 128}% HTML: 408080 (pygment/minted Python comment)
+%\gdef\pyfirstcomment#1{\color{pyfirstcommentcolor}\itshape\ttfamily\# #1}
+
+%-- Defining a new versatile code environment
+
+
+%-- Adding a customised box to the "listing" environment: adapted clone from `tcolorbox' doc. p.319
+
+\NewTCBListing{listingbox}{ o m }{% Code without symbol
+  % Usage − \begin{listingbox}[<more-options>]{<code-language>}
+  %           ...
+  %         \end{listingbox}
+  %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+  before={%
+    %\vspace{4pt}%
+    \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+    %\vspace{4pt}%
+  },
+  %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+  after={\par\vspace{2pt}},%\vspace{1.0\parskip}},
+  code box layout,
+  code layout,
+  notitle,
+  code language no symbol/#2,% Code language without `symbol`
+  numbering lines=false,% Default=true see codebox environment
+  box align=top,
+  IfValueTF={#1}{#1}{}% More options comma separated
+}
+
+\ifbool{@twoside}{%
+  \NewTCBListing{listingbox*}{ o m }{% Code with symbol and full width
+      % Usage − \begin{code}[<more-options>]{<code-language>}
+      %           ...
+      %         \end{code}
+      %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+      before={%
+        \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+        \vspace{4pt}%
+      },
+      %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+      after={\par\vspace{4pt}},
+      lowerbox=ignored,
+      check odd page,
+      toggle left and right, 
+      grow to right by=\marginparwidth+\marginparsep, 
+      toggle enlargement=evenpage, 
+      notitle after break,
+      code box layout,
+      %code layout,
+      code language no symbol/#2,% Code language and `symbol`
+      underlay={%
+        \begin{tcbclipinterior}
+          \fill[color=black!15]
+            (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+        \end{tcbclipinterior}
+      },
+      listing only,
+      listing engine=minted,
+      minted options={%
+        tabsize=2, breaklines, autogobble, 
+        fontsize=\small, xleftmargin=4pt, 
+        escapeinside=§§,
+        linenos=true, numbersep=8pt,
+      },
+      box align=top,
+      IfValueTF={#1}{#1}{}% More options comma separated
+  }
+}{\ifbool{@reversemargin}{%
+    \NewTCBListing{listingbox*}{ o m }{% Code with symbol and full width
+      % Usage − \begin{code}[<more-options>]{<code-language>}
+      %           ...
+      %         \end{code}
+      %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+      before={%
+        \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+        \vspace{4pt}%
+      },
+      %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+      after={\par\vspace{4pt}},
+      lowerbox=ignored,
+      check odd page,
+      grow to right by=\marginparwidth+\marginparsep, 
+      toggle enlargement=forced, 
+      notitle after break,
+      code box layout,
+      %code layout,
+      code language no symbol/#2,% Code language and `symbol`
+      underlay={%
+        \begin{tcbclipinterior}
+          \fill[color=black!15]
+            (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+        \end{tcbclipinterior}
+      },
+      listing only,
+      listing engine=minted,
+      minted options={%
+        tabsize=2, breaklines, autogobble, 
+        fontsize=\small, xleftmargin=4pt, 
+        escapeinside=§§,
+        linenos=true, numbersep=8pt,
+      },
+      box align=top,
+      IfValueTF={#1}{#1}{}% More options comma separated
+    }
+  }{\NewTCBListing{listingbox*}{ o m }{% Code with symbol and full width
+      % Usage − \begin{code}[<more-options>]{<code-language>}
+      %           ...
+      %         \end{code}
+      %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+      before={%
+        \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+        \vspace{4pt}%
+      },
+      %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+      after={\par\vspace{4pt}},
+      lowerbox=ignored,
+      check odd page,
+      grow to left by=\marginparwidth+\marginparsep, 
+      toggle enlargement=forced, 
+      notitle after break,
+      code box layout,
+      %code layout,
+      code language no symbol/#2,% Code language and `symbol`
+      underlay={%
+        \begin{tcbclipinterior}
+          \fill[color=black!15]
+            (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+        \end{tcbclipinterior}
+      },
+      listing only,
+      listing engine=minted,
+      minted options={%
+        tabsize=2, breaklines, autogobble, 
+        fontsize=\small, xleftmargin=4pt, 
+        escapeinside=§§,
+        linenos=true, numbersep=8pt,
+      },
+      box align=top,
+      IfValueTF={#1}{#1}{}% More options comma separated
+    }
+  }
+}
+
+\RenewTCBListing[
+  use counter=code,
+  list inside=loc,% to have a list of exercice with \tcblistof[\section]{<name>}{<title>}
+  %- With "list type" field, a \l@code command must be defined OR done with `titletoc' package
+  %- See: change-tcolorbox-tcblistof-font-formatting-to-match-documents-other-lists:
+  %          https://tex.stackexchange.com/questions/353947/
+  list type=code,% By default → Layout is done by \l@tcolorbox command
+  ]{listing}{ o m o g d<> }{%
+    % Usage − \begin{code}[<more-options>]{<code-language>}[<optional-title>]{<optional-caption>}
+    %           ...
+    %         \end{code}
+    %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+    before={%
+      \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+    },
+    code box layout,
+    code layout,
+    code language no symbol/#2,% Code language without `symbol`
+    numbering lines=true,% Default=true
+    code={% See \tcb@addcontentsline definition above: No entry in LoE if star without title
+      \let\kvtcb@listentry\@empty%
+      \let\kvtcb@title\@empty%
+      \let\tcbtitletext\@empty%
+    },
+    IfValueTF={#4}{% Adding a code caption with an entry in the "list of code" (LoC)
+      before pre={%
+        \addtocounter{code}{-1}% To avoid double increment: from the tcbox and from the captionof
+        \vspace{2pt}%
+        \captionof{code}{#4}% See above the new definition of \caption
+      },
+      IfValueTF={#3}{notitle}{notitle},% If a caption exists, no title at all is displayed
+      %label type={code},% To be used in cunjonction to the `cleveref' package
+      %label={code:\Roman{chapter}.\thetcbcounter},
+    }{IfValueTF={#3}{% No caption but a title
+        before pre=\vspace{4pt},
+        fonttitle=\footnotesize\lightboldfont,%\lightboldfont,%\titlingfont,
+        coltitle=white,% Default=white
+        attach boxed title to top right={% Title placement + options (doc. p.159-161)
+          yshift=-\tcboxedtitleheight, yshifttext=-2pt,%-\tcboxedtitleheight/3,
+          %yshift*=-\tcboxedtitleheight,% yshifttext is only set if necessary
+        },
+        boxed title style={% original code borrowed to `tcolorbox' (see doc. p.165)
+          empty,
+          boxsep=0pt,
+          toptitle=0pt, bottomtitle=0pt,% default=0pt
+          lefttitle=0pt, righttitle=0pt,% Default=4mm (additional to boxsep)
+          left=6pt, right=4pt,% Default=4mm (additional to boxsep)
+          top=1pt, bottom=0pt,% Default=2mm (additional to boxsep)
+        },
+        underlay boxed title={% Only drawn if a boxed title is given (cf. doc. §10.2.3 p.162)
+          %- Bézier curve .. control .. don't work! Why? FIX ME!
+          \path[draw=black!20, fill=firstcolor!75!black, line width=0.4pt]
+            ([xshift=-\tcboxedtitleheight/2, yshift=0.0mm]title.north west)
+            to [bend left=30] ([xshift=2pt, yshift=-1pt]title.west)
+            [rounded corners=2pt]% arc=2pt − default
+            -- ([xshift=4pt,yshift=0.0mm]title.south west)
+            -- ([yshift=0.0mm]title.south east)
+            -- ([yshift=0.0mm]title.north east)
+            [sharp corners] -- cycle;
+        },
+        before title app={%
+          \ifbool{coding@appendixchapter}{%
+            \ifbool{coding@article}
+              {\strut\textsf{\textsc{Code \thesection.\thetcbcounter}}}%
+              {\strut\textsf{\textsc{Code \theappendixchapter.\thetcbcounter}}}%
+          }{\ifbool{coding@article}
+              {\strut\textsf{\textsc{Code \thetcbcounter}}}%
+              {\strut\textsf{\textsc{Code \thechapter.\thetcbcounter}}}%
+          }%
+        },
+        title={\strut\textsf{\enspace\textemdash\enspace #3}},
+        list entry={% Adding a code symbol in the "list of codes" entries
+          \ifbool{coding@article}{%
+            \protect\numberline{\thetcbcounter}#3%
+              \enspace\textcolor{secondcolor}{\normalfont\footnotesize\codesymbol}
+          }{\ifbool{coding@appendixchapter}
+              {\protect\numberline{\theappendixchapter.\thetcbcounter}#3%
+                \enspace\textcolor{secondcolor}{\normalfont\footnotesize\codesymbol}}%
+              {\protect\numberline{\thechapter.\thetcbcounter}#3%
+                \enspace\textcolor{secondcolor}{\normalfont\footnotesize\codesymbol}}%
+          },%
+        },
+      }{notitle},
+    },
+    %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+    %label type={code},% To be used in cunjonction to the `cleveref` package
+    IfValueTF={#5}{%
+      label={#5},
+    }{label=\ifbool{coding@article}
+        {code:\thetcbcounter}%
+        {code:\thechapter.\thetcbcounter},%
+    },% 
+    IfValueTF={#1}{#1}{}% More options comma separated
+}
+
+%-- Redefining the "code" environment (previously defined by the `newfloat`/`minted` package)
+
+\NewTCBListing{codebox}{ o m }{% Code with symbol
+    % Usage − \begin{code}[<more-options>]{<code-language>}
+    %           ...
+    %         \end{code}
+    %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+    before={%
+      \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+      \vspace{4pt}%
+    },
+    %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+    after={\par\vspace{4pt}},
+    code box layout,
+    code layout,
+    code language/#2,% Code language and `symbol`
+    numbering lines=true,% Default=true
+    box align=top,
+    IfValueTF={#1}{#1}{}% More options comma separated
+}
+
+\ifbool{@twoside}{%
+  \NewTCBListing{codebox*}{ o m }{% Code with symbol and full width
+      % Usage − \begin{code}[<more-options>]{<code-language>}
+      %           ...
+      %         \end{code}
+      %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+      before={%
+        \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+        \vspace{4pt}%
+      },
+      %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+      after={\par\vspace{4pt}},
+      lowerbox=ignored,
+      check odd page,
+      toggle left and right, 
+      grow to right by=\marginparwidth+\marginparsep, 
+      toggle enlargement=evenpage, 
+      notitle after break,
+      code box layout,
+      %code layout,
+      code language/#2,% Code language and `symbol`
+      underlay={%
+        \begin{tcbclipinterior}
+          \fill[color=black!15]
+            (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+        \end{tcbclipinterior}
+      },
+      listing only,
+      listing engine=minted,
+      minted options={%
+        tabsize=2, breaklines, autogobble, 
+        fontsize=\small, xleftmargin=4pt, 
+        escapeinside=§§,
+        linenos=true, numbersep=8pt,
+      },
+      box align=top,
+      IfValueTF={#1}{#1}{}% More options comma separated
+  }
+}{\ifbool{@reversemargin}{%
+    \NewTCBListing{codebox*}{ o m }{% Code with symbol and full width
+      % Usage − \begin{code}[<more-options>]{<code-language>}
+      %           ...
+      %         \end{code}
+      %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+      before={%
+        \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+        \vspace{4pt}%
+      },
+      %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+      after={\par\vspace{4pt}},
+      lowerbox=ignored,
+      check odd page,
+      grow to right by=\marginparwidth+\marginparsep, 
+      toggle enlargement=forced, 
+      notitle after break,
+      code box layout,
+      %code layout,
+      code language/#2,% Code language and `symbol`
+      underlay={%
+        \begin{tcbclipinterior}
+          \fill[color=black!15]
+            (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+        \end{tcbclipinterior}
+      },
+      listing only,
+      listing engine=minted,
+      minted options={%
+        tabsize=2, breaklines, autogobble, 
+        fontsize=\small, xleftmargin=4pt, 
+        escapeinside=§§,
+        linenos=true, numbersep=8pt,
+      },
+      box align=top,
+      IfValueTF={#1}{#1}{}% More options comma separated
+    }
+  }{\NewTCBListing{codebox*}{ o m }{% Code with symbol and full width
+      % Usage − \begin{code}[<more-options>]{<code-language>}
+      %           ...
+      %         \end{code}
+      %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+      before={%
+        \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+        \vspace{4pt}%
+      },
+      %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+      after={\par\vspace{4pt}},
+      lowerbox=ignored,
+      check odd page,
+      grow to left by=\marginparwidth+\marginparsep, 
+      toggle enlargement=forced, 
+      notitle after break,
+      code box layout,
+      %code layout,
+      code language/#2,% Code language and `symbol`
+      underlay={%
+        \begin{tcbclipinterior}
+          \fill[color=black!15]
+            (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+        \end{tcbclipinterior}
+      },
+      listing only,
+      listing engine=minted,
+      minted options={%
+        tabsize=2, breaklines, autogobble, 
+        fontsize=\small, xleftmargin=4pt, 
+        escapeinside=§§,
+        linenos=true, numbersep=8pt,
+      },
+      box align=top,
+      IfValueTF={#1}{#1}{}% More options comma separated
+    }
+  }
+}
+
+%- Redefining the "code" environment (previously defined by the `minted` package)
+
+\RenewTCBListing[
+  use counter=code,
+  list inside=loc,% to have a list of exercice with \tcblistof[\section]{<name>}{<title>}
+  %- With "list type" field, a \l@code command must be defined OR done with `titletoc' package
+  %- See: change-tcolorbox-tcblistof-font-formatting-to-match-documents-other-lists:
+  %          https://tex.stackexchange.com/questions/353947/
+  list type=code,% By default → Layout is done by \l@tcolorbox command
+  ]{code}{ o m o g d<> }{%
+    % Usage − \begin{code}[<more-options>]{<code-language>}[<optional-title>]{<optional-caption>}
+    %           ...
+    %         \end{code}
+    %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+    before={%
+      \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+    },
+    code box layout,
+    %code layout,
+    code language/#2,% Code language and `symbol`
+    %numbering lines=true,% Default=true
+    code={% See \tcb@addcontentsline definition above: No entry in LoE if star without title
+      \let\kvtcb@listentry\@empty%
+      \let\kvtcb@title\@empty%
+      \let\tcbtitletext\@empty%
+    },
+    listing only,
+    listing engine=minted,
+    minted options={%
+      tabsize=2, breaklines, autogobble, 
+      fontsize=\small, xleftmargin=4pt, 
+      escapeinside=§§,
+      linenos=true, numbersep=8pt,
+    },
+    IfValueTF={#4}{% Adding a code caption with an entry in the "list of code" (LoC)
+      before pre={%
+        \addtocounter{code}{-1}% To avoid double increment: from the tcbox and from the captionof
+        %\captionof{code}{#4\enspace\textcolor{secondcolor}{\normalfont\footnotesize\codesymbol}}%
+        \captionof{code}{#4}%
+      },
+      IfValueTF={#3}{notitle}{notitle},% If a caption exists, no title at all is displayed
+      %label type={code},% To be used in cunjonction to the `cleveref' package
+      %label={code:\Roman{chapter}.\thetcbcounter},
+    }{IfValueTF={#3}{% No caption but a title
+        before pre=\vspace{4pt},
+        fonttitle=\footnotesize\lightboldfont,%\lightboldfont,%\titlingfont,
+        coltitle=white,% Default=white
+        attach boxed title to top right={% Title placement + options (doc. p.159-161)
+          yshift=-\tcboxedtitleheight, yshifttext=-2pt,%-\tcboxedtitleheight/3,
+          %yshift*=-\tcboxedtitleheight,% yshifttext is only set if necessary
+        },
+        boxed title style={% original code borrowed to `tcolorbox' (see doc. p.165)
+          empty,
+          boxsep=0pt,
+          toptitle=0pt, bottomtitle=0pt,% default=0pt
+          lefttitle=0pt, righttitle=0pt,% Default=4mm (additional to boxsep)
+          left=6pt, right=4pt,% Default=4mm (additional to boxsep)
+          top=1pt, bottom=0pt,% Default=2mm (additional to boxsep)
+        },
+        underlay boxed title={% Only drawn if a boxed title is given (cf. doc. §10.2.3 p.162)
+          %- Bézier curve .. control .. don't work! Why? FIX ME!
+          \path[draw=black!20, fill=firstcolor!75!black, line width=0.4pt]
+            ([xshift=-\tcboxedtitleheight/2, yshift=0.0mm]title.north west)
+            to [bend left=30] ([xshift=2pt, yshift=-1pt]title.west)
+            [rounded corners=2pt]% arc=2pt − default
+            -- ([xshift=4pt,yshift=0.0mm]title.south west)
+            -- ([yshift=0.0mm]title.south east)
+            -- ([yshift=0.0mm]title.north east)
+            [sharp corners] -- cycle;
+        },
+        before title app={%
+          \ifbool{coding@appendixchapter}{%
+            \ifbool{coding@article}
+              {\strut\textsf{\textsc{Code \thesection.\thetcbcounter}}}%
+              {\strut\textsf{\textsc{Code \theappendixchapter.\thetcbcounter}}}%
+          }{\ifbool{coding@article}
+              {\strut\textsf{\textsc{Code \thetcbcounter}}}%
+              {\strut\textsf{\textsc{Code \thechapter.\thetcbcounter}}}%
+          }%
+        },
+        title={\strut\textsf{\enspace\textemdash\enspace #3}},
+        list entry={% Adding a code symbol in the "list of codes" entries
+          \ifbool{coding@article}{%
+            \protect\numberline{\thetcbcounter}#3%
+              \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}
+          }{\ifbool{coding@appendixchapter}
+              {\protect\numberline{\theappendixchapter.\thetcbcounter}#3%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+              {\protect\numberline{\thechapter.\thetcbcounter}#3%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+          },%
+        },
+      }{notitle,% Only code is displayed
+        after pre=\addtocounter{code}{-1},% To avoid double increment: \thetcbcounter and \thecode
+      }% 
+    },
+    %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+    after={\par\vspace{4pt}},
+    %label type={code},% To be used in cunjonction to the `cleveref` package
+    IfValueTF={#5}{%
+      label={#5},
+    }{label=\ifbool{coding@article}
+        {code:\thetcbcounter}%
+        {code:\thechapter.\thetcbcounter},%
+    },% 
+    IfValueTF={#1}{#1}{}% More options comma separated
+}
+
+%- Redefining the "code*" environment (previously defined by the `minted` package)
+
+\ifbool{@twoside}{%
+  \RenewTCBListing[
+    use counter=code,
+    list inside=loc,% to have a list of exercice with \tcblistof[\section]{<name>}{<title>}
+    %- With "list type" field, a \l@code command must be defined OR done with `titletoc' package
+    %- See: change-tcolorbox-tcblistof-font-formatting-to-match-documents-other-lists:
+    %          https://tex.stackexchange.com/questions/353947/
+    list type=code,% By default → Layout is done by \l@tcolorbox command
+    ]{code*}{ o m o g d<> }{%
+      % Usage − \begin{code}[<more-options>]{<code-language>}[<optional-title>]{<optional-caption>}
+      %           ...
+      %         \end{code}
+      code box layout,
+      %code layout,
+      code language/#2,% Code language and `symbol`
+      %numbering lines=true,% Default=true
+      lowerbox=ignored,
+      check odd page,
+      toggle left and right, 
+      grow to right by=(\marginparwidth+\marginparsep), 
+      toggle enlargement=evenpage, 
+      notitle after break,
+      code box layout,
+      %code layout,
+      code language/#2,% Code language and `symbol`
+      underlay={%
+        \begin{tcbclipinterior}
+          \fill[color=black!15]
+            (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+        \end{tcbclipinterior}
+      },
+      listing only,
+      listing engine=minted,
+      minted options={%
+        tabsize=2, breaklines, autogobble, 
+        fontsize=\small, xleftmargin=4pt, 
+        escapeinside=§§,
+        linenos=true, numbersep=8pt,
+      },
+      box align=top,
+      code={% See \tcb@addcontentsline definition above: No entry in LoE if star without title
+        \let\kvtcb@listentry\@empty%
+        \let\kvtcb@title\@empty%
+        \let\tcbtitletext\@empty%
+      },
+      %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+      before={%
+        \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+      },
+      IfValueTF={#4}{% Adding a code caption with an entry in the "list of code" (LoC)
+        minipage boxed title=\textwidth+\marginparwidth+\marginparsep,
+        coltitle=black,
+        fonttitle=\footnotesize\itshape,
+        attach boxed title to top left,
+        boxed title style={%
+          enhanced,
+          left=0pt, 
+          right=0pt,
+          top=1pt,
+          bottom=4pt,
+          boxsep=0pt,
+          colback=white,
+          colframe=white,
+          arc=0pt,
+          outer arc=0pt,
+          boxrule=0pt,
+        },
+        before title pre={%
+          \codingcaptionlayout\enspace\strut\textsf{\textsc{Code\space\thecode}}%
+            \space\textcolor{secondcolor}{\textemdash}\space%
+        },
+        title={\strut #4},
+        IfValueTF={#3}{}{},% If a caption exists, no title at all is displayed
+        %label type={code},% To be used in cunjonction to the `cleveref' package
+        %label={code:\Roman{chapter}.\thetcbcounter},
+        list entry={% Adding a code symbol in the "list of codes" entries
+          \ifbool{coding@article}{%
+            \protect\numberline{\thetcbcounter}#4%
+              \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}
+          }{\ifbool{coding@appendixchapter}
+              {\protect\numberline{\theappendixchapter.\thetcbcounter}#4%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+              {\protect\numberline{\thechapter.\thetcbcounter}#4%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+          },%
+        },
+      }{IfValueTF={#3}{% No caption but a title
+          fonttitle=\footnotesize\lightboldfont,%\lightboldfont,%\titlingfont,
+          coltitle=white,% Default=white
+          attach boxed title to top right={% Title placement + options (doc. p.159-161)
+            yshift=-\tcboxedtitleheight, yshifttext=-2pt,%-\tcboxedtitleheight/3,
+            %yshift*=-\tcboxedtitleheight,% yshifttext is only set if necessary
+          },
+          boxed title style={% original code borrowed to `tcolorbox' (see doc. p.165)
+            empty,
+            boxsep=0pt,
+            toptitle=0pt, bottomtitle=0pt,% default=0pt
+            lefttitle=0pt, righttitle=0pt,% Default=4mm (additional to boxsep)
+            left=6pt, right=4pt,% Default=4mm (additional to boxsep)
+            top=1pt, bottom=0pt,% Default=2mm (additional to boxsep)
+          },
+          underlay boxed title={% Only drawn if a boxed title is given (cf. doc. §10.2.3 p.162)
+            %- Bézier curve .. control .. don't work! Why? FIX ME!
+            \path[draw=black!20, fill=firstcolor!75!black, line width=0.4pt]
+              ([xshift=-\tcboxedtitleheight/2, yshift=0.0mm]title.north west)
+              to [bend left=30] ([xshift=2pt, yshift=-1pt]title.west)
+              [rounded corners=2pt]% arc=2pt − default
+              -- ([xshift=4pt,yshift=0.0mm]title.south west)
+              -- ([yshift=0.0mm]title.south east)
+              -- ([yshift=0.0mm]title.north east)
+              [sharp corners] -- cycle;
+          },
+          before title app={%
+            \ifbool{coding@appendixchapter}{%
+              \ifbool{coding@article}
+                {\strut\textsf{\textsc{Code \thesection.\thetcbcounter}}}%
+                {\strut\textsf{\textsc{Code \theappendixchapter.\thetcbcounter}}}%
+            }{\ifbool{coding@article}
+                {\strut\textsf{\textsc{Code \thetcbcounter}}}%
+                {\strut\textsf{\textsc{Code \thechapter.\thetcbcounter}}}%
+            }%
+          },
+          title={\strut\textsf{\enspace\textemdash\enspace #3}},
+          list entry={% Adding a code symbol in the "list of codes" entries
+            \ifbool{coding@article}{%
+              \protect\numberline{\thetcbcounter}#3%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}
+            }{\ifbool{coding@appendixchapter}
+                {\protect\numberline{\theappendixchapter.\thetcbcounter}#3%
+                  \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+                {\protect\numberline{\thechapter.\thetcbcounter}#3%
+                  \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+            },%
+          },
+        }{notitle,% Only code is displayed
+          after pre=\addtocounter{code}{-1},% To avoid double increment: \thetcbcounter and \thecode
+        }% 
+      },  
+      %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+      after={\par\vspace{4pt}},
+      %label type={code},% To be used in cunjonction to the `cleveref` package
+      IfValueTF={#5}{%
+        label={#5},
+      }{label=\ifbool{coding@article}
+          {code:\thetcbcounter}%
+          {code:\thechapter.\thetcbcounter},%
+      },% 
+      IfValueTF={#1}{#1}{}% More options comma separated
+  }
+}{\ifbool{@reversemargin}{%
+    \RenewTCBListing[
+      use counter=code,
+      list inside=loc,% to have a list of exercice with \tcblistof[\section]{<name>}{<title>}
+      %- With "list type" field, a \l@code command must be defined OR done with `titletoc' package
+      %- See: change-tcolorbox-tcblistof-font-formatting-to-match-documents-other-lists:
+      %          https://tex.stackexchange.com/questions/353947/
+      list type=code,% By default → Layout is done by \l@tcolorbox command
+      ]{code*}{ o m o g d<> }{%
+      % Usage − \begin{code}[<more-options>]{<code-language>}[<optional-title>]{<optional-caption>}
+      %           ...
+      %         \end{code}
+      %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+      before={%
+        \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+      },
+      code box layout,
+      %code layout,
+      code language/#2,% Code language and `symbol`
+      %numbering lines=true,% Default=true
+      lowerbox=ignored,
+      check odd page,
+      grow to right by=\marginparwidth+\marginparsep, 
+      toggle enlargement=forced, 
+      notitle after break,
+      code box layout,
+      %code layout,
+      code language/#2,% Code language and `symbol`
+      underlay={%
+        \begin{tcbclipinterior}
+          \fill[color=black!15]
+            (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+        \end{tcbclipinterior}
+      },
+      listing only,
+      listing engine=minted,
+      minted options={%
+        tabsize=2, breaklines, autogobble, 
+        fontsize=\small, xleftmargin=4pt, 
+        escapeinside=§§,
+        linenos=true, numbersep=8pt,
+      },
+      box align=top,
+      code={% See \tcb@addcontentsline definition above: No entry in LoE if star without title
+        \let\kvtcb@listentry\@empty%
+        \let\kvtcb@title\@empty%
+        \let\tcbtitletext\@empty%
+      },
+      IfValueTF={#4}{% Adding a code "fake" caption with an entry in the "list of code" (LoC)
+        minipage boxed title=\textwidth+\marginparwidth+\marginparsep,
+        coltitle=black,
+        fonttitle=\footnotesize\itshape,
+        attach boxed title to top left,
+        boxed title style={%
+          enhanced,
+          left=0pt, 
+          right=0pt,
+          top=4pt,
+          bottom=4pt,
+          boxsep=0pt,
+          colback=white,
+          colframe=white,
+          arc=0pt,
+          outer arc=0pt,
+          boxrule=0pt,
+        },
+        before title pre={%
+          \codingcaptionlayout\enspace\strut\textsf{\textsc{Code\space\thecode}}%
+            \space\textcolor{secondcolor}{\textemdash}\space%
+        },
+        title={\strut #4},
+        IfValueTF={#3}{}{},% If a caption exists, no integrated title at all is displayed
+        %label type={code},% To be used in cunjonction to the `cleveref' package
+        %label={code:\Roman{chapter}.\thetcbcounter},
+        list entry={% Adding a code symbol in the "list of codes" entries
+          \ifbool{coding@article}{%
+            \protect\numberline{\thetcbcounter}#4%
+              \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}
+          }{\ifbool{coding@appendixchapter}
+              {\protect\numberline{\theappendixchapter.\thetcbcounter}#4%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+              {\protect\numberline{\thechapter.\thetcbcounter}#4%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+          },%
+        },
+      }{IfValueTF={#3}{% No caption but a title
+          fonttitle=\footnotesize\lightboldfont,%\lightboldfont,%\titlingfont,
+          coltitle=white,% Default=white
+          attach boxed title to top right={% Title placement + options (doc. p.159-161)
+            yshift=-\tcboxedtitleheight, yshifttext=-2pt,%
+          },
+          boxed title style={% original code borrowed to `tcolorbox' (see doc. p.165)
+            empty,
+            boxsep=0pt,
+            toptitle=0pt, bottomtitle=0pt,% default=0pt
+            lefttitle=0pt, righttitle=0pt,% Default=4mm (additional to boxsep)
+            left=6pt, right=4pt,% Default=4mm (additional to boxsep)
+            top=1pt, bottom=0pt,% Default=2mm (additional to boxsep)
+          },
+          underlay boxed title={% Only drawn if a boxed title is given (cf. doc. §10.2.3 p.162)
+            %- Bézier curve .. control .. don't work! Why? FIX ME!
+            \path[draw=black!20, fill=firstcolor!75!black, line width=0.4pt]
+              ([xshift=-\tcboxedtitleheight/2, yshift=0.0mm]title.north west)
+              to [bend left=30] ([xshift=2pt, yshift=-1pt]title.west)
+              [rounded corners=2pt]% arc=2pt − default
+              -- ([xshift=4pt,yshift=0.0mm]title.south west)
+              -- ([yshift=0.0mm]title.south east)
+              -- ([yshift=0.0mm]title.north east)
+              [sharp corners] -- cycle;
+          },
+          before title app={%
+            \ifbool{coding@appendixchapter}{%
+              \ifbool{coding@article}
+                {\strut\textsf{\textsc{Code \thesection.\thetcbcounter}}}%
+                {\strut\textsf{\textsc{Code \theappendixchapter.\thetcbcounter}}}%
+            }{\ifbool{coding@article}
+                {\strut\textsf{\textsc{Code \thetcbcounter}}}%
+                {\strut\textsf{\textsc{Code \thechapter.\thetcbcounter}}}%
+            }%
+          },
+          title={\strut\textsf{\enspace\textemdash\enspace #3}},
+          list entry={% Adding a code symbol in the "list of codes" entries
+            \ifbool{coding@article}{%
+              \protect\numberline{\thetcbcounter}#3%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}
+            }{\ifbool{coding@appendixchapter}
+                {\protect\numberline{\theappendixchapter.\thetcbcounter}#3%
+                  \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+                {\protect\numberline{\thechapter.\thetcbcounter}#3%
+                  \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+            },%
+          },
+          before pre=\vspace{4pt},
+        }{notitle,% Only code is displayed
+          after pre=\addtocounter{code}{-1},% To avoid double increment: \thetcbcounter and \thecode
+        }% 
+      },
+      %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+      after={\par\vspace{4pt}},
+      %label type={code},% To be used in cunjonction to the `cleveref` package
+      IfValueTF={#5}{%
+        label={#5},
+      }{label=\ifbool{coding@article}
+          {code:\thetcbcounter}%
+          {code:\thechapter.\thetcbcounter},%
+      },% 
+      IfValueTF={#1}{#1}{}% More options comma separated
+    }
+  }{\RenewTCBListing[
+      use counter=code,
+      list inside=loc,% to have a list of exercice with \tcblistof[\section]{<name>}{<title>}
+      %- With "list type" field, a \l@code command must be defined OR done with `titletoc' package
+      %- See: change-tcolorbox-tcblistof-font-formatting-to-match-documents-other-lists:
+      %          https://tex.stackexchange.com/questions/353947/
+      list type=code,% By default → Layout is done by \l@tcolorbox command
+      ]{code*}{ o m o g d<> }{%
+      % Usage − \begin{code}[<more-options>]{<code-language>}[<optional-title>]{<optional-caption>}
+      %           ...
+      %         \end{code}
+      %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+      before={%
+        \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+      },
+      code box layout,
+      %code layout,
+      code language/#2,% Code language and `symbol`
+      %numbering lines=true,% Default=true
+      lowerbox=ignored,
+      check odd page,
+      grow to left by=\marginparwidth+\marginparsep, 
+      toggle enlargement=forced, 
+      notitle after break,
+      code box layout,
+      %code layout,
+      code language/#2,% Code language and `symbol`
+      underlay={%
+        \begin{tcbclipinterior}
+          \fill[color=black!15]
+            (frame.south west) rectangle ([xshift=12.0pt]frame.north west);
+        \end{tcbclipinterior}
+      },
+      listing only,
+      listing engine=minted,
+      minted options={%
+        tabsize=2, breaklines, autogobble, 
+        fontsize=\small, xleftmargin=4pt, 
+        escapeinside=§§,
+        linenos=true, numbersep=8pt,
+      },
+      box align=top,
+      code={% See \tcb@addcontentsline definition above: No entry in LoE if star without title
+        \let\kvtcb@listentry\@empty%
+        \let\kvtcb@title\@empty%
+        \let\tcbtitletext\@empty%
+      },
+      IfValueTF={#4}{% Adding a code caption with an entry in the "list of code" (LoC)
+        %before pre={%
+        %  \addtocounter{code}{-1}% To avoid double increment: NOT LOGICAL WHY HERE AND NOT THE OTHERS?
+        %  %\captionof{code}{#4}%
+        %},
+        minipage boxed title=\textwidth+\marginparwidth+\marginparsep,
+        coltitle=black,
+        fonttitle=\footnotesize\itshape,
+        attach boxed title to top left,
+        boxed title style={%
+          enhanced,
+          left=0pt, 
+          right=0pt,
+          top=1pt,
+          bottom=4pt,
+          boxsep=0pt,
+          colback=white,
+          colframe=white,
+          arc=0pt,
+          outer arc=0pt,
+          boxrule=0pt,
+        },
+        before title pre={%
+          %\addtocounter{code}{-1}% To avoid double increment: from the tcbox and from the captionof
+          %\captionof{code}{#4}%
+          \codingcaptionlayout\enspace\strut\textsf{\textsc{Code\space\thecode}}%
+            \space\textcolor{secondcolor}{\textemdash}\space%
+        },
+        title={\strut #4},
+        IfValueTF={#3}{}{},% If a caption exists, no title at all is displayed
+        %label type={code},% To be used in cunjonction to the `cleveref' package
+        %label={code:\Roman{chapter}.\thetcbcounter},
+        list entry={% Adding a code symbol in the "list of codes" entries
+          \ifbool{coding@article}{%
+            \protect\numberline{\thetcbcounter}#4%
+              \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}
+          }{\ifbool{coding@appendixchapter}
+              {\protect\numberline{\theappendixchapter.\thetcbcounter}#4%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+              {\protect\numberline{\thechapter.\thetcbcounter}#4%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+          },%
+        },
+      }{IfValueTF={#3}{% No caption but a title
+          fonttitle=\footnotesize\lightboldfont,%\lightboldfont,%\titlingfont,
+          coltitle=white,% Default=white
+          attach boxed title to top right={% Title placement + options (doc. p.159-161)
+            yshift=-\tcboxedtitleheight, yshifttext=-2pt,%-\tcboxedtitleheight/3,
+            %yshift*=-\tcboxedtitleheight,% yshifttext is only set if necessary
+          },
+          boxed title style={% original code borrowed to `tcolorbox' (see doc. p.165)
+            empty,
+            boxsep=0pt,
+            toptitle=0pt, bottomtitle=0pt,% default=0pt
+            lefttitle=0pt, righttitle=0pt,% Default=4mm (additional to boxsep)
+            left=6pt, right=4pt,% Default=4mm (additional to boxsep)
+            top=1pt, bottom=0pt,% Default=2mm (additional to boxsep)
+          },
+          underlay boxed title={% Only drawn if a boxed title is given (cf. doc. §10.2.3 p.162)
+            %- Bézier curve .. control .. don't work! Why? FIX ME!
+            \path[draw=black!20, fill=firstcolor!75!black, line width=0.4pt]
+              ([xshift=-\tcboxedtitleheight/2, yshift=0.0mm]title.north west)
+              to [bend left=30] ([xshift=2pt, yshift=-1pt]title.west)
+              [rounded corners=2pt]% arc=2pt − default
+              -- ([xshift=4pt,yshift=0.0mm]title.south west)
+              -- ([yshift=0.0mm]title.south east)
+              -- ([yshift=0.0mm]title.north east)
+              [sharp corners] -- cycle;
+          },
+          before title app={%
+            \ifbool{coding@appendixchapter}{%
+              \ifbool{coding@article}
+                {\strut\textsf{\textsc{Code \thesection.\thetcbcounter}}}%
+              {\strut\textsf{\textsc{Code \theappendixchapter.\thetcbcounter}}}%
+            }{\ifbool{coding@article}
+                {\strut\textsf{\textsc{Code \thetcbcounter}}}%
+                {\strut\textsf{\textsc{Code \thechapter.\thetcbcounter}}}%
+            }%
+          },
+          title={\strut\textsf{\enspace\textemdash\enspace #3}},
+          list entry={% Adding a code symbol in the "list of codes" entries
+            \ifbool{coding@article}{%
+              \protect\numberline{\thetcbcounter}#3%
+                \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}
+            }{\ifbool{coding@appendixchapter}
+                {\protect\numberline{\theappendixchapter.\thetcbcounter}#3%
+                  \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+                {\protect\numberline{\thechapter.\thetcbcounter}#3%
+                  \enspace\textcolor{secondcolor}{\normalfont\small\codesymbol}}%
+            },%
+          },
+        }{notitle,% Only code is displayed
+          after pre=\addtocounter{code}{-1},% To avoid double increment: \thetcbcounter and \thecode
+        }% 
+      },
+      %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+      after={\par\vspace{4pt}},
+      %label type={code},% To be used in cunjonction to the `cleveref` package
+      IfValueTF={#5}{%
+        label={#5},
+      }{label=\ifbool{coding@article}
+          {code:\thetcbcounter}%
+          {code:\thechapter.\thetcbcounter},%
+      },% 
+      IfValueTF={#1}{#1}{}% More options comma separated
+    }
+  }
+}
+
+\newcounter{algorithm}
+
+\NewTCBListing[
+  use counter=algorithm,
+  list inside=loc,% to have a list of exercice with \tcblistof[\section]{<name>}{<title>}
+  %- With "list type" field, a \l@code command must be defined OR done with `titletoc' package
+  %- See: change-tcolorbox-tcblistof-font-formatting-to-match-documents-other-lists:
+  %          https://tex.stackexchange.com/questions/353947/
+  list type=code,% By default → Layout is done by \l@tcolorbox command
+  ]{algorithm}{ o g o }{%
+    % Usage − \begin{algorithm}[<more-options>]{<code-language>}[<optional-title>]{<optional-caption>}
+    %           ...
+    %         \end{algorithm}
+    %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+    before={%
+      \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+      %\vspace{-\baselineskip}% WHY?
+      \vspace*{1.5\parskip}%
+      %\vspace*{2pt}%
+    },
+    enhanced,
+    breakable,
+    colback=black!5,
+    colframe=firstcolor,
+    boxsep=0pt,
+    top=4pt, bottom=4pt,% middle = 2pt,% additional to boxsep
+    arc=2pt,% Default: arc=1mm
+    % outer arc=0pt,% No default: outer arc=unset
+    boxrule=0.6pt,
+    left=0pt, right=4pt,
+    drop fuzzy shadow,
+    listing only, 
+    listing engine=listings,
+    listing options={
+      style=lstalgostyle,
+      language=pseudocode,
+      escapeinside=§§,
+    },
+    IfValueTF={#3}{% Adding a algoritm caption with an entry in the "list of listings" (LoL)
+      before pre={%
+        \addtocounter{algorithm}{-1}% To avoid double increment: from the tcbox and from the captionof
+        \captionof{algorithm}{#3}%
+      },
+      IfValueTF={#2}{notitle}{notitle},% If a caption exists, no title at all is displayed
+      label type={algorithm},% To be used in cunjonction to the `cleveref' package
+      label={algo:\Roman{chapter}.\thetcbcounter},
+    }{IfValueTF={#2}{% No caption but a title
+        fonttitle=\footnotesize\lightboldfont,%\lightboldfont,%\titlingfont,
+        coltitle=white,% Default=white
+        attach boxed title to top right={% Title placement + options (doc. p.159-161)
+          yshift=-\tcboxedtitleheight, yshifttext=-2pt,%-\tcboxedtitleheight/3,
+          %yshift*=-\tcboxedtitleheight,% yshifttext is only set if necessary
+        },
+        boxed title style={% original code borrowed to `tcolorbox' (see doc. p.165)
+          empty,
+          boxsep=0pt,
+          toptitle=0pt, bottomtitle=0pt,% default=0pt
+          lefttitle=0pt, righttitle=0pt,% Default=4mm (additional to boxsep)
+          left=6pt, right=4pt,% Default=4mm (additional to boxsep)
+          top=1pt, bottom=0pt,% Default=2mm (additional to boxsep)
+        },
+        underlay boxed title={% Only drawn if a boxed title is given (cf. doc. §10.2.3 p.162)
+          %- Bézier curve .. control .. don't work! Why? FIX ME!
+          \path[draw=black!20, fill=firstcolor!75!black, line width=0.4pt]
+            ([xshift=-\tcboxedtitleheight/2,yshift=0.0mm]title.north west)
+            to [bend left=30] ([xshift=2pt,yshift=-1pt]title.west)
+            [rounded corners=2pt]% arc=2pt − default
+            -- ([xshift=4pt,yshift=0.0mm]title.south west)
+            -- ([yshift=0.0mm]title.south east)
+            -- ([yshift=0.0mm]title.north east)
+            [sharp corners] -- cycle;
+        },
+        before title app={%
+          \ifdoc@appendix
+            \strut \textsc{Algorithme \theappendixchapter.\thetcbcounter}%
+          \else
+            \strut \textsc{Algorithme \thechapter.\thetcbcounter}%  
+          \fi
+        },
+        title={\strut\space\textemdash\space #2},
+        label={algo:\Roman{chapter}.\thetcbcounter},
+        %label={code:\Roman{chapter}.\string\c@code}},
+        label type={algorithm},% To be used in cunjonction to the `cleveref` package
+        list entry={% Adding a code symbol in the "list of codes" entries
+          \ifdoc@appendix    
+            \protect\numberline{\theappendixchapter.\thetcbcounter}#2%
+            \enspace\textcolor{secondcolor}{\normalfont\footnotesize\codesymbol}%
+          \else
+            \protect\numberline{\thechapter.\thetcbcounter}#2%
+            \enspace\textcolor{secondcolor}{\normalfont\footnotesize\codesymbol}%
+          \fi      
+        },
+      }{notitle},
+    },
+    %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+    after={\par\vspace*{1.0\parskip}},
+    IfValueTF={#1}{#1}{}% More options comma separated
+}
+
+
+\NewTCBListing{algorithm*}{ o g }{% star = no referencing in the list of codes/listings
+    %before skip=\baselineskip,% Do not set it! It overwrites the `before' field below
+    before={%
+      \par\pagebreak[0]\parindent=0pt% Default autoparskip option (see doc. §4.14 p.81)
+      \vspace{-\baselineskip}% WHY?
+      %\vspace*{2.5\parskip}%
+      %\noindent Before → Code : \thecode ; TCBcounter : \thetcbcounter\par%
+    },
+    IfValueTF={#2}{% No caption but a unumbered title
+      fonttitle=\footnotesize\lightboldfont,%\lightboldfont,%\titlingfont,
+      coltitle=white,% Default=white
+      %colbacktitle=black!65,% Default: black!50!white
+      attach boxed title to top right={% Title placement + options (doc. p.159-161)
+        yshift=-\tcboxedtitleheight, yshifttext=-2pt,%-\tcboxedtitleheight/3,
+        %yshift*=-\tcboxedtitleheight,% yshifttext is only set if necessary
+      },
+      boxed title style={% original code borrowed to `tcolorbox' (see doc. p.165)
+        empty,
+        boxsep=0pt,
+        toptitle=0pt, bottomtitle=0pt,% default=0pt
+        lefttitle=0pt, righttitle=0pt,% Default=4mm (additional to boxsep)
+        left=6pt, right=4pt,% Default=4mm (additional to boxsep)
+        top=1pt, bottom=0pt,% Default=2mm (additional to boxsep)
+      },
+      underlay boxed title={% Only drawn if a boxed title is given (cf. doc. §10.2.3 p.162)
+        %- Bézier curve .. control .. don't work! Why? FIX ME!
+        \path[draw=black!20, fill=firstcolor!75!black, line width=0.4pt]
+          ([xshift=-\tcboxedtitleheight/2,yshift=0.0mm]title.north west)
+          to [bend left=30] ([xshift=2pt,yshift=-1pt]title.west)
+          [rounded corners=2pt]% arc=2pt − default
+          -- ([xshift=4pt,yshift=0.0mm]title.south west)
+          -- ([yshift=0.0mm]title.south east)
+          -- ([yshift=0.0mm]title.north east)
+          [sharp corners] -- cycle;
+      },
+        title={\strut #2},
+    }{notitle},
+    code box layout,% General code box layout options
+    %code language/#2,% Code language options
+    %code layout,% Common code `minted` layout options
+    %numbering lines=false,% Default=true
+  listing only, 
+  listing engine=listings,
+  listing options={
+    style=lstalgostyle,
+    language=pseudocode,
+    escapeinside=§§,
+  },
+    %after skip=\baselineskip,% Do not set it! It overwrites the `after' field below
+    after={%
+      \vspace*{2.0\parskip}%
+      %\par La dernière référence de code numéroté est : \ref{code:\thecode}.\par%
+    },
+    IfValueTF={#1}{#1}{}% More/reset/change options comma separated
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
