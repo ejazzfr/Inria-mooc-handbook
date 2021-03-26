@@ -27,7 +27,7 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 
 1. Go into the directory named `/sources`
 2. Comment or uncomment chapters you want to compile inside the master file `inria-mooc.tex` (line 350)
-3. Compile using `make inria-mooc.pdf` (this compile mulitple times so it takes some time)
+3. Compile using `make inria-mooc.pdf` (this compiles mulitple times so it takes some time)
 4. Clean using `make clean`
 
 
