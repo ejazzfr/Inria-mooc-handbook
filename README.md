@@ -21,7 +21,7 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 
 - Recent [TeX Live](https://www.tug.org/texlive/quickinstall.html) installation
 - Copy TeXjazz bundle files and fonts inside `~/.texmf`(TeX Directory Structure compliant)
-- Update TeX Live TDS using `texhash ~/.texmf`
+- Update TeX Live local TDS using `texhash ~/.texmf`
 
 **Compilation using the makefile :**
 
