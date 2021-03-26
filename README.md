@@ -25,7 +25,7 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 
 **Compilation using the makefile :**
 
-1. Go to the directory named `/sources`
+1. Go into the directory named `/sources`
 2. Comment or uncomment chapters you want to compile inside `inria-mooc.tex` (line 350)
 3. Compile using `make inria-mooc.pdf` (this compile mulitple times so it takes some time)
 4. Clean using `make clean`
@@ -33,7 +33,7 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 
 **Compilation manually :**
 
-1. Go to the directory named `/sources`
+1. Go into the directory named `/sources`
 2. Comment or uncomment chapters you want to compile inside `inria-mooc.tex` (line 350)
 3. Compile a first time `lualatex -shell-escape inria-mooc.tex` (only LuaLaTeX is allowed)
 4. Compile the bibliography `biber inria-mooc` (master file without extension)
