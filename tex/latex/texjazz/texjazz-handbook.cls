@@ -41,6 +41,7 @@
 %   − textjazz-graphic.def
 %   − textjazz-head-foot.def
 %   − textjazz-highlight.def
+%   − textjazz-list.def
 %   − textjazz-listings.def
 %   − textjazz-ltxlistings.def
 %   − textjazz-margin.def
@@ -366,7 +367,7 @@
 %\RequirePackage{settobox}
 
 %-- Reserving space to keep material from being split over a page break
-%\RequirePackage{needspace}
+\RequirePackage{needspace}% Used with glossaries, see texjazz-glossary.def file
 
 
 %---------------------------------------------------------------------------------------------------
