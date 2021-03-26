@@ -15,7 +15,7 @@ They are hosted by the Fun platform: France université numérique.
 This work may be distributed and/or modified under the conditions of the CC-BY-NC license.
 
 
-## How to use
+## Quick user guide
 
 **Prerequisites :**
 
