@@ -26,7 +26,7 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 **Compilation using the makefile :**
 
 1. Go into the directory named `/sources`
-2. Comment or uncomment chapters you want to compile inside `inria-mooc.tex` (line 350)
+2. Comment or uncomment chapters you want to compile inside the master file `inria-mooc.tex` (line 350)
 3. Compile using `make inria-mooc.pdf` (this compile mulitple times so it takes some time)
 4. Clean using `make clean`
 
@@ -34,14 +34,14 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 **Compilation manually :**
 
 1. Go into the directory named `/sources`
-2. Comment or uncomment chapters you want to compile inside `inria-mooc.tex` (line 350)
-3. Compile a first time `lualatex -shell-escape inria-mooc.tex` (only LuaLaTeX is allowed)
+2. Comment or uncomment chapters you want to compile inside the master file `inria-mooc.tex` (line 350)
+3. Compile a first time `lualatex -shell-escape inria-mooc.tex` (only LuaLaTeX engine is allowed)
 4. Compile the bibliography `biber inria-mooc` (master file without extension)
 5. Run PythonTeX script `pythontex inria-mooc.tex`
 6. Compile the glossary ` xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.glg" -o "inria-mooc.gls" "inria-mooc.glo"`
-7. Compile a second time `lualatex -shell-escape inria-mooc.tex`
-8. Compile a third time `lualatex -shell-escape inria-mooc.tex`
-9. Compile a fourth time `lualatex -shell-escape inria-mooc.tex`
+7. Compile a second time `lualatex -shell-escape inria-mooc.tex` (cross references)
+8. Compile a third time `lualatex -shell-escape inria-mooc.tex` (cross references)
+9. Compile a fourth time `lualatex -shell-escape inria-mooc.tex` (cross references)
 
 
 **Complete guide and documentation :**
