@@ -34,7 +34,7 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 **Compilation manually :**
 
 1. Go to the directory named `/sources`
-2. Comment or uncomment chapters you want to compile inside `inria-mooc.tex` (ligne 350)
+2. Comment or uncomment chapters you want to compile inside `inria-mooc.tex` (line 350)
 3. Compile a first time `lualatex -shell-escape inria-mooc.tex` (only LuaLaTeX is allowed)
 4. Compile the bibliography `biber inria-mooc` (master file without extension)
 5. Run PythonTeX script `pythontex inria-mooc.tex`
