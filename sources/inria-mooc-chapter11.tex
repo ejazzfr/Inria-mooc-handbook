@@ -62,10 +62,12 @@ Avec le codage ASCII --- \textit{American Standard Code for Information Intercha
 
 \begin{marginvideo}
 	[\label{vid:XI.1}Codage et décodage des caractères alphanumériques.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter11/vidXI-01-codage-HD.mp4}%
-	\launchvideo{./Videos/Chapter11/vidXI-01-codage-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter11/vidXI-01-codage-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=q_F4ffWPUzE&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=2}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=q_F4ffWPUzE&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=2}
 \end{marginvideo}
 
 Ainsi, lors de la lecture d'un contenu textuel sur Internet ou provenant du disque dur, il s'agit de flux de bits qui sont décodés. De manière inverse, lorsque des données textuelles sont téléversées sur Internet ou enregistrées sur disque dur, elles sont codées en flux de bits selon une convention déterminée.
@@ -88,7 +90,7 @@ La question des caractères accentués dépasse très largement le cadre de \tex
 Avec Unicode, le modèle qui établit la correspondance entre un caractère et un octet est cassé. Aussi en \textsc{Python\,3}, lorsqu'il s'agit de manipuler des données provenant de diverses sources de données, les alternatives sont les suivantes :
 \begin{itemize}
 	\item le type \texttt{byte} est approprié pour charger en mémoire les données binaires brutes, sous forme d'octets ;
-	\item le type \texttt{str} est approprié pour représenter une chaîne de caractères qui, à nouveau, \emph{ne sont pas forcément des octets} ;
+	\item le type \texttt{str} est approprié pour représenter une chaîne de caractères qui, à nouveau, \emph{ne sont pas forcément des octets}.
 \end{itemize}
 Le passage de l'un à l'autre de ces types se réalise par des opérations d'encodage et décodage. Pour \emph{toutes} les opérations de codage et décodage, il est nécessaire de connaître l'encodage utilisé.
 
@@ -178,7 +180,7 @@ La syntaxe de la ligne \texttt{coding} est précisée dans la \href{https://docs
 Contrairement à ce qu'on pourrait espérer, ce type de problème ne se règle pas en ajoutant une balise \texttt{\# coding:} \texttt{<nom\_de\_l\_encodage>}, qui n'agit que sur l'encodage utilisé pour lire le fichier source en question (celui qui contient la balise).
 Pour pallier correctement ce type de problème, il faut préciser explicitement l'encodage à utiliser pour décoder le fichier, donc avoir un moyen fiable de déterminer cet encodage ; ce qui n'est pas toujours aisé d'ailleurs. Cela signifie que pour être totalement propre, il faut pouvoir préciser explicitement le paramètre \texttt{encoding} à l'appel de toutes les méthodes qui sont susceptibles d'en avoir besoin.
 
-\paragraph{Pourquoi cela fonctionne en local ?} Lorsque le producteur --- programme qui écrit le fichier --- et le consommateur --- programme qui le lit --- tournent sur le même ordinateur, tout fonctionne bien parce que les deux programmes se rapportent à l'encodage par défaut.
+\paragraph{Pourquoi cela fonctionne en local ?} Lorsque le producteur --- programme qui écrit le fichier --- et le consommateur --- programme qui le lit --- tournent sur le même ordinateur, tout fonctionne bien car les deux programmes se rapportent à l'encodage par défaut.
 
 Il y a toutefois une limite, si on utilise un \textsc{Linux} configuré\sidenote{Par exemple, en version serveur ou embarqué.} de manière minimale, il se peut que l'encodage par défaut soit l'US-ASCII qui ne « connaît » pas un simple « \texttt{é} », ni \textit{a fortiori} « \texttt{€} ». Pour écrire du français, il faut donc au minimum que l'encodage par défaut de l'ordinateur contienne les caractères accentués, comme par exemple : ISO 8859-1 (Latin-1), ISO 8859-15 (Latin-9), CP1252 et UTF-8, ce dernier étant à clairement préférer lorsque c'est possible.
 
@@ -211,10 +213,12 @@ Cette section s'attache au maniement des chaînes de caractères et à leur enco
 
 \begin{marginvideo}
 	[\label{vid:XI.2}Chaînes de caractères I.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter11/vidXI-02a-strings-HD.mp4}%
-	\launchvideo{./Videos/Chapter11/vidXI-02a-strings-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter11/vidXI-02a-strings-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=2q8DM-_AxaI&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=3}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=2q8DM-_AxaI&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=3}
 \begin{minipage}{\linewidth}
 \vspace*{2pt}
 \footnotesize\textit{Erratum} : À 5:05, les \texttt{f-string} sont introduites depuis \textsc{Python} 3.6 et non 3.5.
@@ -271,7 +275,7 @@ Le nom des méthodes est souvent explicite. Prenons pour exemple les méthodes �
 
 On note au passage que si l'on veut introduire des apostrophes dans une chaîne de caractères, il suffit de la mettre entre guillemets ; cela évite l'emploi du caractère d'échappement \textit{backslash} « \texttt{\textbackslash} ».
 
-D'autres méthodes permettent de conduire des tests et d'établir des comparaisons. Supposons par exemple avoir la chaîne de caractère de l'entier \texttt{'123'}. Avant de la convertir, on peut s'assurer que cela représente bien un nombre décimal. Cela se réalise avec la méthode \texttt{isdecimal} qui retourne ici \texttt{True}. Chacun est invité à consulter l'intégralité des méthodes sur les chaîne de caractère, car elles sont très puissantes et à même de très souvent répondre aux besoins.
+D'autres méthodes permettent de conduire des tests et d'établir des comparaisons. Supposons par exemple avoir la chaîne de caractère de l'entier \texttt{'123'}. Avant de la convertir, on peut s'assurer\sidenote{Chacun est invité à consulter l'intégralité des méthodes sur les chaîne de caractère, car elles sont très puissantes et à même de très souvent répondre aux besoins.} que cela représente bien un nombre décimal. Cela se réalise avec la méthode \texttt{isdecimal} qui retourne ici \texttt{True}. 
 
 \begin{idleconsole}
 	\begin{pyconsole}
@@ -291,16 +295,18 @@ Le formatage d'une chaîne de caractères se réalise en \textsc{Python} avec l'
 	\end{pyconsole}
 \end{idleconsole}
 
-\vspace{.25\baselineskip}
+\vspace{1pt}%WHY?
 
 \overparagraph{Support Unicode}
 
 \begin{marginvideo}
 	[\label{vid:XI.3}Chaînes de caractères II.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter11/vidXI-02b-strings-HD.mp4}%
-	\launchvideo{./Videos/Chapter11/vidXI-02b-strings-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter11/vidXI-02b-strings-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=LjjCFDCbHhQ&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=4}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=LjjCFDCbHhQ&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=4}
 \end{marginvideo}
 \marginpar{\footnotesize\noindent \textsc{Bloc-note \cref{vid:XI.3}} (copier-coller)\\
 \texttt{"noël, été"}\\
@@ -414,6 +420,8 @@ On peut appliquer la méthode \texttt{strip} avant \texttt{split} pour éviter l
 	\end{pyconsole}
 \end{idleconsole}
 
+\vspace{-1pt}% WHY?
+
 \paragraph{Rechercher une sous-chaîne}
 Plusieurs outils permettent de chercher une sous-chaîne. Il existe \texttt{find} qui renvoie le plus petit index où on trouve la sous-chaîne.
 
@@ -470,13 +478,15 @@ La méthode \texttt{count} compte le nombre d'occurrences d'une sous-chaîne. On
 \end{pyconsole}
 \end{idleconsole}
 
-On note ici la supériorité en terme d'expressivité des méthodes «~pythoniques » \texttt{startswith} et \texttt{endswith} en remarquant que :\\[2pt]
+On note ici la supériorité en terme d'expressivité des méthodes «~pythoniques » \texttt{startswith} et \texttt{endswith} en remarquant que :\\[4pt]
 %\begin{itemize}
 %\item \texttt{chaine.startswith(sous\_chaine)} $\Longleftrightarrow$\\ \texttt{chaine.find(sous\_chaine) == 0} ;
 %\item \texttt{chaine.endswith(sous\_chaine)} $\Longleftrightarrow$\\ \texttt{chaine.rfind(sous\_chaine) == (len(chaine) - len(sous\_chaine))}.
 %\end{itemize}
-\texttt{chaine.startswith(sous\_chaine)} $\Leftrightarrow$ \texttt{chaine.find(sous\_chaine) == 0}\\[2pt]
+\texttt{chaine.startswith(sous\_chaine)} $\Leftrightarrow$ \texttt{chaine.find(sous\_chaine) == 0}\\[4pt]
 \texttt{chaine.endswith(sous\_chaine)} $\Leftrightarrow$\\ \texttt{chaine.rfind(sous\_chaine) == (len(chaine) - len(sous\_chaine))}
+
+\vspace{-1pt}% WHY?
 
 \paragraph{Changement de casse}
 Pour conclure sur la présentation des méthodes applicables aux chaînes de caractères, sont exposées celles concernant des changements de casse qui parlent d'elles-mêmes.
@@ -652,7 +662,7 @@ On peut cependant être plus direct et employer les mêmes appellations que les 
 \end{pyconsole}
 \end{idleconsole}
 
-\vspace{-0.5pt}
+\vspace{-0.5pt}% WHY?
 
 \paragraph{Formatage historique avec l'opérateur {\normalfont\texttt{\%}}}
 La méthode \texttt{format} a été introduite assez tard dans \textsc{Python}. %, pour remplacer la technique présentée maintenant.
@@ -675,7 +685,7 @@ L'ancienne formulation est bien moins lisible que les autres approches. On pouva
 	\end{pyconsole}
 \end{idleconsole}
 
-\vspace{1pt}
+\vspace{1pt}% WHY?
 
 \overparagraph{Interaction avec l'utilisateur d'un programme}
 
@@ -727,11 +737,11 @@ Quant à elles, les applications destinées à fonctionner dans un terminal reç
 \subsubsection[Expressions régulières]{Expressions régulières}
 \label{subsub:XI.1.2.1}
 
-Une expression régulière\caution[t]<secondcolor>{Après avoir joué ce cours plusieurs années de suite, l'expérience montre qu'il est difficile de trouver le bon moment pour appréhender les expressions régulières.
+Une expression régulière est un objet mathématique qui décrit un ensemble de textes possèdant des propriétés communes. Par exemple, s'il arrive d'utiliser un terminal et que l'on saisisse \texttt{\$ ls *.txt} --- ou bien \texttt{\$ dir *.txt} sous \textsc{Windows} ---,\caution[t]<secondcolor>{Après avoir joué ce cours plusieurs années de suite, l'expérience montre qu'il est difficile de trouver le bon moment pour appréhender les expressions régulières.
 D'un côté il s'agit de manipulations de chaînes de caractères, mais d'un autre cela nécessite de créer des instances de classes et par suite d'avoir vu la programmation orientée objet. Du coup, les premières années elle étaient étudiées à la fin du cours, engendrant une certaine frustration.
 C'est pourquoi elle sont à présent introduite tôt, dans la séquence consacrée aux chaînes de caractères. Les étudiants qui seraient décontenancés par ce contenu sont invités à y retourner après la partie sur la programmation objet.
 Il semble important de savoir que ces fonctionnalités existent dans le langage, le détail de leur utilisation n'est toutefois pas critique et on peut parfaitement faire l'impasse sur ce complément en première lecture.}{Avertissement des auteurs}
- est un objet mathématique qui décrit un ensemble de textes possèdant des propriétés communes. Par exemple, s'il arrive d'utiliser un terminal et que l'on saisisse \texttt{\$ ls *.txt} --- ou bien \texttt{\$ dir *.txt} sous \textsc{Windows} ---, l'expression régulière \texttt{*.txt} désigne tous les fichiers dont le nom se termine par \texttt{.txt}. On dit que l'expression régulière filtre toutes les chaînes qui se terminent par \texttt{.txt} --- la terminologie anglaise consacrée est le \textit{pattern matching}.
+ l'expression régulière \texttt{*.txt} désigne tous les fichiers dont le nom se termine par \texttt{.txt}. On dit que l'expression régulière filtre toutes les chaînes qui se terminent par \texttt{.txt} --- la terminologie anglaise consacrée est le \textit{pattern matching}.
 
 Le langage \textsc{Perl} a été le premier à populariser l'utilisation des expressions régulières en les supportant nativement et non pas au travers d'une librairie. En \textsc{Python}, les expressions régulières sont disponibles de manière plus traditionnelle, \textit{via} le module \texttt{re} (pour \textit{regular expressions}) de la librairie standard. Le propos de ce complément est d'en donner une première approche.
 
@@ -740,6 +750,8 @@ Le langage \textsc{Perl} a été le premier à populariser l'utilisation des exp
 		import re
 	\end{pyconsole}
 \end{idleconsole}
+
+\vspace{1pt}% WHY?
 
 \overparagraph{Vue d'ensemble}
 
@@ -766,7 +778,8 @@ Le fait que l'objet \texttt{match} vaut \texttt{None} indique que la chaîne n'e
 	\end{pyconsole}
 \end{idleconsole}
 
-Ici \texttt{match} est un objet, qui permet ensuite « d'extraire » les différentes parties.
+%Ici \texttt{match} est un objet, qui permet ensuite « d'extraire » les différentes parties.
+Ici \texttt{match} est un objet pour « extraire » les différentes parties.
 
 \begin{idleconsole}
 	\begin{pyconsole}
@@ -1019,7 +1032,7 @@ for sample in samples:        # ensuite on part directement de l'automate
 \end{pyconsole}
 \end{idleconsole*}
 
-\vspace{1pt}
+\vspace{1pt}% WHY?
 
 \paragraph{Méthodes sur la classe {\normalfont\texttt{RegexObject}}}
 Les objets de la classe \texttt{RegexObject} représentent donc l'automate à état fini qui est le résultat de la compilation de l'expression régulière. Pour résumer ce qu'on a déjà vu, les méthodes les plus utiles sur un objet \texttt{RegexObject} sont :
@@ -1098,8 +1111,7 @@ print(regexp, "->", nice(re_obj.match("AabB"))) # On ignore la casse des caract�
 
 \overparagraph{Construction d'une expression régulière}
 
-L'élaboration d'une expression régulière se veut ici synthétique (la \href{https://docs.python.org/3/library/re.html}{documentation du module \texttt{re}} en donne une version exhaustive).
-
+L'élaboration d'une expression régulière se veut ici\sidenote{La \href{https://docs.python.org/3/library/re.html}{documentation du module \texttt{re}} en donne une version exhaustive} synthétique.
 La brique de base est le caractère quel qu'il soit et plusieurs approches sont alors possibles :
 \begin{itemize}
 \item un \emph{seul} caractère, à citer tel quel, en le précédent d'un \textit{backslash} « \texttt{\textbackslash} » s'il a par ailleurs un sens spécial dans le micro-langage de \textit{regexps} (comme « \texttt{+} », « \texttt{*} », « \texttt{[} », etc.) ;
@@ -1221,6 +1233,8 @@ print(f"{sample}, {regexp} → {match.groups()}")
 	\end{pyconsole}
 \end{idleconsole}
 
+\vspace{1pt}% WHY?
+
 \paragraph{Compter les répétitions}
 Pour gérer les répétitions, on dispose des opérateurs suivants :
 \begin{itemize}
@@ -1289,7 +1303,7 @@ match.group(0)
 	\end{pyconsole}
 \end{idleconsole*}
 
-\vspace{-1pt}
+\vspace{1pt}% WHY?
 
 \paragraph{Traitement des fins de ligne}
 Il peut être utile, pour con\-clure cette présentation des expressions régulières, de préciser un peu le comportement de la bibliothèque vis-à-vis des fins de ligne.
@@ -1515,8 +1529,10 @@ Voici les conventions adoptées pour l'exercice :
 %Enfin, il faut définir les groupes \texttt{proto}, \texttt{user}, \texttt{password}, \texttt{hostname}, \texttt{port} et \texttt{path} utilisés pour vérifier le résultat. Dans la case des résultats attendus, on doit trouver soit \texttt{None} si la \textit{regexp} ne filtre pas l'intégralité de l'entrée ou bien une liste ordonnée de tuples qui donnent la valeur de ces groupes.
 
 % vous n'avez rien à faire pour construire ces tuples, c'est l'exercice qui s'en occupe.
-
+\vspace{-\baselineskip}
 \end{exercise}
+
+%\vspace{4pt}
 
 \begin{solution}[ID=7]
 Un identificateur commence par une lettre ou un \textit{underscore} et peut être suivi par n'importe quel nombre de lettre, chiffre ou \textit{underscore}, ce qui se trouve être « \texttt{\textbackslash{w}} » si on ne se met pas en mode Unicode.
@@ -1544,6 +1560,7 @@ for sample in samples:
 \end{idleconsole}
 \end{solution}
 
+%\vspace{4pt}
 
 \begin{solution}
 L'exercice est fondé sur \texttt{re.match}, cela signifie que la correspondance est cherchée en début de chaîne, \emph{mais} il faut bien mettre \lstinline[basicstyle={\shellttfont}]{\Z} à la fin de la \textit{regexp}, sinon par ex. avec la sixième entrée le nom « Du Pré » sera reconnu partiellement comme « Du » au lieu d'être rejeté à cause de l'espace. Du coup bien penser à toujours définir les \textit{regexps} avec des \textit{raw-strings}.
@@ -1572,6 +1589,7 @@ for data in agenda_strings:
 \end{idleconsole}
 \end{solution}
 
+\vspace{2pt}
 
 \begin{solution}
 La même remarque que dans l'exercice précédent s'applique concernant \lstinline[basicstyle={\shellttfont}]{\Z}. 
@@ -1599,6 +1617,8 @@ for data in phone_strings:
 \end{idleconsole}
 
 \end{solution}
+
+\vspace{2pt}
 
 \begin{solution}
 Une première solution est apportée par la construction pas-à-pas des différents groupes constitutifs de l'URL
@@ -1694,20 +1714,17 @@ En \textsc{Python}, les séquences regroupent un ensemble de types\sidenote{En p
 
 \begin{marginvideo}
 	[\label{vid:XI.4}Notion de séquence.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter11/vidXI-03-sequences-HD.mp4}%
-	\launchvideo{./Videos/Chapter11/vidXI-03-sequences-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter11/vidXI-03-sequences-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=F83A-t_nhAM&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=5}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=F83A-t_nhAM&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=5}
 \end{marginvideo}
 
 Une séquence en \textsc{Python} est un ensemble fini et ordonné d'éléments indicés de $0$ à $n-1$ si l'on a $n$ éléments. Prenons un exemple et commençons avec une chaîne de caractères : \texttt{s = 'egg, bacon'}. Quel\-les sont les opérations communes aux objets « séquence » ?
 
 On peut tout d'abord vouloir accéder à chaque élément de la séquence avec la notation entre crochet ; soit pour le premier élément \texttt{s[0]} et le dernier \texttt{s[9]}. Au passage, pour connaître le nombre d'éléments dans une séquence on utilise la fonction \textit{built-in} \texttt{len(s)}.
-
-
-%!!!!! Coupure ici avec le chapitre précédent et exercices corrects !!!!!
-%\vfill\pagebreak
-
 
 Toutes les séquences supportent le test appartenance, opération très puissante en \textsc{Python}. Par exemple ici, est-que \texttt{'egg'} est dans \texttt{s}. Ou inversement est-ce \texttt{'egg'} n'est pas dans \texttt{s}. Ce test est relativement expressif et s'avère quasiment du langage naturel.
 
@@ -1724,7 +1741,7 @@ len(s)
 
 On peut ensuite faire de la concaténation de séquence en complémentant la chaîne par une nouvelle chaîne de caractères \texttt{', and beans'} pour obtenir un nouvel objet, ici de type chaîne de caractères. 
 
-Il existe également des opérations qui permettent de retrouver certains éléments, comme \texttt{s.index(g)} et \texttt{s.count(g)} pour respectivement obtenir la première occurrence et le nombre d’occurrences de \texttt{'g'}. On peut en outre faire appel aux fonctions \textit{buit-in} \texttt{min(s)} et \texttt{max(s)} qui offre en retour le minimum et le maximum de la séquence, dans l'ordre lexicographique ici puisque la séquence est une chaîne de caractères.
+Il y a également des opérations qui permettent de retrouver certains éléments, comme \texttt{s.index(g)} et \texttt{s.count(g)} pour respectivement obtenir la première occurrence et le nombre d’occurrences de \texttt{'g'}. On peut en outre faire appel aux fonctions \textit{buit-in} \texttt{min(s)} et \texttt{max(s)} qui offre en retour le minimum et le maximum de la séquence, dans l'ordre lexicographique ici puisque la séquence est une chaîne de caractères.
 
 Il existe une autre opération dite de \textit{shallow copy}\sidenote{Le concept de \textit{shallow copy} sera repris et explicité plus avant par la suite. Il peut y avoir des effets de bords lorsque l'objet considéré est un objet mutable et non immuable comme une chaîne de caractères.} --- littéralement « copie superficielle » --- qui permet de faire une copie d'un nombre donné de fois de la séquence. Pour simplifier, on considère ici comme séquence le caractère \texttt{'x'}. 
 
@@ -1864,10 +1881,12 @@ s[2::-1]
 
 \begin{marginvideo}
 	[\label{vid:XI.5}Notion de liste.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter11/vidXI-04-listes-HD.mp4}%
-	\launchvideo{./Videos/Chapter11/vidXI-04-listes-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter11/vidXI-04-listes-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=aHycOtc8G9k&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=6}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=aHycOtc8G9k&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=6}
 \end{marginvideo}
 
 \marginpar{\footnotesize\noindent \textsc{Bloc-note \cref{vid:XI.3}} (copier-coller)\\
@@ -1914,9 +1933,11 @@ Une liste est très malléable, on peut en augmenter la taille, la réduire, l'�
 
 Une liste est une séquence, par suite toutes les opérations sur les séquences sont applicables aux listes : test d'appartenance, concaténation, les fonctions \textit{built-in} \texttt{len}, \texttt{count}, \texttt{index}, etc.
 
-Pour définir une liste, on utilise la notation entre crochets \texttt{a=[]} et \texttt{type(a)} retourne bien le type \texttt{list}. Une liste est composée d'éléments hétérogènes et même ceux référencé par une variable. On le vérifie en posant par exemple \texttt{i=4} puis \texttt{a=[i,'spam',3.2,True]}.
+Pour définir une liste, on utilise la notation entre crochets \texttt{a=[]} et \texttt{type(a)} retourne bien le type \texttt{list}. Une liste est composée d'éléments hétérogènes et même ceux référencés par une variable. On le vérifie en posant par exemple \texttt{i=4} puis \texttt{a=[i,'spam',3.2,True]}.
 
 La liste est une séquence, on peut ainsi accéder à chacun de ses éléments, par exemple le premier \texttt{a[0]}. La liste étant un objet mutable, on peut également modifier un élément \texttt{a[0]=6}, voire directement faire une opération sur cet élément : \texttt{a[0]=a[0]+10}.
+
+\vspace{2pt}
 
 \begin{idleconsole}
 \begin{pyconsole}
@@ -1933,9 +1954,13 @@ a
 \end{pyconsole}
 \end{idleconsole}
 
+\vspace{2pt}
+
 Là encore, comme la liste est une séquence, on peut appliquer les opérations de « \textit{slicing} », par exemple \texttt{a[1:3]} retourne \texttt{['spam',3.2]}.
 
 On peut même faire des opérations d'affectation sur des \textit{slices}. En posant \texttt{a[1:3]=[1,2,3]} on obtient \texttt{[16,1,2,3,True]}. L'affectation va effectuer deux opérations indépendantes. La première (\texttt{a[1:3]}) enlève tous les éléments d'indices \texttt{1} inclus à \texttt{3} exclu. La seconde opération (\texttt{[1,2,3]}) est d'insérer les éléments donnés à la place de ceux effacés. C'est un moyen très facile de supprimer des éléments ; il suffit de les remplacer par une liste vide \texttt{a[1:3]=[]}. À noter que pour ce faire on peut aussi utiliser l'instruction \texttt{del a[1:2]}.
+
+\vspace{2pt}
 
 \begin{idleconsole}
 \begin{pyconsole}
@@ -1949,6 +1974,8 @@ a
 \end{pyconsole}
 \end{idleconsole}
 
+\vspace{2pt}
+
 Les opérations sur les listes sont nombreuses. Pour les obtenir, on peut utiliser la fonction \textit{built-in} \texttt{dir(list)} qui recense toutes les méthodes associées aux listes. Pour obtenir de l'aide sur une méthode particulière, il faut saisir \texttt{list.append?} avec l'interpréteur IPython et \texttt{help(list.append)} avec IDLE.
 
 \begin{idleconsole*}
@@ -1958,9 +1985,13 @@ help(list.append)
 \end{pyconsole}
 \end{idleconsole*}
 
+\vspace{2pt}
+
 La méthode \texttt{append} rajoute un objet à la fin d'une liste comme suit \texttt{a.append('18')} pour la chaîne de caractère \texttt{18}. On peut également utiliser la méthode \texttt{extend} qui prend en entrée une séquence et va la rajouter à la fin de la liste : \texttt{a.extend([1, 2, 3])}. Le comportement est le même que faire un \texttt{append} sur chaque élément de la séquence.
 
 La méthode \texttt{sort} trie une liste. Partant de \texttt{a=[1,5,3,1,7,9,2]}, on obtient \texttt{a=[1,1,2,3,5,7,9]}. Il faut bien noter que \texttt{sort} fonctionne en place, c'est-à-dire que la liste est triée sans copie temporaire et que la méthode ne retourne rien puisque la liste est triée en place.
+
+\vspace{2pt}
 
 \begin{idleconsole}
 \begin{pyconsole}
@@ -1976,11 +2007,15 @@ a
 \end{pyconsole}
 \end{idleconsole}
 
+\vspace{2pt}
+
 Une opération importante sur les listes est celle de passer une chaî\-ne de caractère à une liste et \textit{vice-versa}. C'est par exemple très utile dans la manipulation de fichiers traités avec \textsc{Python}.
 
 On part d'une chaîne de caractère, par exemple issue de la lecture d'un fichier, \texttt{s='spam egg beans'} que l'on souhaite afficher en colonnes. On emploie d'abord la fonction \textit{built-in} \texttt{split} applicable aux chaînes de caractères \texttt{a=s.split()}. Le résultat est de découper la chaîne de caractère en utilisant l'espace comme séparateur. On obtient une liste qui contient trois éléments : \texttt{'spam'}, \texttt{'egg'} et \texttt{'beans'}.
 
 La liste étant mutable, on peut tout à fait lui appliquer un traitement. Ici on souhaite mettre le premier élément en capitales : \texttt{a[0]=a[0].upper()}. Ensuite on peut de nouveau transcrire la liste en chaîne de caractères : \texttt{" ".join(a)}. La syntaxe signifie que l'on définit d'abord le séparateur (ici une espace) puis on juxtapose les éléments pour retrouver une chaîne de caractère avec le premier mot en lettres capitales.
+
+\vspace{2pt}
 
 \begin{idleconsole}
 \begin{pyconsole}
@@ -2229,12 +2264,17 @@ help(list)
 \end{pyconsole}
 \end{idleconsole*}
 
-Pour commencer, donnons-nous une liste témoin \texttt{liste=[0,1,2,3]} à laquelle appliquer le différentes méthodes :
-\vspace{-1pt}% WHY?
+\vspace{8pt}
+
+Pour commencer, donnons-nous une liste témoin \texttt{liste=[0,1,2,3]} sur laquelle appliquer deux méthodes assez voisines :
+%\vspace{-10pt}% WHY?
 \begin{itemize}
-\item la méthode \texttt{append} ajoute un élément à la fin d'une liste :
+\item la méthode \texttt{append} ajoute un élément à la fin d'une liste ;
 \item la méthode \texttt{extend} réalise la même opération, mais avec \emph{tous les éléments} de la liste qu'on lui passe en argument.
 \end{itemize}
+%Ces deux méthodes \texttt{append} et \texttt{extend} sont donc assez voisines. 
+
+\vspace{2pt}
 
 \begin{idleconsole}
 \begin{pyconsole}
@@ -2248,7 +2288,6 @@ print('liste', liste)
 \end{pyconsole}
 \end{idleconsole}
 
-Ces deux méthodes \texttt{append} et \texttt{extend} sont donc assez voisines. 
 
 %\vspace{-2pt}
 
@@ -2382,7 +2421,11 @@ On retrouve ici, avec l'instruction \texttt{liste.sort()} un cas d'appel de mét
 La première chose à remarquer est que la liste d'entrée a été modifiée --- on dit « en place » ou « par effet de bord ».
 On aurait pu imaginer que la liste d'entrée soit restée inchangée et que la méthode de tri renvoie une copie triée de la liste, ce n'est pas le choix qui a été fait en \textsc{Python} ; cela permet d'économiser des allocations mémoire autant que possible et d'accélérer sensiblement le tri.
 
+\vspace{-1pt}
+
 En revanche, si on a besoin de faire le tri sur une copie de liste, la fonction \texttt{sorted} permet de le réaliser.
+
+\vspace{2pt}
 
 \begin{idleconsole}
 \begin{pyconsole}
@@ -2392,7 +2435,11 @@ print('Après le tri de la copie : ', liste2)
 \end{pyconsole}
 \end{idleconsole}
 
+\vspace{2pt}
+
 Revenons à la méthode \texttt{sort} et aux \textit{tris en place}. Par défaut la liste est triée par ordre croissant, si au contraire on souhaite l'ordre décroissant, on peut faire comme suit.
+
+\vspace{2pt}
 
 \begin{idleconsole}
 \begin{pyconsole}
@@ -2403,12 +2450,16 @@ print('Après le tri décroissant : ', liste)
 \end{pyconsole}
 \end{idleconsole}
 
+\vspace{2pt}
+
 On a pas encore vu à quoi correspond cette formule \texttt{reverse=True} dans l'appel à la méthode --- ceci est approfondi dans le chapitre sur les appels de fonction --- mais dans l'immédiat on peut utiliser cette technique telle quelle.
 
-Cette technique fonctionne très bien sur tous les types numériques à l'exception des complexes\sidenote{En guise d'exercice, pourquoi ?}, ainsi que sur les chaînes de caractères. 
+Cette technique fonctionne très bien sur tous les types numériques à l'exception des complexes\sidenote{En guise d'exercice, dire pourquoi ?}, ainsi que sur les chaînes de caractères. 
 
 Pour les chaînes de caractères, comme on s'y attend, il s'agit cette fois d'un \emph{tri lexicographique}, dérivé de l'ordre sur les caractères. Autrement dit, c'est l'ordre du dictionnaire. Il faut souligner toutefois, pour les personnes n'ayant jamais été exposées à l'informatique, que cet ordre, quoique déterministe, est arbitraire en dehors des lettres de l'alphabet.
 Lorsque les chaînes contiennent des espaces ou autres ponctuations, le résultat du tri peut paraître surprenant.
+
+\vspace{2pt}
 
 \begin{idleconsole*}
 \begin{pyconsole}
@@ -2431,7 +2482,7 @@ print(liste)            # que tous les autres caractères imprimables
 \end{pyconsole}
 \end{idleconsole*}
 
-
+\vfill\pagebreak
 
 %----------
 \section[\texorpdfstring{Introduction aux conditionnelles,\newline itérations et fonctions}{Introduction aux conditionnelles, itérations et fonctions}]{Conditionnelles, itérations et fonctions}
@@ -2448,10 +2499,12 @@ Jusqu'ici les notions importantes abordées sont les concepts d'objet, de variab
 
 \begin{marginvideo}
 	[\label{vid:XI.6}Conditionnelle.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter11/vidXI-05-if-introduction-HD.mp4}%
-	\launchvideo{./Videos/Chapter11/vidXI-05-if-introduction-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter11/vidXI-05-if-introduction-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=hPhQUUgy6qI&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=7}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=hPhQUUgy6qI&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=7}
 \end{marginvideo}
 
 Le test \texttt{if-else} permet de faire de l'exécution conditionnelle, c'est-à-dire qu'un morceau de code va s'effectuer selon que le résultat d'un test est vrai ou faux.
@@ -2540,17 +2593,31 @@ Un principe fondateur de la programmation est ce qu'on appelle la \emph{factoris
 \subsubsection[Boucle {\normalfont\texttt{for}}]{Boucle {\normalfont\texttt{for}}}
 \label{subsub:XI.3.2.1}
 
-%\begin{marginvideo}
-%	[\label{vid:XI.7}Boucle \texttt{for}.]%
-%	\movie[width=\marginparwidth,showcontrols]%
-%		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-%		{./Videos/Chapter11/vidXI-06-boucle-for-fonctions-HD.mp4}%
-%	\launchvideo{./Videos/Chapter11/vidXI-06-boucle-for-fonctions-HD.mp4}
-%\end{marginvideo}
-
 Supposons que l'on veuille afficher à l'écran les carrés des nombres allant de 0 à 9. On peut écrire \texttt{print(1**2)}, \texttt{print(2**2)}, \texttt{print(3**2)} et ainsi de suite... En continuant de cette manière, on se rend compte rapidement que c'est une tâche très fastidieuse. On peut alors automatiser cette tâche au moyen d'une boucle \texttt{for}.
 
 %\mintinline{python}{print(1**2)}, \mintinline{python}{print(2**2)}, \mintinline{python}{print(3**2)}
+
+La syntaxe d'une boucle \texttt{for} est donnée ci-dessous où \texttt{i} est une variable et \texttt{range(10)} est objet qui permet de parcourir tous les entiers allant de \texttt{0} à \texttt{9}. Avec un deux-point, la fin de ligne annonce un bloc d'instruction ---  ici \texttt{print(i**2)} ---, qui débute à la ligne suivante décalée de quatre espaces vers la droite. La variable \texttt{i} référence chacun des entiers à chaque tour de boucle et \texttt{print(i**2)} affiche le carré de \texttt{i}.
+
+\begin{idleconsole}
+\begin{pyconsole}
+for i in range(10):
+    print(i**2)
+
+\end{pyconsole}
+\end{idleconsole}
+
+On peut mettre n'importe quelle séquence voire itérable\sidenote{Concept abordé par la suite.} dans une boucle \texttt{for}. On peut par exemple considérer une liste contenant une chaîne caractère, un \textit{float} et un booléen puis afficher simplement la variable \texttt{i} d'itération pour avoir chaque élément de la liste.
+
+\begin{marginvideo}
+	[\label{vid:XI.7}Boucle \texttt{for}.]%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter11/vidXI-06-boucle-for-fonctions-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=Y-Ri2gdiOTA&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=8}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=Y-Ri2gdiOTA&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=8}
+\end{marginvideo}
 
 \marginpar{\footnotesize\noindent \textsc{Bloc-note \cref{vid:XI.7}} (copier-coller)\\
 \texttt{print(1**2)}\\
@@ -2580,18 +2647,6 @@ Supposons que l'on veuille afficher à l'écran les carrés des nombres allant d
 \texttt{b = carre(b)}\\
 \texttt{b}
 }
-
-La syntaxe d'une boucle \texttt{for} est donnée ci-dessous où \texttt{i} est une variable et \texttt{range(10)} est objet qui permet de parcourir tous les entiers allant de \texttt{0} à \texttt{9}. Avec un deux-point, la fin de ligne annonce un bloc d'instruction ---  ici \texttt{print(i**2)} ---, qui débute à la ligne suivante décalée de quatre espaces vers la droite. La variable \texttt{i} référence chacun des entiers à chaque tour de boucle et \texttt{print(i**2)} affiche le carré de \texttt{i}.
-
-\begin{idleconsole}
-\begin{pyconsole}
-for i in range(10):
-    print(i**2)
-
-\end{pyconsole}
-\end{idleconsole}
-
-On peut mettre n'importe quelle séquence voire itérable\sidenote{Concept abordé par la suite.} dans une boucle \texttt{for}. On peut par exemple considérer une liste contenant une chaîne caractère, un \textit{float} et un booléen puis afficher simplement la variable \texttt{i} d'itération pour avoir chaque élément de la liste.
 
 \begin{idleconsole}
 \begin{pyconsole}
@@ -2831,11 +2886,12 @@ Il est important de noter qu'il s'agit ici de \emph{règles d'usage} et non pas 
 \paragraph*{Coupures de ligne}
 On va à présent zoomer dans le module \texttt{pprint.py} pour voir quelques exemples de coupure de ligne. Par con\-traste avec ce qui précède, il s'agit ici surtout de règles syntaxiques, qui peuvent rendre un code non valide si elles ne sont pas respectées.
 
-La fonction \texttt{pprint} (ligne 47) est une commodité (qui crée une instance de \texttt{PrettyPrinter}, sur lequel on envoie la méthode \texttt{pprint}). On voit là qu'il n'est pas nécessaire d'insérer un \textit{backslash} (\texttt{\textbackslash}) à la fin des lignes 50 et 51, car il y a une parenthèse ouvrante qui n'est pas fermée à ce stade.
+La fonction \texttt{pprint} (ligne 47) est une commodité (qui crée une instance de \texttt{PrettyPrinter}, sur lequel on envoie la méthode \texttt{pprint}). On voit là qu'il n'est pas nécessaire d'insérer un \textit{backslash} (\texttt{\textbackslash}) à la fin des lignes 50 et 51, car il y a une parenthèse ouvrante non fermée à ce stade.
 
 De manière générale, lorsqu'une parenthèse ouvrante « \texttt{(} » --- \textit{idem} avec les crochets « \texttt{[} » et accolades « \texttt{\{} » --- n'est pas fermée sur la même ligne, l'interpréteur suppose qu'elle sera fermée plus loin et n'impose pas de \textit{backslash}.
 On peut donc écrire :
 
+\vspace{-2pt}
 \begin{codebox}{python}
 valeurs = [ 
    1,
@@ -2852,6 +2908,7 @@ x = un_nom_de_fonction_tres_tres_long(
 
 À titre de rappel, signalons aussi les chaînes de caractères à base de \texttt{"""} ou \texttt{'''} qui permettent elles aussi d'utiliser plusieurs lignes consécutives sans \textit{backslash}.
 
+\vspace{-2pt}
 \begin{codebox}{python}
 texte = """Les sanglots longs
 Des violons
@@ -2876,20 +2933,24 @@ Dans un autre registre, on peut se reporter à ce \href{https://docs.python.org/
 
 \overparagraph{Instruction {\normalfont\ttfamily pass}}
 
-En \textsc{Python} les blocs de code sont définis par leur indentation. Cette convention a une limitation lorsqu'on essaie de définir un bloc vide. Voyons par exemple comment on définirait en C une fonction qui ne fait absolument rien :
+En \textsc{Python}, les blocs de code sont définis par leur indentation. Cette convention a une limite quand on essaie de définir un bloc vide. Voyons par exemple comment on écrirait en C une fonction qui ne fait rien.
+
+\vspace{-2pt}% Codebox introduces vkip 4pt before and after its environment
 
 \begin{codebox}{c}
-/* une fonction C qui ne fait rien */
-void foo() {}
+void foo() {} /* une fonction C qui ne fait rien */
 \end{codebox}
 
-Comme en \textsc{Python} on n'a pas d'accolade pour délimiter les blocs de code, il existe une instruction \texttt{pass}, qui ne fait rien. À l'aide de cette instruction on peut à présent définir une fonction vide comme ci-dessous
+Comme en \textsc{Python} il n'existe pas d'accolade pour délimiter les différents blocs de code, il y a une instruction \texttt{pass}, qui ne fait strictement rien. À l'aide de cette instruction on peut à présent définir une fonction vide comme ci-après.
+
+\vspace{-4pt}% Codebox introduces vkip 4pt before and after its environment
 
 \begin{codebox}{python}
-# une fonction Python qui ne fait rien
-def foo():
+def foo(): # une fonction Python qui ne fait rien
     pass
 \end{codebox}
+
+\vspace{2pt}% Codebox introduces vkip 4pt before and after its environment
 
 Pour prendre un second exemple un peu plus pratique et pour anticiper un peu sur l'instruction \texttt{while} abordéplus loin dans le cours, voici un exemple d'une boucle vide, c'est à dire sans corps, qui permet de «~dépiler » dans une liste jusqu'à l'obtention d'une certaine valeur. On voit qu'ici encore l'instruction \texttt{pass} a toute son utilité.
 
@@ -3032,6 +3093,7 @@ for test in [-2, 1, 2, 4, 19, 35]:
 
 \end{pyconsole}
 \end{idleconsole}
+\vspace{4pt}
 
 Pour les besoins de la discussion, on a choisi de retourner \texttt{None} pour les entiers négatifs ou nuls, une manière comme une autre de signaler que la valeur en entrée n'est pas valide. Ceci n'est pas forcément une bonne pratique, mais elle permet ici d'illustrer que dans le cas où on ne mentionne pas de valeur de retour, \textsc{Python} retourne \texttt{None}.
 
@@ -3347,17 +3409,17 @@ divisible(-10, 30)
 divisible(8, 12)
 divisible(12, -8)
 divisible(-12, 8)
-divisible(-12, -8)
 divisible(10, 1)
 divisible(30, -10)
-divisible(-30, 10)
 divisible(-30, -10)
+divisible(-10, -30)
 \end{pyconsole}
 \end{idleconsole}
 \end{solution}
 
-%divisible(-10, -30)
 %divisible(30, 10)
+%divisible(-12, -8)
+%divisible(-30, 10)
 
 %divisible_bis(10, 30)
 %divisible_bis(10, -30)
@@ -3404,7 +3466,6 @@ def morceaux_ter(x):
 
 morceaux(-10)
 morceaux(0)
-morceaux(10)
 morceaux(-6)
 morceaux(-4)
 morceaux(5)
@@ -3414,13 +3475,17 @@ morceaux(20)
 \end{pyconsole}
 \end{idleconsole}
 
-En référence à la fonction \texttt{morceaux}, on veut visualiser le résultat. Autrement dit, en partant du code de la fonction, on veut produire sa courbe en utilisant\caution[t]<firstcolor>{%
+%morceaux(-6)
+%morceaux(-4)
+%morceaux(10)
+
+En référence à la fonction \texttt{morceaux}, on veut visualiser le résultat, à savoir produire sa courbe en utilisant\caution[t]<firstcolor>{%
 Par rapport à l'interactivité d'un \textit{notebook} \textsc{Jupyter}, nous sommes contraints d'enregistrer la figure, puis de l'insérer au document. En effet, l'affichage écran n'a lieu qu'au moment de la compilation \LaTeX\ avec l’extension \textsc{Python}\TeX{}. L'affichage interactif est ainsi introduit en commentaire : \texttt{plt.show()}.}{Note de la rédaction}
  \textsc{numpy} et \textsc{matplotlib}. 
 
 \begin{idleconsole}
 \begin{pyconsole}
-# Importation des bibliothèques
+# Importation des bibliothèques/modules
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -3446,15 +3511,15 @@ plt.close()
 %#plt.ylim(0, 5)
 
 \begin{center}
-\vspace{-\baselineskip}
+\vspace{-0.75\baselineskip}
 \IfFileExists{./PythonTeX/morceaux.png}%
-  {\includegraphics[width=\linewidth]{./PythonTeX/morceaux.png}}%
+  {\includegraphics[width=0.975\linewidth]{./PythonTeX/morceaux.png}}%
   {\textbf{!! Missing matplotlib graphics !!}}%
 \end{center}
-\vspace{-.5\baselineskip}
+\vspace{-0.75\baselineskip}
 \end{solution}
 
-\vspace{2pt}
+%\vspace{2pt}
 
 \begin{solution}
 \vspace{-\baselineskip}
@@ -3492,7 +3557,7 @@ Sparse is better than dense.
 \vspace{.5\baselineskip}
 \end{solution}
 
-\vfill\pagebreak
+%\vfill\pagebreak
 
 
 %----------
@@ -3505,10 +3570,12 @@ Sparse is better than dense.
 
 \begin{marginvideo}
 	[\label{vid:XI.8}Compréhension de liste.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter11/vidXI-07-comprehension-listes-HD.mp4}%
-	\launchvideo{./Videos/Chapter11/vidXI-07-comprehension-listes-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter11/vidXI-07-comprehension-listes-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=Mvx1fOr2Hrg&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=9}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=Mvx1fOr2Hrg&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=9}
 \end{marginvideo}
 
 Les listes sont au cœur de tout programme \textsc{Python}. La liste est en effet un objet flexible pouvant référencer n'importe quel type d'objet. 
@@ -3532,7 +3599,9 @@ b
 \end{pyconsole}
 \end{idleconsole*}
 
-Le concept de compréhension de liste permet une écriture plus ramassée et fournit directement une nouvelle liste, ici des logarithmes des éléments de \texttt{a}. Pour s'en convaincre, il suffit de comparer la syntaxe du résultat précédent avec la nouvelle formulation qui s'avère quasiment du langage naturel.
+Le concept de compréhension de liste permet une écriture plus ramassée et fournit directement une nouvelle liste. 
+%, ici des logarithmes des éléments de \texttt{a}. 
+Pour s'en convaincre, il suffit de comparer la syntaxe du résultat précédent avec la nouvelle formulation qui s'avère quasiment du langage naturel.
 
 \begin{idleconsole*}
 \begin{pyconsole}
@@ -3552,7 +3621,9 @@ b
 \end{pyconsole}
 \end{idleconsole*}
 
-On pourrait croire avec ces exemples que les compréhensions de listes sont réservées aux calculs sur des nombres entiers. En fait, cela n'est absolument pas le cas. Une compréhension de listes permet d'appliquer n'importe quelle opération, instruction et fonction sur n'importe quelle type de séquence.
+On pourrait croire de ces exemples que les compréhensions de listes sont réservées aux calculs sur des entiers. 
+%En fait, cela n'est absolument pas le cas. 
+Mais non, une compréhension de listes permet d'appliquer n'importe quelle opération, instruction et fonction sur n'importe quelle type de séquence.
 
 Prenons maintenant un exemple avec des chaînes de caractères en partant d'une liste de prénoms dont certains dont une mauvaise capitalisation : \texttt{prenom = ['Alice','evE','sonia','BOB']} et essayons de tous les mettre en lettres minuscules avec la méthode \texttt{lower()} des chaînes de caractères. On peut tout aussi bien mettre en capitale uniquement la première lettre des prénoms avec la méthode \texttt{title()}.
 
@@ -3651,13 +3722,13 @@ plt.close()
 \begin{center}
 \vspace{-.75\baselineskip}
 \IfFileExists{./PythonTeX/polynome.png}%
-  {\includegraphics[width=\linewidth]{./PythonTeX/polynome.png}}%
+  {\includegraphics[width=0.975\linewidth]{./PythonTeX/polynome.png}}%
   {\textbf{!! Missing matplotlib graphics !!}}%
 \end{center}
 \vspace{-.75\baselineskip}
 \end{solution}
 
-\vspace{2pt}
+\vspace{8pt}
 
 \begin{solution}
 \vspace{-\baselineskip}
@@ -3704,10 +3775,12 @@ carre("; -12 ; ; -23; 1 ;;\t")
 
 \begin{marginvideo}
 	[\label{vid:XI.9}Modules.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter11/vidXI-08-modules-HD.mp4}%
-	\launchvideo{./Videos/Chapter11/vidXI-08-modules-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter11/vidXI-08-modules-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=sb9vqobH5Ns&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=10}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=sb9vqobH5Ns&list=PL2CXLryTKuwwlCGfgpApOTmMn7_dbtwWa&index=10}
 \end{marginvideo}
 
 Un module est un fichier \textsc{Python} standard se terminant par l'extension « \texttt{.py} ». Lorsque l'on importe ce fichier avec l'instruction \texttt{import}, cela crée un objet module.
@@ -3744,9 +3817,9 @@ random.randint(1, 100)
 
 L'intérêt de la bibliothèque standard est d'avoir la certitude de disposer des mêmes modules pour chacune des installations de \textsc{Python}. 
 
-Mentionnons quelques opérations possibles et réalisables au moyen de la bibliothèque standard :
+Mentionnons quelques opérations réalisables au moyen de la bibliothèque standard :
 \begin{itemize}\jazzitem
-\item programmation parallèle ;
+\item programmation parallèle;
 \item programmation asynchrone ;
 \item persistance de données (sérialisation) ;
 \item communication sur Internet (support de tous les protocoles) ;
@@ -3801,7 +3874,7 @@ Cocher la ou les affirmations qui sont vraies.
 \end{quizquestion}
 \end{quiz}
 
-\vspace{2pt}
+\vfill\pagebreak
 
 \begin{quiz}[title={Chaînes de caractères}]
 \vspace{-\baselineskip}
@@ -4002,11 +4075,6 @@ On suppose avoir la liste : \texttt{entree = [1,2,3,4,5,6,7,8,9]}. Parmi les fra
 	\mcqproposal{\texttt{carres = [x**2 for x in entree if x \% 3 == 0]}}
 \end{quizquestion}
 \end{quiz}
-
-
-
-
-
 
 
 

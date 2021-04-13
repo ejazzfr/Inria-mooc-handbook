@@ -22,12 +22,16 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 - Recent [TeX Live](https://www.tug.org/texlive/quickinstall.html) installation
 - Copy TeXjazz bundle files and fonts inside `~/.texmf`(TeX Directory Structure compliant)
 - Update TeX Live local TDS using `texhash ~/.texmf`
+- Install Pygments module: `sudo apt−get update −y` and `sudo apt−get install −y python−pygments`
+- Create a symbolic link for PythonTeX: `sudo ln −s /[...]/texlive/2020/texmf−dist/scripts/pythontex/pythontex3.py /usr/bin/pythontex`
+- Create a symbolic link for Xindy: `sudo ln −s /[...]/texlive/2020/bin/x86_64−linux/xindy xindy`
+- Copy `jazzcode.py` into `/usr/lib/python3/dist-packages/pygments/styles` directory
 
 **Compilation using the makefile :**
 
 1. Go into the directory named `/sources`
 2. Comment or uncomment chapters you want to compile inside the master file `inria-mooc.tex` (line 350)
-3. Compile using `make inria-mooc.pdf` (this compiles mulitple times so it takes some time)
+3. Compile using `make inria-mooc.pdf` (this compile mulitple times so it takes some time)
 4. Clean using `make clean`
 
 
@@ -42,6 +46,7 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 7. Compile a second time `lualatex -shell-escape inria-mooc.tex` (cross references)
 8. Compile a third time `lualatex -shell-escape inria-mooc.tex` (cross references)
 9. Compile a fourth time `lualatex -shell-escape inria-mooc.tex` (cross references)
+10. Compile a fifth time `lualatex -shell-escape inria-mooc.tex` (cross references)
 
 
 **Complete guide and documentation :**
@@ -49,3 +54,4 @@ This work may be distributed and/or modified under the conditions of the CC-BY-N
 - [Handbook](./doc/latex/texjazz/texjazz-handbook-fr.pdf)
 - [AskReply](./doc/latex/texjazz/texjazz-askreply-fr.pdf)
 - [AssignPoints](./doc/latex/texjazz/texjazz-assignpoints-fr.pdf)
+

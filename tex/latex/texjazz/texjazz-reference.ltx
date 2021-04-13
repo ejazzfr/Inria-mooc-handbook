@@ -1,0 +1,150 @@
+%%
+%% texjazz-reference.ltx
+%%
+%% A LaTeX file to have new referencing fields of documents.
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+% --------------------------------------------------------------------------------------------------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-reference.ltx' and `texjazz-reference[-fr].tex' (not yet fully available).
+% --------------------------------------------------------------------------------------------------
+
+%-- File identification
+%----------------------
+
+\ProvidesFile{texjazz-reference.ltx}[2020/12/14 v0.1a − New referencing fields about documents]
+
+%---- Referencing of the document / Référencement du document
+%------------------------------------------------------------
+
+%-- New information "fields" about the document
+
+\newcommand{\copyrightsymbol}[1]{%
+   \def\@copyrightsymbol{#1}%
+    \if\relax\detokenize{#1}\relax\else
+    \fi
+}
+\copyrightsymbol{}
+
+\newcommand{\copyrightname}[1]{%
+  \def\@copyrightname{#1}%
+    \if\relax\detokenize{#1}\relax\else
+    \fi
+}
+\copyrightname{}
+
+%- Setting a new author reference field
+\newcommand{\@authorref}{}
+\newcommand{\authorref}[1]{%
+  \renewcommand{\@authorref}{#1}%
+}
+
+%- Setting a new version document field
+\newcommand{\@docversion}{}
+\newcommand{\docversion}[1]{%
+  \renewcommand{\@docversion}{#1}%
+}
+\docversion{}
+\newcommand{\version}{\@docversion}
+
+\newcommand{\versiondate}[1]{%
+  \def\@versiondate{#1}%
+    \if\relax\detokenize{#1}\relax\else
+    \fi
+}
+\versiondate{}
+
+\newcommand{\typesettinginfo}[1]{%
+  \def\@typesettinginfo{#1}%
+    \if\relax\detokenize{#1}\relax\else
+    \fi
+}
+\typesettinginfo{}
+
+\newcommand{\licenseinfofull}{%
+  \footnotesize%
+  \textsc{\@doctitle} --- \textsc{\@subtitle}\\%
+  \textsc{\@author} --- \@copyrightsymbol\space{}\@copyrightname, \@versiondate, \@docversion
+}
+
+\newcommand{\licenseinfo}{%
+  \footnotesize%
+  \textsc{\@doctitle} --- \textsc{\@subtitle}\\%
+  \textsc{\@author} --- \@copyrightsymbol\space\textemdash\space\@docversion
+}
+
+%-- Referencing commands
+%-----------------------
+
+%- Initialization (for front title page or cover with forgotten/no title or author)
+\title{}
+\author{}
+\date{}
+
+%- Setting the title: optional field for ToC
+\newcommand{\@doctitle}{}
+\RenewDocumentCommand{\title}{o m}{% option: adding a doctitle (short title or without newline)
+  \IfValueTF{#1}
+    {\renewcommand{\@doctitle}{#1}\gdef\@title{#2}}% \@title from `latex.ltx'
+    {\renewcommand{\@doctitle}{#2}\gdef\@title{#2}}%
+}
+
+%- Setting a new subtitle field
+\newcommand{\@subtitle}{}
+\newcommand{\subtitle}[1]{%
+  \renewcommand{\@subtitle}{#1}%
+}
+
+%- Attaching and displaying a logotype to the document (title page, etc.)
+\newcommand{\doc@logo}{}
+\newcommand{\doc@logoscale}{1.0}
+\newcommand{\displaylogo}{}
+%\newcommand{\doclogo}[1][]{\renewcommand{\doc@logo}{#1}}
+%\DeclareDocumentCommand{\doclogo}{o m}{%
+%  \IfNoValueTF{#1}{%
+%    \renewcommand{\doc@logo}{#2}%
+%  }{%
+%    \renewcommand{\doc@logoscale}{#1}%
+%    \renewcommand{\doc@logo}{#2}%
+%  }%
+%}
+\NewDocumentCommand{\doclogo}{o g}{%
+  \IfNoValueTF{#2}{}{%
+    \IfNoValueTF{#1}{%
+      \renewcommand{\doc@logo}{#2}%
+      \renewcommand{\displaylogo}{\includegraphics[scale=\doc@logoscale]{\doc@logo}}%
+    }{%
+      \renewcommand{\doc@logoscale}{#1}%
+      \renewcommand{\doc@logo}{#2}%
+      \renewcommand{\displaylogo}{\includegraphics[scale=\doc@logoscale]{\doc@logo}}%
+    }
+  }
+}
+\newcommand{\doc@addlogo}{}
+\newcommand{\doc@addlogoscale}{1.0}
+\newcommand{\displayaddlogo}{}
+\NewDocumentCommand{\docaddlogo}{o g}{%
+  \IfNoValueTF{#2}{}{%
+    \IfNoValueTF{#1}{%
+      \renewcommand{\doc@addlogo}{#2}%
+      \renewcommand{\displayaddlogo}{\includegraphics[scale=\doc@addlogoscale]{\doc@addlogo}}%
+    }{%
+      \renewcommand{\doc@addlogoscale}{#1}%
+      \renewcommand{\doc@addlogo}{#2}%
+      \renewcommand{\displayaddlogo}{\includegraphics[scale=\doc@addlogoscale]{\doc@addlogo}}%
+    }
+  }
+}
+
+\endinput

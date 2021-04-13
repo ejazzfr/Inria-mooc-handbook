@@ -22,12 +22,12 @@ Plus ou moins structurée, cette multitude de choses très diverses est, soit ap
 
 \afterpage{%
 \begin{marginvideo}[\label{vid:vidV.1}Représentation binaire.]%
-	%\href{./Videos/Chapter05/vidV-01-representation-binaire-HD.mp4}%
-	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-	\movie[width=\marginparwidth,showcontrols]%
+	\href{https://www.youtube.com/watch?v=fFnIwfGH-Aw}%
 		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter05/vidV-01-representation-binaire-HD.mp4}%
-	\launchvideo{./Videos/Chapter05/vidV-01-representation-binaire-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-01-representation-binaire-HD.mp4}%
+	\launchvideo{https://www.youtube.com/watch?v=fFnIwfGH-Aw}
 \end{marginvideo}}
 
 Afin de pouvoir « discuter » avec un ordinateur, on procède à une numérisation, c'est-à-dire un codage de l'information ou une interprétation en nombres que l'ordinateur est capable de manipuler. 
@@ -321,10 +321,12 @@ Le dessin du caractère --- le glyphe --- à l'écran n'est important qu'au mome
 
 
 \begin{marginvideo}[\label{vid:vidV.2}Image et son.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter05/vidV-02-images-audio-HD.mp4}%
-	\launchvideo{./Videos/Chapter05/vidV-02-images-audio-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-02-images-audio-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=VFQ4SrF91Lc}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=VFQ4SrF91Lc}
 \end{marginvideo}
 
 %----------
@@ -342,7 +344,7 @@ Toujours est-il que l'on constate depuis quarante ans énormément de bouleverse
 \subsection[Photographie et dessin]{Photographie et dessin}
 \label{sub:V.2.1}
 
-\caution[t]<firstcolor>{Section à compléter pour rééquilibrer avec la partie son ? Par exemple :\\ \url{https://images.math.cnrs.fr/Le-traitement-numerique-des-images.html}, \url{http://images.math.cnrs.fr/Compression-d-image.html}, \url{https://fr.wikipedia.org/wiki/Portail:Couleurs} + divers docs}{Note de la rédaction}%
+%\caution[t]<firstcolor>{Section à compléter pour rééquilibrer avec la partie son ? Par exemple :\\ \url{https://images.math.cnrs.fr/%Le-traitement-numerique-des-images.html}, \url{http://images.math.cnrs.fr/Compression-d-image.html}, \url{https://fr.wikipedia.org/wiki/Portail:Couleurs} + divers docs}{Note de la rédaction}%
 Il n'y a qu'un pas du traitement de texte à la \textsc{Pao} --- Publication assistée par ordinateur. Il a rapidement été franchi, avec comme corollaire le traitement des images : photographie et dessin. 
 
 Ces deux orientations donnent lieu à chacune leur manière de procéder avec des données visuelles : la segmentation pour ce qui est des images matricielles --- dites aussi \textit{bitmap}, littéralement « carte de bits~» --- et la modélisation mathématique pour les images vectorielles.
@@ -486,7 +488,7 @@ Les différentes notations de l'\cref{eq:V.1} représentent :
 	\item $p\vars{\vec{r},t}$ ~$\rightarrow$ pression acoustique, soit la variation --- ou la perturbation --- de pression atmosphérique due à la présence d'une onde.% acoustique.
 \end{itemize}
 
-\paragraph*{Évolution temporelle} En faisant fi des aspects\sidenote{Il y aurait trop de choses à expliciter par rapport au contexte de ce document.} physiques et supposant la pression atmosphérique constante, reste le «~signal sonore » en tant que tel, localisé par exemple \nopagebreak à l'oreille d'un auditeur. Par définition, c'est la variation de pression acoustique au cours du temps que l'on appelle « \emph{forme d'onde} » (voir \cref{fig:V.7a}). 
+\paragraph*{Évolution temporelle} En faisant fi des aspects\sidenote{Il y aurait trop de choses à expliciter par rapport au contexte de ce document.} physiques et supposant la pression atmosphérique constante, reste le «~signal sonore » en tant que tel, localisé par exemple à l'oreille d'un auditeur. Par définition, c'est la variation de pression acoustique au cours du temps que l'on appelle « \emph{forme d'onde} » (voir \cref{fig:V.7a}). 
 
 %en un point $\vec{r}_0$ donné,
 
@@ -494,6 +496,8 @@ L'unité d'évaluation de la pression est le \emph{Pascal}, noté Pa,
 %La pression étant une force par unité de surface, le Pascal est 
 homogène au Newton par mètre carré ($\mbox{N/m}^{2}$).
 Les ordres de grandeur des pressions atmosphériques et acoustiques sont respectivement :
+
+\vspace{-.75\baselineskip}
 \begin{equation}
 \left |
 \begin{array}{l}
@@ -503,6 +507,7 @@ P_{0} \approx 10^{5} ~\mbox{Pa} ~~\mbox{(ou N/m}^{2}) \approx 1 ~\mbox{bar} \\[1
 \right.
 \label{eq:V.2}
 \end{equation}
+\vspace{-.75\baselineskip}
 
 On peut immédiatement souligner la remarquable dynamique de réponse de l'oreille humaine. En effet, l'échelle de pression acoustique est de l'ordre de dix millions de valeurs possibles ($10^{7}$, de $10^{-5}$ à $10^{2}$ Pa) entre\sidenote{Cela justifie l'utilisation d'une échelle logarithmique de quantification au moyen du décibel (dB).} la pression minimale juste audible et le seuil de douleur où le tympan s'engage dans une sollicitation déraisonnable.
 
@@ -658,10 +663,10 @@ Issue des méthodes de synthèse sonore analogique (1960-1970), notamment la syn
 \item transitoires d'extinction (R), de nouveau effets temporels plutôt relatifs aux composantes de perte ou d'amortissement du son.
 \end{enumerate}
 
-\paragraph*{Son élémentaire} Le signal sonore le plus simple est décrit par une fonction sinusoïdale. Dans le jargon des acousticiens, il est qualifié de son « \emph{pur} », comme composante de base
-%\sidecomment{Et non comme possédant des attributs vertueux ou moraux irréprochables.}
- d'un signal sonore.
+\paragraph*{Son élémentaire} Le signal sonore le plus simple \nopagebreak est décrit par une fonction sinusoïdale. Dans le jargon des acousticiens, il est qualifié de son « \emph{pur} », comme composante de base d'un signal sonore.
 Son expression mathématique permet d'introduire les concepts fondamentaux qui caractérisent un phénomène sonore (voir éq. \ref{eq:V.3}).
+
+\vspace{-\baselineskip}
 \begin{equation}
 \begin{array}{@{}c@{}}
 p\vars{t} = A\vars{t} \sin\var{\omega t + \varphi\vars{t}} = A\vars{t} \sin\var{{2\pi t}/{T} + \varphi\vars{t}}
@@ -677,11 +682,7 @@ $\omega$ $\rightarrow$ & pulsation/fréquence angulaire (rad/s), $\omega = 2\pi 
 \end{array}
 \label{eq:V.3}
 \end{equation}
-
-Les propriétés mathématiques des fonctions sinusoïdales sont bien adaptées à la description des signaux sonores
-et plus largement des phénomènes vibratoires et ondulatoires de toute nature. En effet, l'évolution de l'amplitude d'un sinus parcourt un cycle qui se répète à l'identique dans le temps (voir \cref{fig:V.11a}), directement interprétable comme la \emph{variation d'un phénomène autour d'une position d'équilibre}.
-
-%C'est pourquoi, il est d'usage commun en physique de nommer les fonctions sinusoïdales sous le terme générique de fonctions\sidenote{Cette appellation de \emph{fonctions oscillantes} provient du fait que les fonctions sinusoïdales constituent la famille de solutions générales des oscillateurs harmoniques (systèmes masse/ressort).} \emph{oscillantes}.
+\vspace{-\baselineskip}
 
 %\vspace{4pt}
 %\afterpage{%
@@ -691,6 +692,12 @@ et plus largement des phénomènes vibratoires et ondulatoires de toute nature. 
 \caption{\label{fig:V.10} Synthèse par table d'onde d'une note de trompette (d'après \cite{Rossing-etal:2002}).}
 \end{jazzfigure*}
 %}
+
+Les propriétés mathématiques des fonctions sinusoïdales sont bien adaptées à la description des signaux sonores
+et plus largement des phénomènes vibratoires et ondulatoires de toute nature. En effet, l'évolution de l'amplitude d'un sinus parcourt un cycle qui se répète à l'identique dans le temps (voir \cref{fig:V.11a}), directement interprétable comme la \emph{variation d'un phénomène autour d'une position d'équilibre}.
+
+%C'est pourquoi, il est d'usage commun en physique de nommer les fonctions sinusoïdales sous le terme générique de fonctions\sidenote{Cette appellation de \emph{fonctions oscillantes} provient du fait que les fonctions sinusoïdales constituent la famille de solutions générales des oscillateurs harmoniques (systèmes masse/ressort).} \emph{oscillantes}.
+
 
 Les fonctions sinusoïdales ont une amplitude de variation dans l'intervalle de valeurs comprises entre $-1$ et $+1$. Afin de décrire des signaux sonores d'amplitude quelconque, leur sont adjoints un facteur multiplicatif $A(t)$, variable au cours du temps --- attribut qui permet de modéliser les phénomènes de pertes d'énergie des \emph{signaux réels}.
 
@@ -1674,10 +1681,12 @@ Savoir coder l'information est une condition nécessaire, mais elle s'avère non
 \label{sub:V.3.1}
 
 \begin{marginvideo}[\label{vid:vidV.3}Compression des données.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter05/vidV-03-compression-HD.mp4}%
-	\launchvideo{./Videos/Chapter05/vidV-03-compression-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-03-compression-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=1uY97NJfpuk}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=1uY97NJfpuk}
 \end{marginvideo}
 
 Au regard des codages des divers éléments multimédias présentés en section précédente, on constate que la quantité d'information à traiter peut devenir rapidement considérable. Pour se servir des données dans des conditions acceptables, il faut souvent avoir recours à des données compressées, au sens de volume d'information à traiter. On distingue alors deux catégories :
@@ -1871,10 +1880,12 @@ En pratique, les taux de compression peuvent aller jusqu'à 1/10 environ en fonc
 \label{sub:V.3.2}
 
 \begin{marginvideo}[\label{vid:vidV.4}Organisation des données.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter05/vidV-04-data-HD.mp4}%
-	\launchvideo{./Videos/Chapter05/vidV-04-data-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-04-data-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=0jNWvm9wN38}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=0jNWvm9wN38}
 \end{marginvideo}
 
 Après avoir détaillé le codage des données selon leur origine, pour qu'elles soient exploitables par l'ordinateur, il est nécessaire de déterminer comment les stocker afin de faciliter leur accès ou leur manipulation, à savoir pouvoir ensuite correctement les décoder.
@@ -2010,10 +2021,12 @@ Pour l'enregistrement de données dans un fichier, la même problématique se po
 \label{sub:V.3.3}
 
 \begin{marginvideo}[\label{vid:vidV.5}Base de données.]%
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter05/vidV-05-sgbd-HD.mp4}%
-	\launchvideo{./Videos/Chapter05/vidV-05-sgbd-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-05-sgbd-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=T0ddDXypoz0}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=T0ddDXypoz0}
 \end{marginvideo}
 
 Le quotidien de tout un chacun amène à gérer des comptes bancaires, des stocks, des clients, des ventes ou répertorier des références bibliographiques, des sites Web, etc. L'objectif des bases de données est de permettre la manipulation de ces quantités énormes d'informations de manière compréhensible et suffisamment simple pour un humain et non telles qu'enregistrées par l'ordinateur.

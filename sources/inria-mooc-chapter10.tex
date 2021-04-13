@@ -5,8 +5,8 @@
 %%%--- Pour bien distinguer les différentes manières d'utiliser l'interpréteur
 %%%--- Python, ce chapitre n'utilise pas l'extension PythonTeX, mais des
 %%%--- environnements dédiés de listings, de codes ou de terminaux.
-%%%--- PythonTeX et sa présentation sous IDLE sont utilisés à partir de la 
-%%%--- dernière section de ce chapitre (contrairement au MOOC.
+%%%--- PythonTeX et sa présentation IDLE sont utilisés à partir de la 
+%%%--- dernière section de ce chapitre (contrairement au MOOC).
 
 
 \lettrine[findent=-0.7pt]{D}{epuis l'aube du millénaire, \textsc{Python} s'est imposé} comme un langage privilégié de programmation --- notamment avec la version 2.0 datant de 2000 ---, tout d'abord et faisant suite\parnote{Par exemple, la distribution \textsc{Ubuntu} adopte \textsc{Python} pour ses codes de configuration et « \emph{applets} » (petites applications) dès sa première version d'avril 2004, mais également, la plupart des logiciels libres majeurs (\textsc{Gimp}, \textsc{Inkscape}, etc.) proposent rapidement la possibilité de développer des greffons --- \emph{plug-ins} en anglais --- complémentaires à leur noyau principal, voire sont dans leur entièreté directement codés  en \textsc{Python}.} au domaine de l'informatique, en contexte universitaire et de recherche puis, au fur et à mesure de la notoriété grandissante de ses qualités, en tant qu'outil d'apprentissage et de formation à la programmation informatique : universités, écoles d'ingénieurs et désormais enseignement secondaire.
@@ -32,12 +32,12 @@ La référence adoptée pour ce document, les exemples et exercices, est la vers
 
 \begin{marginvideo}
 	[\label{vid:X.1}Organisation du cours.]%
-	%\href{./Videos/Chapter09/vidIX-01-organisation-HD.mp4}%
-	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}
-	\movie[width=\marginparwidth,showcontrols]%
-		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter10/vidX-01-organisation-HD.mp4}%
-	\launchvideo{./Videos/Chapter10/vidX-01-organisation-HD.mp4}
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter10/vidX-01-organisation-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=LVcHM95p7JU}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=LVcHM95p7JU}
 \end{marginvideo}
 
 En termes de contenus et d'organisation, ce \textsc{Mooc} se présente en deuxième édition. La mouture actuelle fait en effet suite à l'apprentissage de \textsc{Python} proposé entre 2014 et 2016, qui se fondait alors sur la version 2.7 du langage. Entre-temps, l'écosystème \textsc{Python} a largement versé en version 3 --- noyau comme multiples bibliothèques applicatives associées ou, selon le terme consacré, modules.
@@ -75,12 +75,12 @@ En outre, certains termes sont parfois impossibles à traduire. Il a été conve
 
 \begin{marginvideo}
 	[\label{vid:X.2}Choix de \textsc{Python}.]%
-	%\href{./Videos/Chapter09/vidIX-02-pourquoipython-HD.mp4}%
-	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}
-	\movie[width=\marginparwidth,showcontrols]%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter10/vidX-02-pourquoipython-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=FNVhm0w3FwA&list=PL2CXLryTKuwwoPO9s_fd5a4eRoWgHhrKT&index=3}%
 		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter10/vidX-02-pourquoipython-HD.mp4}%
-	\launchvideo{./Videos/Chapter10/vidX-02-pourquoipython-HD.mp4}
+	\launchvideo{https://www.youtube.com/watch?v=FNVhm0w3FwA&list=PL2CXLryTKuwwoPO9s_fd5a4eRoWgHhrKT&index=3}
 \end{marginvideo}
 
 Avant de rentrer à proprement parler dans la technique, quelques mots sur les raisons qui expliquent que \textsc{Python} soit un langage très agréable à utiliser et qui peut servir à de nombreuses d'applications. 
@@ -90,7 +90,7 @@ Avant de rentrer à proprement parler dans la technique, quelques mots sur les r
 
 \overparagraph{Comparaison entre langages de programmation}
 
-Si l'on compare la manière de construire une boucle sur une liste en \textsc{C++} et en \textsc{Python}, cela peut ressembler aux codes \ref{lst:X.1}. 
+Si l'on compare la manière de construire une boucle sur une liste en \textsc{C++} et en \textsc{Python}, cela peut ressembler aux codes \ref{code:X.1}. 
 
 En \textsc{Python}, le code est déjà beaucoup plus court, moins touffu et il n'y a pratiquement aucun sucre syntaxique : pas de \texttt{begin}, de \texttt{end}, d'accolades et autres choses du même acabit.
 
@@ -99,10 +99,7 @@ En fait, le langage a pris le parti d'avoir une syntaxe orientée sur la présen
 La première chose importante à noter est donc que \textit{\textsc{Python} possède une syntaxe articulée sur la présentation}.
 
 \begin{jazzcode*}
-\caption{\label{lst:X.1}Comparaison d'une boucle réalisée en \textsc{C++} et en \textsc{Python}.}
-%\captionof{listing}{\label{lst:X.1}Comparaison d'une boucle réalisée en \textsc{C++} et en \textsc{Python}.}
-%\caption{\label{lst:X.1.a}Codage d'une boucle en \textsc{C++}}
-%\caption{\label{lst:X.1.a}Codage d'une boucle en \textsc{Python}}
+\caption{\label{code:X.1}Comparaison d'une boucle réalisée en \textsc{C++} et en \textsc{Python}.}
 \begin{codebox}[width=0.665\linewidth, nobeforeafter]{cpp}
 // parcourir une liste
 
@@ -121,12 +118,10 @@ for cell in cells:
 \end{codebox}
 \end{jazzcode*}
 
-%(cf. \cref{lst:X.2})
-
 La deuxième comparaison est conduite avec le langage \textsc{Java}. L'exem\-ple pris ici est totalement pathologique ; un programme simple qui affiche « \textit{Hello, world!} » que l'on trouve dans toutes les introductions des livres de programmation.
 
 \begin{jazzcode*}
-\caption{\label{lst:X.2}Comparaison d'un programme « \emph{Hello world!} » en \textsc{Java} et en \textsc{Python}.}
+\caption{\label{code:X.2}Comparaison d'un programme « \emph{Hello world!} » en \textsc{Java} et en \textsc{Python}.}
 \begin{codebox}[width=0.45\linewidth, nobeforeafter]{java}
 public class HelloWorld
 {
@@ -153,7 +148,7 @@ En \textsc{Java}, il a été décidé qu'il fallait absolument que tout soit dan
 Une troisième comparaison rapide est menée avec \textsc{JavaScript}. Cette fois le code calcule la liste des carrés d'un certain ensemble donné. Ici encore, le code Python est plus ramassé et plus lisible.
 
 \begin{jazzcode*}
-\caption{\label{lst:X.3}Codage du carré des éléments d'une liste en \textsc{JavaScript} et en \textsc{Python}.}
+\caption{\label{code:X.3}Codage du carré des éléments d'une liste en \textsc{JavaScript} et en \textsc{Python}.}
 \begin{codebox}[width=0.45\linewidth, nobeforeafter]{javascript}
 // Carrés d'une liste
 
@@ -282,12 +277,12 @@ Depuis l'été 2018, cette organisation est modifiée avec le retrait partiel de
 \begin{marginvideo}
 	[\label{vid:X.3}Environnements de développement : IDLE et interpréteur \textsc{Python}.]%
 	\vspace*{-6cm}%
-	%\href{./Videos/Chapter09/vidIX-03-idle-HD.mp4}%
-	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}
-	\movie[width=\marginparwidth,showcontrols]%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter10/vidX-03-idle-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=iKLMlVFuA_U&list=PL2CXLryTKuwwoPO9s_fd5a4eRoWgHhrKT&index=4}%
 		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter10/vidX-03-idle-HD.mp4}%
-	\launchvideo{./Videos/Chapter10/vidX-03-idle-HD.mp4}
+	\launchvideo{https://www.youtube.com/watch?v=iKLMlVFuA_U&list=PL2CXLryTKuwwoPO9s_fd5a4eRoWgHhrKT&index=4}
 \end{marginvideo}
 
 
@@ -296,7 +291,7 @@ Depuis l'été 2018, cette organisation est modifiée avec le retrait partiel de
 \label{sec:X.1.2}
 
 \caution[t]<firstcolor>{%
-L'installation de \textsc{Python} et de ses outils principaux de développement est détaillée en \cref{app:X} \qnameref{app:X}. Les procédures sont exposées en fonction du système d'exploitation.\\
+L'installation de \textsc{Python} et de ses outils principaux de développement est détaillée en \cref{app:A} \qnameref{app:A}. Les procédures sont exposées en fonction du système d'exploitation.\\
 Dans ce document, la position prise est de n'employer que des logiciels libres ou \textit{Open Source}. Par conséquent, l'ensemble des exemples correspond à un environnement de travail fondé sur une base \textsc{Debian}/\textsc{Ubuntu}, en l'occurrence la distribution \textsc{Ubuntu MATE} 20.04 LTS. Sa relative légèreté permet d'envisager l'installer sur des matériels anciens ou des \href{https://ubuntu-mate.org/download/}{\textsc{Raspberry Pi}} (non testé à ce jour).}%
 {Installation de \textsc{Python}}%
 Une fois l'installation du langage réalisée, il existe essentiellement deux familles d'outils pour communiquer avec \textsc{Python}, soit directement au moyen d'un interpréteur en ligne de commande ou \textit{via} un environnement intégré de développement --- IDE en anglais pour \textit{Integrated Development Environment}.
@@ -316,27 +311,6 @@ Il ne faut pas confondre le terminal, dans lequel des commandes système ou des 
 Ainsi, à l'invite de commande du terminal, il faut saisir la commande « \texttt{python} » pour lancer l'interpréteur \textsc{Python}. Au préalable, on peut se placer dans un répertoire de travail\sidenote{Remplacer le mot « \texttt{user} » par le nom du compte utilisateur courant.} dévolu aux programmes \textsc{Python}, mettons : \directory{home/user/programming}. 
 
 Sur certains systèmes\sidenote{C'est cas d'\textsc{Ubuntu} 20.4 LTS dont la version 3.8 est installée par défaut, mais où l'appel à \textsc{Python} se réalise toujours par la commande «~\texttt{python3}~».} où coexistent les deux versions 2.7 et 3.x, l'appel à \textsc{Python} en version 3 se fait par la commande « \texttt{python3} ». Ce n'est pas commode, car il faut continuellement se souvenir de quelle version on a besoin, au cas où on aurait velléité d'intervenir sur d'anciens programmes. Cette situation n'a pas lieu d'être ici. Une première chose à faire est donc alors de créer un \textit{alias} de commande dans un des fichiers cachés « \texttt{.bashrc} » ou « \texttt{.bash\_aliases} » de la racine personnelle (cf. procédure : \url{https://doc.ubuntu-fr.org/alias}).
-
-
-% Just a test
-%\setuser{shuser=root, shhost=host, shcolor=white}
-%\begin{ubuntu}
-%whoami `\startshell`
-%root `\setuser{root, shdirectory=/usr}` 
-%id `\startshell` 
-%uid=0(root) gid=0(root) groups=0(root)`\setuser{root, shdirectory=/usr/bin}`
-%hostname `\startshell`
-%ubuntu`\setuser{root}`
-%ssh bob@remotehost`\startshell`
-%bob@remotehost's`\ `password:
-%Linux remotehost 2.6.32-5-686 #1 SMP Sun Sep 23 09:49:36 UTC 2012 i686
-%You have mail.
-%Last login: Wed Oct 16 01:12:35 2012 from localhost
-%`\setuser{user}`
-%whoami`\startshell`
-%bob`\setuser{user}`
-%_
-%\end{ubuntu}
 
 %\setuser{shuser=user, shhost=host, shcolor=shellusercolor, shprompt char=\$}
 
@@ -413,7 +387,7 @@ print(factorielle(10))
 
 Dans ce cours,%
 \caution[t]<firstcolor>{%
-Après l'installation de \textsc{IPython} (voir détails en \cref{app:X} \qnameref{app:X}), la même création de lien symbolique est à conduire pour s'assurer de la version correcte du programme. Ainsi, depuis un terminal, il faut saisir :
+Après l'installation de \textsc{IPython} (voir détails en \cref{app:A} \qnameref{app:A}), la même création de lien symbolique est à conduire pour s'assurer de la version correcte du programme. Ainsi, depuis un terminal, il faut saisir :
 %\begin{sideitemize}
 \texttt{sudo ln −s /bin/ipython3 /bin/ipython}
 %\end{sideitemize}
@@ -518,12 +492,12 @@ D'un EDI à l'autre et au-delà de leurs fonctionnalités propres --- visualisat
 
 \begin{marginvideo}
 	[\label{vid:X.4}\emph{Notebooks} \textsc{Jupyter}.]%
-	%\href{./Videos/Chapter09/vidIX-04-notebooks-HD.mp4}%
-	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}
-	\movie[width=\marginparwidth,showcontrols]%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter10/vidX-04-notebooks-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=rZJIYK9y4Gg&list=PL2CXLryTKuwwoPO9s_fd5a4eRoWgHhrKT&index=5}%
 		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter10/vidX-04-notebooks-HD.mp4}%
-	\launchvideo{./Videos/Chapter10/vidX-04-notebooks-HD.mp4}
+	\launchvideo{https://www.youtube.com/watch?v=rZJIYK9y4Gg&list=PL2CXLryTKuwwoPO9s_fd5a4eRoWgHhrKT&index=5}
 \end{marginvideo}
 
 Au fur et à mesure des années et, tout particulièrement dans la dé\-cennie 2010--2020, les outils de documentation et d'apprentissage de l'informatique se sont considérablement améliorés. L’essor de l'Internet y a largement contribué, à l'exemple de certains langages de balisage léger permettant la mise en exergue des codes.
@@ -592,7 +566,6 @@ math.sqrt(25)
 \caption{\label{fig:X.4}Évaluation et modification de cellules de code \emph{notebook} \textsc{Jupyter}.}
 \end{figure}
 
-\vspace*{-2pt}
 
 L'intérêt du numéro entre crochets des cellules contenant du code est de suivre l'ordre dans lequel celles-ci sont évaluées : on peut tout à fait sauter certaines cellules dans le fil de lecture pour y revenir ensuite. Toutefois, cela devient rapidement confus et s'avère \emph{fortement déconseillé} car pouvant mener à des résultats inattendus selon la progression pédagogique voulue du \textit{notebook}. 
 
@@ -600,7 +573,7 @@ En effet, les cellules de code peuvent être des fragments d'un même programme 
 
 \begin{figure}
 \begin{nbjupyterin}{1}
-message = "Faites attention à l'ordre dans lequel vous évaluez les notebooks"
+message = "Attention à l'ordre d'évaluation des notebooks"
 \end{nbjupyterin}
 \vspace*{1pt}
 \begin{nbjupyterin}{3}
@@ -619,17 +592,18 @@ del message
 \end{nbjupyterin}
 %\vspace*{6pt}
 \caption{\label{fig:X.5}Évaluation désordonnée de cellules de code \emph{notebook} \textsc{Jupyter}.}
-\vspace{-\baselineskip}
 \end{figure}
 
 On peut avoir besoin de réinitialiser le \textit{notebook} après avoir réalisé trop de modifications ou perdu le fil de ce qui a été évalué. Pour ce faire, il faut aller dans le menu du \textit{notebook} pour faire un \menu{Kernel>Restart} ou mieux, \menu{Kernel>Restart \& Clear Output}, autre\-ment dit, non seulement redémarrer le noyau, mais aussi remettre à zéro tous les affichages.
 
-\begin{figure}[th]
+\vspace{4pt}
+
+\begin{jazzfigure}
 \begin{nbjupyterin}{1}
 # Il faut exécuter cette cellule pour charger l'exercice
 from corrections.w1s3_polynome import exo_polynome
 \end{nbjupyterin}
-\vspace*{4pt}
+\vspace{2pt}
 \begin{nbjupyterin}{2}
 # Une cellule de ce genre est destinée à montrer le résultat attendu
 exo_polynome.example()
@@ -644,13 +618,13 @@ polynome(0)    -4
 def polynome(x):
     "votre code"
 \end{nbjupyterin}
-\vspace*{4pt}
+\vspace{2pt}
 \begin{nbjupyterin}{3}
 # Le code proposé est à entrer ici (oubli de l'instruction `return')
 def polynome(x):
     2*x**2-4
 \end{nbjupyterin}
-\vspace*{4pt}
+\vspace{2pt}
 \begin{nbjupyterin}{4}
 # Une fois exécuté la cellule précédente avec votre code,
 # il faut évaluer celle-ci pour vérifier si cela fonctionne
@@ -662,12 +636,13 @@ polynome(-2)     4           None     NO
 polynome(0)     -4           None     NO
 polynome(2)      4           None     NO
 \end{nbjupyterout}
+\vspace{2pt}
 \begin{nbjupyterin}{3}
 # Le code proposé est à entrer ici
 def polynome(x):
     return 2*x**2-4
 \end{nbjupyterin}
-\vspace*{4pt}
+\vspace{2pt}
 \begin{nbjupyterin}{4}
 # Une fois exécuté la cellule précédente avec votre code,
 # il faut évaluer celle-ci pour vérifier si cela fonctionne
@@ -679,14 +654,14 @@ polynome(-2)     4             4      OK
 polynome(0)     -4            -4      OK
 polynome(2)      4             4      OK
 \end{nbjupyterout}
-\vspace*{2pt}
+\vspace{2pt}
 \caption{\label{fig:X.6}Exercice auto-évalué.}
 %\vspace{-\baselineskip}
-\end{figure}
+\end{jazzfigure}
 %polynome(0)      4             4      OK
 %polynome(-10)  196           196      OK
 
-\vspace*{-2pt}
+%\vspace*{-2pt}
 
 Un point important à connaître est que l'utilisateur \emph{travaille sur une copie de la proposition initiale}. Toutes les modifications qui sont faites par l'utilisateur lui appartiennent et peuvent être sauvegardées. Elles le sont automatiquement, mais si on souhaite disposer d'une progression plus fine, suivre le menu \menu{File>Save} ou \menu{File>Save as...}.
 
@@ -917,7 +892,7 @@ Bien noter que cette technique est uniquement pédagogique et n'a absolument auc
 
 \paragraph*{Ligne d'invite \textit{Shebang}} Pour finir sur les modes d'exécution de \textsc{Python}, une fonctionnalité pratique est à connaître, mais uniquement valable pour les systèmes Unix (\textsc{Linux} et \textsc{MacOSX}).
 
-Le lancement d'un programme Python s'effectue depuis le terminal par la commande : \texttt{python mon\_module.py}.
+Le lancement d'un programme \textsc{Python} s'effectue depuis le terminal par la commande : \texttt{python mon\_module.py}.
 Lorsqu'il s'agit d'un programme que l'on utilise fréquemment, on n'est pas forcément dans le répertoire où se trouve le programme \textsc{Python}. Aussi, on peut alors utiliser un chemin  « absolu », c'est-à-dire à partir de la racine des noms de fichiers, comme : \texttt{python /le/chemin/de/mon\_module.py}. Cependant, c'est assez malcommode et cela devient vite pénible à la longue.
 
 Sur \textsc{Linux} et \textsc{MacOSX}, il existe une astuce utile pour simplifier cela. En prenant par exemple le programme \texttt{fibonacci.py} de l'exercice d'application à suivre (cf. \cref{subsub:X.1.4.2}), on l'édite avec un éditeur de texte pour lui rajouter une \emph{toute première ligne} qui commence par un caractère de commentaire « \texttt{\#} », seul caractère qui, du à sa position dans le fichier, n'a pas la signification de début de commentaire mais, par la présence d'un point d'exclamation immédiatement après le caractère dièse rend active la suite de la ligne comme chemin d'accès à l'interpréteur \textsc{Python} (voir ci-dessous). Ceci s'appelle un \href{https://en.wikipedia.org/wiki/Shebang_%28Unix%29}{\texttt{shebang}} dans le jargon \textsc{Unix}, rendu possible grâce aux variables d’environnement de ce type de systèmes.
@@ -929,7 +904,7 @@ Sur \textsc{Linux} et \textsc{MacOSX}, il existe une astuce utile pour simplifie
 ...etc...
 \end{code}
 
-\pagebreak
+%\pagebreak
 
 Pour que cela puisse fonctionner, le fichier \textsc{Python} doit être \emph{exécutable}. 
 Pour ce faire, on utilise les commandes \textsc{Unix} « \texttt{pwd} », pour « \textit{print working directory} » en anglais,\caution[c]<firstcolor>{%
@@ -1198,7 +1173,8 @@ square(200)
 \end{pyconsole}
 \end{idleconsole}
 
-Pour finir, on attend que l'utilisateur clique dans la fenêtre de la tortue et ainsi clôturer le programme :
+Pour finir, on attend que l'utilisateur clique dans la fenêtre de la tortue et ainsi clôturer\caution[b]<firstcolor>{%
+Pour ne pas perturber la compilation du document, l'intervention de l'utilisateur \texttt{turtle.exitonclick()} a été mise en commentaire. En situation réelle, il faut dé-commenter cette ligne pour avoir le temps de visualiser le résultat puis quitter le programme au moment voulu. Cet artifice est identique dans les codes à suivre.}{Note de la rédaction} le programme :
 
 %\begin{nbjupyterin}[before skip=6pt, after skip=4pt]{}
 %turtle.exitonclick()
@@ -1207,7 +1183,7 @@ Pour finir, on attend que l'utilisateur clique dans la fenêtre de la tortue et 
 
 \begin{idleconsole}
 \begin{pyconsole}
-turtle.exitonclick()
+#turtle.exitonclick()
 \end{pyconsole}
 \end{idleconsole}
 
@@ -1315,7 +1291,7 @@ turtle.reset()
 turtle.speed('fastest')
 fractal_triangle(300, 3)
 left_triangle(300)
-turtle.exitonclick()
+#turtle.exitonclick()
 \end{listing}
 
 \begin{listing}{python}[\texttt{turtle\_fractal\_adjustable.py}]
@@ -1348,9 +1324,12 @@ turtle.reset()
 turtle.speed('fastest')
 fractal_triangle(300, 4, (.1, .5, .4,))
 left_triangle(300)
-turtle.exitonclick()
+#turtle.exitonclick()
 \end{listing}
 \end{solution}
+
+\addtocounter{code}{-3}% In solution env., due to storing, each code environment counter is incremented twice.
+
 
 %\vspace*{2.0\baselineskip}
 %\begin{center}
@@ -1360,37 +1339,39 @@ turtle.exitonclick()
 %\vfill\newpage
 
 
-%\vspace{-0.15\baselineskip}
+\vspace{0.25\baselineskip}
 
 %----------
 \section[Variables, objets et typage]{Notions de variable, d'objet et de typage}
 \label{sec:X.2}
 
-%\vspace{-0.15\baselineskip}
+\vspace{-0.25\baselineskip}
 
-Pour aborder \textsc{Python}, il faut situer le décor en présentant les notions d'\emph{objet}, de \emph{variable} et de \emph{typage dynamique}. Pourquoi ces notions sont-elles essentielles en \textsc{Python} ? Parce qu'en \textsc{Python}, tout est un objet --- au sens du paradigme de la « \href{https://fr.wikipedia.org/wiki/Programmation\_orient\%C3\%A9e\_objet}{programmation orientée objet} ».
+Pour aborder \textsc{Python}, il faut situer le décor en présentant les notions d'\emph{objet}, de \emph{variable} et de \emph{typage dynamique}. Pourquoi ces notions sont-elles essentielles en \textsc{Python} ? Parce que tout y est un objet --- au sens du paradigme de la « \href{https://fr.wikipedia.org/wiki/Programmation\_orient\%C3\%A9e\_objet}{programmation orientée objet} » (\textsc{Poo}).
 
 \begin{marginvideo}
 	[\label{vid:X.5}Variables, objets et typage dynamique.]%
-	%\href{./Videos/Chapter09/vidIX-05-fondamentaux-HD.mp4}%
-	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}
-	\movie[width=\marginparwidth,showcontrols]%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter10/vidX-05-fondamentaux-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=vSsTKNCSKnU&list=PL2CXLryTKuwwoPO9s_fd5a4eRoWgHhrKT&index=6}%
 		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
-		{./Videos/Chapter10/vidX-05-fondamentaux-HD.mp4}%
-	\launchvideo{./Videos/Chapter10/vidX-05-fondamentaux-HD.mp4}
+	\launchvideo{https://www.youtube.com/watch?v=vSsTKNCSKnU&list=PL2CXLryTKuwwoPO9s_fd5a4eRoWgHhrKT&index=6}
 \end{marginvideo}
 
-%\vspace{-0.15\baselineskip}
+%\vspace{-0.5\baselineskip}
 
 \subsection[Nommage et mots-clefs]{Nommage et mots-clefs}
 \label{sub:X.2.1}
 
-Conséquence de la programmation orientée objet, seuls des \emph{objets} sont à manipuler dans les programmes. Le moyen de faire est de leur donner un nom par l'intermédiaire de \emph{variables}. On dit que les variables \emph{référencent} les objets.
+Conséquence de la \textsc{Poo}, seuls des \emph{objets} sont à manipuler dans les programmes. Le moyen de faire est de leur donner un nom par l'intermédiaire de \emph{variables}. On dit que les variables \emph{référencent} les objets.
+
+%\vspace{-0.5\baselineskip}
 
 \subsubsection[Types, objets et méthodes]{Types, objets et méthodes}
 \label{subsub:X.2.1.1}
 
-Focalisons à présent l'attention sur la \emph{notion d'objet}.\nopagebreak Dans un programme informatique, un objet est un morceau de code qui va contenir des données. Mais il va également rassembler \pagebreak un ensemble de mécanismes permettant de manipuler ces données et que l'on appelle des \emph{méthodes}. Cette formulation est commune aux langages orientés objet.
+Focalisons à présent l'attention sur la \emph{notion d'objet}. Dans un programme informatique, un objet est un morceau de code qui va contenir des données. Mais il va également rassembler un ensemble de mécanismes permettant de manipuler ces données et que l'on appelle des \emph{méthodes}. Cette formulation est commune aux langages orientés objet.
 
 \emph{Les objets ont tous un type}. Le type est le comportement par défaut qui va être déterminé pour ces objets. Par suite, le type va permettre de définir les données et les méthodes qui vont être associées à cet objet.
 
@@ -1650,7 +1631,7 @@ Sa présence dans le langage interdit d'appeler une variable \texttt{if}.
 if = 1  # interdit, if est un mot-clé
 \end{nbjupyterin}
 
-\pagebreak
+\vspace{4pt}
 
 La liste complète des mots-clés réservés est fournie par la \cref{tab:X.4}. Y sont indiqués\sidenote{Pour plus amples renseignements :\\
 \url{https://docs.python.org/3/reference/lexical_analysis.html\#keywords}.} en gras les nouveautés par rapport à \textsc{Python\,2} --- sachant que réciproquement \texttt{exec} et \texttt{print} ont perdu leur statut de mot-clé depuis \textsc{Python\,2}, ce sont maintenant des fonctions.
@@ -1755,7 +1736,7 @@ Ces informations de type ont essentiellement trois fonctions :
 	\item en contrepartie, le programmeur a un contrôle très fin de l'usage qu'il fait de la mémoire et du matériel. Il peut choisir un entier sur 32 ou 64 bits, signé ou pas ou encore, construire avec \texttt{struct} et \texttt{union} un arrangement de ses données ;
 	\item enfin et surtout, ces informations de type permettent de faire un contrôle \textit{a priori} de la validité du programme, par exemple, si à un autre endroit dans le code on trouve :
 	
-\begin{code*}[before skip=6pt]{c}
+\begin{code*}[before skip=6pt]{c}[Problématique du typage statique en C]
 §\#{}include <stdio.h>§
 
 int main(int argc, char *argv[]) {
@@ -1844,13 +1825,13 @@ TypeError: unsupported operand type(s) for +=: 'int' and 'list'
 
 Il s'avère pertinent de remarquer que le typage de \textsc{Python}, qui existe bel et bien, est qualifié de dynamique parce que le type est attaché à un objet --- méthodes et attributs --- et non à la variable qui le référence.
 
-\sidequote[Attribué à \href{https://fr.wikipedia.org/wiki/James_Whitcomb_Riley}{James W. \textsc{Riley}}]{If it looks like a duck and quacks like a duck, then it must be a duck.}%
 En \textsc{Python}, on fait souvent référence au typage dynamique sous l'appellation imagée de 
 \href{https://fr.wikipedia.org/wiki/Duck\_typing}{\textit{duck typing}} (cf. citation ci-contre) :
 %\begin{quotation}\itshape
 %If it looks like a duck and quacks like a duck, it's a duck.
 %\end{quotation}
 
+\sidequote[Attribué à \href{https://fr.wikipedia.org/wiki/James_Whitcomb_Riley}{James W. \textsc{Riley}}]{If it looks like a duck and quacks like a duck, then it must be a duck.}%
 \sidegraphic{\includegraphics[width=\linewidth]{./Images/Chapter10/duck-hakon-helberg-unsplash.jpg}}%
 {Håkon Helberg \href{https://unsplash.com/@hakonbrakon?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText}{Unsplash}}%
 On voit qu'on se trouve dans une situation très différente de celle du programmeur C/C++, en ce sens que :
@@ -1897,7 +1878,7 @@ Ouvrons un interpréteur \textsc{Python} et listons une à une les propriétés 
 
 Pour créer un entier en \textsc{Python}, il suffit de le saisir dans l'interpréteur. Cependant, une fois la saisie validée, il n'y a aucun moyen de le manipuler car aucun nom lui a été attribué. Comme évoqué précédemment (cf. \cref{subsub:X.2.1.2}), il faut passer par le mécanisme de référencement et par exemple stipuler : \texttt{i = 1}. 
 L'objet « \texttt{1} » est désormais référencé par la variable « \texttt{i} ».
-\caution[t]<firstcolor>{%
+\caution[b]<firstcolor>{%
 Jusqu'à présent, de manière à ce qu'un nouvel utilisateur puisse y trouver ses marques, les environnements des différents interpréteurs \textsc{Python} ont été simulés tels que disponibles sur une plateforme \textsc{Ubuntu} MATE. Pour des raisons pratiques --- utilisation de l'extension \textsc{Python}\TeX\ --- et de lisibilité --- la coloration syntaxique sur fond noir est délicate ---, et contrairement aux illustrations du \textsc{Mooc}, ce n'est pas l'interpréteur \textsc{IPython} mais IDLE qui est dorénavant pris en exemple. Les différences sont minimes.}{Note de la rédaction}%
 On peut s'assurer de son type au moyen de la fonction prédéfinie --- \textit{built-in} --- \texttt{type} (voir \cref{subsub:X.2.1.1}).
 
@@ -1915,13 +1896,13 @@ IPython §7.13.0§ -- An enhanced Interactive Python. Type '?' §for§ help.
 §\ipythonpromptout{3}§ §int§
 \end{ipythonminted}
 
-\vspace{8pt}
+\vspace{4pt}
 
 %En \textsc{Python}, 
 
 Les entiers se manipulent comme dans une calculatrice. Ainsi, on peut leur appliquer les quatre opérations de base que sont l'addition --- \texttt{1 + 4 = 5} ---, la soustraction --- \texttt{1 - 4 = -4} ---, la multiplication  --- \texttt{3 * 5 = 15} --- et la division  naturelle --- \texttt{3 / 6 = 0.5} ---, mais encore des fonctions plus élaborées comme les puissances --- \texttt{3 ** 3 = 27} --- ou la valeur absolue --- \texttt{abs(-4) = 4}.
 
-\begin{idleshell*}[before skip=8pt, after skip=8pt]
+\begin{idleshell*}[before skip=4pt, after skip=4pt]
 Python 3.8.2 (default, Apr 27 2020, 15:53:34)\par
 [GCC 9.3.0] on linux\par
 Type "help", "copyright", "credits" or "license()" for more information.
@@ -1941,6 +1922,8 @@ i = i + 5
 print(i)
 \end{pyconsole}
 \end{idleshell*}
+
+\vspace{4pt}
 
 À noter qu'il existe aussi la division entière  --- \texttt{3 // 6 = 0} --- dont on obtient le reste avec l'opérateur modulo « \texttt{\%} » --- \texttt{3 \% 6 = 3}.
 
@@ -1962,6 +1945,11 @@ Les entiers ont la caractéristique remarquable d'être de précision illimitée
 \begin{idleconsole}
 	\begin{pyconsole}
 		i = 39457983745972375892347
+	\end{pyconsole}
+\end{idleconsole}
+
+\begin{idleconsole}
+	\begin{pyconsole}
 		i * i
 		i ** 3
 	\end{pyconsole}
@@ -2228,7 +2216,7 @@ Pour d'autres bases, on peut utiliser la fonction de conversion \texttt{int} en 
 
 \paragraph{Fonctions mathématiques} Naturellement, \textsc{Python} fournit un ensemble très complet d'opérateurs mathématiques pour les fonctions exponentielles, trigonométriques et autres. Cependant, à cette étape de la discussion, leur étude concrète est reportée à plus tard.
 
-\subsubsection[Affectations et opérations]{Affectations et opérations (« à la \texttt{+=}) »}
+\subsubsection[Affectations et opérations]{Affectations et opérations (« à la \texttt{+=} »)}
 \label{subsub:X.3.1.3}
 
 Il existe en \textsc{Python} toute une famille d'opérateurs dérivés de l'affectation qui permettent de faire en une fois une opération et une affectation. En voici quelques morceaux choisis.
@@ -2262,7 +2250,7 @@ Cette forme de directive, qui combine opération sur une variable et réaffectat
 	\end{pyconsole}
 \end{idleconsole}
 
-\vspace{-1pt}
+\vspace{4pt}
 
 \paragraph{Types non numériques et opérateurs abscons} En réalité cette construction est disponible pour tous les types qui supportent l'opérateur employé. Par exemple, les listes (vues prochainement) peuvent être additionnées entre elles. 
 
@@ -2288,7 +2276,7 @@ Beaucoup de types supportent l'opérateur d'addition, qui est sans doute et de l
 \label{subsub:X.3.2.1}
 
 Comme pour les entiers, les calculs sur les nombres flottants sont réalisés par le processeur. 
-Cependant, \nopagebreak contrairement au cas des entiers où les calculs sont toujours exacts, les flottants posent un problème de précision. Cela n'est pas propre au langage \textsc{Python}, mais dû à la technique de codage des nombres flottants sous forme binaire.
+Cependant, contrairement au cas des entiers où les calculs sont toujours exacts, les flottants posent un problème de précision. Cela n'est pas propre au langage \textsc{Python}, mais dû à la technique de codage des nombres flottants sous forme binaire.
 
 Il faut retenir que lorsqu'on écrit un nombre flottant sous forme décimale, la valeur utilisée en mémoire pour représenter ce nombre, parce que cette valeur est codée en binaire, ne représente \emph{pas toujours exactement} le nombre entré.
 
@@ -2342,7 +2330,7 @@ Tous les documents qui suivent sont en anglais :
 \item \href{https://docs.python.org/3/tutorial/floatingpoint.html}{tutoriel sur les nombres flottants} ;
 \item \href{https://docs.python.org/3/library/fractions.html}{documentation sur la classe \texttt{Fraction}} ;
 \item \href{https://docs.python.org/3/library/decimal.html}{documentation sur la classe \texttt{Decimal}} ;
-%\item \href{http://ww5.oxfordmathcenter.com/drupal7/node>/43}{présentation détaillée sur l'encodage des flottants} (lien mort). Ce document, très bien fait, ne dépend pas du langage \textsc{Python} mais illustre le standard \textsc{IEE-754} sur des exemples concrets.
+\item \href{http://ww5.oxfordmathcenter.com/drupal7/node>/43}{présentation détaillée sur l'encodage des flottants} (lien mort). Ce document, très bien fait, ne dépend pas du langage \textsc{Python} mais illustre le standard \textsc{IEE-754} sur des exemples concrets.
 \end{itemize}
 \end{gofurther}
 
@@ -2369,16 +2357,18 @@ x49 = 49 = 32 + 16 + 1 \rightarrow (0, 1, 1, 0, 0, 0, 1) \\
 x81 = 81 = 64 + 16 + 1 \rightarrow (1, 0, 1, 0, 0, 0, 1)
 \end{aligned}
 \end{equation}
+\vspace{-0.75\baselineskip}
 
 Pour comprendre comment passer de $32 + 16 + 1$ à $(0, 1, 1, 0, 0, 0, 1)$ et $64 + 16 + 1$ à $(1, 0, 1, 0, 0, 0, 1)$, il suffit d'observer que :
 
-\vspace{-\baselineskip}
+\vspace{-1.25\baselineskip}
 \begin{equation}
 \begin{aligned}
 32 + 16 + 1 = \mathbf{0}*2^6 + \mathbf{1}*2^5 + \mathbf{1}*2^4 + \mathbf{0}*2^3 + \mathbf{0}*2^2 + \mathbf{0}*2^1 +\mathbf{1}*2^0 \\
 64 + 16 + 1 = \mathbf{1}*2^6 + \mathbf{0}*2^5 + \mathbf{1}*2^4 + \mathbf{0}*2^3 + \mathbf{0}*2^2 + \mathbf{0}*2^1 + \mathbf{1}*2^0 
 \end{aligned}
 \end{equation}
+\vspace{-0.75\baselineskip}
 
 %\vspace{-0.2\baselineskip}
 
@@ -2402,6 +2392,7 @@ x81 & \rightarrow & (1, 0, 1, 0, 0, 0, 1) \\
 x49\, \&\, y81 &\rightarrow & (0, 0, 1, 0, 0, 0, 1) \rightarrow 16 + 1 \rightarrow 17
 \end{array}
 \end{equation}
+\vspace{-0.75\baselineskip}
 
 Ici, l'opérateur logique « \texttt{|} » fait simplement un \textit{ou} logique :
 
@@ -2413,7 +2404,8 @@ Ici, l'opérateur logique « \texttt{|} » fait simplement un \textit{ou} logiqu
 
 Cette fois, parce que :
 
-\vspace{-0.7\baselineskip}
+\vspace{-0.75\baselineskip}
+
 \begin{equation}
 \begin{array}{r@{~}c@{~}l}
 x49 & \rightarrow & (0, 1, 1, 0, 0, 0, 1) \\
@@ -2421,6 +2413,7 @@ x81 & \rightarrow & (1, 0, 1, 0, 0, 0, 1) \\
 x49\, | \, y81 &\rightarrow & (1, 1, 1, 0, 0, 0, 1) \rightarrow 64 + 32 + 16 + 1 \rightarrow 113
 \end{array}
 \end{equation}
+\vspace{-0.75\baselineskip}
 
 Enfin, on peut également conduire la même opération à base de \textit{ou exclusif} avec l'opérateur « \texttt{\^{}} » :
 
@@ -2432,7 +2425,8 @@ Enfin, on peut également conduire la même opération à base de \textit{ou exc
 
 Le \textit{ou exclusif} de deux bits est vrai si et seulement si exactement une des deux entrées est vraie.
 
-\vspace{-0.7\baselineskip}
+\vspace{-0.75\baselineskip}
+
 \begin{equation}
 \begin{array}{r@{~}c@{~}l}
 x49 & \rightarrow & (0, 1, 1, 0, 0, 0, 1) \\
@@ -2440,6 +2434,7 @@ x81 & \rightarrow & (1, 0, 1, 0, 0, 0, 1) \\
 x49\, \hat{} \, y81 &\rightarrow & (1, 1, 0, 0, 0, 0, 0) \rightarrow 64 + 32 \rightarrow 96
 \end{array}
 \end{equation}
+\vspace{-0.75\baselineskip}
 
 \overparagraph{Décalages}
 
@@ -2451,7 +2446,8 @@ Un décalage à gauche de, par exemple quatre positions, revient à décaler tou
 	\end{pyconsole}
 \end{idleconsole}
 
-\vspace*{-1.2\baselineskip}
+%\pagebreak
+%\vspace*{-1.25\baselineskip}
 
 \begin{equation}
 \begin{array}{r@{~}c@{~}l}
@@ -2468,7 +2464,7 @@ De la même manière, le décalage à droite de $n$ revient à une division par 
 	\end{pyconsole}
 \end{idleconsole}
 
-%\vspace{-0.4\baselineskip}
+%\vspace{-\baselineskip}
 \begin{equation}
 \begin{array}{r@{~}c@{~}l}
 x49 & \rightarrow & (0, 1, 1, 0, 0, 0, 1) \\
@@ -2526,7 +2522,7 @@ Comme on le constate, $10^{−320}$ est correctement imprimé, alors que $10^{�
 \noindent \lightbf{Remarques :}
 \begin{itemize}\jazzitem
 	\item À ce stade du cours, pour estimer le plus petit flottant, procéder simplement par approximations successives ;
-	\item Sans utiliser de boucle, la précision obtenue n'est que fonction de la patience accordée à l'exercice par l'expérimentateur, ne dépasser pas 4 à 5 itérations successives ;)
+	\item Sans utiliser de boucle, la précision obtenue n'est que fonction de la patience accordée à l'exercice par l'expérimentateur, ne pas dépasser 4 à 5 itérations successives ;
 	\item Il est par contre pertinent d'utiliser une approche rationnelle pour déterminer l'itération suivante (par opposition à une approche « au petit bonheur »). Pour ceux qui ne connaissent pas, il est recommandé de se documenter sur l'algorithme de \href{https://fr.wikipedia.org/wiki/Recherche\_dichotomique}{dichotomie} ;
 	\item l'intérêt du \textit{notebook} par rapport à un document écrit est de pouvoir expérimenter directement dans le fil de l'énoncé (pour créer de nouvelles cellules saisir \keys{Alt+Enter}) ou, sinon, ouvrir un interpréteur comme IDLE.
 \end{itemize}
@@ -2572,7 +2568,7 @@ Quoi qu'il en soit, la limite pour les grands nombres se situe entre les deux va
 \end{idleconsole}
 \end{exercise}
 
-%\vspace{-4pt}
+\vspace{4pt}
 
 \overparagraph*{Compléments avancés} 
 
@@ -2589,7 +2585,8 @@ En fait, on peut accéder aux valeurs minimales et maximales des flottants au mo
 	\end{pyconsole}
 \end{idleconsole}
 
-\vfill\pagebreak
+%\vfill
+\pagebreak
 
 %----------
 \section[Que faire de ces ressources ? Quiz]{Que faire de ces ressources ? Autoévaluation}
@@ -2605,7 +2602,7 @@ La présentation des quiz du document\linebreak suit plus ou moins celle de la p
 --- QCM --- à suivre porte sur le présent chapitre \qnameref{chap:X}.
 \parnotes
 
-\vspace*{6pt}
+\vspace*{2pt}
 
 
 \begin{quiz}[title={Variable, objet et typage dynamique}]
@@ -2711,9 +2708,3 @@ Comment saisir au clavier la valeur du complexe \texttt{3 + 2i} ?
 %\end{center}
 
 \vfill\pagebreak\thispagestyle{empty}
-
-
-
-
-
-

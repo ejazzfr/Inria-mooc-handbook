@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Format : LuaTeX, texjazz-handbook.cls (TeXjazz bundle)
 %%% Titre/Title : Informatique et culture scientifique du numérique
-%%% Sous-titre/Subtitle : FUN-MOOC Inria 2019-2020 (ICN, SNT, Python)
+%%% Sous-titre/Subtitle : FUN-MOOC Inria 2019-2021 (ICN, SNT, Python)
 %%% Auteur/Author : Collectif 
 %%%   cf. ICN https://www.fun-mooc.fr/courses/inria/41014/session01/info
 %%%   cf. SNT https://www.fun-mooc.fr/courses/course-v1:inria+41018+session01/info
@@ -14,25 +14,10 @@
 %---- Style de mise en page / Layout style
 %--------------------------------------------------------------------------------------------------
 
-%\documentclass[printfiles, showframe]{texjazz-handbook}% 
+%\documentclass[printfiles]{texjazz-handbook}% Print used packages at the end of the document
+%\documentclass[showframe,printfiles]{texjazz-handbook}% Development version: layout and packages
 %\documentclass[showframe]{texjazz-handbook}
 \documentclass{texjazz-handbook}
-
-
-%--------------------------------------------------------------------------------------------------
-%---- Commandes spécifiques / Particular command sequences (cf. TeX prefix \cs[...])
-%--------------------------------------------------------------------------------------------------
-%\newcommand*{\mail}[1]{\href{mailto:#1}{\texttt{#1}}}
-%\newcommand*{\pkg}[1]{\textsf{#1}}
-%\newcommand*{\cls}[1]{\textsf{#1}}
-%\newcommand*{\cs}[1]{\texttt{\textbackslash#1}}% Command sequence = cs
-%\newcommand*{\cmd}[1]{\cs{\expandafter\@gobble\string#1}}
-
-%--------------------------------------------------------------------------------------------------
-%---- Extensions utilisées
-%--------------------------------------------------------------------------------------------------
-%\listfiles% Décommenter pour avoir la liste des extensions utilisées ou option "printfiles"
-
 
 %==================================================================================================
 %---- Outils / Tools
@@ -49,7 +34,7 @@
 %---- (La)TeX 'vanilla' TeXLive distribution .
 %- Documentation and download: 
 %-   * https://www.tug.org/texlive/
-%-   * fake/dummy packages Ubuntu install, see references and appendices
+%-   * fake/dummy packages Ubuntu install, see TeXjazz handbook documentation
 %--------------------------------------------------------------------------------------------------
 
 %--------------------------------------------------------------------------------------------------
@@ -120,8 +105,6 @@
 %- sed -i 's/    / /g' output-file.txt
 %--------------------------------------------------------------------------------------------------
 
-%- https://linuxconfig.org/how-to-install-latest-adobe-acrobat-reader-dc-on-ubuntu-18-04-bionic-beaver-linux-with-wine
-
 %--------------------------------------------------------------------------------------------------
 %---- Identité visuelle Inria
 %- https://www.inria.fr/institut/inria-en-bref/charte-logo/charte-logo-inria/charte-identitaire
@@ -134,21 +117,17 @@
 % Manual adjustment of X title offset length, if needed in case it is too long (default=0cm)
 %\setlength{\maintitlexoffset}{-1.5cm}
 
-%\title[Sciences numériques et technologie]{Sciences numériques\newline et technologie}
 \title[Informatique et culture scientifique du numérique]%
 {Informatique et culture\newline scientifique du numérique}
 % auditeurs ? étudiants ? participants ? formation en ligne ?
-%\subtitle{\fontsize{16pt}{18pt}\selectfont\subtitlefont Formation ICN--SNT--Python --- Manuel des participants}
-%\subtitle{\subtitlefont\Huge Formation ICN--SNT--Python --- Manuel des participants}
-\subtitle{\textsc{Formation ICN--SNT--Python --- Manuel des participants}}
-\author{Fun--MOOC 2019-2021}
+\subtitle{\textsc{Mooc Inria ICN--SNT--Python}}
+\author{2019-2021}
 \date{2019-2021}
-%\date{\DTMfetchmonth{now} \DTMfetchyear{now}}% extension `datetime2' TODO!
-\doclogo[0.7]{./Images/Chapter00/inria-logo-white-nosign.pdf}% [<scale factor>]
-\docaddlogo[0.25]{./Images/Chapter00/python-logo-white.png}%
+%\doclogo[0.7]{./Images/Chapter00/inria-logo-white-nosign.pdf}% [<scale factor>]
+%\docaddlogo[0.25]{./Images/Chapter00/python-logo-white.png}%
 
 \hypersetup{%
-	pdftitle={Fun-MOOC-ICN-SNT-Python},
+	pdftitle={MOOC Inria ICN-SNT-Python},
 	pdfauthor={Inria et al.},
 	pdfsubject={Sciences et techniques du numérique},
 	pdfkeywords={Informatique, Numérique, Lycée, Python}
@@ -166,7 +145,7 @@
 \href{https://creativecommons.org/licenses/by-nc/4.0/deed.fr}{%
 	\raisebox{.075\baselineskip}{\ccbynceu}~Creative Commons CC-BY-NC 4.0}%
 }
-\copyrightname{--- \textsc{Inria}}
+\copyrightname{}
 \versiondate{2019-2021}
 \docversion{v.0.1a}
 %\renewcommand{\version}{v.0.1a}
@@ -183,7 +162,7 @@
 
 \typesettinginfo{%
 	\begin{center}\scriptsize
-	\includegraphics[width=.6\linewidth]{./Images/Chapter00/ctanlion.pdf}\\[.5cm]
+	\includegraphics[width=.5\linewidth]{./Images/Chapter00/ctanlion.pdf}\\[.5cm]
 	\begin{minipage}[c]{.125\linewidth}
 		\includegraphics[width=\linewidth]{./Images/Chapter00/inkscape-logo.pdf}
 	\end{minipage}\qquad
@@ -235,7 +214,7 @@
 
 	Pour ce qui concerne les éléments soumis à \textit{copyright} 
 	--- essentiellement issus de contenus extérieurs ---,\\
-	leur source et leurs droits associés sont mentionnés systématiquement aux abords des images et illustrations.
+	leur source ou leurs crédits associés sont mentionnés systématiquement aux abords des images et illustrations.
 
 	Au sujet des logotypes de projets et de marques déposées --- officiels comme stylisés ---, ils appartiennent\\ 
 	à leurs éditeurs respectifs et sont affichés tels quels, considérant que cela contribue à leur notoriété.
@@ -243,7 +222,12 @@
 	\textcolor{firstcolor}{\rule{.25\linewidth}{.4pt}}
 	\vspace*{4pt}
 	
-	Apport rédactionnel : Vincent \textsc{Doutaut} %<\href{mailto:ejazz.fr@gmail.com}{ejazz.fr@gmail.com}>
+	Conception et apport rédactionnel : Vincent \textsc{Doutaut}
+	
+	\textcolor{firstcolor}{\rule{.25\linewidth}{.4pt}}
+	\vspace*{4pt}
+	
+	Éléments sources : \href{https://github.com/ejazzfr/Inria-mooc-handbook}{\faGithub\ Inria-mooc-handbook}
 	
 	\textcolor{firstcolor}{\rule{.75\linewidth}{.4pt}}
 	\vspace*{4pt}
@@ -251,10 +235,6 @@
 	\footnotesize\licenseinfo
 	\end{center}
 }
-
-\newif\ifdocbackmatter
-\docbackmattertrue
-%\docbackmatterfalse
 
 %--------------------------------------------------------------------------------------------------
 %---- Ressources bibliographiques / Bibliographic ressources
@@ -319,19 +299,6 @@
 % xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.local05-glg" -o "inria-mooc.local05-gls" "inria-mooc.local05-glo"
 % xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.local06-glg" -o "inria-mooc.local06-gls" "inria-mooc.local06-glo"
 
-%\makeglossaries% Open glossary files
-%\loadglsentries{inria-mooc-glossary.def}% file with the entry definitions (option 1, 2 or 3)
-
-%-----
-%\GlsXtrLoadResources[src = {inria-mooc-add-glossaries}]
-%\GlsXtrLoadResources[% Definitions given in inria-mooc-glossaries.bib and other .bib files:
-%										 % glossaries, symbols, acronyms and abbreviations
-%	% List of `.bib' file names of entries comma separated
-%	src = {inria-mooc-glossary},%
-%	selection = {all}% select all entries
-%	%sort = {fr-FR},% OPTION NON VALIDE ! POURQUOI ?
-%	]
-
 \fi
 
 
@@ -339,7 +306,7 @@
 %---- Réglage des paramètres de mise en forme / Adjusting layout parameters
 %--------------------------------------------------------------------------------------------------
 
-%- Étirement des interlignes des sommaires de chapitre / Base line stretch for margin chapter ToCs
+%- Étirement des interlignes des sommaires de chapitre / base line stretch for margin chapter ToCs
 \renewcommand*{\sidetocbaselinestretch}{1.16}% Default = 1.2
 
 
@@ -351,7 +318,6 @@
 inria-mooc-authors,% Auteurs
 inria-mooc-chapter00-forewords,% Avant-propos / Propos liminaires
 inria-mooc-chapter00-reading-guide,% Guide de lecture
-%inria-mooc-chapter00-writing-guide,% Seulement en version complète, à rejeter en annexe
 inria-mooc-chapter00-introductory,% Présentation/Introduction
 inria-mooc-chapter01,% Numérique et sciences du réel
 inria-mooc-chapter02,% Web et usages sociétaux
@@ -362,27 +328,19 @@ inria-mooc-chapter06,% Langages de l'informatique (Algorithmique + Programmation
 %inria-mooc-chapter07,% Architecture des ordinateurs et des réseaux
 inria-mooc-chapter08,% Données et objets (N1+N2+N6.N7)
 inria-mooc-chapter09,% Maitrise des réseaux (N3+N4+N5) + N+ : Environnement
-inria-mooc-chapter10,% Notions fondamentales Python (semaine 1)
-inria-mooc-chapter11,% Concepts élémentaires Python (semaine 2)
+inria-mooc-chapter10,% Notions fondamentales (semaine 1)
+inria-mooc-chapter11,% Concepts élémentaires (semaine 2)
 %inria-mooc-chapter12,% Références partagées (semaine 3)
 %inria-mooc-chapter13,% Fonctions, tests et boucles (semaine 4)
 %inria-mooc-chapter14,% Itération, importation de module et espace de nommage (semaine 5)
-%inria-mooc-chapter15,%
-%inria-mooc-chapter16,%
-%inria-mooc-chapter17,%
-%inria-mooc-chapter18,%
-%inria-mooc-chapter19,%
-%inria-mooc-chapter20,%
-%inria-mooc-appendixA,%
-%inria-mooc-appendixB,%
+inria-mooc-appendixA,% Environnement de travail (Ubuntu MATE + Python)
+inria-mooc-appendixB,% Histoire de l'informatique, algèbre de Boole, portes logiques...
 %inria-mooc-appendixC,%
 %inria-mooc-appendixD,%
 %inria-mooc-appendixX,% Environnement de travail (Ubuntu MATE + Python)
 %inria-mooc-appendixY,%
 %inria-mooc-appendixZ,% Guide d'écriture (utilisation de TeXjazz bundle)
 }
-
-%\listfiles
 
 %- https://tex.stackexchange.com/questions/79185/how-to-find-the-lost-text-part-when-having-floats-lost-error
 %\makeatletter
@@ -689,21 +647,11 @@ inria-mooc-chapter11,% Concepts élémentaires Python (semaine 2)
 
 \symmetricalpage
 
-% Ajustement/réinitialisation des espaces verticaux des entrées au sein de la table des matières
-%\addtocontents{tdm}{%
-%\protect\setlength{\global\beforetocpartskip}{18pt}% Avant les entrées de partie
-%\protect\setlength{\global\aftertocpartskip}{-4pt}% Après les entrées de partie
-%}
-%\renewcommand{\beforetocchapterspace}{0pt}% Avant les entrées de chapitre
-%\renewcommand{\aftertocchapterspace}{-1pt}% Après les entrées de chapitre
-
-
 %\part{\texorpdfstring{Annexes d\raisebox{.84ex}{,}application}{Annexes d'application}}
 %\part{Annexes et applications}
 %\part{Applications}
-
-%\part{Annexes}
-%\label{part:VI}
+\part{Annexes}
+\label{part:VI}
 
 \asymmetricalpage
 
@@ -735,26 +683,12 @@ inria-mooc-chapter11,% Concepts élémentaires Python (semaine 2)
 \raggedbottom
 
 \include{inria-mooc-appendixA}
-% Ajustements manuels :
-% Liste des documents → rajout pagebreak après document A.1
 
 \include{inria-mooc-appendixB}
-% Ajustements manuels :
-% Liste des vidéos → rajout pagebreak après vidéo B.2
 
 \include{inria-mooc-appendixC}
-% Ajustements manuels :
-% Liste des figures → rajout pagebreak après figure C.1 
-% (plus respirant mais ligne orpheline) ou C.2 (label : figC-01a, figC-01b)
 
 \include{inria-mooc-appendixD}
-% Ajustements manuels :
-% Toutes les listes → rajout vfill en fin ci-dessous
-%\addtocontents{lof}{\protect\vfill}
-%\addtocontents{lot}{\protect\vfill}
-%\addtocontents{loe}{\protect\vfill}
-%\addtocontents{lov}{\protect\vfill}
-%\addtocontents{lod}{\protect\vfill}
 
 \include{inria-mooc-appendixX}
 
@@ -771,13 +705,8 @@ inria-mooc-chapter11,% Concepts élémentaires Python (semaine 2)
 
 \symmetricalpage
 
-%\part*{Compléments d'information}
-%\part*{\texorpdfstring{Compléments d\raisebox{.84ex}{,}information}{Compléments d'information}}
-%\part*{Addenda}
 \part{Addenda}
 \label{part:VII}
-
-\ifdocbackmatter
 
 \backmatter
 
@@ -785,8 +714,6 @@ inria-mooc-chapter11,% Concepts élémentaires Python (semaine 2)
 
 \backchapter{Références}
 \label{chap:references}
-% Ajustement manuel de la table des matières
-%\addtocontents{tdm}{\protect\vfill}% Pas besoin : automatique
 
 \nocite{*}% consider all entries (not cited in the text) in the .bib file to be filtered and displayed
 
@@ -827,8 +754,10 @@ inria-mooc-chapter11,% Concepts élémentaires Python (semaine 2)
 
 \printbibliography[keyword=latex, type=online, heading=none]
 
+\vfill\pagebreak
+\thispagestyle{empty}
 
-%-- Below, we avoid hacking the `glossaries' package, but adapt its commands to fit our needs
+%-- Below, we avoid "hacking" the `glossaries' package, but adapt its commands to fit our needs
 
 \asymmetricalpage
 
@@ -836,71 +765,24 @@ inria-mooc-chapter11,% Concepts élémentaires Python (semaine 2)
 
 \backchapter{Glossaire}
 \label{chap:glossary}
-%\renewcommand*{\thefootnote}{\alph{footnote}}% TODO: find the way to change this in the main class
-%\setcounter{footnote}{0}%
 
 \printmainglossary
-%\printmainglossary[-0.0\baselineskip]
 
-%- Option 1, 2 and 3
-%\glsaddall% consider all entries (not only those cited in the text with \gls and other similar commands)
-%\glsaddall[types={main,nondim,greek}]
+\vfill\pagebreak
+\thispagestyle{empty}
 
-%- Simplest way to have the glossary in ToC: DON'T USE THE `toc' OPTION of the `glossaries' package!
-%\addcontentsline{tdm}{backchapter}{\protect\numberline{\thechapter}Glossaire}%
-%\label{chap:glossary}
-
-%- Option 1: slow but simplest solution, sorting is done according to the English alphabet! So, no accent
-%\printnoidxglossary[sort=word,toctitle={}]%[sort=letter]
-%\printnoidxglossary[sort=word,title={}]% Empty title but vertical space must be adjusted
-
-%- Option 2: run LaTeX, then 3 times makeindex (once per each glossary), the LaTeX
-%\printglossary[type=main]% default: type=main
-%\printglossary[type=main,title={}]% default: type=main
-%\printglossary[type=acronym]
-%\printglossary[type=symbols]
-
-%- Option 3: run LaTeX, then 3 times xindy (once per each glossary), the LaTeX
-%\label{chap:glossary}
-%\addcontentsline{tdm}{backchapter}{\protect\numberline{\thechapter}Glossaire}% Table des matières
-%\pagebookmark[level=0]{chap:glossary}{Glossaire}% Signet
-%\glsaddall% consider all entries (not only those cited in the text with \gls and other similar commands)
-%\printglossary[type=main]% default: type=main
-%\printmainglossary
-%\printglossary[type=main,title={}]% default: type=main
-%\printglossary[type=acronym]
-%\printglossary[type=symbols]
-
-%- Option 4 (bib2gls) → PAS ENCORE AU POINT POUR INTÉGRATION AVEC ÉDITEURS LaTeX, 
-%- néanmoins solution choisie pour sa flexibilité
-%\printunsrtglossary% Main glossary displaying (with spurious section title)
-%\printunsrtglossary[title={}]% Main glossary displaying (at the end of the document)
-
-%- Tests with different styles
-%- List
-%\printunsrtglossary[title={},style=list]%
-%\printunsrtglossary[title={},style=listgroup]%
-%\printunsrtglossary[title={}]%
-%- Altlist
-%\printunsrtglossary[title={},style=altlist]%
-%\printunsrtglossary[title={},style=altlistgroup]%
-%\printunsrtglossary[title={},style=altlisthypergroup]%
-%- Index
-%\printunsrtglossary[title={},style=index]%
-%\printunsrtglossary[title={},style=indexgroup]% 
-%\printunsrtglossary[title={},style=indexhypergroup]%
-%\printunsrtglossary[title={},style=tree]%
-
-%\printunsrtglossary[title={}]% Main glossary displaying (at the end of the document)
-%\printunsrtglossary[type=abbreviations]
-%\printunsrtglossary[type=symbols]
-
-\fi% Ending glossary
+\fi
 
 
 %\backchapter{Index}
 %\label{chap:index}
 
+\symmetricalpage
+
+%\input{inria-mooc-license.tex}
+\InputIfFileExists{inria-mooc-license.tex}%
+  {\typeout{*** The inria-mooc-license.tex file has been loaded successfully ***}}%
+  {\ClassError{texjazz-handbook}{*** The inria-mooc-license.tex file is required ***}}
 
 
 %--------------------------------------------------------------------------------------------------
@@ -922,6 +804,6 @@ inria-mooc-chapter11,% Concepts élémentaires Python (semaine 2)
 
 
 
-\fi % ending backmatter
+
 
 \end{document}

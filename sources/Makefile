@@ -15,7 +15,9 @@ inria-mooc.pdf: inria-mooc.tex
 	@lualatex -shell-escape -interaction batchmode inria-mooc.tex || echo 'Some errors but keep going'
 	@echo "Compilation 4"
 	@lualatex -shell-escape -interaction batchmode inria-mooc.tex || echo 'Some errors but keep going'
+	@echo "Compilation 5"
+	@lualatex -shell-escape -interaction batchmode inria-mooc.tex || echo 'Some errors but keep going'
 
 clean:
-	@rm -f *.aux *.bcf *.blg *.bbl *.fdb_latexmk *.fls *-glg *.glg *-glo *.glo *-gls *.gls *.hd *.idx *.ilg *.ind *.listing *.loc *.lod *.loe *.lof *.lol *.loq *.lot *.lov *.log *.nav *.out *.ptc *.pytxcode *.pyg *.run.xml *.snm *.synctex.gz *.tdm *.toc *.xdy
+	@rm -f *.aux *.bcf *.blg *.bbl *.fdb_latexmk *.fls *-glg *.glg *-glo *.glo *-gls *.gls *.hd *.idx *.ilg *.ind *.listing *.loc *.lod *.loe *.lof *.lol *.loq *.lot *.lov *.log *.nav *.out *.ptc *.pytxcode *.run.xml *.snm *.synctex.gz *.tdm *.toc *.xdy
 	@rm -rf Exercises-* _minted-* PythonTeX pythontex-files-* Quizzes-*

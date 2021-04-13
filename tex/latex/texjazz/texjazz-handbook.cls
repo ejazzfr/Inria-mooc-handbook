@@ -3,7 +3,7 @@
 %%
 %% A LaTeX class to typeset French/English handbook/workbook.
 %%
-%% Copyright (c) 2020-2021 ejazz.
+%% Copyright (c) 2020-2021 ejazz. 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -30,29 +30,29 @@
 %   − xfontawesome.sty witch extends `fontawesome' with some glyphs from `fontmfizz'
 %
 % Its companion internal files are (the names are self-explanatory):
-%   − textjazz-bibliograpy.def
-%   − textjazz-bookmark.def
-%   − textjazz-caption.def
-%   − textjazz-coding.def
-%   − textjazz-color.def
-%   − textjazz-common.def
-%   − textjazz-entry.def
-%   − textjazz-glossary.def
-%   − textjazz-graphic.def
-%   − textjazz-head-foot.def
-%   − textjazz-highlight.def
-%   − textjazz-list.def
-%   − textjazz-listings.def
-%   − textjazz-ltxlistings.def
-%   − textjazz-margin.def
-%   − textjazz-modelling.def
-%   − textjazz-reference.def
-%   − textjazz-shell.def
-%   − textjazz-tabular.def
-%   − textjazz-titlepage.def
-%   − textjazz-titling.def
-%   − textjazz-toclof.def
-%   − textjazz-typograhy.def
+%   − textjazz-bibliograpy.ltx
+%   − textjazz-bookmark.ltx
+%   − textjazz-caption.ltx
+%   − textjazz-coding.ltx
+%   − textjazz-color.ltx
+%   − textjazz-common.ltx
+%   − textjazz-entry.ltx
+%   − textjazz-glossary.ltx
+%   − textjazz-graphic.ltx
+%   − textjazz-head-foot.ltx
+%   − textjazz-highlight.ltx
+%   − textjazz-list.ltx
+%   − textjazz-listings.ltx
+%   − textjazz-ltxlistings.ltx
+%   − textjazz-margin.ltx
+%   − textjazz-modelling.ltx
+%   − textjazz-reference.ltx
+%   − textjazz-shell.ltx
+%   − textjazz-tabular.ltx
+%   − textjazz-titlepage.ltx
+%   − textjazz-titling.ltx
+%   − textjazz-toclof.ltx
+%   − textjazz-typograhy.ltx
 %
 % Its companion file for Pygments Python module (`minted' and `PythonTeX' packages) is:
 %   − jazzcode.py which must be copied in the Pygments styles directory. For Linux box:
@@ -88,7 +88,7 @@
 %    * `idleconsole' environment leads to vertical space when used before a sectionning command.
 %      One has to manually add a small \vspace (like 1pt) to circumvent the issue. Very strange...
 %    * Quiz question title does not support \texttt{} nor \ttfamily.
-%    * The 'reset' quiz command does not work if there is a page break (see A. Grahn LaTeX3 code)
+%    * The 'reset' quiz command does not work if there is a page break (solved: Atril viewer bug)
 %
 % Author: ejazz <ejazz.fr@gmail.com>
 %---------------------------------------------------------------------------------------------------
@@ -367,15 +367,15 @@
 %\RequirePackage{settobox}
 
 %-- Reserving space to keep material from being split over a page break
-\RequirePackage{needspace}% Used with glossaries, see texjazz-glossary.def file
+\RequirePackage{needspace}% Used with glossaries
 
 
 %---------------------------------------------------------------------------------------------------
 %---- Referencing of the document / Référencement du document
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-reference.def}%
-  {\typeout{*** The texjazz-reference.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-reference.ltx}%
+  {\typeout{*** The texjazz-reference.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz reference file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
@@ -390,8 +390,8 @@
 %---- Use of colors / Utilisation des couleurs
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-color.def}%
-  {\typeout{*** The texjazz-color.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-color.ltx}%
+  {\typeout{*** The texjazz-color.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz color file is required ***}}
 
 
@@ -399,8 +399,8 @@
 %---- Typography settings / Paramétrage des éléments typographiques
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-typography.def}%
-  {\typeout{*** The texjazz-typography.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-typography.ltx}%
+  {\typeout{*** The texjazz-typography.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz typography file is required ***}}
 
 \PassOptionsToPackage{os=win}{menukeys}% See: TeX.SX question 237683
@@ -487,8 +487,8 @@
 %---- Document layout and common structure / Agencement et structure générale du document
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-common.def}% Must be loaded *before* texjazz-graphic/fullwidth: WHY?
-  {\typeout{*** The texjazz-common.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-common.ltx}% Must be loaded *before* texjazz-graphic/fullwidth: WHY?
+  {\typeout{*** The texjazz-common.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz common file is required ***}}
 
 %- Saving some useful lengths
@@ -503,8 +503,8 @@
 %---- Graphic tools
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-graphic.def}%
-  {\typeout{*** The texjazz-graphic.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-graphic.ltx}%
+  {\typeout{*** The texjazz-graphic.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz graphic file is required ***}}
 
 %- Cf. https://tex.stackexchange.com/questions/396660/ and doc. v.4.30 p.46
@@ -585,16 +585,16 @@
 %-- Margin commands and environments definition
 %----------------------------------------------
 
-\InputIfFileExists{texjazz-margin.def}% Now including side notes
-  {\typeout{*** The texjazz-margin.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-margin.ltx}% Now including side notes
+  {\typeout{*** The texjazz-margin.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz margin file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
 %----    Highlighting / End-users highlighted commands and environments
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-highlight.def}%
-  {\typeout{*** The texjazz-highlight.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-highlight.ltx}%
+  {\typeout{*** The texjazz-highlight.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz highlight file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
@@ -604,8 +604,8 @@
 %-- Gestion des légendes de flottants
 %------------------------------------
 
-\InputIfFileExists{texjazz-caption.def}% To be loaded *after* french-babel (here texjazz-common)
-  {\typeout{*** The texjazz-caption.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-caption.ltx}% To be loaded *after* french-babel (here texjazz-common)
+  {\typeout{*** The texjazz-caption.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz caption file is required ***}}
 
 %-- Ajustement de l'espace vertical autour des environnements « flottants » (\@endfloat latex.ltx)
@@ -677,8 +677,8 @@
 %---- Elegant and fancy tables
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-tabular.def}%
-  {\typeout{*** The texjazz-tabular.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-tabular.ltx}%
+  {\typeout{*** The texjazz-tabular.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz tabular file is required ***}}
 
 %--------------------------------------------------------------------------------------------------
@@ -746,8 +746,8 @@
 %---- Itemize, enumerate, description and other lists
 %--------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-list.def}%
-  {\typeout{*** The texjazz-list.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-list.ltx}%
+  {\typeout{*** The texjazz-list.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz list file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
@@ -755,8 +755,8 @@
 %---------------------------------------------------------------------------------------------------
 
 %\RequirePackage[french]{texjazz-coding}% DOES NOT WORK! WHY?
-\InputIfFileExists{texjazz-coding.def}%
-  {\typeout{*** The texjazz-coding.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-coding.ltx}%
+  {\typeout{*** The texjazz-coding.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz coding file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
@@ -784,8 +784,8 @@
 %-- Defining "shell" environment to simulate a terminal/IDLE console (with `listings' package)
 %---------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-shell.def}%
-  {\typeout{*** The texjazz-shell.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-shell.ltx}%
+  {\typeout{*** The texjazz-shell.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz shell file is required ***}}
 
 \newcolumntype{T}{>{\small\color{black}\shellttfont}l}
@@ -885,16 +885,16 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %---- Sectioning and titling
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-titling.def}%
-  {\typeout{*** The texjazz-titling.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-titling.ltx}%
+  {\typeout{*** The texjazz-titling.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz titling file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
 %---- Table of contents, figures, tables, etc.
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-toclof.def}%
-  {\typeout{*** The texjazz-toclof.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-toclof.ltx}%
+  {\typeout{*** The texjazz-toclof.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz toclof file is required ***}}
 
 
@@ -915,8 +915,8 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %---- Detection of the first entry of an environment (for the "list of...")
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-entry.def}%
-  {\typeout{*** The texjazz-entry.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-entry.ltx}%
+  {\typeout{*** The texjazz-entry.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz entry file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
@@ -925,16 +925,16 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 
 %-- It's better to load the `titleps'' package as an option of the `titlesec'' package
 %\RequirePackage{titleps}% if without `titlesec' package, else already loaded (see previous §)
-\InputIfFileExists{texjazz-headfoot.def}%
-  {\typeout{*** The texjazz-headfoot.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-headfoot.ltx}%
+  {\typeout{*** The texjazz-headfoot.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz headfoot file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
 %---- Front-title page
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-titlepage.def}%
-  {\typeout{*** The texjazz-titlepage.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-titlepage.ltx}%
+  {\typeout{*** The texjazz-titlepage.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz titlepage file is required ***}}
 
 
@@ -942,8 +942,8 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %--    Bibliography
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-bibliography.def}%
-  {\typeout{*** The texjazz-bibliography.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-bibliography.ltx}%
+  {\typeout{*** The texjazz-bibliography.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz bibliography file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
@@ -957,8 +957,8 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %---------------------------------------------------------------------------------------------------
 
 \ifbool{doc@modelling}{%
-  \InputIfFileExists{texjazz-modelling.def}%
-    {\typeout{*** The texjazz-modelling.def file has been loaded successfully ***}}%
+  \InputIfFileExists{texjazz-modelling.ltx}%
+    {\typeout{*** The texjazz-modelling.ltx file has been loaded successfully ***}}%
     {\ClassError{texjazz-handbook}{*** The TeXjazz modelling file is required ***}}
 }{}
 
@@ -1181,8 +1181,8 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %---- Bookmarks − extending/improving utilities from the 'hyperref' package / Gestion des signets
 %---------------------------------------------------------------------------------------------------
 
-\InputIfFileExists{texjazz-bookmark.def}%
-  {\typeout{*** The texjazz-bookmark.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-bookmark.ltx}%
+  {\typeout{*** The texjazz-bookmark.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz bookmark file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
@@ -1422,13 +1422,18 @@ asinh() & ceil() & cosh() & erf() & fabs() & frexp() & hypot() & isinf() & lgamm
 %---------------------------------------------------------------------------------------------------
 
 %\RequirePackage{texjazz-glossary}% to be loaded after hyperref package
-\InputIfFileExists{texjazz-glossary.def}%
-  {\typeout{*** The texjazz-glossary.def file has been loaded successfully ***}}%
+\InputIfFileExists{texjazz-glossary.ltx}%
+  {\typeout{*** The texjazz-glossary.ltx file has been loaded successfully ***}}%
   {\ClassError{texjazz-handbook}{*** The TeXjazz glossary file is required ***}}
 
 %---------------------------------------------------------------------------------------------------
 %---- List of used packages and classes
 %---------------------------------------------------------------------------------------------------
+
+\ifdoc@printfiles% Activating the option if it is settled
+  \listfiles% initialize
+  \AtEndDocument{\printfilelist}
+\fi
 
 %-----
 %- Stolen solution to Enrico Gregorio's proposal (we don't understand at all this LaTeX3 syntax
