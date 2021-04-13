@@ -1,0 +1,809 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Format : LuaTeX, texjazz-handbook.cls (TeXjazz bundle)
+%%% Titre/Title : Informatique et culture scientifique du numérique
+%%% Sous-titre/Subtitle : FUN-MOOC Inria 2019-2021 (ICN, SNT, Python)
+%%% Auteur/Author : Collectif 
+%%%   cf. ICN https://www.fun-mooc.fr/courses/inria/41014/session01/info
+%%%   cf. SNT https://www.fun-mooc.fr/courses/course-v1:inria+41018+session01/info
+%%%   cf. Python https://www.fun-mooc.fr/courses/course-v1:UCA+107001+session02/info
+%%% Composition/Typesetting : ejazz
+%%% Langue/Language : français/French
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%--------------------------------------------------------------------------------------------------
+%---- Style de mise en page / Layout style
+%--------------------------------------------------------------------------------------------------
+
+%\documentclass[printfiles]{texjazz-handbook}% Print used packages at the end of the document
+%\documentclass[showframe,printfiles]{texjazz-handbook}% Development version: layout and packages
+%\documentclass[showframe]{texjazz-handbook}
+\documentclass{texjazz-handbook}
+
+%==================================================================================================
+%---- Outils / Tools
+%==================================================================================================
+
+%--------------------------------------------------------------------------------------------------
+%---- Operating system − Ubuntu MATE 20.04 LTS − Jazz Ubuntu MATE Edition (personal tweak).
+%- Documentation and download: 
+%-   * Ubuntu MATE − https://ubuntu-mate.org
+%-   * Jazz Ubuntu MATE Edition (customized version) − NOT YET AVAILIABLE
+%--------------------------------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------------------------------
+%---- (La)TeX 'vanilla' TeXLive distribution .
+%- Documentation and download: 
+%-   * https://www.tug.org/texlive/
+%-   * fake/dummy packages Ubuntu install, see TeXjazz handbook documentation
+%--------------------------------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------------------------------
+%---- LaTeX editor(s). 
+%- Documentation and download: 
+%-  Historical way: TeXmaker, best tool ever tested (and French ;-), but Qt GUI library and IMHO 
+%-                  awful new design GUI (C++ and Qt), it's a matter of choice.
+%-                  → http://www.xm1math.net/texmaker/index_fr.html
+%-  New tool: previous name LaTeXila, « jeu de mots ! », now Gnome-LaTeX (C and Gtk3+ GUI)
+%-            → https://wiki.gnome.org/Apps/GNOME-LaTeX
+%-  /opt/texlive/2019/texmf-dist/scripts/pythontex/pythontex.py $shortname
+%--------------------------------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------------------------------
+%---- Mocodo script commands (command line in a shell) to build relationship schemes.
+%- Documentation and download: 
+%-   * https://github.com/laowantong/mocodo
+%- On line: 
+%-   * http://mocodo.wingi.net/
+%- To elaborate the different files: 
+%-	> mocodo --tkinter --input filename.mcd
+%- To ajust the schemes: 
+%-	> python filename_svg.py
+%- To change fonts and dimensions, see /usr/local/lib/python2.7/dist-packages/mocodo/shapes
+%- To define a new shape model file, we have to write a new .json file and load it :
+%-	> mocodo --tkinter --shapes fira --input filename.mcd
+%- To add colors, see /usr/local/lib/python2.7/dist-packages/mocodo/colors
+%- To define a new color model file, we have to write a new .json file and load it:
+%-	> mocodo --tkinter --shapes fira --colors texjazz --input filename.mcd
+%- Default color file is `bw.json'. The `texjazz.json' file is a copy where entity and relationship
+%- diagrams have a light yellow (30%) background (HEX: #FFFBB3 - RGB: 255/251/179), a red-brown
+%- stroke color (HEX: #991919 - RGB: 153/25/25) and legs have a dark-electric-blue stroke color 
+%- (HEX: #536878 - RGB: 83/104/120). This color scheme fulfills the TeXjazz handbook class layout.
+%--------------------------------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------------------------------
+%---- Réduire la taille d'un fichier PDF sans Adobe Acrobat
+%- > gs -dBATCH -DNOPAUSE -q -sDEVICE=pdfwrite -dEncryptionR=3 -dKeyLength=40 -dPermissions=65472 
+%-		-sOwnerPassword=null -sOutputFile=sortie.pdf -f Entree.pdf
+%--------------------------------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------------------------------
+%---- Manipulation de fichiers
+%- Traduire un fichier PDF en fichier texte :
+%-  > pdftotext -eol unix input-file.pdf output-file.txt
+%- Espaces insécables (NBSP = non-breaking space) :
+%- (https://www.thelinuxrain.com/articles/how-to-deal-with-nbsps-in-a-terminal)
+%-  > sed -i 's/\xc2\xa0/ /g' file.txt
+%- Espaces vierges de début et fin de ligne, saut de ligne (leading and trailing spaces) :
+%-  > sed -i 's/ //g' input.txt   delete all occurrences of the space character, code 0x20.
+%-  > sed -i 's/[[:blank:]]/ /g'  delete all horizontal spaces, including tab character, "\t"
+%-  > sed -i 's/[[:space:]]/ /g'  delete all whitespace, including newline, "\n" and others
+%- Retour charriot et nouvelle ligne
+%- voir: https://stackoverflow.com/questions/1251999/how-can-i-replace-a-newline-n-using-sed
+%-  > tr '\n' ' ' < inputfile > outputfile # to delete newline \n and insert a space
+%-  > sed -i 's/\n//g' file       # to delete newlines from each line
+%-  > sed -i 's/\n/foo\n/g' file  # to add a word to the end of each line
+%----------
+%---- Corps d'un grand tableau dans un fichier texte
+%- sed -i 's/\t/  \&  /g' file.txt avec tabulation \t sinon espaces
+%- sed -i "s/$/ \\\/g" file.txt fin de ligne premier backslash
+%- sed -i "s/$/\\\/g" file.txt fin de ligne second backslash
+%---- Séquence pour les transcriptions
+%- pdftotext -eol unix input-file.pdf output-file.txt
+%- sed -i 's/\xc2\xa0/ /g' output-file.txt
+%- sed -i 's/[[:space:]]/ /g' output-file.txt
+%- sed -i 's/     / /g' output-file.txt
+%- sed -i 's/    / /g' output-file.txt
+%--------------------------------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------------------------------
+%---- Identité visuelle Inria
+%- https://www.inria.fr/institut/inria-en-bref/charte-logo/charte-logo-inria/charte-identitaire
+%--------------------------------------------------------------------------------------------------
+
+%==================================================================================================
+%---- Titre et références du document / Titling and referencing the document
+%==================================================================================================
+
+% Manual adjustment of X title offset length, if needed in case it is too long (default=0cm)
+%\setlength{\maintitlexoffset}{-1.5cm}
+
+\title[Informatique et culture scientifique du numérique]%
+{Informatique et culture\newline scientifique du numérique}
+% auditeurs ? étudiants ? participants ? formation en ligne ?
+\subtitle{\textsc{Mooc Inria ICN--SNT--Python}}
+\author{2019-2021}
+\date{2019-2021}
+%\doclogo[0.7]{./Images/Chapter00/inria-logo-white-nosign.pdf}% [<scale factor>]
+%\docaddlogo[0.25]{./Images/Chapter00/python-logo-white.png}%
+
+\hypersetup{%
+	pdftitle={MOOC Inria ICN-SNT-Python},
+	pdfauthor={Inria et al.},
+	pdfsubject={Sciences et techniques du numérique},
+	pdfkeywords={Informatique, Numérique, Lycée, Python}
+}
+
+%--------------------------------------------------------------------------------------------------
+%---- Licence de publication du document / Publication license of the document
+%--------------------------------------------------------------------------------------------------
+
+%\copyrightsymbol{\raisebox{.075\baselineskip}{\ccby}}% attribution (modification/commercialisation)
+%\copyrightsymbol{\raisebox{.075\baselineskip}{\ccbyncndeu}}% pas de modification "NoDerivatives"
+%\copyrightsymbol{\raisebox{.075\baselineskip}{\ccbyncsaeu}}% partage à l'identique "ShareAlike"
+%\copyrightsymbol{\faCopyright}
+\copyrightsymbol{%
+\href{https://creativecommons.org/licenses/by-nc/4.0/deed.fr}{%
+	\raisebox{.075\baselineskip}{\ccbynceu}~Creative Commons CC-BY-NC 4.0}%
+}
+\copyrightname{}
+\versiondate{2019-2021}
+\docversion{v.0.1a}
+%\renewcommand{\version}{v.0.1a}
+%---- ejazz data
+%\copyrightsymbol{\ccbyncsaeu}
+%\copyrightsymbol{\copyright}
+%\copyrightname{\textsc{ejazz}}
+%\versiondate{--- \today,}
+%\versiondoc{ v.01a}
+
+%--------------------------------------------------------------------------------------------------
+%---- Deuxième de couverture / Inside front cover
+%--------------------------------------------------------------------------------------------------
+
+\typesettinginfo{%
+	\begin{center}\scriptsize
+	\includegraphics[width=.5\linewidth]{./Images/Chapter00/ctanlion.pdf}\\[.5cm]
+	\begin{minipage}[c]{.125\linewidth}
+		\includegraphics[width=\linewidth]{./Images/Chapter00/inkscape-logo.pdf}
+	\end{minipage}\qquad
+	\begin{minipage}[c]{.45\linewidth}
+		\includegraphics[width=\linewidth]{./Images/Chapter00/texlive-logo.pdf}\\[.25cm]
+		\includegraphics[width=\linewidth]{./Images/Chapter00/latex-project-logo.png}
+		%\includegraphics[width=\linewidth]{./Images/Chapter00/texlive-logo.pdf}\\[1cm]
+		%\includegraphics[width=\linewidth]{./Images/Chapter00/mocodo-banner.pdf}
+	\end{minipage}\qquad
+	\begin{minipage}[c]{.125\linewidth}
+		\includegraphics[width=\linewidth]{./Images/Chapter00/gimp-logo.pdf} %&
+	\end{minipage}\\[1.0cm]
+	Ce document est réalisé au moyen de l'outil de composition de documents \LaTeX{}\\% \AllTeX ~ \BibTeX{}
+	(\href{https://www.latex-project.org/lppl/}{\textit{\LaTeX{} Project Public License}}) 
+	--- distribution \TeX{}Live{}, moteur \LuaLaTeX{} --- et de multiples extensions de style :\\
+	\href{https://ctan.org/}{The Comprehensive \TeX{} Archive Network} (ressources) ---
+	\href{https://tex.stackexchange.com/}{\TeX{}--\LaTeX{} Stack Exchange} (site d'entraide de \emph{référence absolue}).\\[2pt]
+	Les images sont construites ou retouchées à l'aide des extensions graphiques
+	\href{https://ctan.org/pkg/pgf}{\textsc{PGF}/Ti\textit{k}Z}\\
+	ou des logiciels libres \href{https://inkscape.org/fr/}{\textsc{Inkscape}} 
+	et \href{https://www.gimp.org/fr/}{\textsc{Gimp}} 
+	(\href{https://www.gnu.org/licenses/gpl-3.0.fr.html}{\textit{GNU General Public License}}).\\[2pt]
+
+	% Si utilisation/besoin de diagramme de modélisation "Entity-Relashionship"
+	%--------------------------------------------------------------------------
+	%Plus spécifiquement, les schémas conceptuels des données sont essentiellement produits 
+	%avec le \textit{script} \textsc{Python} \href{https://github.com/laowantong/mocodo}{\textsc{Mocodo}} 
+	%(\href{https://opensource.org/licenses/MIT}{\textit{MIT license}}).\\[2pt]
+
+	L'accès ouvert --- voire libre --- à l'ensemble de ces outils permet à tous l'élaboration de documents\\
+	de qualité (agencement comme typographie). Chaque contribution en est ici chaleureusement remerciée.
+
+	\textcolor{firstcolor}{\rule{.25\linewidth}{.4pt}}
+	\vspace*{4pt}
+	
+	Crédits photographiques et graphiques\\[2pt]
+	Autant que faire se peut, les images et illustrations utilisées dans ce document\\
+	sont du domaine public ou relèvent \textit{a minima} de la licence 
+	\href{https://creativecommons.org/licenses/by/4.0/}{Creative Commons \raisebox{.075\baselineskip}{\ccby}}.\\
+	À cette fin, les infographistes ou détenteurs des droits à créditer sont :
+	\href{https://www.freepikcompany.com/legal\#nav-flaticon-license}{\textsc{Flaticon}}, 
+	\href{http://www.freepik.com/terms_of_use}{\textsc{Freepik}},
+	\href{https://freesvg.org/}{\textsc{FreeSVG}}\\ 
+	(nouvelle mouture du projet \textsc{OpenCliparts}), % clôturé au printemps 2019),
+	\href{https://pixabay.com/service/license/}{\textsc{Pixabay}},
+	\href{https://publicdomainvectors.org/}{\textsc{Publicdomainvectors}},	
+	\href{https://www.vexels.com/terms-and-conditions/}{\textsc{Vexels}},
+	\href{https://commons.wikimedia.org/wiki/Main_Page}{\textsc{Wikimedia Commons}}.
+
+	Pour ce qui concerne les éléments soumis à \textit{copyright} 
+	--- essentiellement issus de contenus extérieurs ---,\\
+	leur source ou leurs crédits associés sont mentionnés systématiquement aux abords des images et illustrations.
+
+	Au sujet des logotypes de projets et de marques déposées --- officiels comme stylisés ---, ils appartiennent\\ 
+	à leurs éditeurs respectifs et sont affichés tels quels, considérant que cela contribue à leur notoriété.
+
+	\textcolor{firstcolor}{\rule{.25\linewidth}{.4pt}}
+	\vspace*{4pt}
+	
+	Conception et apport rédactionnel : Vincent \textsc{Doutaut}
+	
+	\textcolor{firstcolor}{\rule{.25\linewidth}{.4pt}}
+	\vspace*{4pt}
+	
+	Éléments sources : \href{https://github.com/ejazzfr/Inria-mooc-handbook}{\faGithub\ Inria-mooc-handbook}
+	
+	\textcolor{firstcolor}{\rule{.75\linewidth}{.4pt}}
+	\vspace*{4pt}
+	
+	\footnotesize\licenseinfo
+	\end{center}
+}
+
+%--------------------------------------------------------------------------------------------------
+%---- Ressources bibliographiques / Bibliographic ressources
+%--------------------------------------------------------------------------------------------------
+
+%-- Using the `biblatex` package and `biber' backend
+
+\addbibresource{./Bibliography/inria-mooc-references.bib}
+
+%--------------------------------------------------------------------------------------------------
+%---- Glossaires et autres : définitions de termes, symboles, acronymes et abréviations
+%--------------------------------------------------------------------------------------------------
+
+\newif\ifdocglossaries
+%\docglossariesfalse
+\docglossariestrue
+
+\ifdocglossaries
+
+%-- Using the `glossaries` package
+
+%- Defining new glossaries for the local glossaries display
+\newglossary*{local01}{\localglossarytitle}
+\newglossary*{local02}{\localglossarytitle}
+\newglossary*{local03}{\localglossarytitle}
+\newglossary*{local04}{\localglossarytitle}
+\newglossary*{local05}{\localglossarytitle}
+\newglossary*{local06}{\localglossarytitle}
+\newglossary*{local07}{\localglossarytitle}
+\newglossary*{local08}{\localglossarytitle}
+\newglossary*{local09}{\localglossarytitle}
+\newglossary*{local10}{\localglossarytitle}
+\newglossary*{local11}{\localglossarytitle}
+\newglossary*{local12}{\localglossarytitle}
+\newglossary*{local13}{\localglossarytitle}
+\newglossary*{local14}{\localglossarytitle}
+
+\makeglossaries% Open glossary files
+
+%- Loading the glossary files with the entry definitions (option 1, 2 or 3)
+\loadglsentries{./Glossaries/inria-mooc-glossary.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local01.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local02.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local03.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local04.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local05.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local06.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local07.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local08.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local09.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local10.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local11.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local12.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local13.def}
+\loadglsentries{./Glossaries/inria-mooc-glossary-local14.def}
+
+% xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.glg" -o "inria-mooc.gls" "inria-mooc.glo"
+% xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.local01-glg" -o "inria-mooc.local01-gls" "inria-mooc.local01-glo"
+% xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.local02-glg" -o "inria-mooc.local02-gls" "inria-mooc.local02-glo"
+% xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.local03-glg" -o "inria-mooc.local03-gls" "inria-mooc.local03-glo"
+% xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.local04-glg" -o "inria-mooc.local04-gls" "inria-mooc.local04-glo"
+% xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.local05-glg" -o "inria-mooc.local05-gls" "inria-mooc.local05-glo"
+% xindy -L french -C utf8 -I xindy -M "inria-mooc" -t "inria-mooc.local06-glg" -o "inria-mooc.local06-gls" "inria-mooc.local06-glo"
+
+\fi
+
+
+%--------------------------------------------------------------------------------------------------
+%---- Réglage des paramètres de mise en forme / Adjusting layout parameters
+%--------------------------------------------------------------------------------------------------
+
+%- Étirement des interlignes des sommaires de chapitre / base line stretch for margin chapter ToCs
+\renewcommand*{\sidetocbaselinestretch}{1.16}% Default = 1.2
+
+
+%==================================================================================================
+%----- Insertion des fichiers en cours de composition
+%==================================================================================================
+
+\includeonly{
+inria-mooc-authors,% Auteurs
+inria-mooc-chapter00-forewords,% Avant-propos / Propos liminaires
+inria-mooc-chapter00-reading-guide,% Guide de lecture
+inria-mooc-chapter00-introductory,% Présentation/Introduction
+inria-mooc-chapter01,% Numérique et sciences du réel
+inria-mooc-chapter02,% Web et usages sociétaux
+inria-mooc-chapter03,% Robotique et intelligence artificielle
+%inria-mooc-chapter04,% Informatique exogène
+inria-mooc-chapter05,% Codage binaire
+inria-mooc-chapter06,% Langages de l'informatique (Algorithmique + Programmation)
+%inria-mooc-chapter07,% Architecture des ordinateurs et des réseaux
+inria-mooc-chapter08,% Données et objets (N1+N2+N6.N7)
+inria-mooc-chapter09,% Maitrise des réseaux (N3+N4+N5) + N+ : Environnement
+inria-mooc-chapter10,% Notions fondamentales (semaine 1)
+inria-mooc-chapter11,% Concepts élémentaires (semaine 2)
+%inria-mooc-chapter12,% Références partagées (semaine 3)
+%inria-mooc-chapter13,% Fonctions, tests et boucles (semaine 4)
+%inria-mooc-chapter14,% Itération, importation de module et espace de nommage (semaine 5)
+inria-mooc-appendixA,% Environnement de travail (Ubuntu MATE + Python)
+inria-mooc-appendixB,% Histoire de l'informatique, algèbre de Boole, portes logiques...
+%inria-mooc-appendixC,%
+%inria-mooc-appendixD,%
+%inria-mooc-appendixX,% Environnement de travail (Ubuntu MATE + Python)
+%inria-mooc-appendixY,%
+%inria-mooc-appendixZ,% Guide d'écriture (utilisation de TeXjazz bundle)
+}
+
+%- https://tex.stackexchange.com/questions/79185/how-to-find-the-lost-text-part-when-having-floats-lost-error
+%\makeatletter
+%\let\old@error\@latexerr
+%\def\zzfl@error{Float(s) lost}
+
+%\def\@latexerr#1{%
+%\def\tmp{#1}%
+%\ifx\tmp\zzfl@error
+%  \def\@elt##1{{%
+%   \let \protect\noexpand
+%    \shipout\vbox{\hbox{LOST FLOAT}\hbox{\fbox{\box##1}}}}}%
+%  \@currlist\@dbltoplist 
+%  \let\@elt\relax
+%\fi
+%\old@error{#1}}
+%\makeatother
+
+
+%==================================================================================================
+%---- Agencement du document final
+%==================================================================================================
+
+\begin{document}
+
+%-- Composition de la page de titre
+\maketitle[./Images/Chapter00/inria-mooc-cover.png]
+
+\pagestyle{empty}
+
+%\setcounter{chapter}{0}
+\include{inria-mooc-authors}
+
+%--------------------------------------------------------------------------------------------------
+%----- Liminaires au document : préface, avant propos, résumé, table des matières, listes, etc.
+%--------------------------------------------------------------------------------------------------
+
+\frontmatter
+
+\symmetricalpage
+
+%-- Sommaire / Table des matières
+%\sommaire% Traditional one column layout
+\tableofcontents% Two columns layout
+
+%-- Liste des figures
+%\listoffigures
+%\addcontentsline{tdm}{section}{\listfigurename}
+
+%-- Liste des tableaux
+%\listoftables
+%\addcontentsline{tdm}{section}{\listtablename}
+
+%-- Liste des vidéos
+%\listofvideos
+%\addcontentsline{tdm}{section}{\listvideoname}
+
+%-- Liste des listings importants ou complets (si suffisamment)
+%\listoflistings
+%\addcontentsline{tdm}{section}{\listoflistingname}
+
+%-- Liste des codes de programmation (« snippets » et autres parties d'une progression)
+%\listofcodes
+%\addcontentsline{tdm}{section}{\listofcodename}
+
+%-- Liste des exercices
+%\listofexercises
+%\addcontentsline{tdm}{section}{\listexercisename}
+
+%-- Liste des questionnaires
+%\listofquizzes
+%\addcontentsline{tdm}{section}{\listofquizname}
+
+%-- Liste des documents
+%\listofdocuments
+%\addcontentsline{tdm}{section}{\listdocumentname}
+
+\asymmetricalpage
+
+%\setcounter{chapter}{0}
+\include{inria-mooc-chapter00-forewords}% Propos liminaires
+
+%\setcounter{chapter}{0}
+\include{inria-mooc-chapter00-reading-guide}% Guide de lecture
+
+%\setcounter{chapter}{0}
+\include{inria-mooc-chapter00-writing-guide}% Guide d'écriture (à rejeter en annexe)
+
+
+%--------------------------------------------------------------------------------------------------
+%---- Corps du document - « matière principale »
+%--------------------------------------------------------------------------------------------------
+
+\mainmatter
+
+%%%
+%- Version finale → Ajustements manuels des tables des matières et listes de figures, tables, etc.
+%%%
+
+% Ajustement/réinitialisation des espaces verticaux des entrées au sein de la table des matières
+%\addtocontents{tdm}{%
+%\protect\setlength{\global\beforetocpartskip}{-8pt}% Avant les entrées de partie
+%\protect\setlength{\global\aftertocpartskip}{-8pt}% Après les entrées de partie
+%}
+%\setlength{\global\beforetocpartskip}{-8pt}% Avant les entrées de partie
+%\setlength{\global\aftertocpartskip}{-8pt}% Après les entrées de partie
+
+\renewcommand{\beforetocpartspace}{-0pt}% Avant les entrées de partie
+\renewcommand{\aftertocpartspace}{6pt}% Après les entrées de partie
+\renewcommand{\beforetocchapterspace}{-6pt}% Avant les entrées de chapitre
+\renewcommand{\aftertocchapterspace}{-6pt}% Après les entrées de chapitre
+%\renewcommand{\beforelofchapterspace}{-4pt}
+%\renewcommand{\afterlofchapterspace}{-24pt}
+%\renewcommand{\beforelotchapterspace}{-2pt}
+%\renewcommand{\afterlotchapterspace}{-2pt}
+%\renewcommand{\beforelovchapterspace}{-2pt}
+%\renewcommand{\afterlovchapterspace}{-2pt}
+%\renewcommand{\beforelodchapterspace}{-2pt}
+%\renewcommand{\afterlodchapterspace}{-2pt}
+%\renewcommand{\beforeloqchapterspace}{-2pt}
+%\renewcommand{\afterloqchapterspace}{-2pt}
+%\renewcommand{\beforelocchapterspace}{-2pt}
+%\renewcommand{\afterlocchapterspace}{-2pt}
+%\renewcommand{\beforelolchapterspace}{-2pt}
+%\renewcommand{\afterlolchapterspace}{-2pt}
+%\renewcommand{\beforeloechapterspace}{-2pt}
+%\renewcommand{\afterloechapterspace}{-2pt}
+
+%\setcounter{chapter}{0}
+%\include{inria-mooc-chapter00-introduction}
+
+\symmetricalpage
+
+%\pagestyle{empty}
+%\vspace*{0.5cm}
+%\begin{center}
+%\includegraphics[width=\linewidth]{./Images/Chapter00/human-evolution.pdf}
+%\end{center}
+%\begin{tikzpicture}[remember picture, overlay]
+%\node[anchor=west, inner sep=0pt, rotate=90, xshift=20pt, yshift=6pt] 
+%	at (0,0) {\scriptsize\faCopyright\space \href{www.vectoropenstock.com}{Vector Open Stock}};
+%\end{tikzpicture}
+%\vfill
+%\begin{center}
+%\includegraphics[width=\linewidth]{./Images/Chapter00/robots-world.png}
+%%\includegraphics[width=\linewidth]{./Images/Chapter00/man-drsjs.png}
+%\end{center}
+%\begin{tikzpicture}[remember picture, overlay]
+%\node[anchor=west, inner sep=0pt, rotate=90, xshift=20pt, yshift=6pt] 
+%	at (0,0) {\scriptsize\faCopyright\space DrSJS/Gerd Altmann via \href{https://pixabay.com}{Pixabay}};
+%\end{tikzpicture}
+%\vfill\pagebreak
+%\vspace*{0.5cm}
+%\begin{center}
+%\includegraphics[width=\linewidth]{./Images/Chapter00/head-modelling-draw-black.png}
+%\end{center}
+%\begin{tikzpicture}[remember picture, overlay]
+%\node[anchor=west, inner sep=0pt, rotate=0, xshift=10pt, yshift=6pt] 
+%	at (0,0) {\scriptsize\faCopyright\space Gerd Altmann via \href{https://pixabay.com}{Pixabay}};
+%\end{tikzpicture}
+
+\asymmetricalpage
+
+\pagestyle{plain}
+\include{inria-mooc-chapter00-introductory}% Présentation de la thématique
+\pagestyle{main}
+
+%--------------------------------------------------------------------------------------------------
+%---- Chapitres partie I : « ICN »
+%--------------------------------------------------------------------------------------------------
+
+\symmetricalpage
+
+\part{Informatique, création numérique}
+\label{part:I}
+
+\asymmetricalpage
+
+% Ajustements manuels :
+% Table des matières → pagebreak
+%\addtocontents{tdm}{\protect\vfill\protect\pagebreak}
+
+%\setcounter{chapter}{0}
+\include{inria-mooc-chapter01}% Numérique et sciences du réel
+
+%\setcounter{chapter}{1}
+\include{inria-mooc-chapter02}% Web et usages sociétaux
+
+%\setcounter{chapter}{2}
+\include{inria-mooc-chapter03}% Robotique et intelligence artificielle
+% Ajustements manuels :
+% Liste des figures → rajout pagebreak après figure III.10
+% Liste des documents → \vfill\pagebreak fin de chapitre
+%\addtocontents{lod}{\protect\vfill\protect\pagebreak}
+
+%\setcounter{chapter}{3}
+\include{inria-mooc-chapter04}% Informatique exogène
+
+%--------------------------------------------------------------------------------------------------
+%---- Chapitres partie II : « SNT »
+%--------------------------------------------------------------------------------------------------
+
+\symmetricalpage
+
+%\part{Fondamentaux en informatique}
+\part{Fondements de l'informatique}% Add missing glyphs to Canter Bold with FontForge and Inkscape
+%\part[Fondamentaux en informatique]{Fondements de l\raisebox{.84ex}{,}informatique}% Dirty workaround
+%\part{\texorpdfstring{Fondements de l\raisebox{.84ex}{,}informatique}% Title
+%{Fondements de l'informatique}}% ToC/TdM/Bookmark
+\label{part:II}
+
+\asymmetricalpage
+
+%\setcounter{chapter}{4}
+\include{inria-mooc-chapter05}% Codage binaire
+
+%\setcounter{chapter}{5}
+\include{inria-mooc-chapter06}% Algorithmique + Programmation
+
+%\setcounter{chapter}{6}
+%\include{inria-mooc-chapter07}% Programmation : inclus finalement au chapitre précédent
+
+%\setcounter{chapter}{6}
+\include{inria-mooc-chapter07}% Architecture des ordinateurs et des réseaux
+
+%--------------------------------------------------------------------------------------------------
+%---- Chapitres partie III : « Applications/Ateliers »
+%--------------------------------------------------------------------------------------------------
+
+\symmetricalpage
+
+\part{Numérique : culture et pratique}
+%\part{Numérique, culture et ateliers}
+%\part[Culture et pratique du numérique]{Culture et pratique du numérique}
+%\part{Culture du numérique et ateliers}
+%\part[Numérique : applications et ateliers]{Culture du numérique : applications et ateliers}
+\label{part:III}
+
+\asymmetricalpage
+
+%\setcounter{chapter}{7}
+\include{inria-mooc-chapter08}% Données et objets (N1+N2+N6.N7)
+
+%\setcounter{chapter}{8}
+\include{inria-mooc-chapter09}% Maitrise des réseaux (N3+N4+N5) + N+ : Environnement
+
+
+%--------------------------------------------------------------------------------------------------
+%---- Chapitres partie IV : « Langage Python »
+%--------------------------------------------------------------------------------------------------
+
+\symmetricalpage
+
+\part{Codage en langage Python}
+%\part{Langage Python}
+\label{part:IV}
+
+\asymmetricalpage
+
+%\setcounter{chapter}{9}
+\include{inria-mooc-chapter10}% Notions fondamentales (semaine 1)
+
+%\setcounter{chapter}{10}
+\include{inria-mooc-chapter11}% Concepts élémentaires (semaine 2)
+
+%\setcounter{chapter}{11}
+%\setcounter{exercise}{6}
+%\setcounter{solution}{6}
+\include{inria-mooc-chapter12}% Références partagées (semaine 3)
+
+%\setcounter{chapter}{12}
+\include{inria-mooc-chapter13}% Fonctions, tests et boucles (semaine 4)
+
+%\setcounter{chapter}{13}
+\include{inria-mooc-chapter14}% Itération, importation de module et espace de nommage (semaine 5)
+
+%\setcounter{chapter}{14}
+\include{inria-mooc-chapter15}% Programmation orientée objet (semaine 6)
+
+%--------------------------------------------------------------------------------------------------
+%---- Chapitres partie V : « Champs d'application Python »
+%--------------------------------------------------------------------------------------------------
+
+\symmetricalpage
+
+%\part{Champs opérationnels Python}
+%\label{part:V}
+
+\asymmetricalpage
+
+%\setcounter{chapter}{15}
+\include{inria-mooc-chapter16}% Écosystème Data Science (semaine 7)
+
+%\setcounter{chapter}{16}
+\include{inria-mooc-chapter17}% Programmation asynchrone − asynchio (semaine 8)
+
+%\setcounter{chapter}{17}
+\include{inria-mooc-chapter18}% Compléments avancés (semaine 9)
+
+
+%--------------------------------------------------------------------------------------------------
+%---- Compléments : annexes, compléments, exercices, etc.
+%--------------------------------------------------------------------------------------------------
+
+\symmetricalpage
+
+%\part{\texorpdfstring{Annexes d\raisebox{.84ex}{,}application}{Annexes d'application}}
+%\part{Annexes et applications}
+%\part{Applications}
+\part{Annexes}
+\label{part:VI}
+
+\asymmetricalpage
+
+\appendix
+
+\appendixpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-- We have a lot of messages: 
+%-- "Underfull \vbox (badness 10000) has occured while \output is active []"
+%-- That almost only (mainly) appears in the appendix with exercise environment 
+%-- (coming from `tcolorbox' algorithm for breaking pages?)
+%-- That usually means that a page is poorly typeset:
+%-- egreg → https://tex.stackexchange.com/questions/50830/do-i-have-to-care-about-bad-boxes
+%-- From https://tex.stackexchange.com/questions/46815/underfull-vbox and LaTeX companion, 
+%-- the given (Franck Mittelbach) general advice is to add more strechtability and \pagebreak. 
+%-- But here it's too random and visually the results seem correct. Moreover, that doesn't
+%-- eliminate all the messages for an unknown reason.
+%-- From https://tex.stackexchange.com/questions/50830/do-i-have-to-care-about-bad-boxes 
+%-- David Carlisle mentions that it may be prefer to set \raggedbottom rather than \flushbottom 
+%-- as this adds stretchable space at the end of each page so no page will be underful 
+%-- (but short pages will be silently accepted). 
+%-- This latter solution does the job! So, we have removed all the additional/spurious \pagebreak
+%-- Amazing trick, I never seen that before: NO WARNING FOR ALL THE DOCUMENT COMPILATION!
+%-- See also: https://tex.stackexchange.com/questions/62296/
+%-- (how-to-suppress-underfull-vbox-badness-10000-while-output-is-active)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\raggedbottom
+
+\include{inria-mooc-appendixA}
+
+\include{inria-mooc-appendixB}
+
+\include{inria-mooc-appendixC}
+
+\include{inria-mooc-appendixD}
+
+\include{inria-mooc-appendixX}
+
+\include{inria-mooc-appendixY}
+
+\include{inria-mooc-appendixZ}
+
+
+%--------------------------------------------------------------------------------------------------
+%---- Clôture du document : références (bibliographie, médiagraphie, etc.), index, glossaire
+%--------------------------------------------------------------------------------------------------
+
+%\bookmarksetup{startatroot}
+
+\symmetricalpage
+
+\part{Addenda}
+\label{part:VII}
+
+\backmatter
+
+\referencepage
+
+\backchapter{Références}
+\label{chap:references}
+
+\nocite{*}% consider all entries (not cited in the text) in the .bib file to be filtered and displayed
+
+% Ajustement manuel
+\vspace*{\baselineskip}
+\section*{Bibliographie}%~\textcolor{firstcolor}{\hrulefill}
+\label{sec:ref.1} 
+
+\printbibliography[keyword=inria-mooc, nottype=online, heading=none]
+
+\vspace*{-\baselineskip}
+\section*{Médiagraphie}%~\textcolor{firstcolor}{\hrulefill}
+\label{sec:ref.2} 
+
+\printbibliography[keyword=inria-mooc, type=online, heading=none]
+
+\vspace*{-\baselineskip}
+\section*{Bibliographie \textsc{Python}}%~\textcolor{firstcolor}{\hrulefill}
+\label{sec:ref.3} 
+
+\printbibliography[keyword=python, nottype=online, heading=none]
+
+\vspace*{-\baselineskip}
+\section*{Bibliographie \textsc{Raspberry Pi}}%~\textcolor{firstcolor}{\hrulefill}
+\label{sec:ref.4} 
+
+\printbibliography[keyword=raspberrypi, nottype=online, heading=none]
+
+\vspace*{-\baselineskip}
+\section*{Bibliographie \AllTeX}%~\textcolor{firstcolor}{\hrulefill}
+\label{sec:ref.5} 
+
+\printbibliography[keyword=latex, nottype=online, heading=none]
+
+\vspace*{-\baselineskip}
+\section*{Médiagraphie \AllTeX}%~\textcolor{firstcolor}{\hrulefill}
+\label{sec:ref.6} 
+
+\printbibliography[keyword=latex, type=online, heading=none]
+
+\vfill\pagebreak
+\thispagestyle{empty}
+
+%-- Below, we avoid "hacking" the `glossaries' package, but adapt its commands to fit our needs
+
+\asymmetricalpage
+
+\ifdocglossaries
+
+\backchapter{Glossaire}
+\label{chap:glossary}
+
+\printmainglossary
+
+\vfill\pagebreak
+\thispagestyle{empty}
+
+\fi
+
+
+%\backchapter{Index}
+%\label{chap:index}
+
+\symmetricalpage
+
+%\input{inria-mooc-license.tex}
+\InputIfFileExists{inria-mooc-license.tex}%
+  {\typeout{*** The inria-mooc-license.tex file has been loaded successfully ***}}%
+  {\ClassError{texjazz-handbook}{*** The inria-mooc-license.tex file is required ***}}
+
+
+%--------------------------------------------------------------------------------------------------
+%---- Fichiers inclus : sources LateX et bibliographie, classe et styles, etc.
+%--------------------------------------------------------------------------------------------------
+
+
+%-- Accès par signets supplémentaires
+
+%Ce fichier est sensé être attaché : \attachfile{./inria-mooc.bib}
+
+%Ce fichier est sensé être attaché : \attachfile[icon={\faThumbTack}]{./inria-mooc.bib}
+
+
+
+%IntoPDF solution : 
+
+%\attachandlink{./inria-mooc.bib}[application/x-bibtex]{Fichier des entrées des références de ce document}{\faThumbTack}
+
+
+
+
+
+\end{document}

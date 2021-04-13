@@ -1,0 +1,2335 @@
+\chapter[Codage binaire]{Codage binaire}
+\label{chap:V}
+
+\vspace{-6pt}
+
+\lettrine{À}{ce jour, l'information numérique s'avère binaire}. Il convient donc de déterminer ce que recouvre ce système pour ensuite détailler comment les sons, les images, les vidéos ou toute autre donnée sont traités par cet appareillage qui s'est invité dans le quotidien de la plupart des gens en une trentaine d'années : l'ordinateur.
+
+Cela offre l'occasion d'aborder les différents formats de données et d'évoquer la manière de les stocker, de les classer, autant que d'y accéder une fois ces informations enregistrées en base de données.
+
+
+%----------
+\section[Représentation de l'information]{Représentation de l'information}
+\label{sec:V.1}
+
+Notre environnement comporte une foultitude d'informations différentes, que ce soient des photographies, des bruits, la température ambiante, la quantité d'argent disponible sur notre compte bancaire, notre âge, des dates, etc.
+
+Plus ou moins structurée, cette multitude de choses très diverses est, soit appréhendée directement par nos sens humains, soit captée au moyen d'instruments de mesure. Comment alors traduire ces informations pour qu'un ordinateur puisse les traiter ? 
+
+
+\subsection[Électronique et logique]{Électronique et logique}
+\label{sub:V.1.1}
+
+\afterpage{%
+\begin{marginvideo}[\label{vid:vidV.1}Représentation binaire.]%
+	\href{https://www.youtube.com/watch?v=fFnIwfGH-Aw}%
+		{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-01-representation-binaire-HD.mp4}%
+	\launchvideo{https://www.youtube.com/watch?v=fFnIwfGH-Aw}
+\end{marginvideo}}
+
+Afin de pouvoir « discuter » avec un ordinateur, on procède à une numérisation, c'est-à-dire un codage de l'information ou une interprétation en nombres que l'ordinateur est capable de manipuler. 
+ 
+Un ordinateur est un appareil électronique qui, de fait, fonctionne à l'électricité. Schématiquement, si le courant électrique ne passe pas dans un composant, cela définit le niveau $0$ et, inversement, si le courant passe, cela détermine le niveau $1$. Il en est de même de tous les composants constitutifs de l'ordinateur et celui-ci répond à un système binaire --- état $0$/Non/Faux \textit{versus} état $1$/Oui/Vrai --- de l'information.
+
+
+\subsubsection[Système binaire]{Système binaire}
+\label{subsub:V.1.1.1}
+
+L'information binaire ($0$ ou $1$), le plus souvent transmise par un courant électrique --- parfois par des variations d'intensité lumineuse com\-me dans les fibres optiques --- est représentée par une tension, proche de zéro volt pour l'état $0$ ou bien voisine de cinq volts pour l'état $1$. Les courants circulent surtout lors des changements d'état $0 \rightarrow 1$ et $1 \rightarrow 0$ (au-delà des courants de fuite), c'est la cause principale de consommation électrique ; ils permettent de charger ou décharger les capacités des circuits électroniques. 
+
+C'est de là que provient le nom de « \textit{bit} » pour « \textit{\lightbf{B}inary Dig\lightbf{it}} » en anglais. Donc, un bit vaut $1$ ou $0$ selon que le courant passe ou non. 
+Les ordinateurs actuels, fondés sur l'électronique, répondent à ce canon. Peut-­‐être qu'à l'avenir cela changera avec les perspectives à l'étude en photonique ou en mécanique quantique.
+
+
+\subsubsection[Opérateurs et composants logiques]{Opérateurs et composants logiques}
+\label{subsub:V.1.1.2}
+
+\sidegraphic{\includegraphics[width=\linewidth]{graphV-01-transistors-traditionnels-wikipedia.jpg}}%
+À partir des bits l'enjeu est de conduire des opérations, autrement dit des calculs. L'opération la plus simple à réaliser est offerte par ce qu'on appelle un transistor. C'est un des composants élémentaire de l'électronique issu des laboratoires\sidenote{Bien que dans le même temps, un brevet européen ait été semble-t-il déposé (\href{https://fr.wikipedia.org/wiki/Transistor}{\faWikipediaW}).} \textsc{Bell} en 1948. 
+
+Les fonctions d'un transistor peuvent être l'amplification des courants électriques, la génération d'oscillations, la modulation ou la détection\sidenote{Par extension, ce nom a été donné aux récepteurs radiophoniques portatifs fonctionnant à base de transistors.} de signaux. 
+Un transistor est assimilable à un robinet qui laisse ou non passer le courant. Les \href{https://fr.wikipedia.org/wiki/Transistor\_bipolaire}{transistors bipolaires à jonction} --- BJT ---, longtemps dévolus aux systèmes analogiques sont disponibles depuis les années 1950. Il sont obtenus en insérant un barreau semi-conducteur entre deux autres de signe opposé ; ainsi, on distingue les transistors de type PNP --- Positif--Négatif--Positif --- et NPN --- Négatif--Positif--Négatif. Ces derniers possédant de meilleures caractéristiques, ils sont plus répandus.
+
+\sidefigure[\label{fig:V.1}Technologie des transistors, du type PNP (à gauche) et NPN (à droite) B : base -- C : collecteur -- E : émetteur.]{%
+\includegraphics[width=0.3\linewidth]{figV-01a-transistor-pnp.png}\qquad%
+\includegraphics[width=0.3\linewidth]{figV-01b-transistor-npn.png}
+}
+
+%--- BUG: NO AUTOMATIC DETECTION IT WORKS WITH \sidefigure!!! WHY???
+%\begin{marginfigure}
+%\includegraphics[width=0.3\linewidth]{figV-01a-transistor-pnp.png}\qquad%
+%\includegraphics[width=0.3\linewidth]{figV-01b-transistor-npn.png}
+%\caption{\label{fig:V.1}Technologie des transistors, du type PNP (à gauche) et NPN (à droite) B : base -- C : collecteur -- E : émetteur.}
+%\end{marginfigure}
+
+Actuellement, la microélectronique vise à réaliser des transistors CMOS --- \textit{Complementary Metal Oxide Semi-conductor} --- qui consom\-ment un courant le plus réduit possible quand on applique une tension sur leur entrée, justement pour limiter au maximum la puissance dissipée par ces transistors. 
+
+La technologie permet de réaliser des transistors très petits (de l'ordre de 5\,nm). Des phénomènes complexes viennent alors se greffer y compris des courants non négligeables qu'il est difficile de contenir :  la chasse au courant a toujours été un objectif et insister sur la notion de courant rend dès à présent explicite cet enjeu en matière d'énergie.
+
+Beaucoup de choses sont dérivées des transistors, notamment des opérations sur les bits avec la notion de \emph{porte logique}. Les portes logiques disposent en entrées de différentes arrivées de courant qui se combinent, pour offrir en sortie un résultat en fonction des arrivées. Elles sont appelées portes logiques car elles proposent l'ensemble des opérateurs logiques : « ET », « OU », « OU exclusif », « NON », etc.
+
+\sidefigure[\label{fig:V.2}Représentation et table de vérité de porte logique « OU » (notation étasunienne la plus usitée ; voir \href{https://fr.wikipedia.org/wiki/Fonction\_logique\#Repr\%C3\%A9sentation\_graphique}{comparatif avec la notation européenne}).]{%
+\begin{tikzpicture}[circuit logic US, line width=1pt]
+\node [or gate, inputs = nn, anchor=input 1] at (0,0) (or1) {};
+\draw (or1.input 1) -- ++(left:5mm) node[left, xshift=-13pt, yshift=2pt, anchor=west] {$E_1$};
+\draw (or1.input 2) -- ++(left:5mm) node[left, xshift=-13pt, yshift=-2pt, anchor=west] {$E_2$};
+\draw (or1.output) -- ++(right:5mm) node[right] {$Q$};
+\end{tikzpicture}\\[8pt]
+%\begin{circuitikz}[american]
+%\ctikzset{american or shape=pointy}
+%\node [or port](O1) at (0,0) {};
+%\end{circuitikz}\\[8pt]
+\begin{tabular}[b]{cc|c}
+$E_1$ & $E_2$ & $Q = E_1 \, \vert\vert \, E_2$ \\ \addlinespace[2pt] \toprule
+$0$ & $0$ & $0$  \\ \midrule
+$0$ & $1$ & $1$  \\ \midrule
+$1$ & $0$ & $1$  \\ \midrule
+$1$ & $1$ & $1$  \\
+\end{tabular}%
+}
+
+%--- BUG: NO AUTOMATIC DETECTION BUT IT WORKS WITH \sidefigure!!! WHY???
+%\begin{marginfigure}
+%\begin{tikzpicture}[circuit logic US, line width=1pt]
+%\node [or gate, inputs = nn, anchor=input 1] at (0,0) (or1) {};
+%\draw (or1.input 1) -- ++(left:5mm) node[left, xshift=-13pt, yshift=2pt, anchor=west] {$E_1$};
+%\draw (or1.input 2) -- ++(left:5mm) node[left, xshift=-13pt, yshift=-2pt, anchor=west] {$E_2$};
+%\draw (or1.output) -- ++(right:5mm) node[right] {$Q$};
+%\end{tikzpicture}\\[8pt]
+%%\begin{circuitikz}[american]
+%%\ctikzset{american or shape=pointy}
+%%\node [or port](O1) at (0,0) {};
+%%\end{circuitikz}\\[8pt]
+%\begin{tabular}[b]{cc|c}
+%$E_1$ & $E_2$ & $Q = E_1 \, \vert\vert \, E_2$ \\ \addlinespace[2pt] \toprule
+%$0$ & $0$ & $0$  \\ \midrule
+%$0$ & $1$ & $1$  \\ \midrule
+%$1$ & $0$ & $1$  \\ \midrule
+%$1$ & $1$ & $1$  \\
+%\end{tabular}%
+%\caption{\label{fig:V.2}Représentation et table de vérité de porte logique « OU » (notation étasunienne la plus usitée ; voir %\href{https://fr.wikipedia.org/wiki/Fonction\_logique\#Repr\%C3\%A9sentation\_graphique}{comparatif avec la notation européenne}).}
+%\end{marginfigure}
+
+Par exemple, une porte « OU » (cf. \cref{fig:V.2}) reçoit deux entrées qui vont contenir du courant ou non. Elle va générer une sortie qui contient du courant si une des deux entrées ou si les deux entrées en possèdent (voir table de vérité). 
+
+Se fondant sur des combinaisons plus ou moins complexes de por\-tes logiques et de composants électroniques associés, on peut élaborer des cellules ayant des fonctionnalités utiles pour le calcul : des additionneurs de bits, des bascules et \href{https://fr.wikipedia.org/wiki/Registre\_\%C3\%A0\_d\%C3\%A9calage}{registres à décalage}, etc.
+
+\subsection[Nombre et texte]{Données numériques et textuelles}
+\label{sub:V.1.2}
+
+En termes de représentation des nombres, se limiter au bit est bien entendu insuffisant ; seules deux valeurs. Certes, si la numérisation con\-traint les possibilités, \pagebreak elle doit néanmoins permettre de conduire des évaluations réalistes de l'environnement naturel. Deux aspects « productivistes » --- à savoir hors perspective ludique --- de l'utilité d'un ordinateur sont le calcul numérique --- en substitution bien plus performante de la règle à calcul des écoliers des années 1950 --- et le traitement de texte --- en succession de la machine à écrire mécanique.
+
+
+\subsubsection[Assignation des nombres]{Assignation des nombres}
+\label{subsub:V.1.2.1}
+
+Le principe du codage des nombres est simplement de considérer un assemblage de bits correspondant aux besoins de l'étendue et/ou de la précision de la représentation voulue.
+
+Par conséquent, plutôt que le bit, l'unité de quantification courante est convenue à 8 bits, soit un \emph{octet}\sidenote{Historiquement, ceci est aussi à mettre en relation avec le rapport entre capacité et coût de la mémoire.} --- \textit{byte} en anglais. Cela correspond à une puissance de deux facile à traiter par l'ordinateur et qui offre 256 valeurs, de $0$ à $255$ ($2^8 = 256$).
+
+Comme application directe, on peut vouloir coder un âge qui, approximativement et pour le moment, se situe entre 0 et 127 ans. Pour ce faire il suffit\sidenote{Sur un octet, le huitième bit est mis à zéro.} de 7 bits ($2^7 = 128$, $2^6 = 64$ plus assez !).
+
+Toutefois, pour coder une température, l'octet ne suffit plus. En effet, il faut pouvoir distinguer un nombre positif d'un nombre négatif, un nombre entier d'un nombre\sidenote{Un nombre décimal est appelé nombre à virgule flottante ou par contraction un nombre « flottant ».} décimal... La représentation est plus subtile mais sur le principe reste la même : allouer suffisamment de bits et les agencer correctement pour réaliser l'opération.
+
+Ces notions sont reprises par la suite, mais ce qu'il faut d'abord re\-tenir est qu'un ordinateur est stupide : il sait manipuler les nombres, mais se fiche éperdument de leur signification. C'est au programmeur ou à l'utilisateur de fournir ces nombres de manière adaptée en entrée.
+
+Par exemple, le calcul d'une vitesse doit se faire de manière adéquate en entrant les unités nécessaires au calcul : en m/s ou en km/h, ni l'une ou l'autre, ni l'une sans l'autre.
+
+
+\subsubsection[Codification du texte]{Codification du texte}
+\label{subsub:V.1.2.2}
+
+\begin{marginfigure}%
+%  [\label{fig:V.3}Codage d'une lettre bit à bit.]%
+\begin{tikzpicture}[scale=0.5, inner sep=0pt, outer sep=0pt]
+%\draw [very thin, lightgray] (-2.5,-2.5) grid[step=0.2] (2.5,2.5);
+\draw [very thin, gray] (0,0) grid (5,6);
+\foreach \x in {1,...,3}
+	\fill[fill=black] ([xshift=1mm]\x,5.1) rectangle ([xshift=9mm]\x,5.9);
+\foreach \x in {4,...,4}
+	\fill[fill=black] ([xshift=1mm]\x,4.1) rectangle ([xshift=9mm]\x,4.9);
+\foreach \x in {1,...,4}
+	\fill[fill=black] ([xshift=1mm]\x,3.1) rectangle ([xshift=9mm]\x,3.9);
+\foreach \x in {0,...,0}
+	\fill[fill=black] ([xshift=1mm]\x,2.1) rectangle ([xshift=9mm]\x,2.9);
+\foreach \x in {4,...,4}
+	\fill[fill=black] ([xshift=1mm]\x,2.1) rectangle ([xshift=9mm]\x,2.9);
+\foreach \x in {0,...,0}
+	\fill[fill=black] ([xshift=1mm]\x,1.1) rectangle ([xshift=9mm]\x,1.9);
+\foreach \x in {4,...,4}
+	\fill[fill=black] ([xshift=1mm]\x,1.1) rectangle ([xshift=9mm]\x,1.9);
+\foreach \x in {1,...,4}
+	\fill[fill=black] ([xshift=1mm]\x,0.1) rectangle ([xshift=9mm]\x,0.9);
+\end{tikzpicture}
+\caption{\label{fig:V.3}Codage d'une lettre bit à bit.}
+\end{marginfigure}
+
+Il existe diverses manières de coder du texte. Une première approche pourrait être d'associer bit à bit le dessin d'un glyphe en le décomposant sur une grille de bits (voir \cref{fig:V.3}). On utilise un bit par case et on considère que si le bit est à zéro la case est noire, si le bit est à un elle est blanche. On décrit ainsi chaque point à l'écran.
+
+Toutefois, la démarche précédente ne fonctionne pas, car en pratique il faut savoir, pour chaque lettre, la largeur et la hauteur à lui attribuer, autrement dit le nombre de cases horizontales et verticales à réserver. De plus, si on rajoute de la couleur, un seul bit par case ne suffit plus, cela devient rapidement ingérable de traiter facilement toutes les informations nécessaires. Ces questions d'affichage deviennent délicates et seront reprises par la suite.
+
+Indépendamment de l'affichage, la représentation des lettres et au\-tres caractères passe par un codage sous forme de nombres. Ainsi, à partir de spécifications normées, des tables de correspondances entre signe et code sont établies.
+
+Originellement, le code qui a prévalu est le code ASCCII, pour \textit{American Standard Code for Information Interchange}. Comme son nom l'indique, il est bâtit pour l'anglais américain et codé initialement\sidenote{En fait, le codage est sur 8 bits, le bit supplémentaire servant de paramètre de contrôle, mais les caractères en tant que tels sont codés sur 7 bits.} sur 7 bits, suffisant pour la ponctuation et l'alphabet latin sans accent (voir \cref{tab:V.1}). Avec l'essor des ordinateurs personnels (PC), le codage ASCII étendu, codé sur 8 bits, a été réalisé pour tenir compte des autres langues. De multiples moutures en sont déclinées et, pour les langues d'Europe de l'ouest comme le français, les normes ISO-8859-1 et ISO-8859-15 ont longtemps été employées (voir \cref{tab:V.2}).
+
+
+\vfill\newpage
+
+\begin{jazztable*}
+\caption{\label{tab:V.1}Table originelle de codage ASCII (7 bits).}
+\fullglyphfont
+\tiny
+\renewcommand*{\arraystretch}{1.648}
+\rowcolors{2}{tableLineOne}{tableLineTwo}
+\begin{tabularx}{\linewidth}{rrcXrrcX}
+\rowcolor{secondcolor}
+\multicolumn{8}{c}{%
+	\Gape[6pt]{\small\scshape\titlingfont\textcolor{white}{%
+		Table des caractères ASCII codés sur 7 bits}}} \\
+\rowcolor{firstcolor}
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Déc.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Bin.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Glyphe}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Description}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Déc.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Bin.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Glyphe}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Description}}} \\
+\input{./Codes/Chapter05/ascii-basic.ltx}
+\end{tabularx}
+\end{jazztable*}
+
+\vfill\newpage
+
+\begin{jazztable*}
+\caption{\label{tab:V.2}Table de codage ASCII étendu ISO-Latin1/IBM-PC (8 bits).}
+\fullglyphfont
+\tiny
+\renewcommand*{\arraystretch}{1.648}
+\rowcolors{2}{tableLineOne}{tableLineTwo}
+\begin{tabularx}{\linewidth}{lcXlcX}
+\rowcolor{secondcolor}
+\multicolumn{6}{c}{%
+	\Gape[6pt]{\small\scshape\titlingfont\textcolor{white}{%
+		Table des caractères ASCII étendu ISO-Latin1 (IBM-PC) codés sur 8 bits}}} \\
+\rowcolor{firstcolor}
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Déc.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Glyphe}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Description}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Déc.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Glyphe}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Description}}} \\
+\input{./Codes/Chapter05/latin1-ibmpc.ltx}
+\end{tabularx}
+\end{jazztable*}
+
+\vfill\newpage
+
+\begin{jazztable*}
+\caption{\label{tab:V.3}Table de codage Unicode Latin1-supplement : U+0000--U+007F.}
+\fullglyphfont
+\tiny
+\renewcommand*{\arraystretch}{1.648}
+\rowcolors{2}{tableLineOne}{tableLineTwo}
+\begin{tabularx}{\linewidth}{llcXllcX}
+\rowcolor{secondcolor}
+\multicolumn{8}{c}{%
+	\Gape[6pt]{\small\scshape\titlingfont\textcolor{white}{%
+		Table des caractères Unicode Latin1-Supplement : 0--127/U+0000--U+007F}}} \\
+\rowcolor{firstcolor}
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Déc.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Code}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Glyphe}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Description}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Déc.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Code}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Glyphe}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Description}}} \\
+\input{./Codes/Chapter05/unicode-ascii-0-127.ltx}
+\end{tabularx}
+\end{jazztable*}
+
+\vfill\newpage
+
+\begin{jazztable*}
+\caption{\label{tab:V.4}Table de codage Unicode Latin1-supplement : U+0080--U+00FF.}
+\fullglyphfont
+\tiny
+\renewcommand*{\arraystretch}{1.648}
+\rowcolors{2}{tableLineOne}{tableLineTwo}
+\begin{tabularx}{\linewidth}{llcXllcX}
+\rowcolor{secondcolor}
+\multicolumn{8}{c}{%
+	\Gape[6pt]{\small\scshape\titlingfont\textcolor{white}{%
+		Table des caractères Unicode Latin1-Supplement : 128--255/U+0080--U+00FF}}} \\
+\rowcolor{firstcolor}
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Déc.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Code}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Glyphe}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Description}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Déc.}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Code}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Glyphe}}} &
+\multicolumn{1}{c}{\Gape[4pt]{\footnotesize\scshape\titlingfont\textcolor{white}{Description}}} \\
+\input{./Codes/Chapter05/unicode-ascii-128-255.ltx}
+\end{tabularx}
+\end{jazztable*}
+
+\vfill\pagebreak
+
+\sidegraphic{\includegraphics[width=0.75\linewidth]{graphV-02-unicode-logo.png}}%
+Devant les difficultés d'interopérabilité des différents codages nationaux, à partir de 1991, un codage unifié a commencé à être développé pour résoudre ces lourdeurs de gestion. Le principe reste le même --- un numéro par caractère à afficher dans le texte ---mais, au-delà d'exprimer une unification pour toutes les langues y compris les sinogrammes et kanjis asiatiques, les performances sont meilleures au sens où quelque soit le logiciel et le système d'exploitation, le codage est reconnu. Le coût est un peu plus de complexité et une consommation supérieure en ressources (voir pour comparatif des codes les \cref{tab:V.3,,tab:V.4}).
+
+La mise en place de l'Unicode a un peu traîné compte tenu du fait qu'il fallait gérer la migration de nombreuses applications vers ce nouveau standard, entre autres les sites Web ; mais adieu au signes cabalistiques dans les courriels en fonction de la configuration de l'expéditeur... On peut noter que tous les systèmes d'exploitation GNU/\textsc{Linux} sont depuis une bonne décennie nativement au format \href{https://fr.wikipedia.org/wiki/UTF-8}{Unicode UTF-8}.
+
+Le dessin du caractère --- le glyphe --- à l'écran n'est important qu'au moment de l'affichage mais, pour stocker l'information, seuls sont nécessaires les différentes représentations codées d'un texte.
+
+
+\begin{gofurther}{Ressources complémentaires}
+\lightbf{Formation complémentaire}
+\begin{itemize}\jazzitem
+	\item Partie 1 du \href{https://pixees.fr/classcode/formations/module2/#partie1}{\#2 Module thématique : manipuler l’information}, \textsc{Class´Code}. Cette formation pour enseignants du secondaire offre des vidéos accessibles en cliquant sur le pictogramme \faIcon[regular]{play-circle}
+\end{itemize}
+
+\lightbf{Articles}
+\begin{itemize}\jazzitem
+	\item \href{https://fr.wikipedia.org/wiki/Codage_de_l'information}{Codage de l'information}, \textsc{Wikipédia}.
+	\item \href{https://interstices.info/nom-de-code-binaire/}{Nom de code : binaire}, par Pascal \textsc{Guitton}, \textsc{Interstices}, 12 décembre 2008
+	\item \href{https://www.lemonde.fr/blog/binaire/2014/04/30/linformatique-et-les-mots-pour-le-dire-voici-le-c-de-notre-a-b-c/}{Les mots pour le dire : C comme codage}, par Thierry \textsc{Viéville}, \textsc{Binaire}, 30 avril 2014.
+\end{itemize}
+
+\lightbf{Vidéos}
+\begin{itemize}\jazzitem
+	\item \href{https://www.youtube.com/watch?v=kCrwLydx7S8}{Codage de l'Information}, Les capsules, 2014 (lien mort).
+\end{itemize}
+
+\lightbf{Cours}
+\begin{itemize}\jazzitem
+	\item \href{https://fabien-torre.fr/Enseignement/Cours/Codages/}{Codages binaires et autres codages}, par Fabien Torre, Université de Lille, 2013.
+\end{itemize}
+
+\lightbf{Autres ressources}
+\begin{itemize}\jazzitem
+	\item \href{http://www.lycee-ferry-versailles.fr/si-new/5_1_donnees/cours/cours_transmission_donnees_2017.pdf}{Codage de l'information}, lycée Jules Ferry, Versailles, sect. SI.
+	\item \href{http://si.lycee-desfontaines.eu/IMG/pdf/codages_cr.pdf}{Systèmes de numération et codages}, lycée Jospeh Desfontaines, Melle, section SI.
+	\item \href{https://lycee-corot-morestel.fr/IMG/pdf/18_tp.pdf?PHPSESSID=eb7f940601d5e8034f2f068aa87ca7e7}{Binaire et codage des informations}, lycée Camille Corot, Morestel, option MPI.
+\end{itemize}
+\end{gofurther}
+
+
+\begin{marginvideo}[\label{vid:vidV.2}Image et son.]%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-02-images-audio-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=VFQ4SrF91Lc}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=VFQ4SrF91Lc}
+\end{marginvideo}
+
+%----------
+\section[Infographie et audionumérique]{Infographie et audionumérique}
+\label{sec:V.2}
+
+Si le XX\frup{e} siècle a connu l'avènement puis le développement d'arts nouveaux plus ou moins bien classifiés comme la photographie, le cinéma, la bande dessinée, le jazz et le rock'n'roll (ben oui) ou encore la musique\sidenote{Plus précisément, la musique concrète et électroacoustique (cf. \href{https://fr.wikipedia.org/wiki/Pierre_Schaeffer}{Pierre \textsc{Schaeffer}}) \emph{puis} électronique ; non pas seulement cel\-le des synthétiseurs, instruments électroniques et autres DJ sur séquenceurs.} électronique, voire même selon certains le jeu vidéo, le XXI\frup{e} siècle ne manquera pas de compléter la liste avec gourmandise. 
+
+Au-delà de toute \href{https://fr.wikipedia.org/wiki/Classification_des_arts}{taxonomie}, il y a fort à parier que le numérique au sens large en sera partie prenante comme un des vecteurs principaux, puisque c'est déjà le cas ! À quand l'art reconnu de la programmation ?
+
+Toujours est-il que l'on constate depuis quarante ans énormément de bouleversements dans les industries audiovisuelles avec l'arrivée du numérique, qu'il s'agisse de l'infographie autant que l'audionumérique.
+
+
+%\subsection[Numérisation des images]{Numérisation des images}
+\subsection[Photographie et dessin]{Photographie et dessin}
+\label{sub:V.2.1}
+
+%\caution[t]<firstcolor>{Section à compléter pour rééquilibrer avec la partie son ? Par exemple :\\ \url{https://images.math.cnrs.fr/%Le-traitement-numerique-des-images.html}, \url{http://images.math.cnrs.fr/Compression-d-image.html}, \url{https://fr.wikipedia.org/wiki/Portail:Couleurs} + divers docs}{Note de la rédaction}%
+Il n'y a qu'un pas du traitement de texte à la \textsc{Pao} --- Publication assistée par ordinateur. Il a rapidement été franchi, avec comme corollaire le traitement des images : photographie et dessin. 
+
+Ces deux orientations donnent lieu à chacune leur manière de procéder avec des données visuelles : la segmentation pour ce qui est des images matricielles --- dites aussi \textit{bitmap}, littéralement « carte de bits~» --- et la modélisation mathématique pour les images vectorielles.
+
+\begin{marginfigure}%
+%  [\label{fig:V.4}Couleurs primaires : rouge, vert, bleu. Couleurs secondaires : cyan, magenta, jaune (quadrichromie).]
+\begin{subfigure}{\linewidth}
+\includegraphics[width=\linewidth]{figV-04a-rgb-additive-color-mixing.pdf}
+\caption{\label{fig:V.4a}Synthèse additive --- RGB.}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+\vspace{4pt}
+\includegraphics[width=\linewidth]{figV-04b-cmy-subtractive-color-mixing.pdf}
+\caption{\label{fig:V.4b}Synthèse soustractive --- CMY.}
+\end{subfigure}
+\vspace{-2pt}
+\caption{\label{fig:V.4}Couleurs primaires : rouge, vert, bleu. Couleurs secondaires : cyan, magenta, jaune (quadrichromie).}
+\end{marginfigure}
+
+De nos jours, les images sont omniprésentes, qu'il s'agisse de télévision, de jeux vidéos ou de « réalité virtuelle » (voir \cref{chap:I}). Comment les affiche-t-on concrètement ?
+
+\subsubsection[Images matricielles]{Images matricielles}
+\label{subsub:V.2.1.1}
+
+Comme évoqué précédemment (voir \cref{subsub:V.1.2.2}), cela n'est pas tant dans le codage d'une information visuelle que se pose le problème, mais dans son rendu : à l'écran en retouche ou à l'impression papier.
+
+Pour présenter une image matricielle, on s'appuie sur la résolution de l’œil humain et une décomposition en \emph{pixels} --- pour \textit{picture element} en anglais. Ces pixels sont l'assemblage de points de \href{https://fr.wikipedia.org/wiki/Rouge_vert_bleu}{trois couleurs primaires} que sont le rouge, le vert et le bleu --- RGB pour \textit{Red}, \textit{Green}, \textit{Blue} --- sur la base desquelles on peut projeter n'importe quelle couleur. La taille des points est déterminée de manière à être inférieure à la discrimination visuelle humaine.
+
+\begin{marginfigure}%
+%  [\label{fig:V.5}Image matricielle : définition de couleur et pixellisation.]%
+\includegraphics[width=\linewidth]{figV-05-rgb-raster-image.png}
+\caption{\label{fig:V.5}Image matricielle : définition de couleur et pixellisation.}
+\end{marginfigure}
+
+Chaque pixel est représenté par un nombre défini de bits. Tout dépend alors de la quantité de couleur nécessaire pour l'affichage. Trois cas de figure sont à considérer :
+\begin{enumerate}
+	\item le noir et blanc, avec un seul bit par pixel ;
+	\item les niveaux de gris, représentés par huit bits, soit 256 valeurs de $0$ pour le noir à $255$ pour le blanc avec toutes les valeurs intermédiaire de niveau de gris ;
+	\item la couleur, avec huit bits par composante RGB, soit 24 bits au total pour chaque pixel, autrement dit 16 millions de couleurs.
+\end{enumerate}
+
+La question qui se pose encore est de savoir si par exemple une suite de 24 bits correspond à un pixel en couleur ou 24 pixels noir et blanc. Un certain nombre d'information complémentaires sur l'image sont disposées en entête du fichier pour décrire complètement son contenu : dimensions de l'image et codage des pixels.
+
+Cette dépendance aux dimensions de l'image peut être source de problème dits de « pixellisation », si d'aventure le nombre de points la décrivant est trop faible par rapport à la taille de l'affichage voulu (voir illustration en \cref{fig:V.5}). Pour cette raison, en infographie et \textsc{Pao}, il est convenu un certain nombre de normes pratiques s'appuyant sur la résolution\sidenote{Cette résolution est également celle des imprimantes et des scanners.} de l'image en points par pouce (ppp) --- ou dpi pour «~\textit{dot per inch} » en anglais, à savoir :
+\begin{itemize}
+	\item 72\,ppp à 150\,ppp suffisent pour une publication Web donc pour avoir une lecture à l'écran confortable (le critère est aussi de ne pas surcharger les réseaux et maintenir une navigation fluide) ;
+	\item 150\,ppp à 300\,ppp pour une publication papier allant jusqu'au format A4, mais dont l'image ne couvre pas la totalité d'une page ;
+	\item de l'ordre 600\,ppp pour une page A4 ou une photographie ;
+	\item au-delà de 1200\,ppp en fonction des besoins pour de la photographie d'art et des affiches publicitaires 4 sur 3.
+\end{itemize}
+
+Selon la nature d'un document, il faut être vigilant aux images à y insérer, car si des interpolations et des retouches sont possibles, la marge manœuvre est relativement étroite. C'est parfois\sidenote{Les éditeurs ont parfois du mal à expliquer cette contrainte à leurs auteurs.} un casse-tête qui justifie le recours aux banques d'images de haute résolution.
+
+
+\subsubsection[Images vectorielles]{Images vectorielles}
+\label{subsub:V.2.1.2}
+
+Une autre approche pour décrire des images s'appuie sur une modélisation mathématique des formes. Cela s'applique particulièrement bien aux dessins techniques (architecture, \textsc{Dao}/\textsc{Cao} --- Dessin/Conception assistés par ordinateur ---, réalité virtuelle, etc.) et à l'élaboration de logotype, de signalétique et de police de caractères en infographie.
+
+\begin{marginfigure}%
+%  [\label{fig:V.6}Image vectorielle : mise à l'échelle sans perte.]%
+\begin{tikzpicture}
+\node[anchor=north] 
+	at (0.25\marginparwidth,0) {\includegraphics[width=0.4\linewidth]{figV-06-drupe-fruit-diagram.pdf}};
+\node[anchor=north] 
+	at (0.75\marginparwidth,0) {\includegraphics[width=0.4\linewidth]{figV-06-bitmap-pict-200x200-18px.png}};
+\node[anchor=north] 
+	at (0.25\marginparwidth,1.5) {\includegraphics[width=0.2\linewidth]{figV-06-drupe-fruit-diagram.pdf}};
+\node[anchor=north] 
+	at (0.75\marginparwidth,1.5) {\includegraphics[width=0.2\linewidth]{figV-06-bitmap-pict-200x200-18px.png}};
+\node[anchor=north] 
+	at (0.25\marginparwidth,2.5) {\includegraphics[width=0.1\linewidth]{figV-06-drupe-fruit-diagram.pdf}};
+\node[anchor=north] 
+	at (0.75\marginparwidth,2.5) {\includegraphics[width=0.1\linewidth]{figV-06-bitmap-pict-200x200-18px.png}};
+\node[anchor=north] 
+	at (0.25\marginparwidth,3.0) {\footnotesize Image vectorielle};
+\node[anchor=north] 
+	at (0.75\marginparwidth,3.0) {\footnotesize Image matricielle};
+\end{tikzpicture}
+\caption{\label{fig:V.6}Image vectorielle : mise à l'échelle sans perte.}
+\end{marginfigure}
+
+Au lieu de décrire une image pixel par pixel, on considère un assemblage de primitives géométriques telles que des segments de droite, arcs de cercle, polygones, etc. Le dessin vectoriel doit beaucoup aux courbes de Bézier, révélées par \href{https://fr.wikipedia.org/wiki/Pierre_B\%C3\%A9zier}{Pierre Bézier} dans les années 1950.
+
+À l'ensemble de ces courbes géométriques dites paramétriques (cf. \href{https://fr.wikipedia.org/wiki/Image_vectorielle}{\faWikipediaW}), on combine différents attributs : position, couleur, visibilité... Mais également diverses transformations : homothéties, interpolation, dégradés, extrusion, etc. Le principal format de fichier est de nos jours le SVG pour \textit{Scalable Vector Graphics} et, pour les polices vectorielles compatibles Unicode l'OTF, pour \textit{OpenType Font}.
+
+Par contraste avec leurs analogues matricielles, les images vectorielles s'affranchissent ainsi de tout problème de pixellisation tout en étant plus précises et plus concises (fondations mathématiques), donc moins gourmandes en espace de stockage. En revanche, elle sont inopérantes pour la photographie.
+
+
+%\subsubsection[]{}
+%\label{subsub:V.2.1.3}
+
+%\overparagraph{}
+%\overparagraph{}
+
+\begin{gofurther}{Ressources complémentaires}
+\lightbf{Articles}
+\begin{itemize}\jazzitem
+	\item \href{https://interstices.info/histoire-du-traitement-dimages/}{Histoire du traitement des images}, par Isabelle \textsc{Bellin}, Interstices, 25 février 2004.
+	\item \href{https://interstices.info/nom-de-code-binaire/}{Nom de code : binaire}, par Pascal \textsc{Guitton}, \textsc{Interstices}, 12 décembre 2008.
+	\item \href{http://images.math.cnrs.fr/Le-traitement-numerique-des-images.html}{Traitement numérique des images}, par Gabriel \textsc{Peyré}, Images des mathématiques, 2011.
+	\item \href{https://fr.wikipedia.org/wiki/Synth%C3%A8se_additive}{Synthèse additive}, \textsc{Wikipédia}.
+\end{itemize}
+
+\lightbf{Vidéos}
+\begin{itemize}\jazzitem
+	\item \href{https://www.youtube.com/watch?v=FvbNrwjIrNU&feature=youtu.be&t=390}{Qu'est-ce qu'une couleur ?}, par David \textsc{Louapre}, Science étonnante \#25 (14'\,44''), 2016.
+\end{itemize}
+\end{gofurther}
+
+
+
+%\vspace*{-5pt}
+\subsection[Son et musique]{Son et musique}
+\label{sub:V.2.2}
+
+En toute généralité,\caution[t]<firstcolor>{Rejeter en annexe une bonne partie de cette section, notamment sur l'audition, compléter l'annexe par les courbes de masques pour la compression et du traitement de signal audio (FFT, etc.) pour programmes \textsc{Python}/\textsc{Matplotlib}. Faire la même chose pour la vision et le traitement d'images cf. § précédent.}{Note de la rédaction}%
+ l'étude des phénomènes sonores relève tout autant de la  physique ondulatoire --- vibroacoustique --- que de la théorie des signaux et de la communication. Elle en est même aux prémisses avec par exemple le téléphone. Ceci étant posé, qu'en est-il aujourd'hui de l'apport du numérique ?
+
+\subsubsection[Caractérisation et analyse des sons]{Caractérisation et analyse des sons}
+\label{subsub:V.2.2.1}
+
+Comme discipline scientifique, l'acoustique répond au triptyque traditionnel : production (émetteur), propagation (transmetteur) et réception (capteur). Chacun de ces volets fait appel à la fois à la physique et au traitement de signal --- signal analogique \textit{versus} numérique. 
+
+\overparagraph{Signal sonore}
+
+Du point de vue de la physique, un son est une variation locale de pression atmosphérique produite par la mise en vibration d'une structure --- corde, membrane, etc. --- ou d'un fluide --- tuyau d'orgue, bec de saxophone, etc. ---, rayonnée dans l'air ambiant puis réceptionnée par l'appareil auditif.
+Formellement, on peut écrire :
+\begin{equation}
+P\vars{\vec{r},t} = P_{0}\vars{\vec{r},t} + p\vars{\vec{r},t}
+\label{eq:V.1}
+\end{equation}
+
+Les différentes notations de l'\cref{eq:V.1} représentent :
+\begin{itemize}
+	\item $\vec{r}$ ~$\rightarrow$ localisation dans l'espace 
+($\vec{r} = \vec{x} + \vec{y} + \vec{z} = x.\vec{e_{x}} + y.\vec{e_{y}} + z.\vec{e_{z}}$) ;
+	\item $t$ ~$\rightarrow$ dépendance dans le temps du phénomène constaté ;
+	\item $P\vars{\vec{r},t}$ ~$\rightarrow$ champ de pression totale existante dans l'air ;
+	\item $P_{0}\vars{\vec{r},t}$ ~$\rightarrow$ champ de pression atmosphérique ambiante ;
+	\item $p\vars{\vec{r},t}$ ~$\rightarrow$ pression acoustique, soit la variation --- ou la perturbation --- de pression atmosphérique due à la présence d'une onde.% acoustique.
+\end{itemize}
+
+\paragraph*{Évolution temporelle} En faisant fi des aspects\sidenote{Il y aurait trop de choses à expliciter par rapport au contexte de ce document.} physiques et supposant la pression atmosphérique constante, reste le «~signal sonore » en tant que tel, localisé par exemple à l'oreille d'un auditeur. Par définition, c'est la variation de pression acoustique au cours du temps que l'on appelle « \emph{forme d'onde} » (voir \cref{fig:V.7a}). 
+
+%en un point $\vec{r}_0$ donné,
+
+L'unité d'évaluation de la pression est le \emph{Pascal}, noté Pa,
+%La pression étant une force par unité de surface, le Pascal est 
+homogène au Newton par mètre carré ($\mbox{N/m}^{2}$).
+Les ordres de grandeur des pressions atmosphériques et acoustiques sont respectivement :
+
+\vspace{-.75\baselineskip}
+\begin{equation}
+\left |
+\begin{array}{l}
+P_{0} \approx 10^{5} ~\mbox{Pa} ~~\mbox{(ou N/m}^{2}) \approx 1 ~\mbox{bar} \\[1ex]
+10^{-5} ~\mbox{Pa} \leq p \leq 100 ~\mbox{Pa} \mbox{, soit} ~ 0,1~\mbox{nbar} \leq p \leq 1~\mbox{mbar}
+\end{array}
+\right.
+\label{eq:V.2}
+\end{equation}
+\vspace{-.75\baselineskip}
+
+On peut immédiatement souligner la remarquable dynamique de réponse de l'oreille humaine. En effet, l'échelle de pression acoustique est de l'ordre de dix millions de valeurs possibles ($10^{7}$, de $10^{-5}$ à $10^{2}$ Pa) entre\sidenote{Cela justifie l'utilisation d'une échelle logarithmique de quantification au moyen du décibel (dB).} la pression minimale juste audible et le seuil de douleur où le tympan s'engage dans une sollicitation déraisonnable.
+
+\begin{marginfigure}%
+%  [\label{fig:V.7} Forme d'onde et spectre : note $C_{4}$ de violon jouée pizzicato (5 ms).]
+%\begin{jazzfigure}
+%\centering
+%\begin{subfigure}[b]{0.5\linewidth}
+\begin{subfigure}[b]{\linewidth}
+\centering
+\begin{tikzpicture}[scale=1]
+%\draw[step=0.25cm,style=help lines] (-0.25,-1) grid (5.25,1.5);
+%\draw[line width=0.4pt,->] (-0.25,0) -- (5.5,0) node[below left=1pt] {\footnotesize t (s)};
+%\draw[line width=0.4pt,->] (0,-1.0) -- (0,1.5) node[below left] {\footnotesize s(t)};
+%\draw[line width=0.8pt] plot[xscale=100,yscale=2.5,smooth] file {./Images/Chapter05/violinC4-5ms.dat};
+\begin{axis}[%
+	axis x line=left, axis y line=left, axis line style={-latex},
+	tick label style={font=\scriptsize}, label style={font=\footnotesize},
+	%xticklabel style={%
+	%	/pgf/number format/precision=1, /pgf/number format/fixed,% /pgf/number format/fixed zerofill,
+	%},
+	x label style={at={([yshift=5pt]xticklabel cs:0.95)}, anchor=west, outer sep=0pt, inner sep=0pt},
+	%y label style={at={(axis description cs:0.0,0.95)}, anchor=east, rotate=-90},
+	y label style={at={([xshift=10pt]yticklabel cs:0.95)}, anchor=east, rotate=-90, outer sep=0pt, inner sep=0pt},
+	xmin=-0.0, xmax=4.9, ymin=-1.15, ymax=1.5,
+	xlabel=t (ms), ylabel={s(t)},
+	%every axis/.append style={font=\footnotesize},
+	width=\linewidth,
+	%height=5cm,
+	]
+	\addplot[firstcolor, line width=0.8pt] table {./Images/Chapter05/violin-C4-5ms-waveform.dat};
+\end{axis}
+\end{tikzpicture}
+%\captionsetup{subfigure}
+\vspace*{-4pt}
+\caption{\label{fig:V.7a} Forme d'onde normée (5 ms).}
+\end{subfigure}\\
+%\hfill
+%\begin{subfigure}[b]{0.5\linewidth}
+\begin{subfigure}[b]{\linewidth}
+\centering
+\begin{tikzpicture}[scale=1]
+\begin{axis}[%
+	axis lines=left, axis line style={-latex},
+	xticklabel style={%
+		/pgf/number format/set thousands separator={\:\!},% no comma as thousand separator but small space +/-
+	},
+	tick label style={font=\scriptsize}, label style={font=\footnotesize},
+	%x label style={at={(axis description cs:0.95,0.0)}, anchor=north west},
+	x label style={at={([yshift=5pt]xticklabel cs:0.95)}, anchor=west, outer sep=0pt, inner sep=0pt},
+	%y label style={at={(axis description cs:0.0,0.95)}, anchor=east, rotate=-90},
+	y label style={at={([xshift=10pt]yticklabel cs:0.95)}, anchor=east, rotate=-90, outer sep=0pt, inner sep=0pt},
+	%ylabel style={rotate=-90},
+	xmin=0, xmax=5990, ymin=-10, ymax=50,
+	xlabel=f (Hz), ylabel={dB},
+	every axis/.append style={font=\footnotesize},
+	width=\linewidth,
+	%height=5cm,
+	]
+	\addplot[firstcolor, line width=0.8pt] table {./Images/Chapter05/violin-fft-hanning.dat};
+\end{axis}
+\end{tikzpicture}
+\vspace*{-4pt}
+\caption{\label{fig:V.7b} Spectre --- FFT (filtrage de Hanning).}
+\end{subfigure}
+\caption{\label{fig:V.7} Forme d'onde et spectre d'une note $C_{4}$ de violon jouée pizzicato (5 ms).}
+%\end{jazzfigure}
+\end{marginfigure}
+
+Dans une perspective numérique, le chemin est à peu près le même : fichier temps-amplitude d'un signal de valeurs oscillantes variant autour de zéro au cours du temps --- synthétiseur, ordinateur ---, canal de transfert --- table de mixage, séquenceur, réseau, etc. --- puis sortie directe ou indirecte pour enregistrement ou restitution --- sauvegarde ou \href{https://www.cnrtl.fr/definition/transducteur}{transducteur} quelconque, enceinte acoustique et/ou microphone.
+
+Les paramètres temporels d'un signal sonore --- \textit{a fortiori} musical --- sont de très grande importance perceptive. Pour s'en convaincre, il suffit de comparer les enveloppes temporelles caractéristiques de deux types d'instruments différents : un piano et une trompette (voir \cref{fig:V.8}).
+
+\begin{marginfigure}%
+%  [\label{fig:V.8} Description d'un son musical (note $\mbox{A}_{4}$, $t = 4,5 \mbox{s}$) : transitoires d'attaque, régime quasi-stationnaire, relaxe et extinction.]
+%\begin{jazzfigure*}
+%\centering
+\begin{subfigure}[b]{\linewidth}
+\centering
+\begin{tikzpicture}[scale=1.0]
+%\draw[step=0.25cm,style=help lines] (-0.25,-1.5) grid (5.25,1.5);
+%\draw[line width=0.4pt,->] (-0.25,0) -- (5.25,0) node[below left=1pt] {\small $t$};
+%\draw[line width=0.4pt,->] (-0.05,-1.5) -- (-0.05,1.5) node[below left] {\small $s_{\mbox{\footnotesize env}}\var{t}$};
+%\draw[line width=0.8pt] plot[xscale=1,yscale=4] file {./Images/Chapter05/envpianoA4up_4.5s.txt};
+%\draw[line width=0.8pt] plot[xscale=1,yscale=4] file {./Images/Chapter05/envpianoA4down_4.5s.txt};
+\begin{axis}[%
+	axis x line=middle, axis y line=left, axis line style={-latex},
+	tick label style={font=\scriptsize}, label style={font=\footnotesize},
+	x label style={at={([yshift=5pt]xticklabel cs:0.95)}, anchor=west, outer sep=0pt, inner sep=0pt},
+	y label style={at={([xshift=10pt]yticklabel cs:0.95)}, anchor=east, rotate=-90, outer sep=0pt, inner sep=0pt},
+	xmin=-0.0, xmax=4.9, ymin=-1.15, ymax=1.35,
+	xlabel=t (s), ylabel={s(t)},
+	height=5cm,
+	]
+	\addplot[firstcolor, line width=0.8pt] table {./Images/Chapter05/figV-08a-env-piano-up.dat};
+	\addplot[firstcolor, line width=0.8pt] table {./Images/Chapter05/figV-08a-env-piano-down.dat};
+\end{axis}
+\end{tikzpicture}
+\vspace*{-4pt}
+\caption{\label{fig:V.8a}Enveloppe temporelle : note de piano.}
+\end{subfigure}
+\begin{subfigure}[b]{\linewidth}
+\centering
+\begin{tikzpicture}[scale=1]
+\begin{axis}[%
+	axis x line=middle, axis y line=left, axis line style={-latex},
+	tick label style={font=\scriptsize}, label style={font=\footnotesize},
+	x label style={at={([yshift=5pt]xticklabel cs:0.95)}, anchor=west, outer sep=0pt, inner sep=0pt},
+	y label style={at={([xshift=10pt]yticklabel cs:0.95)}, anchor=east, rotate=-90, outer sep=0pt, inner sep=0pt},
+	xmin=-0.0, xmax=4.9, ymin=-1.15, ymax=1.35,
+	xlabel=t (s), ylabel={s(t)},
+	height=5cm,
+	]
+	\addplot[firstcolor, line width=0.8pt] table {./Images/Chapter05/figV-08b-env-trumpet-up.dat};
+	\addplot[firstcolor, line width=0.8pt] table {./Images/Chapter05/figV-08b-env-trumpet-down.dat};
+\end{axis}
+\end{tikzpicture}
+\vspace*{-4pt}
+\caption{\label{fig:V.8b}Enveloppe temporelle : note de trompette.}
+\end{subfigure}
+\caption{\label{fig:V.8} Description d'un son musical (note $\mbox{A}_{4}$, $t = 4,5 \mbox{s}$) : transitoires d'attaque, régime quasi-stationnaire, relaxe et extinction.}
+%\end{jazzfigure*}
+\end{marginfigure}
+
+En acoustique musicale, plusieurs critères existent pour catégoriser les sons en fonction de la famille instrumentale. 
+Une des indications les plus directes est de distinguer les instruments de musique selon leur \emph{régime d'oscillation} :
+\begin{enumerate}
+\item \emph{oscillations libres} $\rightarrow$ instruments à percussion, à cordes pincées et frappées (voir \cref{fig:V.8a}) ;
+\item \emph{oscillations auto-entretenues} --- ou \emph{forcées} $\rightarrow$ instruments à vent et à cordes frottées --- boucle de rétro-action --- (cf. \cref{fig:V.8b}).
+\end{enumerate}
+
+\begin{marginfigure}%
+%  [\label{fig:V.9}Courbe ADSR : transitoires d'attaque, régime quasi-stationnaire et transitoires de relaxe et d'extinction.]
+%\includegraphics[width=0.9\linewidth]{./Images/Chapter05/figV-09-adsr-curve.png}
+\begin{tikzpicture}[xscale=0.95, yscale=0.85]
+	\draw[color=firstcolor, line width=0.8pt] 
+		{(0.0,0.0) -- (1.0,1.5) -- (1.5,1.0) -- (4.0,1.0) -- (4.5,0.0)};
+	\node[inner sep=0pt, label=left:{\footnotesize A}] at (0.5,1) {};
+	\node[inner sep=0pt, label=right:{\footnotesize D}] at (1.25,1.5) {};
+	\node[inner sep=0pt, label=above:{\footnotesize S}] at (2.75,1.0) {};
+	\node[inner sep=0pt, label=right:{\footnotesize R}] at (4.25,0.5) {};
+	\node[inner sep=0pt, label=above:{\scriptsize Transitoires d'attaque}] at (1.0,1.65) {};
+	\node[inner sep=0pt, label=below:{\scriptsize Régime quasi-stationnaire}] at (2.45,1.0) {};
+	\node[inner sep=0pt, label=225:{\scriptsize Relaxe/extinction}] at (4.25,0.5) {};
+\end{tikzpicture}
+\caption{\label{fig:V.9}Courbe ADSR : transitoires d'attaque, régime quasi-stationnaire et transitoires de relaxe et d'extinction.}
+\end{marginfigure}
+
+Issue des méthodes de synthèse sonore analogique (1960-1970), notamment la synthèse par table d'onde --- \textit{wave-table synthesis} ---, la description de l'évo\-lution d'un son suit une courbe dite ADSR pour «~\textit{Attack--Decay--Sustain--Release} » (voir \cref{fig:V.9,fig:V.10}). Cela correspond aux différentes phases de l'évolution temporelle d'un son que l'on peut relier grossièrement à des paramètres psychoacoustiques :
+\begin{enumerate}
+\item transitoires d'attaque (A+D), effets temporels fondamentaux pour la reconnaissance perceptive ;
+\item régime quasi-stationnaire (S) lié à l'enveloppe spectrale (cf. infra) et donc associé aux paramètres de hauteur et de timbre du son ;
+\item transitoires d'extinction (R), de nouveau effets temporels plutôt relatifs aux composantes de perte ou d'amortissement du son.
+\end{enumerate}
+
+\paragraph*{Son élémentaire} Le signal sonore le plus simple \nopagebreak est décrit par une fonction sinusoïdale. Dans le jargon des acousticiens, il est qualifié de son « \emph{pur} », comme composante de base d'un signal sonore.
+Son expression mathématique permet d'introduire les concepts fondamentaux qui caractérisent un phénomène sonore (voir éq. \ref{eq:V.3}).
+
+\vspace{-\baselineskip}
+\begin{equation}
+\begin{array}{@{}c@{}}
+p\vars{t} = A\vars{t} \sin\var{\omega t + \varphi\vars{t}} = A\vars{t} \sin\var{{2\pi t}/{T} + \varphi\vars{t}}
+= A\vars{t} \sin\var{2\pi f t + \varphi\vars{t}} \\[1ex]
+\mbox{~avec~~}\left \{ \begin{tabular}[c]{@{\,}r@{~}l@{}}
+$t$ $\rightarrow$ & temps (s)\\
+$A\vars{t}$ $\rightarrow$ & amplitude (Pa, $\mbox{N}.\mbox{m}^{-2}$)\\
+$T$ $\rightarrow$ & période (s)\\
+$\varphi\vars{t}$ $\rightarrow$ & phase (rad)\\
+$f$ $\rightarrow$ & fréquence (Hz), $f = 1/T$ \\
+$\omega$ $\rightarrow$ & pulsation/fréquence angulaire (rad/s), $\omega = 2\pi f$ \\
+\end{tabular}\right.
+\end{array}
+\label{eq:V.3}
+\end{equation}
+\vspace{-\baselineskip}
+
+%\vspace{4pt}
+%\afterpage{%
+\begin{jazzfigure*}
+\centering
+\includegraphics[width=0.85\linewidth]{figV-10-adsr-curve-trumpet.png}
+\caption{\label{fig:V.10} Synthèse par table d'onde d'une note de trompette (d'après \cite{Rossing-etal:2002}).}
+\end{jazzfigure*}
+%}
+
+Les propriétés mathématiques des fonctions sinusoïdales sont bien adaptées à la description des signaux sonores
+et plus largement des phénomènes vibratoires et ondulatoires de toute nature. En effet, l'évolution de l'amplitude d'un sinus parcourt un cycle qui se répète à l'identique dans le temps (voir \cref{fig:V.11a}), directement interprétable comme la \emph{variation d'un phénomène autour d'une position d'équilibre}.
+
+%C'est pourquoi, il est d'usage commun en physique de nommer les fonctions sinusoïdales sous le terme générique de fonctions\sidenote{Cette appellation de \emph{fonctions oscillantes} provient du fait que les fonctions sinusoïdales constituent la famille de solutions générales des oscillateurs harmoniques (systèmes masse/ressort).} \emph{oscillantes}.
+
+
+Les fonctions sinusoïdales ont une amplitude de variation dans l'intervalle de valeurs comprises entre $-1$ et $+1$. Afin de décrire des signaux sonores d'amplitude quelconque, leur sont adjoints un facteur multiplicatif $A(t)$, variable au cours du temps --- attribut qui permet de modéliser les phénomènes de pertes d'énergie des \emph{signaux réels}.
+
+\begin{marginfigure}%
+%  [\label{fig:V.11} Signal sonore élémentaire : sinusoïde de fréquence $f$, de période $T=1/f$, d'amplitude $A(t)$ et de pha\-se à l'origine $\varphi=0$.]
+%\begin{jazzfigure*}
+%\centering
+\begin{subfigure}[b]{\linewidth}
+\centering
+\begin{tikzpicture}[scale=1.0,>=latex]
+%\draw[step=1cm,style=help lines] (-1,-2) grid (5,2);
+\draw[line width=0.4pt,->] (0,0) -- (4.5,0) node[below left=1pt] {\footnotesize $t$};
+\draw[line width=0.4pt,->] (0,-1.5) -- (0,1.75) node[below left] {\footnotesize $s(t)$};
+\foreach \x/\xtext in 
+	{0.25/{},0.5/{},0.75/{},1/{},1.25/{},1.5/{},1.75/{},2/{},2.25/{},2.5/{},2.75/{},3/{},3.25/{},3.5/{},3.75/{},4/{}}
+	\draw[line width=0.4pt] (\x cm,1pt) -- (\x cm,-1pt) node[below right=-2pt] {\small $\xtext$};
+\foreach \y/\ytext in {-1/{-A},0,1/{A}}
+	\draw[line width=0.4pt] (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {\small $\ytext$};
+\draw[line width=0.8pt, color=firstcolor] plot[xscale=100, yscale=1, smooth] 
+	file {./Images/Chapter05/figV-11a-sinus.dat};
+\draw[<->] (0,-1.25) -- (1,-1.25) node[midway,below] {\footnotesize $T$};
+\draw[style=loosely dotted, color=black!50, line width=1.4pt] (1,-1.25) -- (1,1.25);
+\draw[<->] (1,1.25) -- (2,1.25) node[midway,above] {\footnotesize $T$};
+\draw[style=loosely dotted, color=black!50, line width=1.4pt] (2,-1.25) -- (2,1.25);
+\draw[<->] (2,-1.25) -- (3,-1.25) node[midway,below] {\footnotesize $T$};
+\draw[style=loosely dotted, color=black!50, line width=1.4pt] (3,-1.25) -- (3,1.25);
+\draw[<->] (3,1.25) -- (4,1.25) node[midway,above] {\footnotesize $T$};
+\draw[style=loosely dotted, color=black!50, line width=1.4pt] (4,1.25) -- (4,0);
+\end{tikzpicture}
+\caption{\label{fig:V.11a} Fonction sinusoïdale non amortie, $s(t)=A\sin(\omega t)=A\sin(2\pi f t)$.}
+\end{subfigure}
+\begin{subfigure}[b]{\linewidth}
+\centering
+\begin{tikzpicture}[scale=1.0,>=latex]
+%\draw[step=1cm,style=help lines] (-1,-2) grid (5,2);
+\draw[->] (0,0) -- (4.5,0) node[below left=1pt] {\footnotesize $t$};
+\draw[->] (0,-1.5) -- (0,1.75) node[below left] {\footnotesize $s(t)$};
+\foreach \x/\xtext in 
+	{0.25/{},0.5/{},0.75/{},1/{},1.25/{},1.5/{},1.75/{},2/{},2.25/{},2.5/{},2.75/{},3/{},3.25/{},3.5/{},3.75/{},4/{}}
+	\draw[line width=0.4pt] (\x cm,1pt) -- (\x cm,-1pt) node[below right=-2pt] {\footnotesize $\xtext$};
+\foreach \y/\ytext in {-1/{-A},0,1/{A}}
+	\draw[line width=0.4pt] (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {\footnotesize $\ytext$};
+\draw[line width=0.8pt, color=firstcolor] plot[xscale=100, yscale=1, smooth] 
+	file {./Images/Chapter05/figV-11b-sinus_amorti.dat};
+\draw[style=dashed,line width=0.8pt, color=secondcolor] plot[xscale=100,yscale=1,smooth] 
+	file {./Images/Chapter05/figV-11b-amortplus.dat};
+\draw[line width=0.4pt,<-] (1,0.33287108) -- (1.5,0.75) node[above] {\footnotesize $Ae^{-\alpha t}$};
+\draw[style=dashed,line width=0.8pt, color=secondcolor] plot[xscale=100,yscale=1,smooth] 
+	file {./Images/Chapter05/figV-11b-amortmoins.dat};
+\draw[line width=0.4pt,<-] (2,-0.11080316) -- (2.5,-0.5) node[below] {\footnotesize $-Ae^{-\alpha t}$};
+\draw[<->] (0,-1.25) -- (1,-1.25) node[midway,below] {\footnotesize $T$};
+\draw[style=loosely dotted, color=black!50, line width=1.4pt] (1,-1.25) -- (1,0);
+\end{tikzpicture}
+\caption{\label{fig:V.11b} Fonction sinusoïdale amortie, $s(t)=A(t)\sin(\omega t)$, avec $A(t)=Ae^{-\alpha t}$.}
+\end{subfigure}
+\caption{\label{fig:V.11} Signal sonore élémentaire : sinusoïde de fréquence $f$, de période $T=1/f$, d'amplitude $A(t)$ et de pha\-se à l'origine $\varphi=0$.}
+%\end{jazzfigure*}
+\end{marginfigure}
+
+Une sinusoïde d'amplitude constante au cours du temps permet effectivement une première description théorique des phénomènes oscillants, mais n'est le reflet que d'une modélisation partielle des phénomènes en jeu : un signal sonore ne perdure pas à l'infini après extinction de la source qui lui a donné naissance ! Un signal \emph{réel} s'amortit progressivement ou, autrement dit, possède une amplitude décroissante en fonction du temps. 
+
+Cet amortissement est le reflet direct des \emph{pertes d'énergie} dans le système considéré, lesquelles proviennent d'origines physiques très diverses suivant la nature du signal : frottements mécaniques, propriétés viscoélastiques et viscothermiques des matériaux solides ou des milieux fluides... 
+Pour tenir compte des conséquences de ces phénomènes dans l'écriture du signal, l'amplitude est exprimée à l'aide de la fonction exponentielle sous la forme :
+\begin{equation}
+\begin{array}{c}
+A\vars{t} = A \exp\vars{\!-\alpha t\:\!} = A e^{-\alpha t} \\[1ex]
+~~~~\mbox{avec~~}\left \{ \begin{tabular}[c]{@{\,}r@{~}l@{}}
+$A$ $\rightarrow$ & amplitude maximale (Pa, $\mbox{N}.\mbox{m}^{-2}$)\\
+$t$ $\rightarrow$ & temps (s)\\
+$\alpha$ $\rightarrow$ & facteur d'amortissement (1/s ou $\mbox{s}^{-1}$) ; $\alpha > 0$\\
+\end{tabular}\right.
+\end{array}
+\end{equation}
+Le \emph{facteur d'amortissement} $\alpha$ est strictement positif et s'exprime en inverse de seconde. Sa valeur plus ou moins importante dépend de l'origine des pertes qu'il traduit. Comme visualisable en \cref{fig:V.11b}, il permet de contrôler l'évolution de la décroissance de la sinusoïde.
+
+
+
+\overparagraph{Analyse spectrale}
+
+Un des grands résultats de l'acoustique\sidenote{Et de bien d'autres domaines d'étude.} est de pouvoir décomposer les signaux sonores comme combinaison linéaire d'un ensemble de fonctions de base. Il s'agit en fait d'appliquer le « principe de \textsc{Fourier}\sidenote{Joseph \textsc{Fourier} est un grand mathématicien du XVIII\frup{e} siècle. Les disciplines relevant de la vibroacoustique et du traitement de signal lui doivent beaucoup.}~» qui, suivant la nature du signal sonore fait appel aux outils mathématiques adéquats : \emph{séries} et \emph{transformées} de \textsc{Fourier}.
+
+
+\paragraph*{Signaux périodiques : spectre discret} Un signal sonore \emph{périodique} ou \emph{quasi-périodique}\sidenote{Un signal est quasi-périodique du fait de la présence de pertes. Ainsi, la décroissance ne donne pas une reproduction \emph{à l'identique} toutes les périodes. En toute rigueur, l'amortissement introduit un léger décalage des cycles ; négligeable en première approximation.} peut se décomposer en \emph{série de Fourier}. Ce cas de figure est celui de nombreux signaux musicaux et permet une première approche des phénomènes.
+
+%On corrige les appellations en parlant de \emph{pseudo-période}, \emph{pseudo-fréquence} et \emph{pseudo-pulsation}.
+
+Selon la théorie de \textsc{Fourier}, un signal périodique se décompose sur la base des fonctions sinusoïdales comme la somme de signaux élémentaires de fréquences multiples les unes des autres.
+\begin{equation}
+p\var{t} = \sum_{n \geq 1} A_{n}\var{t}
+\sin\var{\omega_{n}t + \phi_{n}\var{t}}
+\label{eq:V.5}
+\end{equation}
+\[
+~~\mbox{avec par composante~~}\left \{ \begin{tabular}[c]{@{\,}r@{~}l@{}}
+$A_{n}\var{t}$ $\rightarrow$ & amplitude\\
+$\omega_{n}$ $\rightarrow$ & pulsation (rad/s), $\omega_{n} = 2\pi n f_{1}$ \\
+$\phi_{n}\var{t}$ $\rightarrow$ & phase
+%$n$ $\rightarrow$ & $n = 1, 2, 3...$, $f_n = n f_1$
+\end{tabular}\right.
+\]
+
+Le symbole $\sum$\sidenote{Lettre grecque \emph{sigma} majuscule.} signifie sommation dénombrable des composantes indicées par $n$. Aussi, le spectre d'un tel son, à savoir l'ensemble des fréquences $f_n$ construisant le signal, est appelé \emph{spectre discret}. Ce type de spectre est encore désigné comme \emph{spectre de raies} car composé d'un ensemble de raies spectrales, chacune relative à la présence d'une composante élémentaire (une fréquence) dans le signal\sidenote{Cette technique de construction de signaux sonores est à la base de la méthode de synthèse de sons musicaux dite \emph{additive}, initiée dans les années 1960 par Max \textsc{Matthews} et Jean-Claude \textsc{Risset}.} résultant.
+
+En musique, les fréquences $f_n$ sont nommées les \emph{harmoniques de rang n}. Un son comportant de nombreuses harmoniques est apprécié comme « riche » et inversement un son possédant peu d'harmoniques est qualifié de « pauvre ».
+
+\begin{marginfigure}
+%\begin{jazzfigure*}
+%\centering
+\begin{subfigure}[b]{\linewidth}
+\centering
+%\includegraphics[width=7cm,draft=true]{sigtriang}
+\begin{tikzpicture}[xscale=0.99, yscale=1, >=latex]
+\draw[line width=0.4pt, ->] (0,0) -- (4.5,0) node[below left=1pt] {\footnotesize $t$};
+\draw[line width=0.4pt, ->] (0,-1.25) -- (0,1.8) node[below left] {\footnotesize $s(t)$};
+\draw[line width=0.8pt, color=firstcolor, style=dashed] plot[xscale=100, yscale=0.7071, smooth] 
+	file {./Images/Chapter05/figV-12a-saw2.txt};
+\draw[line width=0.8pt, color=firstcolor, style=dotted] plot[xscale=100, yscale=0.7071, smooth] 
+	file {./Images/Chapter05/figV-12a-saw10.txt};
+\draw[line width=0.8pt, color=firstcolor] plot[xscale=100, yscale=0.7071, smooth] 
+	file {./Images/Chapter05/figV-12a-saw100.txt};
+\end{tikzpicture}
+\vspace{-4pt}
+\caption{\label{fig:V.12a}Signal en dent de scie :\\ $f_{n} = n f_{1}$ pour $n = 2$, $10$, $100$.}
+\end{subfigure}
+\begin{subfigure}[b]{\linewidth}
+\centering
+%\includegraphics[width=7cm,draft=true]{sigsquare}}
+\begin{tikzpicture}[xscale=0.99, yscale=1, >=latex]
+\draw[line width=0.4pt, ->] (0,0) -- (4.5,0) node[below left=1pt] {\footnotesize $t$};
+\draw[line width=0.4pt, ->] (0,-1.25) -- (0,1.8) node[below left] {\footnotesize $s(t)$};
+\draw[line width=0.8pt, color=firstcolor, style=dashed] plot[xscale=100, yscale=1, smooth] 
+	file {./Images/Chapter05/figV-12b-square2.txt};
+\draw[line width=0.8pt, color=firstcolor, style=dotted] plot[xscale=100, yscale=1, smooth] 
+	file {./Images/Chapter05/figV-12b-square10.txt};
+\draw[line width=0.8pt, color=firstcolor] plot[xscale=100, yscale=1, smooth] 
+	file {./Images/Chapter05/figV-12b-square100.txt};
+\end{tikzpicture}
+\vspace{-4pt}
+\caption{\label{fig:V.12b}Signal rectangulaire :\\ $f_{n} = (2n-1) f_{1}$ pour $n = 2$, $10$, $100$.}
+\end{subfigure}
+\caption{\label{fig:V.12}Notion de périodicité par décomposition en harmoniques.}
+%\end{jazzfigure*}
+\end{marginfigure}
+
+\textit{A contrario} des sons de la vie quotidienne, les sons périodiques décrivent essentiellement ceux produits par les instruments à cordes frottées et pincées ou par les instruments à vent.
+La superposition de sons purs harmoniques peut s'envisager de différentes manières, comme :
+\begin{enumerate}
+\item la sommation de toutes les harmoniques $f_{n} = n f_{1}$. On obtient progressivement un signal « en dent de scie » qui approche de manière simpliste le son d'un violon ;
+\item la sommation des harmoniques impaires : $f_{n} = (2n - 1) f_{1}$. On conver\-ge cette fois vers un signal « rectangulaire » qui, quant à lui, approxime le son d'une clarinette simplissime.
+\end{enumerate}
+
+\paragraph*{Décomposition fréquentielle} Par dualité temps-fréquen\-ce et pour un signal continu, il est également possible de calculer la réponse en fréquence au moyen de la transformée de \textsc{Fourier} (cf. \cref{fig:V.7b}). 
+La formulation mathématique est similaire au cas discret.
+\begin{equation}
+p\vars{t} = \int_{-\infty}^{+\infty} \hat{p}\vars{f}\exp\vars{2\pi ft}df = \int_{-\infty}^{+\infty} \hat{p}\vars{\omega}\exp\vars{\omega t}d\omega
+\end{equation}
+La fonction $\hat{p}\vars{f}$, \emph{transformée de Fourier} de $p\vars{t}$, est fournie par :
+\begin{equation}
+\hat{p}\vars{f} = \hat{p}\vars{\omega} = \int_{-\infty}^{+\infty} p\vars{t}\exp\vars{2\pi ft}dt = \int_{-\infty}^{+\infty} p\vars{t}\exp\vars{\omega t}dt
+\end{equation}
+Pour chaque fréquence $f$, la valeur de $\hat{p}\vars{f}$ indique l'amplitude et la phase correspondantes du signal.
+
+En toute généralité, les signaux sonores, musicaux ou non, possèdent des \emph{spectres continus} --- instruments de musique, voix parlée et chantée, bruits... L'agencement des fréquences ne conduit pas toujours à une décomposition simplement structurée.
+
+L'analyse de \textsc{Fourier} permet de décomposer les signaux comme le mélange d'un ensemble de \emph{fréquences ponctuelles} ou \emph{spectre de raies} avec un \emph{spectre continu de bruit}. 
+En théorie du signal et en synthèse sonore dite de \textsc{Fourier} ou \emph{additive}, on distingue une partie \emph{déterministe} liée aux \emph{raies spectrales} et une partie \emph{aléatoire} associée au bruit.
+
+D'un point de vue perceptif, les simples sommations de fréquences ponctuelles ne fournissent pas des signaux \emph{réalistes}. La présence de bruits spécifiques à chaque instrument --- bruit de choc des marteaux du piano sur les cordes, bruit de souffle des instruments à vent, etc. --- intervient de manière remarquable dans la reconnaissance auditive d'un instrument particulier. Ces bruits sont associés aux premières millisecondes des transitoires d'attaque des signaux.
+
+\subsubsection[Quantification et échantillonnage]{Quantification et échantillonnage}
+\label{subsub:V.2.2.2}
+
+
+\overparagraph{Audition, classification et représentation des sons}
+
+La courbe de réponse en fréquence de l'appareil auditif humain se situe sur une étendue d'environ 20\,Hz à 20\,kHz chez un jeune sujet (voir \cref{fig:V.13}). En effet, pour une personne adulte, il y a rapidement une perte d'audition dans les aigus --- phénomène de presbyacousie ---, situant la limite supérieure plutôt autour de 16\,kHz.
+
+\begin{marginfigure}%
+%[\label{fig:V.13}Seuils d'audition en fonction de la fréquence : MAP (\emph{Minimum Audible Pressure}), MAF (\emph{Minimum Audible Field}) --- Norme ISO 389-7.]%
+\includegraphics[width=\linewidth]{figV-13-auditory-threshold.pdf}%
+\caption{\label{fig:V.13}Seuils d'audition en fonction de la fréquence : MAP (\emph{Minimum Audible Pressure}), MAF (\emph{Minimum Audible Field}) --- Norme ISO 389-7.}
+\end{marginfigure}
+
+On peut constater que les seuils auditifs sont meilleurs en écoute binaurale --- deux oreilles. Cela provient du déphasage entre les signaux qui parviennent à l'oreille droite et gauche qui permet une meilleure détection. La forme du pavillon de l'oreille et du canal auditif interviennent également en opérant un filtrage (voir \cref{fig:V.14}).
+
+\begin{marginfigure}
+%[\label{fig:V.14}Synopsis d'anatomie de l'appareil auditif humain.]%
+\begin{tikzpicture}[scale=1.0,>=latex]
+%\tikzset{every pin edge/.style={draw=secondcolor, ultra thin, Circle[]-}}
+\tikzset{every pin edge/.style={draw=secondcolor, very thin}}
+\node[inner sep=0pt, outer sep=0pt] at (0,0) {\includegraphics[width=\linewidth]{figV-14-human-ear.pdf}};
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-3) grid (2.5,3);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-3) grid (2.5,3);
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.4cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]above:{Pavillon}}]
+	at (-2.125,1.75) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=2.0cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-87.5:{Auricule}}]
+	at (-2.40,-0.30) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=1.125cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-90:{\begin{tabular}{@{}c@{}}Canal auditif\\ externe\end{tabular}}}]
+	at (-0.75,-0.35) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.725cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]260:{Tympan}}]
+	at (0.35,-0.375) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=2.25cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-93:{Cavité tympanique}}]
+	at (0.75,-0.425) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.125cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-87:{\begin{tabular}{@{}c@{}}Trompe\\ d'Eustache\end{tabular}}}]
+	at (1.325,-1.0) {};
+\node[inner sep=0pt, outer sep=0pt, anchor=north east,
+			pin={[pin distance=1.15cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-92:{\begin{tabular}{@{}c@{}}Fenêtre\\ ronde\end{tabular}}}]
+	at (0.875,-0.325) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=2.125cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-88:{Cochlée/Limaçon}}]
+	at (1.25,-0.125) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.5cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-93:{Nerfs}}]
+	at (2.5,-0.0) {};
+\node[inner sep=0pt, outer sep=0pt, anchor=south,
+			pin={[pin distance=0.75cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]87.5:{\begin{tabular}{@{}c@{}}Canaux\\ semi-circulaires\end{tabular}}}]
+	at (0.75,0.45) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.6cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]115:{Marteau}}]
+	at (0.25,0.125) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=1.0cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]97:{Enclume}}]
+	at (0.45,0.125) {};
+\node[inner sep=0pt, outer sep=0pt, anchor=south,
+			pin={[pin distance=1.9cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]92:{\begin{tabular}{@{}c@{}}Étrier\\ (rattaché à la fenêtre ovale)\end{tabular}}}]
+	at (0.75,0.0) {};
+\end{tikzpicture}
+\caption{\label{fig:V.14}Synopsis d'anatomie de l'appareil auditif humain.}
+\end{marginfigure}
+
+\paragraph{Structure de l'oreille humaine} L'oreille humaine --- et de manière générale celle des mammifères --- est structurée en trois parties et fonctions associées (voir \cref{fig:V.14}), à savoir :
+\begin{enumerate}
+\item l'\emph{oreille externe}, en charge d'optimiser la réception et la localisation des sons ;
+\item l'\emph{oreille moyenne}, dévolue à la transmission et à l'adaptation en énergie des signaux sonores ;
+\item l'\emph{oreille interne}, qui s'occupe du codage et de la « transduction\sidenote{Un transducteur
+est un dispositif transformant un type d'énergie en un autre. Par exemple, un microphone traduit une
+énergie \emph{acoustique} en énergie \emph{électrique} --- inversement pour un haut-parleur.} » de l'information --- transformation d'énergie mécano-acoustique en énergie électrique (potentiel d'action des nerfs auditifs).
+\end{enumerate}
+
+L'oreille externe est l'élément visible de l'ouïe. Elle est constituée du \emph{pavillon} et du \emph{conduit} --- ou \emph{canal} --- \emph{auditif externe}.
+%En moyenne, chez l'être humain le canal auditif possède une longueur et un diamètre respectivement de l'ordre de 25~mm et de 8~mm ($l \approx 25$~mm, $\varnothing \approx 8$~mm).
+
+Les domaines d'intervention essentiels de l'oreille externe sont :
+\begin{multicols}{2}
+\setlength{\columnsep}{8pt}
+\begin{itemize}
+\item l'amplification ;
+\item le filtrage ;
+\item la localisation des sons ;
+\item la protection des dispositifs amonts de l'oreille aux agressions externes.
+\end{itemize}
+\end{multicols}
+
+L'oreille moyenne est une cavité dont l'entrée est contrôlée par le \emph{tympan} de section d'environ $55\,\mbox{mm}^{2}$. Cette cavité est appelée la \emph{caisse du tympan} --- inclue 
+dans l'os du rocher ---, au sein de laquelle se trouve la \emph{chaîne des osselets} elle-même composée\sidenote{Rien à voir avec un système soviétique !} :
+\begin{itemize}
+\item du \emph{marteau} ($\approx$ 20~g), solidaire du tympan ;
+\item de l'\emph{enclume} ($\approx$ 25~g) ;
+\item et de l'\emph{étrier} ($\approx$ 2~g), à son tour solidaire de la membrane de la \emph{fenêtre ovale},
+orifice d'entrée de l'oreille interne ($S_{\mbox{\tiny o}} \approx 3\,\mbox{mm}^{2}$).
+\end{itemize}
+
+\begin{marginfigure}
+\begin{tikzpicture}[scale=1.0,>=latex]
+\tikzset{every pin edge/.style={draw=secondcolor, ultra thin, Circle[]-}}
+%\tikzset{every pin edge/.style={draw=secondcolor, very thin}}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-3) grid (2.5,3);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-3) grid (2.5,3);
+\node[inner sep=0pt, outer sep=0pt] at (0,0) {\includegraphics[width=.9\linewidth]{figV-15-auditory-ossicles.pdf}};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.45cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]125:{Marteau}}]
+	at (-1.125,1.75) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=1.25cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-30:{Enclume}}]
+	at (-0.25,1.5) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=1.0cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]80:{Étrier}}]
+	at (1.5,-1.6) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.50cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=north,
+						fill=white]-40:{\begin{tabular}{@{}c@{}}Connexion\\ au tympan\end{tabular}}}]
+	at (-2.25,-0.3) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.75cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]180:{Connexion à la fenêtre ovale}}]
+	at (1.65,-1.85) {};
+\end{tikzpicture}
+\caption{\label{fig:V.15}Oreille moyenne : chaîne des osselets (marteau, enclume, étrier).}
+\end{marginfigure}
+
+
+Les osselets sont maintenus et articulés par des petits muscles et ligaments qui déterminent la raideur d'ensemble du système et permettent de contrôler la réponse de l'oreille selon le signal d'excitation arrivant au tympan. %(protection par contraction aux niveaux sonores élevés). 
+La chaîne des osselets, par effet levier, amplifie et transforme le signal acoustique du tympan en vibration mécanique en entrée d'oreille interne.
+
+\textsc{Remarque ---} Le bas de la caisse du tympan dispose d'un orifice duquel un conduit 
+--- la \emph{trompe d'Eustache} --- débouche à son autre extrémité dans l'arrière-gorge.
+Cette connexion a pour fonction d'égaliser la pression de l'air entre les deux faces du tympan.
+Ce phénomène se produit lors d'une variation brusque de pression atmosphérique : prise d'altitude rapide en téléphérique ou avion non pressurisé, surpression au passage d'un TGV dans un tunnel, etc. Pour rééquilibrer les pressions, il est nécessaire de bailler ou de saliver.
+
+%Ce dispositif est identique à celui des instruments à percussion du type membranophone avec cavité : timbale, tom-tom, caisse-claire... En effet, tous ces instruments ont un petit trou sur le coté du fût, qui permet un équilibrage de la pression atmosphérique entre les deux faces de la membrane.
+
+Les fonctions principales de l'oreille moyenne sont :
+\begin{itemize}
+\item la protection de l'oreille aux niveaux sonores élevés (adaptation auditive). Aux fortes amplitudes, les muscles de la chaîne des osselets se contractent automatiquement\sidenote{Un tel mécanisme d'adaptation réflexe met en valeur qu'il n'est pas possible de déterminer l'intensité réellement perçue à l'aide d'une grandeur physique. L'intensité perçue --- sonie mesurée en phones --- se voit donc être \emph{subjective} et \emph{contextuelle}.} (\og~réflexe stapédien~\fg). 
+\item l'adaptation d'impédance \textit{via} la chaîne des osselets. Par amplification du signal, les osselets opèrent une transformation d'énergie entre l'air --- pression acoustique dans le conduit auditif au niveau du tympan --- et le liquide physiologique au sein de oreille interne --- au niveau de la fenêtre ovale.
+Ce phénomène mécanique possède deux origines explicatives :
+\begin{enumerate}
+\item un rapport de surface relativement important entre tympan et fenêtre ovale :
+$S_{\mbox{\tiny t}}/S_{\mbox{\tiny o}} \approx 55/3 \approx 20
+\Rightarrow P_{\mbox{\tiny o}} \approx 20\; P_{\mbox{\tiny t}}$, soit $+26\,\mbox{dB}$ ;
+\item un effet de levier de l'articulation de la chaine des osselets :
+le rapport est à peu près de deux, soit $+6\,\mbox{dB}$.
+\end{enumerate}
+\end{itemize}
+
+\begin{marginfigure}
+\begin{subfigure}{\linewidth}
+\centering
+\begin{tikzpicture}[scale=1.0,>=latex]
+\tikzset{every pin edge/.style={draw=secondcolor, ultra thin, Circle[]-}}
+%\tikzset{every pin edge/.style={draw=secondcolor, very thin}}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-3) grid (2.5,3);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-3) grid (2.5,3);
+\node[inner sep=0pt, outer sep=0pt] at (0,0) {\includegraphics[width=.5\linewidth]{figV-16a-bony-labyrinth.pdf}};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.75cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]60:{Limaçon}}]
+	at (0.5,-0.5) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.75cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]190:{\begin{tabular}{@{}c@{}}Fenêtre\\ ovale\end{tabular}}}]
+	at (-0.5,-0.3) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.4cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-100:{Fenêtre ronde}}]
+	at (-0.5,-0.75) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.5cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=south,
+						fill=white]120:{\begin{tabular}{@{}c@{}}Canaux\\ semi-circulaires\end{tabular}}}]
+	at (-1.05,0.6) {};
+\end{tikzpicture}
+\vspace{-4pt}
+\caption{\label{fig:V.16a}Labyrinthe osseux : canaux semi-circulaires, fenêtre ovale, fenêtre ronde et limaçon.}
+\end{subfigure}\\
+\begin{subfigure}{\linewidth}
+\centering
+\vspace{2pt}
+\begin{tikzpicture}[scale=1.0,>=latex]
+%\tikzset{every pin edge/.style={draw=secondcolor, ultra thin, Circle[]-}}
+\tikzset{every pin edge/.style={draw=secondcolor, very thin}}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-3) grid (2.5,3);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-3) grid (2.5,3);
+\node[inner sep=0pt, outer sep=0pt] at (0,0) 
+	{\includegraphics[width=\linewidth]{figV-16b-cochlea-crosssection.pdf}};
+\node[inner sep=1pt, outer sep=0pt, font=\footnotesize, anchor=west]
+	at (-0.9,1.8) {\textcolor{white}{Rampe vestibulaire}};
+\node[inner sep=1pt, outer sep=0pt, font=\footnotesize, anchor=west]
+	at (-1.6,1.0) {\textcolor{black}{Canal cochléaire}};
+\node[inner sep=1pt, outer sep=0pt, font=\footnotesize, anchor=west]
+	at (-1.0,-1.9) {\textcolor{white}{Rampe tympanique}};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.6cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=south,
+						fill=none]150:{Membrane tectoriale}}]
+	at (0.4,0.10) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.275cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=north,
+						fill=none]240:{\textcolor{white}{Membrane basilaire}}}]
+	at (-0.5,-0.75) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.65cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=north,
+						fill=none]240:{\textcolor{white}{Nerf cochléaire}}}]
+	at (1.05,-0.75) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=1.1cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=west,
+						fill=none]0:{%
+							\begin{tabular}{@{}c@{}}\textcolor{white}{Membrane}\\%
+							\textcolor{white}{de Reissner}\end{tabular}}}]
+	at (0.0,1.275) {};
+\vspace{-4pt}
+\end{tikzpicture}
+\caption{\label{fig:V.16b}Coupe de la cochlée : rampes tympanique et vestibulaire, canal cochléaire, membranes basilaire, tectoriale et de Reissner.}
+\end{subfigure}\\
+\begin{subfigure}{\linewidth}
+\centering
+\vspace{2pt}
+\begin{tikzpicture}[scale=1.0,>=latex]
+%\tikzset{every pin edge/.style={draw=secondcolor, ultra thin, Circle[]-}}
+\tikzset{every pin edge/.style={draw=secondcolor, very thin}}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-3) grid (2.5,3);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-3) grid (2.5,3);
+\node[inner sep=0pt, outer sep=0pt] at (0,0) {\includegraphics[width=\linewidth]{figV-16c-organ-corti.pdf}};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.65cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=east,
+						fill=white]125:{\begin{tabular}{@{}c@{}}Membrane\\ tectoriale\end{tabular}}}]
+	at (-0.75,0.75) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.45cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=north,
+						fill=white]-50:{\begin{tabular}{@{}c@{}}Fibres\\ basilaires\end{tabular}}}]
+	at (-2.25,-0.65) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=1.0cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=south,
+						fill=white]60:{\begin{tabular}{@{}c@{}}Celulles\\ ciliées externes\end{tabular}}}]
+	at (-0.30,0.35) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=1.05cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize, anchor=north,
+						fill=white]-120:{\begin{tabular}{@{}c@{}}Celulles\\ ciliées internes\end{tabular}}}]
+	at (0.75,0.05) {};
+\vspace{-4pt}
+\end{tikzpicture}
+\caption{\label{fig:V.16c}Organe de Corti (focus) : cellules ciliées externes et internes, membrane tectoriale, fibres basilaires et nerfs auditifs.}
+\end{subfigure}\\
+\begin{subfigure}{\linewidth}
+\centering
+\vspace{2pt}
+\begin{tikzpicture}[scale=1.0,>=latex]
+%\tikzset{every pin edge/.style={draw=secondcolor, ultra thin, Circle[]-}}
+\tikzset{every pin edge/.style={draw=secondcolor, very thin}}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-3) grid (2.5,3);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-3) grid (2.5,3);
+\node[inner sep=0pt, outer sep=0pt] at (0,0) {\includegraphics[width=\linewidth]{figV-16d-unrolled-cochlea.pdf}};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.4cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]-60:{Apex (sommet)}}]
+	at (0.45,-1.05) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=1.5cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]85:{Membrane basilaire}}]
+	at (-1.25,0.15) {};
+\node[inner sep=0pt, outer sep=0pt,
+			pin={[pin distance=0.65cm, inner sep=1.0pt, outer sep=0pt, font=\scriptsize,
+						fill=white]265:{\begin{tabular}{@{}c@{}}Cochlée\\ déroulée\end{tabular}}}]
+	at (-1.25,-0.1) {};
+\node[inner sep=1pt, outer sep=0pt, font=\scriptsize, anchor=north west]
+	at (1.25,-0.55) {\begin{tabular}{@{}c@{}}Fibres\\ nerveuses\end{tabular}};
+\vspace{-4pt}
+\end{tikzpicture}
+\caption{\label{fig:V.16d}Mécanique de la cochlée : membrane basilaire et sélectivité en fréquence.}
+\end{subfigure}
+\caption{\label{fig:V.16}Oreille interne : labyrinthe osseux, coupe et déroulé du limaçon.}
+\end{marginfigure}
+
+Au global, les effets cumulés représentent donc un gain de l'ordre de +32 dB. On peut également noter un effet de filtrage fréquentiel de l'oreille moyenne (par masse et raideur ajoutées).
+
+Dans son ensemble, l'oreille moyenne est assimilable à un capteur de pression --- à l'instar d'un microphone --- \textit{via} le tympan, lequel joue le rôle de la membrane du microphone. En poursuivant l'analogie, avec la transduction mais surtout l'amplification du signal, la chaîne des osselets peut se comparer au préamplificateur d'un microphone.
+
+
+L'oreille interne est le dispositif le plus fragile et le plus complexe de l'appareil auditif. L'ensemble est ainsi protégé par une coque rigide appelée \emph{labyrinthe osseux}, cavité fermée remplie de liquide physiologique --- la périlymphe et l'endolymphe ---,
+qui comprend :
+\begin{itemize}
+\item le \emph{vestibule} avec un orifice d'entrée, la \emph{fenêtre ovale} et, un orifice de \og sortie \fg, la \emph{fenêtre ronde} équipée d'une membrane pour permettre l'équilibre des forces de déformation ;
+\item les \emph{canaux semi-circulaires} ;
+\item le \emph{limaçon} ou la \emph{cochlée} --- ainsi intitulé à cause de sa géométrie, \textit{cochlea} signifiant « escargot » en latin.
+\end{itemize}
+
+
+%\begin{figure}[h!]
+%\centering
+%\subfigure[\label{fig:labyrinthe} Labyrinthe osseux]{\includegraphics[width=6cm,draft=false]{innerear}}
+%\subfigure[\label{fig:cochlee} Cochlée \og déroulée \fg]{\includegraphics[width=8cm,draft=false]{basilar}}
+%\caption{\label{fig:innerear} Anatomie de l'oreille interne}
+%\end{figure}
+
+La partie supérieure formée des canaux semi-circulaires n'intervient pas dans les mécanismes de l'audition, mais comme moyen de contrôle de l'équilibre. En effet, chaque canal est disposé dans un plan quasi-perpendiculaire aux deux autres permettant de se repérer selon chacune des trois dimensions de l'espace physique du fait de la présence du liquide physiologique. 
+%Autrement dit, tout déplacement dans l'espace induit un mouvement de liquide détecté au niveau des canaux, information ensuite envoyée au cerveau. 
+Cela explique pourquoi des traumatismes de l'oreille peuvent engendrer des troubles de l'équilibre.
+
+Le dispositif de décodage de l'information sonore est au sein de la cochlée, qui se compose principalement :
+\begin{itemize}
+\item de l'\emph{organe de Corti} ;
+\item des \emph{membranes basilaire et tectoriale} ;
+\item des \emph{cellules ciliées internes et externes} ($\approx 25\:\!000$) ;
+\item du \emph{nerf cochléaire}. % et du \emph{nerf auditif}...
+\end{itemize}
+
+L'organe de Corti est constitué de l'ensemble du mécanisme actif de l'audition dont une coupe transversale est représentée en \cref{fig:V.16c}. Il est disposé tout le long de la membrane basilaire, laquelle s'effile de plus en plus jusqu'à son extrémité ou « \emph{apex} » (cf. \cref{fig:V.16d}).
+
+L'onde acoustique désormais transformée en vibration mécanique par l'oreille moyenne est communiqué à l'oreille interne par l'étrier au niveau de la fenêtre ovale. Le fait que la cochlée soit remplie de liquide physiologique, cette vibration va générer une onde au sein de la cochlée se traduisant par un déplacement transversal de la membrane basilaire à son passage. L'équilibre des contraintes se fait au niveau de la fenêtre ronde dont l’étanchéité est assurée par une membrane.
+
+Le déplacement transversal d'une zone de la membrane basilaire va induire un mouvement de balancier de l'organe de Corti. Ainsi, les cils des cellules ciliées externes vont être en contact avec la membrane tectoriale qui les recouvrent et déclencher une impulsion nerveuse.
+
+Plus le son est intense, plus les cellules ciliées vont être sollicitées. À niveaux sonores élevés, les cellules ciliées internes entrent en action. L'ensemble des impulsions nerveuses est collecté par les fibres nerveuses pour déboucher sur « l'autoroute de l'information » que constitue le nerf auditif.
+
+%\begin{tikzpicture}[scale=1.0]
+%\begin{semilogxaxis}[%
+%	axis x line=left, axis y line=left, axis line style={-latex}, grid=minor,
+%	%tick label style={font=\scriptsize}, label style={font=\footnotesize},
+%	xticklabel style={%
+%		/pgf/number format/set thousands separator={\:\!},% no comma as thousand separator but small space +/-
+%		%rotate=90,
+%		%/pgf/number format/precision=0, 
+%		%/pgf/number format/fixed, 
+%		%/pgf/number format/fixed zerofill,
+%	},
+%	%x label style={at={([yshift=5pt]xticklabel cs:0.95)}, anchor=west, outer sep=0pt, inner sep=0pt},
+%	%y label style={at={([xshift=10pt]yticklabel cs:0.95)}, anchor=east, rotate=-90, outer sep=0pt, inner sep=0pt},
+%	xmin=20.0, xmax=40000, ymin=0, ymax=60,
+%	xlabel=f (Hz), ylabel={s(f)},
+%	width=\linewidth,
+%	]
+%	\addplot table {./Images/Chapter05/test-data.dat};
+%\end{semilogxaxis}
+%\end{tikzpicture}
+
+\begin{marginfigure}
+%\includegraphics[width=\linewidth]{./Images/Chapter05/figV-17-basilar-wavelength.pdf}
+\begin{tikzpicture}[scale=1.0,>=latex]
+%\tikzset{every pin edge/.style={draw=secondcolor, ultra thin, Circle[]-}}
+%\tikzset{every pin edge/.style={draw=secondcolor, very thin}}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-3) grid (2.5,3);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-3) grid (2.5,3);
+\node[inner sep=0pt, outer sep=0pt] 
+	at (0,0) {\includegraphics[width=\linewidth]{./Images/Chapter05/figV-17-basilar-wavelength.pdf}};
+\node[inner sep=0pt, outer sep=0pt, font=\tiny, anchor=south]
+	at (-0.175,0.55) {\textcolor{black}{\textasciitilde $300$\,Hz}};
+\node[inner sep=0pt, outer sep=0pt, font=\tiny, anchor=south]
+	at (0.5,0.55) {\textcolor{black}{\textasciitilde $200$\,Hz}};
+\node[inner sep=0pt, outer sep=0pt, font=\tiny, anchor=south]
+	at (1.2,0.55) {\textcolor{black}{\textasciitilde $100$\,Hz}};
+\node[inner sep=0pt, outer sep=0pt, font=\tiny, anchor=south]
+	at (2.3,0.55) {\textcolor{black}{\textasciitilde $50$\,Hz}};
+\node[inner sep=0pt, outer sep=0pt, font=\footnotesize, anchor=east]
+	at (2.6,-0.75) {\textcolor{black}{Distance depuis l'étrier (mm)}};
+\end{tikzpicture}
+\caption{\label{fig:V.17}Sélectivité en fréquence : profil d'excitation des cellules ciliées.}
+\end{marginfigure}
+
+La sélectivité en fréquence est relative aux zones sollicitées le long de la membrane basilaire. Le phénomène est induit par le lien entre les fréquences du signal initial et leurs longueurs d'ondes associées dans la vibration qui se propage le long de la membrane basilaire.
+La détection des hautes fréquences --- petites longueurs d'onde --- se produit près de la fenêtre ovale tandis que pour les très basses fréquences --- grandes longueurs d'onde --- cela se réalise vers l'apex (cf. \cref{fig:V.17}). De ce point de vue, l'oreille interne et son mécanisme de détection des fréquences est assimilable
+à un « \emph{analyseur de spectre} ».
+
+\paragraph{Champ audible et niveau sonore} En psychoacoustique, il n'est pas toujours possible de mesurer directement les phénomènes. Outre les difficultés techniques, il est en effet peu envisageable d'accéder à l'oreille moyenne ou la cochlée d'un être vivant. La démarche expérimentale doit donc s'opérer différemment à l'aide de \emph{tests} effectués sur un panel d'individus. Les résultats sont ensuite analysés de manière statistique pour obtenir des conclusions moyennées.% sur l'ensemble des réponses. 
+
+%Un tel protocole expérimental rejoint celui qui précède la validation puis l'autorisation de mise sur le marché d'un médicament. Pour des tests de perception auditive, le choix du « panel d'expérimentation » est variable selon l'évaluation désirée. Suivant les cas, il est par exemple préférable de disposer d'un ensemble de musiciens --- amateurs et/ou professionnels --- afin de déterminer l'impact culturel de l'apprentissage et de l'écoute de la musique sur les résultats de certains tests.
+
+%\sidefigure[\label{fig:V.18}Courbes d'isosonie  binaurale(en phones) et champs audibles de la parole %(\textcolor{secondcolor}{\textemdash}) et de la musique (\textcolor{firstcolor}{\textemdash}).]%%
+%{\includegraphics[width=\linewidth]{figV-18-spl-curves-phons.pdf}}%
+
+\begin{marginfigure}% 
+%  [\label{fig:V.18}Courbes d'isosonie  binaurale(en phones) et champs audibles de la parole (\textcolor{secondcolor}{\textemdash}) et de la musique (\textcolor{firstcolor}{\textemdash}).]
+\includegraphics[width=\linewidth]{figV-18-spl-curves-phons.pdf}
+\caption{\label{fig:V.18}Courbes d'isosonie  binaurale(en phones) et champs audibles de la parole (\textcolor{secondcolor}{\textemdash}) et de la musique (\textcolor{firstcolor}{\textemdash}).}
+\end{marginfigure}
+
+Pour déterminer le champ audible par l'être humain, aussi bien en \emph{fréquence} qu'en \emph{intensité}, la procédure est similaire à celle de l'audiogramme ; elle consiste à présenter aux sujets des sons purs de niveaux croissants en intensité et de noter celui pour lequel le signal est détecté. En balayant l'ensemble des fréquences, on obtient la courbe dite du \emph{seuil d'audition} (voir \cref{fig:V.13,fig:V.18}). 
+
+\begin{marginfigure}
+\begin{tikzpicture}[
+	%yscale=0.75,
+	>=latex,
+	colorbar arrow/.style={
+  	shape=single arrow,
+  	single arrow head extend=0.125cm, 
+  	shape border rotate=90, 
+  	minimum height=7.75cm,
+  	minimum width=1.25cm,
+  	shading=#1 
+	}]
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,0.0) grid (2.5,8.0);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,0.0) grid (2.5,8.0);
+\node [colorbar arrow=shading4, anchor=south] at (0,-0.25) {};
+%\draw[line width=0.8pt,->] (1.0,0.0) -- (1.0,7.5) node[below right] {\footnotesize $dB$};
+%\draw[line width=0.8pt,->] (0.625,0.0) -- (0.625,7.5) node[below right] {\footnotesize $dB$};
+\path[draw=none, line width=0.8pt] (-0.3125,0.0) -- (-0.3125,7.5) node[below left] {\footnotesize dB(A)};
+\foreach \y/\ytext in {0.0/{0},0.5/{10},1.0/{20},1.5/{30},2.0/{40},2.5/{50},3.0/{60},3.5/{70},4.0/{80},4.5/{90},5.0/{100},5.5/{110},6.0/{120},6.5/{130}}
+	\draw[white, line width=0.6pt] (-0.3125cm,\y cm) -- (4pt-0.3125cm,\y cm) 
+		node[black, anchor=east, xshift=-6pt, inner sep=0pt] {\scriptsize $\ytext$};
+%\node[fill=firstcolor, shape=rectangle, font=\tiny, inner sep=1.6pt, outer sep=0pt] 
+%	at (-1.5,7.0) {\strut\textcolor{white}{Seuils}};
+\node[fill=firstcolor, shape=signal, signal to=east, font=\tiny, inner sep=1.6pt, outer sep=0pt, anchor=east, minimum width=1.625cm] 
+	at (-0.875,6.0) {\strut\textcolor{white}{\lightbf{Seuil de douleur}}};
+\node[fill=firstcolor, shape=signal, signal to=east, font=\tiny, inner sep=1.6pt, outer sep=0pt, anchor=east, minimum width=1.625cm] 
+	at (-0.875,5.25) {\strut\textcolor{white}{\lightbf{Seuil de danger}}};
+\node[fill=firstcolor, shape=signal, signal to=east, font=\tiny, inner sep=1.6pt, outer sep=0pt, anchor=east, minimum width=1.625cm] 
+	at (-0.875,4.25) {\strut\textcolor{white}{\lightbf{Seuil de risque}}};
+\node[fill=firstcolor, shape=signal, signal to=east, font=\tiny, inner sep=1.6pt, outer sep=0pt, anchor=east, minimum width=1.625cm] 
+	at (-0.875,2.75) {\strut\textcolor{white}{\lightbf{Seuil de fatigue}}};
+\node[fill=firstcolor, shape=signal, signal to=east, font=\tiny, inner sep=1.6pt, outer sep=0pt, anchor=east, minimum width=1.625cm] 
+	at (-0.875,0.0) {\strut\textcolor{white}{\lightbf{Seuil d'audition}}};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,6.5) {Avion de chasse};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,6.25) {Avion au décollage à 100\,m};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,6.0) {Voiture de course (F1)};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,5.75) {Marteau piqueur à 3\,m};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,5.5) {Concert pop-rock};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,5.25) {Hi-Fi, baladeur (niv. max)};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,5.0) {Tondeuse à gazon};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,4.75) {Outils électroportatifs};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,4.5) {Aboiements};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,4.25) {Cantine scolaire};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,4.0) {Guitare acoustique};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,3.75) {Rue animée};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,3.5) {Salle de classe agitée};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,3.25) {Machine à laver (essorage)};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,3.0) {Conversation normale};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,2.75) {Aspirateur récent};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,2.5) {Rue calme};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,2.25) {Restaurant paisible};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,2.0) {Bureau tranquille};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,1.75) {Conversation à voix basse};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,1.5) {Chambre à coucher};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,1.25) {Conversation chuchotée};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,1.0) {Vent, jardin, forêt};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,0.75) {Studio d'enregistrement};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,0.5) {Chambre anéchoïque};
+\node[fill=white, font=\tiny, inner sep=0pt, anchor=west] 
+	at (0.5,0.25) {Chambre sourde};
+\end{tikzpicture}
+\caption{\label{fig:V.19}Échelle de niveaux sonores rapportée aux décibels pondérés A : à partir de 40\,dB(A) la nuit et 55\,dB(A) le jour -- gêne, stress, fatigue --, de 85 à 105\,dB(A) -- risques à moyens termes si exposition chronique, pertes auditives --, au-delà de 105\,dB(A) -- risques immédiats -- acouphènes, surdité..}
+\end{marginfigure}
+
+Pour établir la courbe dite du \emph{seuil de douleur}, on procède par extrapolation en se gardant, bien évidemment, une marge de manœuvre afin de ne pas détruire les facultés auditives des sujets. Compte tenu de cette incertitude, on évalue communément le seuil de douleur pour des niveaux sonores autour de 120 dB.
+
+L'établissement des courbes intermédiaires --- entre 0\,dB et 120\,dB --- se fait par comparaison des niveaux sonores du son pur présenté aux oreilles du sujet vis-à-vis de celui d'un signal de référence, en l’occurrence un son pur à 1\,000 Hz de niveau sonore étalonné. 
+Pour chaque niveau sonore du signal de référence, le son pur testé est présenté au sujet avec un niveau sonore croissant par paires successives jusqu'à ce qu'il soit jugé de \emph{même sensation d'intensité sonore}. 
+%Pour affiner les résultats, la même expérience est renouvelée pour des niveaux décroissants.
+
+Les courbes \emph{d'égale sensation d'intensité} ainsi obtenues sont appelées courbes \emph{isosoniques} ou d'\emph{isosonie} (cf. \cref{fig:V.18}). Chaque courbe correspond à une évaluation en \emph{phones}. En pratique, cette unité n'est pas utilisée, les sonomètres mesurent le niveau de bruit « physique » en décibels SPL --- pour \textit{Sound Pressure Level} ---, auquel on applique un filtre en fréquence qui approche les courbes d'isosonie. On parle alors de décibels pondérés, dont le filtre le plus commun est nommé « A » et reflète les niveaux sonores de la vie courante. 
+
+La dynamique de l'audition humaine s'avère bien moins bonne en basses fréquences (voir \cref{fig:V.18}). Par exemple, sa sensibilité à 100~Hz est environ mille fois inférieure de celle à 1\,000~Hz. Néanmoins, la nature a tout fait pour aider la préservation de l'espèce et l'inciter à la communication en la dotant de ses meilleures facultés auditives dans les intervalles de fréquences (100 à 5\,000~Hz) et d'intensités (40 à 80~dB) correspondant au domaine de la parole : besoin initial d'alerte face à un danger, échange d'information, etc. 
+
+Pour notre plaisir, le domaine de la musique recouvre quant à lui l'essentiel du champ audible où seuls sont rejetés
+les niveaux sonores trop faibles --- on entend rien ! --- et trop forts --- on ne s'entend plus !
+
+
+\paragraph{Typologie objective des sons} Comme déjà évoqué, on distingue d'abord les sons entre eux en fonction de leurs contenus fréquentiels respectifs, puis selon la manière dont les fréquences qui les composent sont reliées entre elles.
+
+\subparagraph{Son « \emph{pur} »} Le son qualifié de \emph{pur} ne contient qu'une seule composante fréquentielle. Cela constitue le signal sonore de base, soit une vibration sinusoïdale simple : $p\var{t} = A\var{t}\sin\var{\omega t + \phi\var{t}}$.
+
+\subparagraph{Son « complexe » ou « composé »} Si un signal sonore comporte plus d'une composante en fréquence, celui-ci est qualifié de \emph{composé} ou de \emph{complexe}. Cependant, il est nécessaire que l'on puisse dénombrer les différentes fréquences qui le composent --- même si il y en a plusieurs centaines, voire plusieurs milliers ! Pour des signaux périodiques, on distingue deux catégories de sons complexes :
+\begin{enumerate}
+\item les sons « \emph{harmoniques} » qui possèdent un spectre de raies (pics de fréquences) tel que : $f_{n} = \alpha\var{n} f_{1}$, avec $\alpha\var{n} \in \BbbN$, c'est-à-dire que les fréquences (harmoniques) sont reliées à la fréquence fondamentale en tant que multiples entiers (par exemple, $f_{2}=2f_{1}$, $f_{3}=3f_{1}$, $f_{4}=4f_{1}$, etc.) ;
+\item les sons « \emph{inharmoniques} » caractérisés par un spectre de raies sans relation simple entre les fréquences (on parle de \emph{partiels}). 
+\end{enumerate}
+
+\subparagraph{Bruits} Les bruits constituent un type particulier de sons complexes. Un bruit se définit comme un signal dont le spectre est composé de \emph{toutes} les fréquences dans un intervalle donné de fréquences et distribuées de façon \emph{aléatoire} --- c'est à dire au hasard au cours du temps. Là encore, on distingue les bruits suivant deux grandes classes :
+\begin{enumerate}
+	\item les bruits à « \emph{faible bande de fréquences} », constitués de composantes dans un relativement faible intervalle de fréquences autour d'une composante particulière appelée fréquence \emph{centrale} ou \emph{caractéristique} ;
+	\item les bruits à « \emph{large bande de fréquences} » qui, à l'inverse, couvrent une importante gamme de fréquences (par exemple un bruit dit « \emph{blanc} » comportant toutes les fréquences audibles\sidenote{Le qualificatif  de « blanc » est appliqué par analogie avec la vision, pour laquelle la couleur blanche est constituée de toutes les composantes du spectre visible.}).
+\end{enumerate}
+Pour préciser plus avant de quoi il retourne, ces différents bruits se définissent comme suit :
+\begin{itemize}
+\item bruit « blanc » $\rightarrow$ distribution aléatoire sur toutes les fréquences audibles [20 Hz, 20 kHz] et toutes les phases [0, 2$\pi$] ;
+\item bruit « rose » $\rightarrow$ distribution aléatoire sur toutes les octaves [$\log\vars{20}$, $\log\vars{20000}$] (énergie identique sur chaque octave) ;
+\item bruit « faible bande » (par opposition à « large bande ») $\rightarrow$ distribution aléatoire autour d'une fréquence centrale [$f_c - \Delta f$, $f_c + \Delta f$].
+\end{itemize}
+
+Les sons de la vie courante sont quasi-exclusivement complexes. En effet, en tant que signaux de référence sur le plan théorique, les sons purs sont en toute rigueur impossibles à obtenir naturellement. Leur fabrication se fait de manière artificielle à l'aide d'un appareillage électronique --- générateur de fréquences --- et aujourd'hui numérique \textit{via} un processeur de calcul ou un ordinateur. Seuls quelques sons naturels peuvent être assimilés à des sons purs, comme ceux produits par un diapason, un sifflet ou un appeau de très bonne qualité.
+
+Quant à eux, les signaux musicaux appartiennent souvent à la catégorie des sons complexes harmoniques pour tous les instruments qui demandent une justesse fine de tonalité comme les instruments à vent et dans une certaine mesure les instruments à cordes (inharmonicité des cordes). Celle des sons complexes inharmoniques rassemble la grande majorité des instruments à percussion.
+
+\begin{marginfigure}
+\begin{subfigure}{\linewidth}
+\centering
+\begin{tikzpicture}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-2.0) grid (2.5,2.0);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-2.0) grid (2.5,2.0);
+\node at (0,0) {\includegraphics[width=4cm]{figV-20a-guitar-waveform.pdf}};
+\node[font=\scriptsize] at (0.0,-1.75) {Temps};
+\node[font=\scriptsize, anchor=base, rotate=90] at (-2.25,0.0) {Amplitude};
+\draw[-latex, line width=0.6pt] (1.15,-1.75) -- (1.90,-1.75);
+\draw[-latex, line width=0.6pt] (-2.25,0.75) -- (-2.25,1.5);
+\end{tikzpicture}
+\vspace{-6pt}
+\caption{\label{fig:V.20a}Forme d'onde (plan dynamique).}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+\centering
+\vspace{2pt}
+\begin{tikzpicture}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-2.0) grid (2.5,2.0);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-2.0) grid (2.5,2.0);
+\node at (0,0) {\includegraphics[width=4cm]{figV-20b-guitar-spectrum.pdf}};
+\node[font=\scriptsize] at (0.0,-1.75) {Fréquence};
+\node[font=\scriptsize, anchor=base, rotate=90] at (-2.25,0.0) {Amplitude};
+\draw[-latex, line width=0.6pt] (1.15,-1.75) -- (1.90,-1.75);
+\draw[-latex, line width=0.6pt] (-2.25,0.75) -- (-2.25,1.5);
+\end{tikzpicture}
+\vspace{-6pt}
+\caption{\label{fig:V.20b}Spectre (plan harmonique).}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+\centering
+%\vspace{-2pt}
+\begin{tikzpicture}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-2.0) grid (2.5,2.0);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-2.0) grid (2.5,2.0);
+\node at (0,0) {\includegraphics[width=4.5cm]{figV-20c-spain-corea-mini.pdf}};
+\node[font=\scriptsize, xshift=0.0cm] at (0.0,-1.55) {Temps};
+\node[font=\scriptsize, anchor=base, rotate=90] at (-2.25,-0.25) {Fréquence};
+\draw[-latex, line width=0.6pt] (1.15,-1.55) -- (1.90,-1.55);
+\draw[-latex, line width=0.6pt] (-2.25,0.5) -- (-2.25,1.25);
+\node[font=\footnotesize] at (0.0,1.5) {\textsc{\lightbf{Spain}}};
+\node[font=\tiny, inner sep=0pt, anchor=east] at (2.0,1.25) {Chick \textsc{Corea}};
+\end{tikzpicture}
+\vspace{-6pt}
+\caption{\label{fig:V.20c}Partition (plan mélodique).}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+\centering
+\vspace{-2pt}
+\begin{tikzpicture}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-2.0) grid (2.5,2.0);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-2.0) grid (2.5,2.0);
+\node at (0,0) {\includegraphics[width=4cm]{figV-20d-guitar-spectrogram.pdf}};
+\node[font=\scriptsize, xshift=-0.5cm] at (0.0,-1.825) {Temps};
+\node[font=\scriptsize, anchor=base, rotate=90] at (-2.25,0.0) {Fréquence};
+\node[font=\scriptsize, anchor=south west] at (1.75,1.5) {dB};
+\draw[-latex, line width=0.6pt] (0.5,-1.825) -- (1.25,-1.825);
+\draw[-latex, line width=0.6pt] (-2.25,0.75) -- (-2.25,1.5);
+\end{tikzpicture}
+\vspace{-6pt}
+\caption{\label{fig:V.20d}Sonagramme (plan mélodique).}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+\centering
+\vspace{2pt}
+\begin{tikzpicture}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-2.5) grid (2.5,2.0);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-2.5) grid (2.5,2.0);
+%\node at (0,0) {\includegraphics[width=4cm]{figV-20e-guitar-3D.pdf}};
+\node at (0,0) {\includegraphics[width=4cm]{figV-20e-guitar-3D-color.pdf}};
+\node[font=\scriptsize, inner sep=0pt, anchor=west] at (1.25,-2.0) {Temps};
+\node[font=\scriptsize, xshift=-0.0cm] at (-0.75,-2.075) {Fréquence};
+\node[font=\scriptsize, anchor=base, rotate=90] at (-2.25,0.25) {Amplitude};
+\draw[-latex, line width=0.6pt] (-2.25,1.0) -- (-2.25,1.75);
+\draw[-latex, line width=0.6pt] (0.0,-2.075) -- (0.7,-2.15);
+\draw[-latex, line width=0.6pt] (1.875,-1.25) -- (1.5,-1.75);
+\end{tikzpicture}
+\vspace{-6pt}
+\caption{\label{fig:V.20e}Vue tridimensionnelle (3D).}
+\end{subfigure}
+\caption{\label{fig:V.20}Diverses représentations des sons : note de guitare et partition.}
+\end{marginfigure}
+
+\paragraph{Figuration des sons} Il est d'usage de dire qu'un bon schéma vaut mieux qu'un long discours. Accéder aux informations contenues dans un signal sonore de manière à la fois globale et synthétique est un soutien pour l'analyse des sons. Un des atouts essentiels est d'autoriser des comparaisons rapides entre signaux d'origines différentes.
+
+Pour visualiser les signaux sonores, trois catégories de schématisation sont à disposition (cf. \cref{fig:V.20}) :
+\begin{enumerate}
+	\item les représentations « \emph{temporelles} », qui affichent l'évolution de l'amplitude --- ou du niveau --- du signal en fonction du temps : $L = \alpha\var{t}$. Cela transcrit de manière visuelle l'enregistrement du signal à l'état « brut ». Du fait de la dépendance en temps, on parle de représentation dans le \emph{plan dynamique}. Dans le cas d'un signal vibratoire, elle est appelée « \emph{forme d'onde} » ;
+	\item les représentations « \emph{fréquentielles} » ou « \emph{spectrales} », lesquelles correspondent à une analyse du contenu fréquentiel entre deux instants. Autrement dit, il s'agit ainsi d'une « photographie » du contenu spectral du signal à un moment donné de son évolution. On affiche donc des niveaux en fonction de la fréquence : $L = \alpha\var{f}$ et révèle les relations entre fréquences. On évoque ici le terme de représentation dans le \emph{plan harmonique}. Ce type de figure est nommé « \emph{spectre} » du signal ;   
+	\item les représentations « \emph{temps-fréquences} », qui permettent non seulement d'accéder au contenu fréquentiel du signal, mais aussi à l'évolution de ces composantes fréquentielles dans le temps. Parmi celles-ci, on en distingue deux genres :
+\begin{itemize}
+	\item les représentations dites dans le \emph{plan mélodique} qui, de manière implicite sont à trois dimensions où le contenu fréquentiel est affiché en fonction du temps : $f = \alpha\var{t}$. Les partitions musicales en constituent l'illustration historique directe, avec des indications de niveau : \textit{pianissimo} à \textit{fortissimo}.
+Le \emph{sonagramme} --- ou \emph{spectrogramme} --- est un des moyens traditionnels d'analyse des sons en affichant directement des niveaux dépendant à la fois du temps et des fréquences : $L = \alpha\var{f,t}$. La détection de chaque composante du signal est indiquée par une échelle d'intensité de marquage plus ou moins fort --- ou désormais à l'aide d'un code couleurs --- qui permet d'évaluer les variations de niveau ;
+	\item les représentations « \emph{3D} » --- sorte de sonagramme moderne. L'informatique permet d'afficher les données directement par des graphes tridimensionnels qui offrent une visualisation instantanée des niveaux et de leur évolution : $L = \alpha\var{f,t}$. 
+\end{itemize}
+\end{enumerate}
+
+\overparagraph{Codage numérique des sons}
+
+Quel que soit le champ de recherche ou d'application, l'acoustique actuelle fait abondamment appel aux signaux numériques ; les analyses décrites précédemment en sont l'illustration.
+
+Convertir un signal analogique --- donné en volt au cours du temps car enregistré au moyen d'un microphone --- en un signal numérique, induit une séparation suivant deux dimensions : la représentation du voltage (amplitude discrétisée) et l'évolution temporelle (évaluation discrète du temps). La première opération est connue sous le nom de \emph{quantification} et la seconde par le terme d'\emph{échantillonnage}.
+Cette conversion n'est cependant pas directe et nécessite l'observation de quelques règles d'usage.
+
+\paragraph{Quantification et rapport signal/bruit} Les convertisseurs analogique à numérique --- \textit{Analog-to-Digital Converter} (ADC) --- traduisent les valeurs d'entrée de volts en nombres entiers. 
+
+\sidegraphic{\includegraphics[width=0.75\linewidth]{graphV-03-compact-disc.pdf}}%
+L'étendue des entiers possibles est fournie par le nombre de bits par échantillon relatifs aux capacités du convertisseur. Les progrès étant, on est passé de la norme à $16$ bits du \textit{Compact Disc}\sidenote{De 1979 à 1982, \textsc{Philips} et \textsc{Sony} se sont concertés pour définir la norme du \textit{Compact Disc} (16 bits, 44,1 kHz) et commercialiser les équipements (voir \href{https://fr.wikipedia.org/wiki/Disque_compact}{\faWikipediaW}).} de 1982 aux cartes audio « professionnelles » actuelles à $24$ voire $32$ bits employées en studio d'enregistrement. 
+
+En écoute, l'intérêt réel d'un codage en $24$ bits est relatif et se ressent parfois en musique classique et en bande son de cinéma (utilisation de plus de dynamique, cf. infra). Toujours est-il que pour conserver une capacité de stockage de 74 mn, les constructeurs sont restés à une quantification sur $16$ bits.
+
+Une conversion en échantillons sur M bits permet une quantification du voltage par $2^M$ valeurs. Par exemple, un convertisseur ADC sur $16$ bits offre $2^{16}$ soit $65\,536$ valeurs différentes. Un tel convertisseur ayant à traduire des voltages entre $-10$ V et $+10$ V correspondrait à des valeurs entre $-32\,768$ et $32\,767$ respectivement.
+
+La conversion est linéaire. Ainsi, si le voltage est $0,$$3052\,V$ cela donne $1\,000$ ($32\,767 \times 0,$$3052/10)$ et s'il est de $0,$$3055\,V$, on obtient $1\,001$ ($32\,767 \times 0,$$3055/10$). Néanmoins, un voltage de $0,$$3053$ conduit également à une valeur de $1\,000$. Cet écart est appelé \emph{erreur de quantification} ou \emph{bruit de quantification} (voir \cref{fig:V.21}).
+
+\vspace*{6pt}
+\begin{jazzfigure}
+\centering
+\begin{tikzpicture}[xscale=1.0, yscale=1.0,
+										spy using outlines={circle, magnification=5, connect spies}]
+\begin{axis}[%
+	axis x line=middle, axis y line=left, axis line style={-latex},
+	tick label style={font=\scriptsize}, label style={font=\footnotesize},
+	%xticklabel pos=lower, yticklabel pos=left,
+	x label style={at={([yshift=-6pt]xticklabel cs:0.95)}, 
+		anchor=west, outer sep=0pt, inner sep=0pt},
+	y label style={at={([xshift=-2pt]yticklabel cs:0.95)}, 
+		anchor=east, rotate=-90, outer sep=0pt, inner sep=0pt},
+	xmin=0.0, xmax=210, ymin=-0.9, ymax=1.15,
+	minor y tick num=4, ytick style={draw=none},
+	%ymajorgrids=true, major grid style={thick, color=black!50},
+	%yminorgrids=true, minor grid style={thick, color=black!50},
+	xtick=\empty, ytick=\empty,%ytick={-0.5,0,0.5,1},
+	xlabel=t (s), ylabel={s(t)}, width=\linewidth, height=7cm,
+	]
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {1};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {0.8};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {0.6};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {0.4};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {0.2};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {0.9};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {0.7};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {0.5};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {0.3};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {0.1};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {-0.2};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {-0.4};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {-0.6};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {-0.8};
+	%\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {-0.9};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {-0.7};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {-0.5};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {-0.3};
+	\addplot[domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray, dashed] expression {-0.1};
+	%\addplot [domain=0:200, samples=11, smooth, line width=0.5pt, color=lightgray] expression {-1};
+	\addplot[firstcolor, line width=0.8pt] 
+		table {./Images/Chapter05/figV-19-sampling-quantization-signal.dat};
+	\addplot[fourthcolor, ycomb, mark=ball, ball color=fourthcolor] 
+		table {./Images/Chapter05/figV-19-sampling-quantization-ycomb.dat};
+	\draw[black, line width=0.2pt, -latex] (27.5,1.1) -- (27.5,1.0);
+	\draw[black, line width=0.2pt, -latex] (27.5,0.8) -- (27.5,0.9);
+	\node[inner sep=0pt, outer sep=0pt,
+				pin={[pin distance=0.25cm, inner sep=1.6pt, outer sep=0pt,
+							fill=white]0:{\scriptsize\begin{tabular}{@{}c@{}}Pas de quantification\end{tabular}}},
+				] 
+		at (axis cs:30,0.95) {};
+	\draw[black, line width=0.2pt, -latex] (61.54,0.05) -- (66.66,0.05);
+	\draw[black, line width=0.2pt, -latex] (76.91,0.05) -- (71.79,0.05);
+	\node[inner sep=0pt, outer sep=0pt,
+				pin={[pin distance=1.0cm, inner sep=1.6pt, outer sep=0pt,
+							fill=white]270:{\scriptsize\begin{tabular}{@{}c@{}}Période\\ d'échantillonnage\end{tabular}}},
+				] 
+		at (axis cs:69.22,0.05) {};
+	\draw[black, line width=0.2pt] (51.28,0.345) -- (61.53,0.345);
+	\draw[black, line width=0.2pt] (51.28,0.3) -- (61.53,0.3);
+	\draw[black, line width=0.2pt, -latex] (53.85,0.445) -- (53.85,0.345);
+	\draw[black, line width=0.2pt, -latex] (53.85,0.2) -- (53.85,0.3);
+	\node[inner sep=0pt, outer sep=0pt,
+				pin={[pin distance=1.0cm, inner sep=1.6pt, outer sep=0pt,
+							fill=white]267:{\scriptsize\begin{tabular}{@{}c@{}}Erreur\\ de quantification\end{tabular}}},
+				] 
+		at (axis cs:53.85,0.3275) {};
+	\coordinate (spypoint) at (56.41,0.3);
+	\coordinate (magnifyglass) at (117.5,0.55);
+\end{axis}
+\spy [secondcolor, size=2.6cm] on (spypoint) in node[fill=white] at (magnifyglass);
+\end{tikzpicture}
+\caption{\label{fig:V.21}Quantification et échantillonnage.}
+\end{jazzfigure}
+\vspace*{4pt}
+
+Le bruit de quantification fait référence au rapport signal sur bruit. La pratique veut que celui-ci soit le plus grand possible, notamment en correspondance avec la dynamique de réponse de l'audition (cf. \cref{fig:V.18}), soit dans ses limites d'un ordre de grandeur de $90$ dB. Les calculs conduisent à avoir une dynamique de $6$ dB par bit ($6 \times M$), soit pour $16$ bits, $96$ dB\sidenote{Pour une oreille moyenne, $60$ à $70$ dB correspondent à une dynamique de rapport signal/bruit courante.} et, pour $24$ bits, $144$ dB. On constate donc que la norme \textit{Compact Disc} remplit correctement sa fonction.
+
+\begin{marginfigure}
+%\centering
+\begin{tikzpicture}
+\node[xshift=0mm] at (0,0) {\includegraphics[width=0.9\linewidth]{figV-22-sampling.pdf}};
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.25,-2.0) grid (2.25,2.0);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.25,-2.0) grid (2.25,2.0);
+\node[font=\tiny] at (2.25,0.75) {t};
+\node[font=\tiny] at (2.25,-0.375) {t};
+\node[font=\tiny] at (2.25,-1.125) {t};
+\node[font=\tiny] at (-2.5,1.25) {S(t)};
+\node[font=\tiny] at (-2.5,0.33) {$\Delta(t)$};
+\node[font=\tiny] at (-2.5,-0.625) {s(t)};
+\node[font=\tiny] at (-0.325,0.175) {$T_e$};
+\end{tikzpicture}
+\caption{\label{fig:V.22}Opération d'échantillonnage : multiplication du signal continu g(t) par un peigne de Dirac $\Delta(t)$ donnant le signal discret s(t).}
+\end{marginfigure}
+
+\paragraph{Opération d'échantillonnage} Le processus d'échantillonnage remplace le signal analogique --- fonction continue en temps --- par une séquence de points dans la perspective de mémoriser, de transmettre ou de traiter le signal. Cette opération est illustrée en \cref{fig:V.22}, où le signal continu est multiplié par un peigne de distributions de Dirac (« fonction » $\delta$) équitablement réparties d'une période $T_e$ dans le temps pour obtenir une séquence de valeurs discrètes.
+
+Pour numériser correctement un signal sonore, à savoir convertir le signal continu en signal discret et inversement, revenir à un signal analogique sans perdre d'information audible, il faut se conformer au \emph{théorème de Shannon}.
+
+\begin{tcbcontents}{Théorème de \textsc{Shannon}}
+Soit un signal continu $S(t)$ à bande limitée, c'est-à-dire possédant une fréquence maximale $f_{max}$, on considère un échantillonnage périodique défini par :
+\[
+t_k = k T_e \mbox{~;~} s_k = u(t_k)
+\vspace{4pt}
+\]
+où $k$ est entier naturel, $T_{e}$ la période d’échantillonnage et $f_{e} = 1/T_{e}$ la fréquence d'échantillonnage.
+
+Pour que le signal $S(t)$ puisse être entièrement reconstruit à partir des échantillons $s_k$, il est nécessaire et suffisant que :
+\begin{equation}
+f_e > 2 f_{max}
+\end{equation}
+\end{tcbcontents}
+
+\sidegraphic[Claude Elwood Shannon (1916--2001).]{\includegraphics[width=\linewidth]{shannon.jpg}}%
+Ainsi, la fréquence d'échantillonnage d'un signal continu doit être strictement supérieure à deux fois la plus grande fréquence présente dans son spectre (condition de \textsc{Nyquist}-\textsc{Shannon}).
+Les signaux sonores se trouvant compris dans l'intervalle approximatif de [$20\,Hz$~; $20\,kHz$], la fréquence d'échantillonnage doit \textit{a minima} être supérieure à $20\,kHz$. 
+
+Compte-tenu que de jeunes et saines oreilles sont capables de percevoir au-delà de $20\,kHz$ mais aussi, que les filtres appliqués aux signaux provenant des convertisseurs n'ont pas de fréquence de coupure stricte, la norme CD audio affiche une fréquence d'échantillonnage de $\num{44.1}\,kHz$. Pour le format DAT de \textsc{Sony} --- \textit{Digital Audio Tape} --- des années 1990, la fréquence d'échantillonnage est de $48\,kHz$.
+
+On comprend donc que plus la fréquence d'échantillonnage est élevée, plus le signal sonore sera conformément reproduit. Néanmoins, est-ce réellement nécessaire et pourquoi les cartes audio proposent des fréquences d'échantillonnage de $96\,kHz$ ou $192\,kHz$ ? Simplement car elles sont optimisées pour fonctionner à ces fréquences d'échantillonnage. De surcroît, cela constitue un argument commercial.
+
+Mentionnons un autre exemple : la téléphonie. La bande passante de la parole se situant dans l'intervalle de fréquences [$100\,Hz$~; $8\,kHz$], une fréquence d’échantillonnage de $16\,kHz$ est suffisante pour ne pas nuire à l'intelligibilité des signaux.
+
+Pour conclure, il est plus intéressant de disposer d'une profondeur de 24 bits --- meilleure dynamique pour le classique, le jazz et toute musique à nuances fortes --- que d'une fréquence d'échantillonnage élevée. Toutefois, qui peut le plus, peut le moins...
+
+
+% Tests
+%------
+%\begin{tikzpicture}
+%  \begin{axis}[view={-20}{20}, grid=both]
+%    \addplot3[surf] file {./Images/Chapter05/testdatafile.txt};
+%  \end{axis}
+%\end{tikzpicture}
+
+%\begin{tikzpicture}
+%	\begin{axis}
+%		\addplot3[surf, mesh/ordering=y varies, mesh/cols=15] table {./Images/Chapter05/testdafilebis.txt};
+%	\end{axis}
+%\end{tikzpicture}
+
+%\begin{tikzpicture}
+%\begin{axis}[view={-250}{20}, axis x line=bottom, axis y line=right, axis z line=right]
+%	\addplot3 [surf, colormap/jet, line width=0.2pt, % shader=interp,
+%						 mesh/ordering=y varies, mesh/rows=464] 
+%		table {./Images/Chapter05/pgfstore3D_guitarD5.txt};
+%%	%\addplot3 [surf, colormap/jet] 
+%%	%	table {./Images/Chapter05/pgfstore3D_guitarD5.txt};
+%%	%\addplot3+[patch, patch type=rectangle, mark=none, opacity=0.5, line width=0.25pt] 
+%%	%	file {./Images/Chapter05/pgfplot3D_guitarD5.txt};
+%\end{axis}
+%\end{tikzpicture}
+
+%\subsubsection[Synthèse sonore]{Synthèse sonore}
+%\label{subsub:V.2.2.3}
+
+%\overparagraph{Synthèse sonore}
+
+\vfill\pagebreak
+
+
+%----------
+\section[Manipulation des données]{Manipulation des données}
+\label{sec:V.3}
+
+Savoir coder l'information est une condition nécessaire, mais elle s'avère non suffisante dans la pratique. En effet, pour que les données soient exploitables, il faut également pouvoir les manipuler facilement à la fois en termes de volume d'information à traiter, d'organisation, de stockage et d'accessibilité, le tout de manière sécurisée.
+
+%\vspace*{-0.5pt}
+\subsection[Compression]{Compression des données}
+\label{sub:V.3.1}
+
+\begin{marginvideo}[\label{vid:vidV.3}Compression des données.]%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-03-compression-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=1uY97NJfpuk}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=1uY97NJfpuk}
+\end{marginvideo}
+
+Au regard des codages des divers éléments multimédias présentés en section précédente, on constate que la quantité d'information à traiter peut devenir rapidement considérable. Pour se servir des données dans des conditions acceptables, il faut souvent avoir recours à des données compressées, au sens de volume d'information à traiter. On distingue alors deux catégories :
+\begin{enumerate}
+	\item les compressions sans perte, où un retour aux données initiales est envisageable ;
+	\item les compressions avec pertes, qui induisent une dégradation de l'information jugée « inutile » dans un contexte applicatif donné.
+\end{enumerate}
+
+\subsubsection[Problématique]{Problématique}
+\label{subsub:V.3.1.1}
+
+Imaginons que nous ayons un film « \textit{Full HD}\sidenote{Par souci de simplicité, est ici considéré un film \textit{Full HD} même si en pratique, ce sont des films deux fois plus petits qui sont stockés sur DVD (en 720\,px, soit 1280\,$\times$\,720 pixels au lieu de 1080\,px, soit 1920\,$\times$\,1080 pixels).} » de deux heures sans bande sonore. Deux heures équivalent 7\,200 secondes et, pour que le flux vidéo soit suffisamment fluide, on estime qu'il faut 24 images par seconde. Pour deux heures de film, cela donne donc 172\,800 images.
+
+Pour chaque image, la haute définition amène à avoir 1920 pixels en largeur et 1080 pixels en hauteur soit 2\,073\,600 pixels par image. Pour tenir compte des couleurs, chacun des pixel va être codé sur 24 bits (8 bits par composante RGB) donc, en tout, l'espace de stockage représente 8\,599\,633\,920\,000 bits, soit de l'ordre\sidenote{On confond souvent les puissances de 10 (par exemple 1 kilo  correspond à $10^3  = 1000$) et les puissance de 2 (par exemple 1 kibi correspond à $2^{10} = 1024$) qui sont du même ordre de grandeur. Par exemple un disque dur de $1$ téra $= 10^12$ octets une fois formaté est exprimé en puissance de 2, en tébi et le nombre sera 91\% inférieur environ : $10^{12} \div 2^{40} = 0.9094$ (\href{https://fr.wikipedia.org/wiki/Pr\%C3\%A9fixe_binaire}{\faWikipediaW}).} du téraoctet, ce qui est énorme. À titre de comparaison, cela représente cent heures de téléchargement sur une ligne ADSL : un peu compliqué pour, par exemple, la vidéo à la demande...
+
+La problématique est ainsi de savoir comment faire pour qu'un film tienne sur un DVD ou pour gérer de manière fonctionnelle un service de vidéo à la demande.
+
+\subsubsection[Images]{Compression des images}
+\label{subsub:V.3.1.2}
+
+Il s'avère que certaines images comme celles issues du dessin technique possèdent des zones répétitives (cf. \cref{fig:V.23}) : couleurs uniformes, parties identiques, mêmes épaisseurs de trait, etc. Il devient donc inutile de stocker de l'information redondante.
+
+\begin{marginfigure}
+\includegraphics[width=.75\linewidth]{figV-23-technic-drawing.png}
+\caption{\label{fig:V.23}Exemple de dessin technique (NdR : à reprendre).}
+\end{marginfigure}
+
+Une telle approche se retrouve dans les formats d'images GIF --- \textit{Graphics Interchange Format} --- et PNG --- \textit{Portable Network Graphics} ---, mais se trouve uniquement adéquate pour des images relativement «~simples », notamment destinées au Web. Les caractéristiques du PNG lui permettent d’enregistrer des photographies sans perte de données, au détriment de la taille du fichier (cf. \href{https://fr.wikipedia.org/wiki/Portable_Network_Graphics}{\faWikipediaW}). Dans ce cas de figure, son intérêt essentiel est de permettre la transparence (par exemple pour des photographies détourées), ce que le format JPEG --- \textit{Joint Photographic Experts Group} --- n'autorise pas (voir infra).
+
+Très souvent, les photographies ne comportent pas de zones répétitives et la compression doit s'envisager autrement. En effet,\nopagebreak l'acuité visuelle humaine (la résolution) ne perçoit pas tous les niveaux de détails. Cela conduit à les ignorer afin de ne pas les stocker pour réduire en conséquence la taille du fichier. Ce faisant, cela induit logiquement une perte d'information. 
+
+\begin{marginfigure}
+\begin{subfigure}{\linewidth}
+\includegraphics[width=\linewidth]{figV-24a-country.png}
+\caption{\label{fig:V.24a}Photographie originale.}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+\includegraphics[width=\linewidth]{figV-24b-country-loss.png}
+\caption{\label{fig:V.24b}Photographie (trop) compressée.}
+\end{subfigure}
+\caption{\label{fig:V.24}Compression avec pertes.}
+\end{marginfigure}
+
+La compression se réalise par approximation de certains blocs de pixels en les considérant comme identiques en fonction du taux de compression voulue. Le format le plus connu de ce type de compression est le JPEG. L'image résultante sera moins détaillée mais beaucoup plus petite, permettant d'adapter les images à leur utilisation : document A4, impression de photographie 24\,$\times$\,36, etc. Le taux de compression appliqué est donc un compromis entre qualité du rendu et taille du fichier résultant. La \cref{fig:V.24} en est l'illustration où la taille de fichier a été divisée par dix entre l'original et sa résultante. On constate que la compression est trop forte car les niveaux de détails perdus nuisent au visionnage de la photographie : dans le jargon des infographistes, on parle de pixellisation.
+
+
+
+\subsubsection[Vidéos]{Compression des vidéos}
+\label{subsub:V.3.1.3}
+
+Comme dans le cas d'une image, une vidéo contient des zones répétitives entre des images successives. La démarche est de stocker une image --- typiquement au début de chaque nouveau plan --- puis détecter les similitudes pour uniquement tenir compte des différences.
+Ces techniques se retrouvent dans les formats vidéos les plus connus de type MPEG --- \textit{Moving Picture Experts Group}.
+
+\begin{figure}
+\includegraphics[width=0.25\linewidth]{figV-25-horse01.png}%
+\includegraphics[width=0.25\linewidth]{figV-25-horse02.png}%
+\includegraphics[width=0.25\linewidth]{figV-25-horse03.png}%
+\includegraphics[width=0.25\linewidth]{figV-25-horse04.png}\\
+\includegraphics[width=0.25\linewidth]{figV-25-horse05.png}%
+\includegraphics[width=0.25\linewidth]{figV-25-horse06.png}%
+\includegraphics[width=0.25\linewidth]{figV-25-horse07.png}%
+\includegraphics[width=0.25\linewidth]{figV-25-horse08.png}%
+\caption{\label{fig:V.25}Décomposition en image d'un mouvement.}
+\end{figure}
+
+À titre d'illustration, la \cref{fig:V.25} met en exergue les principes de la compression vidéo. On constate en effet que l'arrière plan et le corps du cheval varient relativement peu d'une image à l'autre. En revanche, ce sont les pattes du cheval qui expriment le mouvement et qui doivent être coder plus finement.
+
+
+\subsubsection[Sons]{Compression des sons}
+\label{subsub:V.3.1.4}
+
+À l'instar des images, la compression des données audionumériques est indispensable à leur exploitation : stockage, transmission, etc. Tout comme pour les images, on y distingue également deux grandes catégories de compression, sans et avec perte (voir \cref{tab:V.5}).
+
+\begin{margintable}
+\caption{\label{tab:V.5}Formats de compression audio --- d'après \parencite{Roads:2007}.}
+%\vspace*{-2pt}
+\begingroup
+\footnotesize
+\renewcommand*{\arraystretch}{1.6}
+\rowcolors{2}{tableLineOne}{tableLineTwo}
+\begin{tabularx}{\linewidth}{ccX}
+\rowcolor{secondcolor}
+\multicolumn{3}{c}{\Gape[6pt]{\textcolor{white}{\textbf{Formats audionumériques}}}} \\
+\rowcolor{firstcolor}
+\multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Nom}} 
+	& \multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Type}} 
+	& \multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Note}}\\
+AAC 
+	& \begin{tabular}{@{}c@{}}avec\\[-4pt] perte\end{tabular} & Métadonnées et\newline schémas anticopie \tabularnewline
+%\begin{tabular}{@{}c@{}}Apple\\[-4pt] lossless\end{tabular} 
+%	& \begin{tabular}{@{}c@{}}sans\\[-4pt] perte\end{tabular} & Uniquement utilisé à travers Itunes et Quicktime \tabularnewline
+ATRAC 
+	& \begin{tabular}{@{}c@{}}sans/\\[-4pt] avec\\[-4pt] perte\end{tabular} & MiniDisc, cinéma,\newline baladeur, console\newline de jeux\tabularnewline
+FLAC 
+	& \begin{tabular}{@{}c@{}}sans\\[-4pt] perte\end{tabular} & Open source : bala\-deur, ordinateur,\newline jeux vidéos \tabularnewline
+MP3 
+	& \begin{tabular}{@{}c@{}}avec\\[-4pt] perte\end{tabular} & Métadonnées :\newline nombreuses applications \tabularnewline
+Vorbis 
+	& \begin{tabular}{@{}c@{}}avec\\[-4pt] perte\end{tabular} & Open source : équivalent libre du MP3 \tabularnewline
+\end{tabularx}% "%" est nécessaire pour éviter une alerte "underfull box"
+\endgroup
+\end{margintable}
+
+Les formats de compression audio sans perte sont relativement peu connus du grand public. On peut néanmoins citer le format FLAC --- \textit{Free Lossless Audio Codec}. Les codages généraux applicables à tout type de données (cf. \href{https://fr.wikipedia.org/wiki/Codage_de_Huffman}{algorithme de Huffmann}) sont peu efficaces en audionumérique, même en introduisant des techniques d'optimisation spécifiques \parencite{Roads:2007}. Cependant, les formats sans perte sont bien sûr utiles dans certains contextes comme le travail de studio.
+
+Pour la compression avec perte, on s'appuie directement sur les aptitudes de la perception auditive humaine ; domaine d'étude de la \emph{psychoacoustique}. Hormis la restriction à la bande de fréquences audibles [20\,Hz ; 20\,kHz] voire moins en téléphonie, il s'agit de tenir compte des propriétés de transcodage mécano-électrique au sein de la cochlée (voir \cref{subsub:V.2.2.2}) et notamment du \emph{phénomène de masquage fréquentiel} (voir infra), pour ne coder que ce qui est \textit{a priori} perceptible par l’ouïe. On parle alors de « \emph{codage perceptuel} », comme dans le cas du format MP3 et de son successeur libre et plus performant, le format Ogg Vorbis.
+
+\begin{marginfigure}
+\includegraphics[width=\linewidth]{figV-26-masking-pattern.pdf}
+\caption{\label{fig:V.26}Profil d'excitation calculé des cellules ciliées (sinusoïde à 1\,kHz de 20 à 90 dB SPL) --- D'après \parencite{Rossing-etal:2002}.}
+\end{marginfigure}
+
+En effet, un signal sonore précédé ou suivi par un autre son d'intensité plus forte est en partie ou totalement inaudible. Ce mécanisme se qualifie de \emph{masquage temporel}. Le niveau de masquage dépend bien entendu du niveau du son masquant mais encore de sa fréquence et de l'intervalle en fréquence qui le sépare du son masqué. On parle alors de \emph{masquage fréquentiel}. Il est normal que le contenu spectral intervienne dans l'\emph{effet de masque} puisqu'il dépend directement de la sensibilité de l'oreille humaine. On peut faire l'analogie entre cette inertie temporelle de la perception auditive et la persistance rétinienne qui permet au mouvement cinématographique d'exister.
+
+La sélectivité en fréquence se réfère à la capacité du système auditif de détecter les composantes sinusoïdales d'un son complexe. Elle intervient dans de nombreux aspects de la perception auditive, y compris de l'intensité, de la hauteur et du timbre. L'étude de la sélectivité en fréquence va souvent de paire avec celle des effets de masquage fréquentiel, qui se définissent donc comme le processus par lequel le seuil d'audition d'un son est atteint par la présence d'un autre son. Ce phénomène est d'autant marqué que les contenus fréquentiels des signaux sont proches voire identiques.
+
+\begin{marginfigure}
+\includegraphics[width=\linewidth]{figV-27-excitation-pattern.pdf}
+\caption{\label{fig:V.27}Profil de masquage d'un bruit à bande étroite sur un son pur centré à 410\,Hz --- D'après \parencite{Rossing-etal:2002}.}
+\end{marginfigure}
+
+Ainsi, dans le principe, la cochlée répond au concept de \emph{filtre auditif}, centré sur la fréquence d'excitation $f_c$ de chaque composante sinusoïdale du signal. Tout se passe comme si le son était détecté le long de la membrane basilaire par des cellules ciliées « spécialisées » pour chaque fréquence ; d'où l'analogie avec un analyseur spectral. Pour un même contenu spectral, plus le niveau d'intensité sonore est élevé, plus le nombre de cellules ciliées impliquées augmente. Cela semble intuitivement logique mais dans quelles proportions et comment ?
+
+En fait, on met en évidence que la membrane basilaire et les cellules ciliées qui lui sont rattachées se comportent comme un banc de filtres subdivisant l'étendue des fréquences audibles en filtres dont les bandes passantes se chevauchent et qui sont définis par leur fréquence centrale et leur largeur de bande $[f_c - \Delta f ; f_c + \Delta f]$.
+
+Cette modélisation fondée sur les filtres auditifs découlent du phénomène de masquage et la question est de savoir, à partir des profils de masquage mesurés (voir \cref{fig:V.26}) et des filtres auditifs, quels sont les profils d'excitation (voir \cref{fig:V.27}) des cellules ciliées. Comme interprétation physiologique, on peut assimiler les profils d'excitation aux enveloppes des vibrations de la membrane basilaire. Plus le son est fort, plus le nombre de cellules ciliées en jeu augmente, en faisant intervenir progressivement les cellules ciliées externes (cf. \cref{subsub:V.2.2.2}).
+
+Il est à remarquer que la forme des courbes présente une pente plus raide vers les basses fréquences et plus étendue vers les hautes fréquences d'autant que le niveau sonore est élevé. Aussi, un signal donné sera plus facilement masqué par un son à composantes spectrales inférieures et inversement. On parle parfois de pré-masquage et de post-masquage.
+
+La figure \cref{fig:V.28} détaille le principe des effets de masque où les zones ombrées sont relatives aux parties inaudibles, donc inutiles à coder dans une perspective de diminution des bits de quantification.
+
+Au final, le codeur découpe le signal numérique en bandes --- \textit{frames} en anglais --- de fréquence (filtre en peigne) et analyse le niveau de masquage pour chaque bande par le calcul de la courbe de seuil de masquage, à savoir l'enveloppe des effets de masque. Il en déduit le niveau de quantification de chaque bande, où dit autrement, le nombre d'échantillons non masqués qui doit être transmis et élimine les composantes masquées. Le résultat est ensuite traité par des techniques d'optimisation et de compression traditionnelles comme par exemple le \href{https://fr.wikipedia.org/wiki/Codage_de_Huffman}{codage de Huffman}.
+
+\sidegraphic{%
+\includegraphics[width=0.6\linewidth]{aac-logo.png}\\[20pt]
+\includegraphics[width=0.9\linewidth]{mp3-logo-wikipedia.pdf}\\[20pt]
+\includegraphics[width=0.7\linewidth]{ogg-logo.pdf}}%
+\vspace{6pt}
+\begin{jazzfigure}
+\begin{subfigure}{\marginparwidth}
+\includegraphics[width=\linewidth]{figV-28a-sig-noise-init.pdf}
+\end{subfigure}\hfill
+\begin{subfigure}{\marginparwidth}
+\includegraphics[width=\linewidth]{figV-28e-noise-sig-init.pdf}
+\end{subfigure}\\[2pt]
+\begin{subfigure}{\marginparwidth}
+\includegraphics[width=\linewidth]{figV-28b-masking-sig-noise-hight.pdf}
+\end{subfigure}\hfill
+\begin{subfigure}{\marginparwidth}
+\includegraphics[width=\linewidth]{figV-28f-masking-noise-sig-hight.pdf}
+\end{subfigure}\\[2pt]
+\begin{subfigure}{\marginparwidth}
+\includegraphics[width=\linewidth]{figV-28c-masking-sig-noise-moderate.pdf}
+\end{subfigure}\hfill
+\begin{subfigure}{\marginparwidth}
+\includegraphics[width=\linewidth]{figV-28g-masking-noise-sig-moderate.pdf}
+\end{subfigure}\\[2pt]
+\begin{subfigure}{\marginparwidth}
+\includegraphics[width=\linewidth]{figV-28d-masking-sig-noise-low.pdf}
+\end{subfigure}\hfill
+\begin{subfigure}{\marginparwidth}
+\includegraphics[width=\linewidth]{figV-28h-masking-noise-sig-low.pdf}%
+\end{subfigure}
+\caption{\label{fig:V.28}Phénomène de masquage d'un son pur par un bruit à faible bande centré à 1\,kHz. Interaction des profils d'excitation : la zone ombrée représente la partie éliminée due à la présence de bruit. D'après \parencite{Botte-etal:1989}.}
+\end{jazzfigure}
+\vspace{4pt}
+
+En pratique, les taux de compression peuvent aller jusqu'à 1/10 environ en fonction des exigences de l'application considérée. Au-delà, même une oreille « moyenne » perçoit très aisément la détérioration du signal. Plutôt que de raisonner en taux de compression c'est en débit ou nombre de bits par seconde que l'on évalue les algorithmes, car hormis la taille d'un fichier, c'est la capacité de transmission des signaux pour la diffusion qui importe ; le flux d'information. On s'accorde à dire qu'un \textit{bitrate} --- ou \emph{débit binaire}, nombre de bits autorisés en une seconde --- de l'ordre de 128\,kbps est un bon compromis pour un baladeur, mais s'avère limite voire insuffisant pour une chaîne Hi-Fi.
+
+\begin{gofurther}{Ressources complémentaires}
+\lightbf{Formation complémentaire}
+\begin{itemize}\jazzitem
+	\item Partie 2 du \href{https://pixees.fr/classcode/formations/module2/#partie2}{\#2 Module thématique : manipuler l’information}, \textsc{Class´Code}. Cette formation pour enseignants du secondaire offre des vidéos accessibles en cliquant sur le pictogramme \faIcon[regular]{play-circle}
+\end{itemize}
+
+\lightbf{Articles}
+\begin{itemize}\jazzitem
+	\item \href{https://fr.wikipedia.org/wiki/Compression_vid\%C3\%A9o}{Compression vidéo}, \textsc{Wikipédia}.
+\end{itemize}
+
+\lightbf{Vidéos}
+\begin{itemize}\jazzitem
+	\item \href{https://www.koreus.com/video/pouquoi-neige-confettis-qualite-video.html}{Pourquoi la neige ou les confettis baissent la qualité des vidéos ?}, Tom \textsc{Scott}, \href{https://youtu.be/r6Rp-uo6HmI?t=9}{YouTube} (4mn 20s), 2016 ;
+	\item \href{https://www.youtube.com/watch?v=oqMx1cuw6mo&index=10&list=PLWvGMqXvyJAPSMFgCiy6qVHW9bAPu93X5}{Les marmottes au sommeil léger} (présentation ludique du codage de \textsc{Huffmann} de compression de données, sous forme d'activité), Marie \textsc{Duflot-Kremer}, \href{https://www.youtube.com/watch?v=oqMx1cuw6mo&index=10&list=PLWvGMqXvyJAPSMFgCiy6qVHW9bAPu93X5}{YouTube} (17mn 39s), 2017.
+\end{itemize}
+\end{gofurther}
+
+
+%\vspace*{-0.5pt}
+\subsection[Organisation et stockage]{Organisation et stockage des données}
+\label{sub:V.3.2}
+
+\begin{marginvideo}[\label{vid:vidV.4}Organisation des données.]%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-04-data-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=0jNWvm9wN38}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=0jNWvm9wN38}
+\end{marginvideo}
+
+Après avoir détaillé le codage des données selon leur origine, pour qu'elles soient exploitables par l'ordinateur, il est nécessaire de déterminer comment les stocker afin de faciliter leur accès ou leur manipulation, à savoir pouvoir ensuite correctement les décoder.
+
+\subsubsection[Type et codage]{Type et codage}
+\label{subsub:V.3.2.1}
+
+Peu importe leur contenu, les données sont stockées en mémoire, sur disque ou transitent au travers du réseau. En revanche, il faut précisément savoir comment elles sont codées et organisées pour que l'ordinateur puisse les lire, les générer ou bien les deux.
+
+En pratique, un fichier de données comporte un entête qui indique leur taille, leur durée et leurs couleurs éventuelles, leur type de compression, etc. Cet entête spécifie donc le codage des données pour ensuite les exploiter en fonction des informations que l'entête a décrit.
+
+Il existe un certain nombre de données élémentaires normalisées : 
+\begin{itemize}
+	\item des entiers plus ou moins grands codés sur 8 bits --- 1 octet, $2^8 = 256$ valeurs ---, 16, 32 ou 64 bits --- $2^{64} = \num{1.844674407}×10^{19}$ valeurs --- et éventuellement négatifs ;
+	\item des nombres flottants qui s'exprime comme un nombre à virgule suivi d'une puissance de 10 ($\num{1.45628963} \times 10^{23}$). Leur valeur va pouvoir être bien plus importante que les entiers, mais limitée par leur précision ; une dizaine ou une vingtaine de chiffre significatifs après la virgule (cf. \href{https://fr.wikipedia.org/wiki/IEEE_754}{norme IEEE-754}).
+\end{itemize}
+
+Le programmeur choisit le type de données en fonction de ce que celles-ci représentent : âge (entier positif sur un octet), mois (entier positif sur un octet), température (flottant avec peu de précision), niveau de gris (entier sur 8 bits), etc.
+
+\subsubsection[Structure de données]{Structure de données}
+\label{subsub:V.3.2.2}
+
+Parfois, il est nécessaire de faire appel à des données plus complexes que des nombres. C'est par exemple le cas d'une date qui se compose d'un jour, d'un moins et d'une année ou bien d'une couleur qui se décrit par trois entiers, chacun associé à une composante rouge, verte et bleue. Il s'agit donc de stocker des combinaisons de nombres et non plus de simples chiffres.
+
+\begin{margintable}
+\caption{\label{tab:V.6}Type de données « tableau~».}
+%\vspace*{-2pt}
+\begingroup
+\footnotesize
+\renewcommand*{\arraystretch}{1.6}
+\rowcolors{2}{tableLineOne}{tableLineTwo}
+\begin{tabularx}{\linewidth}{ccXc}
+\rowcolor{secondcolor}
+\multicolumn{4}{c}{\Gape[6pt]{\textcolor{white}{\textbf{Type de données tableau}}}} \\
+\rowcolor{firstcolor}
+\multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{N°}} 
+	&	\multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Nom}} 
+	& \multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Naissance}} 
+	& \multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Taille}}\\
+1 & Joe			& 21/02/1869 & \num{1.6}\,m \tabularnewline
+2 &	Jack		& 15/06/1868 & \num{1.7}\,m \tabularnewline
+3 &	William	& 02/03/1867 & \num{1.8}\,m \tabularnewline
+4 & Averell	& 09/11/1866 & \num{1.9}\,m \tabularnewline
+\end{tabularx}% "%" est nécessaire pour éviter une alerte "underfull box"
+\endgroup
+\end{margintable}
+
+En informatique, des données assemblées d'autres types élémentaires sont nommées des « \emph{tuples} ». On trouve également les termes de \emph{structure} ou d'\emph{enregistrement}. Une date est ainsi composée de trois entiers (jour, mois, année), de même pour une image décrite par des pixels relatifs à trois entiers de composantes de couleur.
+Par extension, on peut établir des « tuples de tuples », comme par exemple une époque constituée de deux dates, une de début et l'autre de fin.
+
+Parfois on ne sait pas à l'avance combien de données sont à manipuler : quels invités à une fête ou quelles étapes lors d'un voyage ?
+On utilise alors d'autres types de données comme les \emph{tableaux}. Un tableau est un ensemble de tuples de structure similaire agencés ligne par ligne. En référence à la \cref{tab:V.6}, chaque ligne ne peut comporter, dans l'ordre : qu'un numéro, qu'un nom, qu'une date de naissance et qu'une taille.
+
+\begin{marginfigure}
+\begin{tikzpicture}
+%\draw[step=0.25cm,style=help lines, line width=0.1pt] (-2.5,-2.5) grid (2.5,2.0);
+%\draw[step=1cm,style=help lines, line width=0.4pt] (-2.5,-2.5) grid (2.5,2.0);
+\node[draw, rectangle, font=\footnotesize] (list1) at (-1.25,1.25) {\strut Bordeaux};
+\node[draw, rectangle, font=\footnotesize, right=-\pgflinewidth of list1] (list2) {\strut 15/11};
+\node[draw, rectangle, font=\footnotesize, right=-\pgflinewidth of list2] (list3) {\strut 17/11};
+\node[draw, rectangle, font=\footnotesize, right=-\pgflinewidth of list3, minimum width=5mm] (list4) {\strut\phantom{Hg}};
+%
+%\node[draw, rectangle, font=\footnotesize] (list5) at (-1.535,-1.25) {\strut Paris};
+\node[draw, rectangle, font=\footnotesize] (list5) at (-1.25,-1.25) {\strut Paris};
+\node[draw, rectangle, font=\footnotesize, right=-\pgflinewidth of list5] (list6) {\strut 20/11};
+\node[draw, rectangle, font=\footnotesize, right=-\pgflinewidth of list6] (list7) {\strut 21/11};
+\node[draw, rectangle, font=\footnotesize, right=-\pgflinewidth of list7, minimum width=5mm] (list8) {\strut\phantom{Hg}};
+%
+\node[draw, rectangle, font=\footnotesize] (list9) at (-0.5,0.0) {\strut Rennes};
+\node[draw, rectangle, font=\footnotesize, right=-\pgflinewidth of list9] (list10) {\strut 18/11};
+\node[draw, rectangle, font=\footnotesize, right=-\pgflinewidth of list10] (list11) {\strut 19/11};
+\node[draw, rectangle, font=\footnotesize, right=-\pgflinewidth of list11, minimum width=5mm] (list12) {\strut\phantom{Hg}};
+%
+\draw[-latex,line width=0.6pt] ([xshift=-4mm]list1.west) -- (list1.west);
+%\draw[-latex,line width=0.6pt] 
+%	(list4.center) to[out=-90,in=0] ([xshift=-7.5mm, yshift=-5mm]list4.center)
+%	-- ([xshift=-2.5mm, yshift=-5mm]list1.west) to[out=-90,in=180] ([xshift=0mm, yshift=0mm]list5.west);
+%\draw[-latex] (list4.center) to[controls=+(30:-2) and +(30:-2)] (list1.west);
+%\draw[-latex,line width=0.6pt] (list4.center) 
+%	.. controls ([yshift=-10mm]list4.south west) and ([xshift=-5mm, yshift=5mm]list1) .. (-2.25,0)
+%	.. controls (-2.25,-1.25) .. ([yshift=-2pt]list5.west);
+	%.. controls ([yshift=-7.5mm]list4.south west) and ([yshift=5mm]list1.west) ..
+	%([xshift=-12.5mm]list9.west) to[out=-90,in=180] (list5.west);
+%\draw[-latex,line width=0.6pt, dotted] (list4.center) 
+%	.. controls ([yshift=-10mm]list4.south west) and ([xshift=-10mm, yshift=0mm]list1.south) .. (list9.west);
+%\draw[-latex,line width=0.6pt, dotted] (list12.center) 
+%	.. controls ([yshift=-12.5mm]list11.south west) and ([xshift=-10mm, yshift=7.5mm]list5.north west) .. ([yshift=2pt]list5.west);
+\draw[-latex, line width=0.6pt] 
+	(list4.center) to[curve through={(1.0,0.75) .. (-1.5,0.75) .. (-2.25,-0.75) .. (-2.125,-1.125)}] ([yshift=-2.5pt]list5.west);
+	%(list4.center) to[curve through={(1.0,0.75) .. (-1.5,0.75) .. (-2.125,-1.125)}] ([yshift=-2.5pt]list5.west);
+\draw[dotted, -latex, line width=0.6pt] 
+	(list4.center) to[curve through={(0.75,0.5) .. (-0.5,0.5) .. (-1.375,0.375)}] ([yshift=0pt]list9.west);
+\draw[dotted, -latex, line width=0.6pt] 
+	(list12.center) to[curve through={(1.75,-0.5) .. (-1.5,-0.5) .. (-2.0,-0.75)}] ([yshift=2.5pt]list5.west);
+\end{tikzpicture}
+\caption{\label{fig:V.29}Type de données « liste ». En pointillé : insertion d'un élément.}
+\end{marginfigure}
+
+Un autre type de données utile à la gestion des tuples est une \emph{liste}. Une liste est constituée d'un tuple de départ repéré par son adresse en mémoire et qui pointe vers son successeur, lui-même étant un tuple similaire en structure qui pointe vers le suivant et ainsi de suite (cf. \cref{fig:V.29}). Cela ressemble à un tableau comme étant une succession d'éléments du même genre mais, en pratique, cela modifie l'efficacité au niveau algorithmique. Suivant les circonstances, une liste ou un tableau sera plus efficient.
+
+Par exemple, l'insertion d'un nouvel élément dans un tableau est plus compliquée que dans une liste car il faut décaler toutes les lignes vers le bas, c'est-à-dire décaler en mémoire toutes les données stockées préalablement. Pour une liste, il suffit de définir un nouvel élément en mémoire et d'affecter son adresse comme étant celle du début ou de l'indiçage voulu de la liste (voir \cref{fig:V.29}).
+
+\subsubsection[Représentation des données en mémoire]{Représentation des données en mémoire}
+\label{subsub:V.3.2.3}
+
+Comment sont réparties les données en mémoire ? Dans quel ordre et avec quelle taille ? 
+L'organisation des différentes données doit être clairement spécifiée par le programmeur. 
+
+En prenant exemple sur la \cref{tab:V.6}, cela signifie qu'il faut spécifier quelque part que les lignes du tableau seront ordonnancer d'abord avec le numéro d’occurrence puis le nom, la date de naissance et enfin la taille. Ceci peut-être établi différemment, mais doit être défini clairement en début de programme pour que le déroulé du programme puisse se référer correctement à ces données. On ne peut pas modifier la spécification au milieu du programme.
+
+Pour l'enregistrement de données dans un fichier, la même problématique se pose. Il faut qu'un programme génère le fichier en respectant la spécification du format des données pour que d'autres programmes puissent la comprendre. C'est ce qu'on appelle un format ouvert, comme dans le cas d'une image GIF. Pour le décoder, on sait ainsi à l'avance que l'entête du fichier comporte une chaîne de caractères «~GIF89a », puis 16 bits qui stockent la largeur, 16 bits pour la hauteur de l'image et ainsi de suite. N'importe quel programme ou personne voulant lire un fichier GIF saura que les données sont organiser de cette manière ; idem pour un enregistrement. Si le format de fichier est fermé, certain programmes pourront générer les fichiers, mais d'autres ne pourront pas les lire.
+
+\begin{gofurther}{Ressources complémentaires}
+\lightbf{Formation complémentaire}
+\begin{itemize}\jazzitem
+	\item Partie 3 du \href{https://pixees.fr/classcode/formations/module2/#partie3}{\#2 Module thématique : manipuler l’information}, \textsc{Class´Code}. Cette formation pour enseignants du secondaire offre des vidéos accessibles en cliquant sur le pictogramme \faIcon[regular]{play-circle}
+\end{itemize}
+
+\lightbf{Articles}
+\begin{itemize}\jazzitem
+	\item \href{https://interstices.info/les-donnees-en-question}{Les données en question}, Stéphane \textsc{Grumbach} et Patrick \textsc{Valduriez}, \textsc{Interstices}, 31 mars 2016 ;
+	\item \href{https://fr.wikipedia.org/wiki/Structure_de_donn\%C3\%A9es}{Structures de données}, \textsc{Wikipédia}.
+\end{itemize}
+
+\lightbf{Vidéos}
+\begin{itemize}\jazzitem
+	\item \href{https://www.youtube.com/watch?v=qYEtsNym3FM&list=PLWvGMqXvyJAPSMFgCiy6qVHW9bAPu93X5&index=9}{Les bases de données à tricoter}, (présentation ludique sous forme d'activité des bases de données), Marie \textsc{Duflot-Kremer}, YouTube collection \textsc{Scienceparticipative}), (18mn 37s), 2017.
+\end{itemize}
+\end{gofurther}
+
+
+\subsection[Base de données]{Base de données}
+\label{sub:V.3.3}
+
+\begin{marginvideo}[\label{vid:vidV.5}Base de données.]%
+	%\movie[width=\marginparwidth,showcontrols]%
+	%	{\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	%	{./Videos/Chapter05/vidV-05-sgbd-HD.mp4}%
+	\href{https://www.youtube.com/watch?v=T0ddDXypoz0}%
+	  {\includegraphics[width=\marginparwidth]{./Images/Pictograms/film-strip-dark-electric-blue.png}}%
+	\launchvideo{https://www.youtube.com/watch?v=T0ddDXypoz0}
+\end{marginvideo}
+
+Le quotidien de tout un chacun amène à gérer des comptes bancaires, des stocks, des clients, des ventes ou répertorier des références bibliographiques, des sites Web, etc. L'objectif des bases de données est de permettre la manipulation de ces quantités énormes d'informations de manière compréhensible et suffisamment simple pour un humain et non telles qu'enregistrées par l'ordinateur.
+
+Les logiciels dévolus à cette tâche s'appellent des \emph{systèmes de gestion de base de données} (\textsc{Sgbd}). Ce sont des médiateurs entre l'humain et les données. Les \textsc{Sgbd} les plus connus sont \textsc{Oracle} pour les logiciels propriétaires et \textsc{PostgreSQL}, \textsc{MySQL} ou son successeur \textsc{MariaDB} pour les solutions libres.
+
+
+
+\subsubsection[Modèle relationnel et requête SQL]{Modèle relationnel et requête SQL}
+\label{subsub:V.3.3.1}
+
+Le modèle de base de données le plus répandu actuellement est le \emph{modèle relationnel}. Comme son nom l'indique, le modèle relationnel se fonde sur des relations entre les données exprimées sous forme de tableaux comportant les données à manipuler.
+
+\sidegraphic{%
+\includegraphics[width=0.7\linewidth]{postgreSQL-logo.pdf}\\[16pt]
+\includegraphics[width=0.7\linewidth]{mysql-logo.pdf}\\[16pt]
+\includegraphics[width=0.7\linewidth]{mariadb-logo-vertical-blue.pdf}
+}
+Les tableaux \ref{tab:V.7} fournissent un exemple de schéma relationnel pour des séances de cinéma. Un premier tableau répertorie les films et un second les séances. 
+Une autre possibilité aurait été de les fusionner pour présenter toutes les informations en même temps. Cependant, il y aurait beaucoup d'informations dupliquées et redondantes comme les réalisateurs et les acteurs pour chaque séance d'un même film. 
+
+\vspace{4pt}
+\begin{jazztable}
+\caption{\label{tab:V.7}Modèle relationnel de séances de cinéma.}
+\begin{subtable}[b]{\linewidth}
+\caption{\label{tab:V.7a}Films.}
+\centering
+\begingroup
+\small
+\renewcommand*{\arraystretch}{1.6}
+\rowcolors{2}{tableLineOne}{tableLineTwo}
+%\begin{tabularx}{.85\linewidth}{lll}
+\begin{tabular}{lll}
+%\rowcolor{secondcolor}
+%\multicolumn{4}{c}{\Gape[6pt]{\textcolor{white}{\textbf{Films}}}} \\
+\rowcolor{firstcolor}
+\multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Titre}} 
+	&	\multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Réalisateur}} 
+	& \multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Acteur}}\\
+Imitation game	& Morten Tyldum	& Benedict Cumberbatch \tabularnewline
+Snowden 				&	Oliver Stone	& Joseph Gordon-Levitt \tabularnewline
+%\end{tabularx}% "%" est nécessaire pour éviter une alerte "underfull box"
+\end{tabular}%
+\endgroup
+\end{subtable}\\[6pt]
+\begin{subtable}[b]{\linewidth}
+\caption{\label{tab:V.7b}Séances.}
+\centering
+\begingroup
+\small
+\renewcommand*{\arraystretch}{1.6}
+\rowcolors{2}{tableLineOne}{tableLineTwo}
+%\begin{tabularx}{.65\linewidth}{llc}
+\begin{tabular}{llc}
+%\rowcolor{secondcolor}
+%\multicolumn{4}{c}{\Gape[6pt]{\textcolor{white}{\textbf{Films}}}} \\
+\rowcolor{firstcolor}
+\multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Titre}} 
+	&	\multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Cinéma}} 
+	& \multicolumn{1}{c}{\scshape\titlingfont\textcolor{white}{Heure}}\\
+Imitation game	&	CGR Le Français		& 19h45 \\
+Snowden 				&	Les Tourelles		& 20h00 \\
+Imitation game	&	Les Tourelles		& 22h00 
+\end{tabular}%
+%\end{tabularx}% "%" est nécessaire pour éviter une alerte "underfull box"
+\endgroup
+\end{subtable}
+\end{jazztable}
+
+L'enjeu d'un système de base de données est de pouvoir formuler des requêtes comme par exemple : où peut-on voir un film avec un acteur particulier tel que Benedict \textsc{Cumberbatch} ? Un langage spécifique aux bases de données relationnelles, le SQL pour \textit{Structured Query Language} --- littéralement Langage d'interrogation structurée ---, a été élaboré pour qu'un humain puisse construire puis lancer des requêtes facilement.
+
+La requête précédente s'écrit comme suit en SQL :
+
+\begin{tabular}[t]{@{}l@{}}
+\texttt{SELECT Cinema FROM Films, Seances}\\
+%\begin{tabular}[t]{@{}l@{\space}l@{}}
+\texttt{\space WHERE Films.Titre = Seances.Titre}  \\ %& \\
+\texttt{\space\space\space AND Acteur = "Benedict Cumberbatch"} \\ %& \\
+%\end{tabular}\\
+\end{tabular}
+
+En langage naturel, cela peut se traduire par : « \textit{Sélectionnes le(s) cinéma(s) à partir des tables donnant les films et les séances où les lignes pour lesquelles le titre du film est le même que celui de la séance et dont l'acteur correspond à Benedict \textsc{Cumberbatch}} ».
+
+
+\subsubsection[Protection et partage]{Protection et partage des données}
+\label{subsub:V.3.3.2}
+
+Un des autres grands intérêts des bases de données est de protéger les données. De nos jours les données se monnayent chèrement et sont souvent inestimables comme les comptes d'une entreprise ou, moins sérieusement mais affectivement, les photos de vacances.
+
+Les systèmes informatiques ne sont pas infaillibles et sont sujets à des pannes matérielles, des bogues logiciels, des attaques, etc. Les bases de données mettent en œuvre des parades pour éviter ces problématiques par exemple par la réplication des données, c'est-à-dire stocker les données à plusieurs endroits. Si un serveur tombe en panne, cela ne change rien pour l'utilisateur qui en toute transparence aura accès à ses données sur un autre serveur.
+
+Les bases de données sont également utiles au partage des données. Très souvent, les données sont manipulées par plusieurs utilisateurs et en même temps. On peut prendre en exemple des données musicales en partage où Alice et Bob font leur choix de programmation. Imaginons les étapes suivantes :
+\begin{itemize}
+	\item Alice lit un morceau de Leonard Cohen ;
+	\item Bob le lit à son tour ;
+	\item Alice ajoute un « \textit{like} » à ce morceau ;
+	\item  Bob fait de même un peu plus tard.
+\end{itemize}
+\textit{In fine}, le constat sera que le « \textit{like} » d'Alice a disparu et que seul celui de Bob est resté. Ce faisant, quand Bob a ouvert son morceau, il n'y avait pas encore le \textit{like} d'Alice et quand il a terminé son écoute, son \textit{like} a écrasé celui qui était présent.
+
+Pour éviter de tels problèmes dits d'accès concurrents, les systèmes de gestion de base de données définissent des \emph{transactions} qui permettent de partager les données et de faire des modifications sans conflit entre opérations de différents utilisateurs.
+
+\begin{gofurther}{Ressources complémentaires}
+\lightbf{Vidéos}
+\begin{itemize}\jazzitem
+	\item \href{https://www.college-de-france.fr/site/serge-abiteboul/inaugural-lecture-2012-03-08-18h00.htm}{Sciences des données : de la logique du premier ordre à la Toile}, Serge \textsc{Abiteboul}, Leçon inaugurale prononcée le jeudi 8 mars 2012 au Collège de France (57mn 57s), \href{https://books.openedition.org/cdf/529}{texte intégral} ;
+	\item La séquence \textsc{Class'Code}  « Manipulez l'information » par Marie \textsc{Duflot-Kremer} avec juste la \href{https://vimeo.com/showcase/4032577/video/173747526}{vidéo sur les bases de données} et la \href{https://openclassrooms.com/fr/courses/3930076-manipuler-linformation/3930695-donnez-moi-des-donnees-ordonnees}{séquence entière sur \textsc{OpenClassrooms}} ;
+	\item \href{https://pixees.fr/dans-la-famille-activites-debranchees-je-demande-les-tutos-videos-de-marie-duflot/}{Des activités débranchées}, Marie \textsc{Duflot-Kremer} sur la manipulation des données ;
+	\item \href{https://www.canal-u.tv/producteurs/inria/cours_en_ligne/bases_de_donnees_relationnelles}{Bases de données relationnelles}, \textsc{CanalU}.
+\end{itemize}
+
+\lightbf{Supports de cours}
+\begin{itemize}\jazzitem
+	\item \href{http://sql.bdpedia.fr/}{Cours de bases de données - Modèles et langages}, Philippe \textsc{Rigaux}, 2002-2015 ;
+	\item \href{http://sys.bdpedia.fr/}{Cours de bases de données - Aspects système}, Philippe \textsc{Rigaux}, 2002-2014.
+%	\item \href{http://www.nymphomath.ch/info/database/index.html}{Bases de données}, Didier \textsc{Müller}, 2016.
+\end{itemize}
+
+\lightbf{\textsc{Mooc}}
+\begin{itemize}\jazzitem
+	\item \href{https://www.fun-mooc.fr/courses/inria/41008/session01/about}{Bases de données relationnelles : comprendre pour maîtriser}, Mooc rejoué régulièrement sur la plateforme Fun. 
+\end{itemize}
+\end{gofurther}
+
+
+
+%\vfill\newpage
+
+
+%----------
+\section[Que faire de ces ressources ? Quiz]{Que faire de ces ressources ? Autoévaluation}
+\label{sec:V.6}
+
+Le questionnaire\caution[t]<firstcolor>{%
+La présentation des quiz du document\linebreak suit plus ou moins celle de la platefor\-me \textsc{Fun-Mooc}. La fonctionnalité manquante --- pas encore implémentée dans l'extension de style \LaTeX{} usitée --- est relative à la comptabilisation des points et à leur enregistrement. Aussi, il appartient au lecteur de jouer le jeu dans l'auto\-évaluation de ses connaissances.}{Note de la rédaction}
+à choix multiple%
+\parnote{De manière traditionnelle en \textsc{Ihm}, lorsqu'une seule réponse est correcte, les propositions sont précédées d'un cercle à cocher (\emph{radio button}) ; en revanche, dans le cas de plusieurs solutions possibles, il s'agit de carrés (\emph{check box}). En outre, après validation des réponses (« Vérifier »), leur explication s'affiche en marge ou infobulle (« Afficher la réponse »).}
+--- QCM --- à suivre clôture le présent chapitre \qnameref{chap:V} et correspond à chaque sujet abordé.
+\parnotes
+
+\vspace{6pt}
+
+\begin{quiz}[title={Représentation de l'information}]
+\vspace{-.5\baselineskip}
+\begin{quizquestion*}[c]{2}{1,3}{Notion de bit}
+<Bien entendu, les informations naturel\-les prennent beaucoup plus que deux valeurs différentes et même une infini\-té continue. Une distance peut valoir par exemple n'importe quel nombre entre zéro et l'infini. Le codage de ces informations dans l'ordinateur ont une précision limitée, par exemple $2^{32}$ égale quatre milliards de valeurs pour un entier codé sur 32 bits, impossible donc de stocker toutes les valeurs réelles.\\
+La tension électrique se mesure précisément (-10V, ... 0V, ... 10V), mais distinguer ces valeurs est difficile et coûteux en électronique. On choisit de n'utiliser que deux niveaux (par exemple 0V et +5V) car cela s'implémente aisément. Par assemblage de bits, on élabore ensuite des nombres de diverses valeurs.>
+Pourquoi les informations sont-elles stockées avec des bits prenant seulement deux valeurs ?
+\points{1}
+	\mcqproposal{Car la tension électrique ne peut prendre que 2 valeurs.}
+	\mcqproposal{Car c'est pratique à implémenter dans les circuits électroniques.}
+	\mcqproposal{Car les informations s'expriment naturellement sous cette forme.}
+\end{quizquestion*}
+
+\begin{quizquestion*}<tooltip>[b]{1}{2}{Addition de nombres}
+<À l'évidence, un circuit électronique n'a aucune conscience, il ne sait pas à quoi correspondent les signaux électriques qu'il reçoit en entrée et émet en sortie. Il combine bêtement ces signaux par des portes logiques, transistors, etc.\\
+Mais il ne peut pas comprendre l'entrée pour par exemple, convertir l'unité pour additionner correctement des mètres et des kilomètres. C'est le programmeur et/ou l'utilisateur qui doit veiller à donner les nombres dans le bon format en entrée (précision, taille, unité, etc) et à interpréter le résultat de la bonne façon en sortie.>
+\points{1}
+Quand un circuit électronique additionne deux nombres...
+	\mcqproposal{Il additionne bêtement sans réfléchir.}
+	\mcqproposal{Il sait à quelle grandeur et unité correspondent ces nombres.}
+\end{quizquestion*}
+
+\begin{quizquestion}[b]{2,3}{1,4}{Codage ASCII}
+<Le codage \href{https://fr.wikipedia.org/wiki/ASCII\_\%C3\%A9tendu}{ASCII étendu} code des lettres par des nombres de 8 bits. Il y a donc $2^8 = 256$ lettres possibles. Cela permet de coder les lettres minuscules et majuscules, les chiffres, la ponctuation et quelques autres caractères (espace, retour à la ligne, etc). Mais ça ne permet pas de coder les milliers de Kanji des langages asiatiques par exemple.\\
+Le codage ASCII est pratique pour un ordinateur car manipuler des suites de nombres de taille 8 bits est facile pour lui. En revanche, pour un humain, il n'est pas évident de détecter que les codes ASCII « \texttt{66} \texttt{111} \texttt{110} \texttt{106} \texttt{111} \texttt{117} \texttt{114} \texttt{32} \texttt{33} » signifient en fait « Bonjour ! ».>
+\points{1}
+Quels sont les avantages du codage ASCII des lettres ?
+	\mcqproposal{C'est facile à lire pour un humain.}
+	\mcqproposal{C'est facile à stocker et manipuler dans l'ordinateur.}
+	\mcqproposal{Cela code toutes les lettres de l'alphabet latin et la ponctuation}
+	\mcqproposal{Cela permet de représenter l'ensemble des caractères de toutes les langues du monde.}
+\end{quizquestion}
+\end{quiz}
+
+
+\begin{quiz}[title={Infographie et audionumérique}]
+\vspace{-\baselineskip}
+\begin{quizquestion*}[b]{2}{1,3}{Couleurs et pixels}
+<Les technologies actuelles affichent les couleurs en additionnant des nuances de trois composantes. En alternant des petits points rouges, verts et bleus très proches, on fait croire à l’œil humain qu'il s'agit d'un seul élément dont la couleur est l'addition de la quantité de rouge, de vert et de bleu. Par exemple, la quantité de rouge d'un pixel est affichée en plus ou moins lumineux avant qu'un filtre vienne le convertir en rouge plus ou moins sombre.
+C'est de la synthèse additive qui ajoute ces nuances ; contrairement à la synthèse soustractive (rouge, jaune, bleu) utilisée pour l'impression, la peinture, etc.>
+Comment se composent généralement les pixels couleurs ?
+\points{1}
+	\mcqproposal{Trois composantes rouge, jaune et bleu.}
+	\mcqproposal{Trois composantes rouge, vert et bleu.}
+	\mcqproposal{Du nom standard de la couleur, en anglais.}
+\end{quizquestion*}
+
+\begin{quizquestion}[c]{1,2,3}{}{Codage d'images}
+<Une image \textit{bitmap} de 100 x 100 pixels permettra de stocker ce dégradé mais il y aura une forte redondance d'information (tous les pixels d'une même colonne ont exactement la même couleur) et on verra peut-être les différences entre pixels voisins si on zoome fortement sur l'image (deux colonnes consécutives ont des couleurs légèrement différentes).\\
+Avec la formule mathématique, pas de problème de redondance ou de pixellisation en cas de zoom. Mais l'image est plus compliquée à afficher ou imprimer car il faut recalculer chaque pixel selon la formule mathématique.\\
+Si on souhaite juste afficher une petite image une fois, la première solution est simple et satisfaisante. Si on souhaite afficher plusieurs fois une image de différentes façons et pouvoir zoomer sans perte de qualité, la seconde solution est meilleure.>
+\points{1}
+Comment peut-on coder une image carrée contenant un dégradé de couleur de rouge à gauche jusqu'à jaune à droite ?
+	\mcqproposal{100 lignes de 100 pixels, avec des couleurs plutôt rouge à gauche, jaune à droite, orange au milieu, etc.}
+	\mcqproposal{Une formule mathématique donnant les dimensions du carré et décrivant le rouge à gauche et le jaune à droite, et la façon de calculer les nuances intermédiaires.}
+	\mcqproposal{La meilleure solution dépend de ce qu'on veut faire de l'image.}
+\end{quizquestion}
+
+\begin{quizquestion*}<tooltip>[b]{3}{1,2}{Décodage d'un son}
+<L'ordinateur ne sait pas ce qu'il exécute. On lui donne un programme constitué d'instructions élémentaires, il les applique sans savoir à quoi elles correspondent.>
+\points{1}
+Quand l'ordinateur décode un son :
+	\mcqproposal{il sait que c'est un son.}
+	\mcqproposal{il sait que c'est tel morceau de tel artiste. }
+	\mcqproposal{il n'en sait rien, il applique juste bêtement un programme de décodage sans comprendre ce qui se passe.}
+\end{quizquestion*}
+\end{quiz}
+
+
+\begin{quiz}[title={Compression de données}]
+\vspace{-1\baselineskip}
+\begin{quizquestion*}<tooltip>[b]{2}{1,3,4}{Taille d'image}
+<Un pixel de couleur est habituellement codé sur 24\,bits, 8\,bits pour le rouge, le vert et le bleu. Donc 3 octets par pixel, donc 30\,Mo en tout.>
+Quel espace occuperait une photo prise par votre smartphone avec un capteur à 10 millions de pixels en couleur si on ne la compressait pas ? Chaque couleur est codée sur 8 bits.
+\points{1}
+	\mcqproposal{3 mégaoctets.}
+	\mcqproposal{30 mégaoctets.}
+	\mcqproposal{300 mégaoctets.}
+	\mcqproposal{3 gigaoctets.}
+\end{quizquestion*}
+
+
+%\sidegraphic{\includegraphics[width=\linewidth]{quiz03-chap05.jpg}}% LOST FLOAT! NEW ERROR WHY?
+%\marginnote{\includegraphics[width=\linewidth]{quiz03-chap05.jpg}}
+%\afterpage{\marginnote{\includegraphics[width=\linewidth]{quiz03-chap05.jpg}}}
+%\vspace{-\baselineskip}
+
+\vfill\pagebreak
+
+\begin{quizquestion}[b]{1,2,4}{3}{Compression d'image}
+<La compression d'image peut se réaliser « avec perte » dans le cas de formats d'image comme le JPEG ou le PNG. On peut par exemple remplacer des pixels similaires par un bloc de pixels identiques. La quantité d'informations à stocker peut ainsi diminuer drastiquement mais, en conséquence, la qualité de l'image aussi.
+Selon le facteur de compression demandé par l'utilisateur lors de l'enregistrement, l'image pourra prendre à peu près n'importe quelle taille. L'utilisateur doit donc choisir la compression selon la taille du fichier et la qualité de l'image voulue.>
+\points{1}
+Si on compresse\parnote{En exportant sous \textsc{Gimp} une photo au format JPEG. Un curseur permet de régler le taux de compression et ce faisant, le poids de l’image obtenue en cochant la case sous le curseur (prévisualisation).} une \href{https://www.fun-mooc.fr/asset-v1:inria+41018+session01+type@asset+block@Untitled.jpg}{image}, quelles assertions se vérifient ?
+\parnotes
+	\mcqproposal{Elle peut ne peser qu'environ 1 kilo-octet après compression.}
+	\mcqproposal{Elle peut être de n’importe quelle taille inférieure à celle d’origine.}
+	\mcqproposal{Elle garde une bonne qualité quelle que soit la compression.}
+	\mcqproposal{Elle peut devenir moche.}
+\end{quizquestion}
+
+\begin{quizquestion*}[c]{2}{1,3}{Décompression de vidéo}
+<Le système d'exploitation peut utiliser l'extension du fichier pour deviner son contenu et lancer automatiquement le bon programme pour l'ouvrir. Mais rien ne garantit que le contenu corresponde au format indiqué par l'extension (un fichier .pdf qui contient en fait une vidéo). Pire, l'extension (avi par exemple) peut n'être qu'un  « conteneur » pour différentes solutions de compression vidéo (H264, MPEG4, etc).\\
+Le début du fichier --- son entête --- contient des informations sur le type de fichier, ses caractéristiques : taille d'image, couleurs ou noir et blanc, compression, etc. Un programme se charge de décoder l'entête pour ensuite savoir comment décoder le reste du données.\\
+Dans tous les cas, l'ordinateur exécute bêtement ce programme sans savoir à quoi il sert concrètement. Il ne sait pas comment décompresser une vidéo, il sait juste exécuter des instructions successives sans comprendre.>
+\points{1}
+Comment l'ordinateur sait-il comment décompresser une vidéo ? 
+	\mcqproposal{Il lui suffit de regarder l'extension du fichier (.mov, .avi, .mpg, etc.), elle indique forcément le type de compression du fichier.}
+	\mcqproposal{Il regarde l'entête du fichier pour comprendre le type de compression et les caractéristiques de la video.}
+	\mcqproposal{En fait, les vidéos compressées sont tout simplement toujours illisibles, c'est fait exprès pour les chiffrer.}
+\end{quizquestion*}
+\end{quiz}
+
+
+\begin{quiz}[title={Organisation des données}]
+\vspace{-.5\baselineskip}
+\begin{quizquestion*}<tooltip>[b]{1}{2,3}{Codage de la taille d'une personne}
+<Le type des données stockées dans la mémoire de l'ordinateur ou dans un fichier est choisi par convention par le programmeur. Il faut respecter ce type quand on donne de l'information à l'ordinateur pour qu'il la manipule de manière adaptée. Et en sortie, il faut interprêter le résultat donné par l'ordinateur selon cette convention.\\
+L'espace mémoire peut aussi jouer sur le choix, mais en pratique il varie souvent entre 1 octet (8 bits) et 8 octets (64 bits) pour stocker un nombre, donc c'est négligeable (tant qu'on ne stocke pas des millions de nombres).\\
+La taille et la précision sont les critères les plus importants pour choisir. Un âge humain est un entier entre 0 et 130 donc un entier 8 bit suffit largement (de 0 à 255). Une température peut prendre des valeurs négatives et à virgule, donc un nombre flottant sera plus adapté, 32 bits de précision suffiront largement (10 chiffres après la virgule !).\\
+Pour la taille d'un humain, si la valeur en centimètres suffit, un entier 8 bits suffira. Si on veut absolument coder la taille en mètres, il faut un nombre flottant avec quelques chiffres de précision après la virgule. Pas besoin d'autoriser les valeurs négatives mais en pratique les nombres flottants l'autorisent le plus souvent.>
+Comment choisir entre un entier 8 bits et un flottant 32 bits pour coder la taille d'une personne ?
+\points{1}
+	\mcqproposal{On regarde les valeurs possibles d'une taille humaine et la précision dont on a besoin.}
+	\mcqproposal{Qu'importe, l'ordinateur ne sait pas à quoi correspond ce nombre.}
+	\mcqproposal{On regarde l'espace nécessaire pour stocker ces types afin d'économiser de la mémoire.}
+\end{quizquestion*}
+
+\begin{quizquestion}[b]{2}{1,3}{Format des données}
+<La convention d'enregistrement en mémoire est généralement définie par le programmeur (même si, selon le langage, le compilateur ou l’interpréteur peuvent également être impliqués dans ces choix). Le programme est écrit pour manipuler les nombres en suivant cette convention. Sinon l'ordinateur pourrait lire et manipuler un entier 32 bits sans aucun sens car les 4 octets mémoire correspondaient en fait à 4 entiers 8 bits utilisés pour autre chose.\\
+Si les données sont stockées dans un fichier, elles peuvent également être décrites dans l'entête du fichier pour éventuellement adapter le programme selon la façon dont le fichier a été codé (si l'entête indique que la largeur de l'image est codée sur 16 bits, le programme lit ensuite 16 bits pour récupérer la largeur). Ce n'est pas le cas de format comme le CSV par exemple, il faut alors fournir ces données en plus du fichier lui-même.>
+\points{1}
+Comment est détecté le fait qu'une donnée soit un entier ou un tuple ? %(plusieurs réponses possibles)
+	\mcqproposal{En mémoire, c'est le programmeur qui l'a spécifié clairement dans le programme.}
+	\mcqproposal{Peu importe, le programmeur n'a pas besoin de le savoir.}
+	\mcqproposal{Dans un fichier, l'entête des données, si elle existe, permet de détecter les données.}
+\end{quizquestion}
+
+\begin{quizquestion*}[t]{3}{1,2}{Décodage d'un fichier image JPEG}
+<Une image JPEG peut être compresser fortement, avec perte, au moyen d'un algorithme recherchant des similitudes entre pixels. Elle n'est pas sauvegardée comme une suite de pixels et ne peut donc pas être affichée directement. Il faut un programme de décodage pour comprendre cette image et la traduire en une suite de pixels prête à afficher.\\
+L'entête de l'image indique le format sous lequel l'image a été encodée, mais pas comment la décoder. Par exemple, l'entête pourrait dire «~c'est une image JPEG de taille 100x100 compressée de telle façon », mais il faut reprendre \nolinebreak la spécification JPEG pour déduire com\-ment les données suivantes de l'image sont codées concrètement.\\
+Le protocole définissant la manière \nolinebreak de coder une image selon la norme JPEG n’est pas inclus dans l’entête du fichier image mais dans un programme spécifiquement écrit pour décoder les JPEG et déjà présent dans l’ordinateur ; il en existe un pour chaque format d’image. Néanmoins, il faut parfois installer un logiciel spécial avant de pouvoir les afficher (ce n’est pas nécessaire pour les formats standards, mais ça peut l’être pour des formats plus rares ou propriétaires, uniquement supportés par un logiciel payant).\\
+Quand une image JPEG est ouverte, le logiciel regarde l'entête pour identifier les dimensions, le type de compression, etc. Avec ces informations, il lance un bout de code spécialisé dans le décodage des images JPEG. Il est possible de programmer soi-même ce décodage de l'image en lisant la spécification du format d'image JPEG (\url{https://en.wikipedia.org/wiki/JPEG}). Mais on peut aussi réutiliser un des nombreux codes ou programmes existants.>
+\points{1}
+Comment décoder une photo enregistrée dans un fichier image JPEG pour l'afficher ?
+Un logiciel (spécialisé) ouvre le fichier image qui est au format JPEG et...
+	\mcqproposal{pas besoin de décoder, il suffit de recopier la valeur des pixels pour les afficher à l'écran.}
+	\mcqproposal{lit le code informatique stocké dans l’entête indiquant comment décoder un fichier JPEG, puis l’exécute pour décoder les données et les afficher sur l’écran.}
+	\mcqproposal{a été programmé à partir de la spécification du format d’image JPEG et utilise la partie de son code correspondant pour décoder et afficher à l'écran.}
+\end{quizquestion*}
+\end{quiz}
+
+
+\begin{quiz}[title={Bases de données}]
+\vspace{-\baselineskip}
+\begin{quizquestion}<tooltip>[t]{1,2,3}{}{Système de gestion multi-serveur}
+<Les données stockées en mémoire ou dans un fichier sont compréhensibles par l'ordinateur. En revanche, un humain ne peut pas les lire facilement car il faudrait interpréter les bonnes suites de bits comme les bons types de nombres, etc. Le SGBD permet de rendre cette consultation facile pour un humain via un langage relativement compréhensible.
+Par ailleurs, le SGBD peut être répliqué, cela permet d'accéder de manière transparente à un autre serveur de stockage quand le principal est inaccessible ou en panne.>
+\points{1}
+Pourquoi un système de gestion de base de données multi-serveur, avec réplication des données, simplifie-t-il la consultation des données ? %(plusieurs réponses possibles)
+	\mcqproposal{On peut consulter dans un langage relativement facile à comprendre pour un humain.}
+	\mcqproposal{On peut consulter sans avoir besoin de savoir dans quel ordre les données sont stockées.}
+	\mcqproposal{On peut consulter même si un des serveurs tombe en panne.}
+\end{quizquestion}
+\end{quiz}
