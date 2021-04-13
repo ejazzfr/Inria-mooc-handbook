@@ -1,0 +1,234 @@
+%%
+%% texjazz-headfoot.ltx
+%%
+%% A LaTeX file to manage the hearder and footer of pages.
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+%---------------------------------------------------------------------------------------------------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-headfoot.ltx' and `texjazz-headfoot[-fr].tex' (not yet fully available).
+% --------------------------------------------------------------------------------------------------
+
+%-- File identification
+%----------------------
+
+\ProvidesFile{texjazz-headfoot.ltx}[2021/02/08 v0.1a − Document eader and footer]
+
+%---- Headers and footers / Entêtes et pieds de page
+%---------------------------------------------------------------------------------------------------
+
+%-- It's better to load the `titleps'' package as an option of the `titlesec'' package
+%\RequirePackage{titleps}% if without `titlesec' package, else already loaded (see previous §)
+
+%https://tex.stackexchange.com/questions/313080/modify-page-layout-using-titleps
+\ifbool{doc@article}{%
+  \settitlemarks{part,section,subsection,subsubsection}
+}{\settitlemarks{part,chapter,section,subsection}
+  %\settitlemarks{part,chapter,appendixchapter,backchapter,section,subsection}
+}
+
+%-- Main style for book/handbook
+\newpagestyle{main}[\small]{%
+  %\setheadrule{.55pt}%
+  % Usage: \widenhead[<even-left>][<even-right>]{<odd-left>}{<odd-right>}
+  \widenhead[\marginparwidth+\marginparsep][0pt]{0pt}{\marginparwidth+\marginparsep}
+  \sethead[\mbox{\llap{\small\thepage\quad\color{black!20}%
+              \vline height .75\baselineskip  depth .25\baselineskip}%
+              \color{black!50}\quad\spacedlowsmallcaps{\chaptertitle}\hfil}]% even-left
+          []% even-center
+          []% even-right
+          {}%  odd-left
+          {}% odd-center
+          {\mbox{\hfil{\color{black!50}%
+            \spacedlowsmallcaps{\thesection.~~\sectiontitle}\quad}%
+            \rlap{\textcolor{black!20}{%
+                  \vline height .75\baselineskip  depth .25\baselineskip}%
+                  \quad\small\thepage}}% odd-right
+          }%
+}
+
+%-- "Paper" style for article/workbook
+\newpagestyle{paper}[]{%
+  %\setheadrule{1pt}%
+  %\setfootrule{2pt}%
+  \widenhead[\marginparwidth+\marginparsep][0pt]{0pt}{\marginparwidth+\marginparsep}
+  \sethead[\mbox{\llap{\small\thepage\quad\color{black!20}%
+              \vline height .75\baselineskip  depth .25\baselineskip}%
+              \color{black!50}\quad\spacedlowsmallcaps{\@doctitle}\hfil}]% even-left
+          []% even-center
+          []% even-right
+          {}%  odd-left
+          {}% odd-center
+          {\mbox{\hfil{\color{black!50}%
+            \spacedlowsmallcaps{\thesection.~~\sectiontitle}\quad}%
+            \rlap{\textcolor{black!20}{%
+                  \vline height .75\baselineskip  depth .25\baselineskip}%
+                  \quad\small\thepage}}% odd-right
+          }
+  %\renewcommand\makeheadrule{\color{red}\rule[-1\baselineskip]{\linewidth}{1.4pt}}
+}
+
+%-- Redefining plain style for book/handbook
+\renewpagestyle{plain}[\small]{%
+  %\setheadrule{.55pt}%
+  % Usage: \widenhead[<even-left>][<even-right>]{<odd-left>}{<odd-right>}
+  \widenhead[0pt][0pt]{0pt}{0pt}
+  \sethead[]% even-left
+          []% even-center
+          []% even-right
+          {}%  odd-left
+          {}% odd-center
+          {}%  odd-right
+  \setfoot[]% even-left
+          [\raisebox{1.5\baselineskip}{\thepage}]% even-center
+          []% even-right
+          {}%  odd-left
+          {\raisebox{1.5\baselineskip}{\thepage}}% odd-center
+          {}% odd-right
+}
+
+%-- Back matter style for book/handbook
+\newpagestyle{back}[\small]{%
+  \settitlemarks{backchapter,section}% MUST BE HERE see tex.stackexchange.com/questions/313080
+  %\setheadrule{.55pt}%
+  % Usage: \widenhead[<even-left>][<even-right>]{<odd-left>}{<odd-right>}
+  \widenhead[\marginparwidth+\marginparsep][0pt]{0pt}{\marginparwidth+\marginparsep}
+  \sethead[\mbox{\llap{\small\thepage\quad\color{black!20}%
+              \vline height .75\baselineskip  depth .25\baselineskip}%
+              \color{black!50}\quad\spacedlowsmallcaps{\backchaptertitle}\hfil}]% even-left
+          []% even-center
+          []% even-right
+          {}%  odd-left
+          {}% odd-center
+          {\mbox{\hfil{\color{black!50}%
+            \spacedlowsmallcaps{\backchaptertitle}\quad}%
+            \rlap{\textcolor{black!20}{%
+                  \vline height .75\baselineskip  depth .25\baselineskip}%
+                  \quad\small\thepage}}% odd-right
+          }%
+}
+
+%-- Appendix style for book/handbook
+\newpagestyle{appendix}[\small]{%
+  \settitlemarks{appendixchapter,section}% MUST BE HERE see tex.stackexchange.com/questions/313080
+  %\setheadrule{.55pt}%
+  % Usage: \widenhead[<even-left>][<even-right>]{<odd-left>}{<odd-right>}
+  \widenhead[\marginparwidth+\marginparsep][0pt]{0pt}{\marginparwidth+\marginparsep}
+  \sethead[\mbox{\llap{\small\thepage\quad\color{black!20}%
+              \vline height .75\baselineskip  depth .25\baselineskip}%
+              \color{black!50}\quad\spacedlowsmallcaps{\appendixchaptertitle}\hfil}]% even-left
+          []% even-center
+          []% even-right
+          {}%  odd-left
+          {}% odd-center
+          {\mbox{\hfil{\color{black!50}%
+            \spacedlowsmallcaps{\sectiontitle}\quad}%
+            \rlap{\textcolor{black!20}{%
+                  \vline height .75\baselineskip  depth .25\baselineskip}%
+                  \quad\small\thepage}}% odd-right
+          }%
+}
+
+%-- Applying document headers and footers
+\ifbool{doc@article}{%
+  \AtBeginDocument{\pagenumbering{arabic}\pagestyle{paper}}%
+  %\AtBeginDocument{\pagenumbering{arabic}\pagestyle{plain}}%
+%\else
+}{\assignpagestyle{\part}{empty}
+  \renewcommand{\frontmatter}{% the frontmatter is plain with roman page numbering
+                \cleardoublepage\@mainmatterfalse\pagenumbering{roman}\pagestyle{plain}%
+               }
+  \renewcommand{\mainmatter}{% mainmatter with arabic page numbering
+                \assignpagestyle{\chapter}{plain}
+                \cleardoublepage\asymmetricalpage%
+                \@mainmattertrue\pagenumbering{arabic}\pagestyle{main}%
+                % Explicitly reset the counters
+                %\@addtoreset{sidenote}{chapter}
+                \@addtoreset{figure}{chapter}
+                \@addtoreset{table}{chapter}
+                \@addtoreset{code}{chapter}
+                \renewcommand{\thecode}{\thechapter.\arabic{code}}
+                \@addtoreset{listing}{chapter}
+                \renewcommand{\thelisting}{\thechapter.\arabic{listing}}
+                \@addtoreset{video}{chapter}
+                %\@addtoreset{exercise}{chapter}
+                %\renewcommand{\theexercise}{\thechapter.\arabic{exercise}}
+                %\@addtoreset{quiz}{chapter}
+                %\renewcommand{\thequiz}{\thechapter.\arabic{quiz}}
+                \@addtoreset{document}{chapter}
+               }%
+  \renewcommand{\backmatter}{%
+                \assignpagestyle{\backchapter}{plain}
+                \cleardoublepage\asymmetricalpage%
+                \@mainmatterfalse\pagestyle{back}
+                %\@addtoreset{sidenote}{backchapter}
+                \@addtoreset{section}{backchapter}
+                \@addtoreset{figure}{backchapter}
+                \@addtoreset{table}{backchapter}
+                %\@addtoreset{code}{backchapter}
+                %\@addtoreset{listing}{backchapter}
+                \@addtoreset{footnote}{backchapter}
+                %\@addtoreset{exercise}{backchapter}
+                %\@addtoreset{quiz}{backchapter}
+                \@addtoreset{document}{backchapter}
+                \@addtoreset{video}{backchapter}
+               }
+  %https://tex.stackexchange.com/questions/231872/
+  % (how-to-replace-the-word-chapter-for-appendix-items-with-appendix-in-book-usi)
+  %https://tex.stackexchange.com/questions/313209/toc-chapter-toc-and-appendix-misfunctions
+  %\g@addto@macro{\appendix}{%
+  \apptocmd{\appendix}{%
+    \global\doc@appendixtrue
+    \setbool{appendices}{true}
+    \assignpagestyle{\appendixchapter}{plain}
+    \pagestyle{appendix}
+    %\@addtoreset{sidenote}{appendixchapter}
+    \@addtoreset{footnote}{appendixchapter}
+    \@addtoreset{section}{appendixchapter}
+    \@addtoreset{figure}{appendixchapter}
+    \renewcommand{\thefigure}{\theappendixchapter.\arabic{figure}}
+    \@addtoreset{table}{appendixchapter}
+    \renewcommand{\thetable}{\theappendixchapter.\arabic{table}}
+    %- Explicitly reset exercise counter within appendixchapter, if not: A.1, A.2, B.3, B.4, etc.
+    %\@addtoreset{exercise}{appendixchapter}
+    %\renewcommand{\theexercise}{\theappendixchapter.\arabic{exercise}}
+    %- Explicitly reset quiz counter within appendixchapter, if not: A.1, A.2, B.3, B.4, etc.
+    %\@addtoreset{quiz}{appendixchapter}
+    %\renewcommand{\thequiz}{\theappendixchapter.\arabic{quiz}}
+    %- Reset the other counters
+    \@addtoreset{document}{appendixchapter}
+    \renewcommand{\thedocument}{\theappendixchapter.\arabic{document}}
+    \@addtoreset{video}{appendixchapter}
+    \renewcommand{\thevideo}{\theappendixchapter.\arabic{video}}
+    \@addtoreset{code}{appendixchapter}
+    \renewcommand{\thecode}{\theappendixchapter.\arabic{code}}
+    %\@addtoreset{tcb@cnt@code}{appendixchapter}
+    %\renewcommand{\thetcb@cnt@code}{\theappendixchapter.\arabic{tcb@cnt@code}}
+    \@addtoreset{listing}{appendixchapter}
+    \renewcommand{\thelisting}{\theappendixchapter.\arabic{listing}}
+    %- When the table of contents is being typeset, \ifappendix returns false. We need to pass
+    %- \appendixtrue also to the ToC file. See: https://tex.stackexchange.com/questions/414493
+    %\addtocontents{tdm}{\protect\doc@appendixtrue}%\addtocontents{tdm}{\protect\appendixtrue}
+  }{}{}
+}
+
+
+
+
+\endinput
+
+
+
+
+

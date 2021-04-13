@@ -1,0 +1,232 @@
+%%
+%% texjazz-color.ltx
+%%
+%% A LaTeX file to define colors.
+%%
+%% Copyright (c) 2020-2021 ejazz.
+%%
+%---------------------------------------------------------------------------------------------------
+% This work is part of the TeXjazz bundle. It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The Current Maintainer of this work is ejazz <ejazz.fr@gmail.com>.
+%
+% This work consists of the files:
+%     `texjazz-color.ltx' and `texjazz-color[-fr].tex' (not yet fully available).
+%
+%---------------------------------------------------------------------------------------------------
+
+%-- File identification
+%----------------------
+
+\ProvidesFile{texjazz-color.ltx}[2021/02/08 v0.1a − Definitions of document colors]
+
+%- Color management
+%------------------
+
+\PassOptionsToPackage{table}{xcolor}% provides commands for colored tabular environments
+\RequirePackage{xcolor}
+
+%- Pantone and other color management
+%\RequirePackage{colorspace}
+
+%-- Colors definition TODO → Clean all that stuff to match the real needs
+%------------------------------------------------------------------------
+
+%\definecolor{white}{RGB}{255,255,255}
+\definecolor{purered}{RGB}{255, 0, 0}% HTML: #ff0806 (pure red)
+\definecolor{puregreen}{RGB}{0, 255, 0}% HTML: 
+\definecolor{pureblue}{RGB}{0, 0, 255}% HTML: 
+
+%- CV colors (`moderncv' package)
+\definecolor{darkgraycv}{HTML}{333333}
+\definecolor{graycv}{HTML}{4D4D4D}
+\definecolor{lightgraycv}{HTML}{999999}
+
+%- LaTeX Colors cf. http://latexcolor.com/
+\definecolor{darkcandyapplered}{rgb}{0.64, 0.0, 0.0}
+%\definecolor{darkelectricblue}{rgb}{0.33, 0.41, 0.47}% RGB (%): 32.5, 40.8, 47.1
+\definecolor{darkelectricblue}{RGB}{83, 104, 120}% HTML: #536878 - CMYK: 31, 13, 0, 53
+%\definecolor{darkred}{rgb}{0.55, 0.0, 0.0}
+\definecolor{dimgray}{rgb}{0.41, 0.41, 0.41}
+%\definecolor{darkgray}{rgb}{0.66, 0.66, 0.66}
+\definecolor{darkgray}{RGB}{168, 168, 168}% #a8a8a8ff
+%-
+\definecolor{green}{HTML}{C2E15F}
+\definecolor{orange}{HTML}{FDA333}
+\definecolor{purple}{HTML}{D3A4F9}
+\definecolor{red}{HTML}{FB4485}
+%\definecolor{blue}{HTML}{6CE0F1}
+\definecolor{blue}{HTML}{0000FF}% W3C blue
+\definecolor{ocre}{RGB}{243,102,25}
+\definecolor{jazzblue}{HTML}{003F60}% LFSx101 table blue
+
+%- Linux colors
+\definecolor{linuxblue}{HTML}{0D3A63}% Linux Foundation logo dark blue
+\definecolor{linuxlightblue}{HTML}{6DBCEA}% Linux Foundation logo light blue
+
+%- Cnam colors
+\definecolor{cnamred}{HTML}{BA002A}% Cnam logo red
+\definecolor{cnamlightgray}{HTML}{E3DEDA}% Cnam light gray regional logo
+\definecolor{cnambrown}{HTML}{796549}% Cnam light gray regional logo
+
+%- ArsClassica and teal green
+\definecolor{maroon}{HTML}{AC3535}
+%\definecolor{maroon}{cmyk}{0, 0.87, 0.68, 0.32}% RGB 172, 53, 53 ; HTML #AC3535
+%\definecolor{webbrown}{rgb}{.6,0,0}% for Web links
+\definecolor{webbrown}{HTML}{990000}% RGB(153, 0, 0)
+\definecolor{teal}{RGB}{0, 128, 128}% medium-satured blue-green #008080
+\definecolor{tealblue}{RGB}{54, 117, 136}% #367588
+
+%- Some more gray and others
+\definecolor{coldgrey}{RGB}{128, 138, 135}% SVGname
+\definecolor{jazzgray}{rgb}{0.66, 0.66, 0.66}
+%\definecolor{redbrown}{rgb}{.6, .1, .1}
+\definecolor{redbrown}{RGB}{153, 25, 25}% #991919ff
+\definecolor{firebrick}{HTML}{B22222}
+\definecolor{darkred}{RGB}{139, 0, 0}% #8b0000
+\definecolor{GoldDecoration}{RGB}{170, 120, 70}
+\definecolor{GoldDecoration}{RGB}{200, 200, 160}
+
+%- Some brown
+\definecolor{beaver}{rgb}{0.62, 0.51, 0.44}
+\definecolor{brown}{rgb}{0.59, 0.29, 0.0}
+\definecolor{burntumber}{rgb}{0.54, 0.2, 0.14}
+\definecolor{camel}{rgb}{0.76, 0.6, 0.42}
+\definecolor{copper}{rgb}{0.72, 0.45, 0.2}
+\definecolor{darkbrown}{rgb}{0.4, 0.26, 0.13}
+\definecolor{frenchbeige}{rgb}{0.65, 0.48, 0.36}
+\definecolor{lightbrown}{rgb}{0.71, 0.4, 0.11}
+\definecolor{lighttaupe}{rgb}{0.7, 0.55, 0.43}
+\definecolor{mediumtaupe}{rgb}{0.4, 0.3, 0.28}
+\definecolor{palebrown}{rgb}{0.6, 0.46, 0.33}
+\definecolor{pastelbrown}{rgb}{0.51, 0.41, 0.33}
+
+%- More brown (from Rossing ed.: Springer Hanbook of Acoustics)
+\definecolor{lightchocolate}{RGB}{219, 194, 163}% 
+\definecolor{middlechocolate}{RGB}{148, 98, 45}% 
+\definecolor{chocolate}{RGB}{183, 141, 94}% 
+\definecolor{darkchocolate}{RGB}{113, 63, 14}% 
+
+%- MATLAB "jet" shading color scheme
+\definecolor{matlabdarkblue}{RGB}{0, 0, 128}%
+\definecolor{matlabblue}{RGB}{0, 0, 255}
+\definecolor{matlabcyan}{RGB}{0, 255, 255}
+\definecolor{matlabgreen}{RGB}{0, 255, 0}
+\definecolor{matlabyellow}{RGB}{255, 255, 0}
+\definecolor{matlaborange}{RGB}{255, 10, 0}
+\definecolor{matlabred}{RGB}{255, 0, 0}
+\definecolor{matlabdarkred}{RGB}{128, 0, 0}
+
+
+%- yReport
+\definecolor{lightGrey}{gray}{0.92}
+\definecolor{middleGrey}{gray}{.75}
+\definecolor{darkGrey}{gray}{.55}
+\colorlet{bigVerticalLineGrey}{lightGrey}% background margin
+\definecolor{main-yReportColor}{RGB}{211, 47, 47}
+\definecolor{second-yReportColor}{RGB}{255, 193, 7}
+
+%- Awesomebox settings
+\definecolor{abnote}{RGB}{25,64,122}% dark blue
+\definecolor{abcaution}{RGB}{188,50,0}% brown-yellow
+\definecolor{abwarning}{RGB}{188,103,0}% brown-orange
+\definecolor{abimportant}{RGB}{188,0,0}% red
+
+%- Ubuntu design (see: https://design.ubuntu.com/brand/colour-palette)
+\definecolor{ubuntuorange}{HTML}{E95420}
+\definecolor{ubuntulightaubergine}{HTML}{77216F}
+\definecolor{ubuntumidaubergine}{HTML}{5E2750}
+\definecolor{ubuntudarkaubergine}{HTML}{2C001E}
+\definecolor{canonicalaubergine}{HTML}{772953}
+\definecolor{ubuntuwarmgrey}{HTML}{AEA79F}
+\definecolor{ubuntucoolgrey}{HTML}{333333}
+
+%- Extract from humanity icons (roughly)
+\definecolor{ubuntudarkorange}{HTML}{A82711}
+\definecolor{ubuntusoftorange}{RGB}{237,163,116}
+\definecolor{ubuntugray}{HTML}{BEBEBE}
+\definecolor{ubuntugrayicon}{HTML}{969696}
+
+%-- Document colors
+%------------------
+
+%- Cover / Front page colors
+\colorlet{covercolor}{cnamred}
+\colorlet{titlecovercolor}{black}
+\colorlet{authorcovercolor}{cnambrown}
+
+%- Layout colors
+\colorlet{maincolor}{darkgray}
+%\colorlet{maincolor}{linuxblue}
+\colorlet{firstcolor}{darkelectricblue}
+\colorlet{secondcolor}{redbrown}
+\colorlet{thirdcolor}{teal}
+\colorlet{fourthcolor}{chocolate}
+\colorlet{framecolor}{darkelectricblue}
+
+%- Titling colors
+\colorlet{titlingnumbercolor}{darkelectricblue}
+%\colorlet{titlingcolor}{darkelectricblue}
+\colorlet{titlingcolor}{black}
+
+%- Coloured box settings
+\colorlet{boxbackgroundcolor}{black!10}%\colorlet{boxbackgroundcolor}{darkelectricblue}
+%\colorlet{boxtitlecolor}{black}
+\colorlet{boxtitlecolor}{darkelectricblue}
+\colorlet{boxframecolor}{black!5}
+\colorlet{lettrinecolor}{darkelectricblue}
+\colorlet{itemcolor}{darkelectricblue}
+
+%-- Some more colors simulating IDEs layout
+%------------------------------------------
+
+%- Eclipse IDE and Firefox source view (roughly the same conventions)
+\definecolor{idesyntaxcolor}{HTML}{7F0055}% Eclipse keyword color (purple)
+\colorlet{ideattributecolor}{maroon}% Color for second level attributes (CSS, JavaScript)
+%\definecolor{idestringcolor}{HTML}{2A00FF}% Eclipe string color (blue)
+\definecolor{idestringcolor}{HTML}{0000FF}% Eclipe string color (blue)
+\definecolor{idecommentcolor}{HTML}{3F7F5F}% Eclipe comment color (green-olive)
+\definecolor{idemisccolor}{HTML}{0000C0}% Eclipse miscellaneous color (Static Field)
+\colorlet{algostringcolor}{brown}
+\colorlet{csssyntaxcolor}{maroon}
+
+%- Colors apparently from NetBeans, see below TeX.SE link: FIXME
+%- http://tex.stackexchange.com/questions/99500/listings-code-style-for-html5-css-html-javascript
+%\definecolor{editorGray}{rgb}{0.95, 0.95, 0.95}
+%\definecolor{editorOcher}{rgb}{1, 0.5, 0} % #FF7F00 -> rgb(239, 169, 0)
+%\definecolor{editorGreen}{rgb}{0, 0.5, 0} % #007C00 -> rgb(0, 124, 0)
+
+%- Another attempt for HTML+CSS+JavaScript+PHP
+%- http://tex.stackexchange.com/questions/252307/specific-color-for-different-tags-and-comments
+\definecolor{editorlightgray}{cmyk}{0.05, 0.05, 0.05, 0.1}
+%\definecolor{editorGray}{cmyk}{0.6, 0.55, 0.55, 0.2}
+\colorlet{editorgreen}{idecommentcolor}
+\definecolor{editorpurple}{cmyk}{0.5, 1, 0, 0}
+\definecolor{editorwhite}{cmyk}{0, 0, 0, 0}
+\definecolor{editorblack}{cmyk}{1, 1, 1, 1}
+\definecolor{editororange}{cmyk}{0, 0.8, 1, 0}
+\definecolor{editorblue}{cmyk}{1, 0.6, 0, 0}
+\definecolor{editorpink}{cmyk}{0, 1, 0, 0}
+
+
+
+\endinput
+
+
+
+
+
+
+
+
+
+
+
+
+
